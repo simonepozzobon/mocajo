@@ -1,12 +1,19 @@
 <template lang="html">
     <div>
-        <router-view></router-view>
+        <main-nav />
+        <transition>
+            <router-view />
+        </transition>
     </div>
 </template>
 
 <script>
+import MainNav from './MainNav.vue'
 export default {
-    name: 'MainTemplate'
+    name: 'MainTemplate',
+    components: {
+        MainNav
+    }
 }
 </script>
 

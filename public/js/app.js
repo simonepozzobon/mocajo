@@ -50803,13 +50803,25 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__);
 //
 //
 //
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'Home',
+  components: {
+    VideoBg: __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue___default.a
+  }
+});
 
 /***/ }),
 /* 49 */
@@ -50819,7 +50831,21 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\n    Home\n")])
+  return _c(
+    "div",
+    { attrs: { id: "home" } },
+    [
+      _c("video-bg", { attrs: { videoSrcMp4: "/video/home.mp4" } }, [
+        _c("div", { staticClass: "logo-overlay" }, [
+          _c("img", {
+            staticClass: "home-img",
+            attrs: { src: "/svg/logo.svg", alt: "La Scuola di Mocajo" }
+          })
+        ])
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -50914,7 +50940,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(11)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -50924,14 +50950,23 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MainNav_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MainNav_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__MainNav_vue__);
 //
 //
 //
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'MainTemplate'
+  name: 'MainTemplate',
+  components: {
+    MainNav: __WEBPACK_IMPORTED_MODULE_0__MainNav_vue___default.a
+  }
 });
 
 /***/ }),
@@ -50942,7 +50977,11 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("router-view")], 1)
+  return _c(
+    "div",
+    [_c("main-nav"), _vm._v(" "), _c("transition", [_c("router-view")], 1)],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -50995,9 +51034,471 @@ if(false) {
 
 exports = module.exports = __webpack_require__(11)(false);
 // Module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "\n#home {\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  position: relative;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n#home .home-img {\n    max-width: 80%;\n    max-width: 240px;\n    height: auto;\n}\n", ""]);
 
 
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(66)
+}
+var normalizeComponent = __webpack_require__(13)
+/* script */
+var __vue_script__ = __webpack_require__(64)
+/* template */
+var __vue_template__ = __webpack_require__(65)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-103ff8f6"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/VideoBg.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-103ff8f6", Component.options)
+  } else {
+    hotAPI.reload("data-v-103ff8f6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 62 */,
+/* 63 */,
+/* 64 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    videoSrcWebm: {
+      default: '',
+      type: String
+    },
+    videoSrcMp4: {
+      default: '',
+      type: String
+    },
+    poster: _defineProperty({
+      default: ''
+    }, "default", String),
+    textOverlay: {
+      default: false,
+      type: Boolean
+    },
+    textHeadline: {
+      default: '',
+      type: String
+    },
+    textSubtitle: {
+      default: '',
+      type: String
+    },
+    textBody: {
+      default: '',
+      type: String
+    }
+  }
+});
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "bg-video" },
+    [
+      _c(
+        "video",
+        {
+          staticClass: "background-vid",
+          attrs: {
+            playsinline: "",
+            autoplay: "",
+            muted: "",
+            loop: "",
+            poster: _vm.poster
+          },
+          domProps: { muted: true }
+        },
+        [
+          _c("source", {
+            attrs: { src: _vm.videoSrcWebm, type: "video/webm" }
+          }),
+          _vm._v(" "),
+          _c("source", { attrs: { src: _vm.videoSrcMp4, type: "video/mp4" } })
+        ]
+      ),
+      _vm._v(" "),
+      _vm._t("default")
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-103ff8f6", module.exports)
+  }
+}
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(67);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(12)("e4dc3ef8", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-103ff8f6\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./VideoBg.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-103ff8f6\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./VideoBg.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(11)(false);
+// Module
+exports.push([module.i, "\n.bg-video[data-v-103ff8f6]::after {\n  content: '';\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: -99;\n  top: 0;\n  left: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  -webkit-box-shadow: inset 0 0 80vw 0 black;\n          box-shadow: inset 0 0 80vw 0 black;\n}\n.background-vid[data-v-103ff8f6] {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  min-width: 100%;\n  min-height: 100%;\n  width: auto;\n  height: auto;\n  z-index: -100;\n  -webkit-transform: translateX(-50%) translateY(-50%);\n          transform: translateX(-50%) translateY(-50%);\n  background-size: cover;\n}\n.text-overlay[data-v-103ff8f6] {\n  font-weight: 100;\n  background: rgba(0, 0, 0, 0.3);\n  color: white;\n  padding: 2rem;\n  width: 33%;\n  margin: 2rem;\n  float: right;\n  font-size: 1.2rem;\n  min-height: 410px;\n}\n.text-overlay h1[data-v-103ff8f6] {\n  color: #fff;\n  font-size: 38px;\n}\n.text-overlay h2[data-v-103ff8f6] {\n  font-size: 28px;\n  color: #fff;\n}\n.text-overlay p[data-v-103ff8f6] {\n  font-size: 14px;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(69)
+}
+var normalizeComponent = __webpack_require__(13)
+/* script */
+var __vue_script__ = __webpack_require__(71)
+/* template */
+var __vue_template__ = __webpack_require__(72)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/containers/MainNav.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-52f5dfea", Component.options)
+  } else {
+    hotAPI.reload("data-v-52f5dfea", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(70);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(12)("39225d31", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-52f5dfea\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainNav.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-52f5dfea\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainNav.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(11)(false);
+// Module
+exports.push([module.i, "\n.navbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  min-height: 60px;\n  height: 70px;\n  background-color: rgba(255, 255, 255, 0);\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n.navbar .nav-link {\n    font-weight: normal;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'MainNav',
+  data: function data() {
+    return {
+      navClass: ''
+    };
+  }
+});
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "nav",
+    {
+      ref: "navbar",
+      staticClass: "navbar navbar-dark navbar-expand-lg",
+      class: this.navClass
+    },
+    [
+      _c("router-link", {
+        staticClass: "navbar-brand",
+        attrs: { tag: "a", to: { path: "/" }, "exact-active-class": "active" }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "d-lg-none position-relative" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "collapse navbar-collapse", attrs: { id: "navbarNav" } },
+        [
+          _c("ul", { staticClass: "navbar-nav ml-auto" }, [
+            _c(
+              "li",
+              { staticClass: "nav-item" },
+              [
+                _c(
+                  "router-link",
+                  {
+                    staticClass: "nav-link",
+                    attrs: {
+                      tag: "a",
+                      to: { path: "/" },
+                      "exact-active-class": "active"
+                    }
+                  },
+                  [_vm._v("\n                    Home\n                ")]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "li",
+              { staticClass: "nav-item" },
+              [
+                _c(
+                  "router-link",
+                  {
+                    ref: "odontoiatria",
+                    staticClass: "nav-link",
+                    attrs: {
+                      tag: "a",
+                      to: { path: "/odontoiatria" },
+                      "exact-active-class": "active"
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                    La Scuola di Mocajo\n                "
+                    )
+                  ]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "li",
+              { staticClass: "nav-item" },
+              [
+                _c(
+                  "router-link",
+                  {
+                    ref: "estetica",
+                    staticClass: "nav-link",
+                    attrs: {
+                      tag: "a",
+                      to: { path: "/medicina-estetica" },
+                      "exact-active-class": "active"
+                    }
+                  },
+                  [_vm._v("\n                    Vini\n                ")]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "li",
+              { staticClass: "nav-item" },
+              [
+                _c(
+                  "router-link",
+                  {
+                    staticClass: "nav-link",
+                    attrs: {
+                      tag: "a",
+                      to: { path: "/about" },
+                      "exact-active-class": "active"
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                    I Nostri Partner\n                "
+                    )
+                  ]
+                )
+              ],
+              1
+            )
+          ])
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-52f5dfea", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
