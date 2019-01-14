@@ -11,6 +11,6 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/{slug}', function () {
     return view('welcome');
-});
+})->where('slug', '.*');

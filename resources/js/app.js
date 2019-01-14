@@ -17,5 +17,10 @@ const app = new Vue({
     router,
     components: {
         MainTemplate
+    },
+    data: function() {
+        return {
+            navbar: 1
+        }
     }
 }).$mount('#app')
