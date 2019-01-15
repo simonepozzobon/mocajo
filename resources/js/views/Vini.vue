@@ -17,7 +17,8 @@
                 <p>
                     Il Mocajo, antico borgo incastonato nelle colline toscane, dà vita a questo vino di gran classe, corposo dal sapore intenso è vellutato. Il suo complesso bouquet lo rende il vino perfetto da accostare a grandi brasati, selvaggina e formaggi stagionati.
                 </p>
-                <a href="#" class="btn btn-primary">Acquista</a>
+                <h6>€ 19,00</h6>
+                <button class="btn btn-primary" @click="addToCart(19.00)">Acquista</button>
             </div>
             <div class="col-md-6 product-image">
                 <img src="/images/wine-placeholder.jpeg" alt="" class="image">
@@ -32,7 +33,8 @@
                 <p>
                     Dalla splendida unione dei nobili vitigni San Giovese, Cabernet Franc e Syrah, nasce il Ligia vino delicato ma dal carattere forte e intraprendente. I suoi tannini equilibrati accompagnano a tavola ragù di lepre, bistecca alla fiorentina e secondi di selvaggina.
                 </p>
-                <a href="#" class="btn btn-primary">Acquista</a>
+                <h6>€ 12,00</h6>
+                <button class="btn btn-primary" @click="addToCart(12.00)">Acquista</button>
             </div>
         </div>
         <div class="row mt-5 product-container">
@@ -41,7 +43,8 @@
                 <p>
                     Ignis è vino robusto, intenso nei profumi di frutti rossi e spezie, con una morbida nota di vaniglia e dal sapore pieno e rotondo. La sua complessità lo rende armonico sia con la selvaggina che con formaggi stagionati, caprini ed erborinati.
                 </p>
-                <a href="#" class="btn btn-primary">Acquista</a>
+                <h6>€ 14,00</h6>
+                <button class="btn btn-primary" @click="addToCart(14.00)">Acquista</button>
             </div>
             <div class="col-md-6 product-image">
                 <img src="/images/wine-placeholder.jpeg" alt="" class="image">
@@ -83,6 +86,33 @@ export default {
             }, .4)
 
             master.play()
+        },
+        addToCart: function(price) {
+            price = price.toFixed(2)
+            let product = null
+            if (price == 12.00 || price == 12 || price == '12.00') {
+                product = {
+                    id: 2,
+                    title: 'Ligia',
+                    quantity: 1,
+                    price: 12.00
+                }
+            } else if (price == 19.00 || price == 19 || price == '19.00') {
+                product = {
+                    id: 1,
+                    title: 'Mocajo',
+                    quantity: 1,
+                    price: 19.00
+                }
+            } else if (price == 14.00 || price == 14 || price == '14.00') {
+                product = {
+                    id: 3,
+                    title: 'Ignis',
+                    quantity: 1,
+                    price: 14.00
+                }
+            }
+            this.$root.addToCart(product)
         }
     },
     mounted: function() {

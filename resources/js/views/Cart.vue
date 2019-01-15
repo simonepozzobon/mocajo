@@ -12,29 +12,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Vino 1</td>
-                            <td>
-                                <button class="btn btn-link">-</button>
-                                2
-                                <button class="btn btn-link">+</button>
-                            </td>
-                            <td>€ 30,00</td>
-                        </tr>
-                        <tr>
-                            <td>Vino 3</td>
-                            <td>
-                                <button class="btn btn-link">-</button>
-                                2
-                                <button class="btn btn-link">+</button>
-                            </td>
-                            <td>€ 40,00</td>
-                        </tr>
+                        <cart-row
+                            v-for="product in this.$root.cart"
+                            :key="product.id"
+                            :idx="product.id"
+                            :title="product.title"
+                            :price="product.price"
+                            :quantity="product.quantity"
+                            @cart-update="cartUpdate"/>
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="2">Totale</td>
-                            <td>€ 70,00</td>
+                            <td>€ {{ this.cartTotal }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -50,8 +40,37 @@
 </template>
 
 <script>
+import CartRow from '../components/CartRow.vue'
+
 export default {
-    name: 'Cart'
+    name: 'Cart',
+    components: {
+        CartRow
+    },
+    data: function() {
+        return {
+            cartTotal: 0,
+        }
+    },
+    watch: {
+        '$root.cart': function(cart) {
+            this.updateTotal(cart)
+        }
+    },
+    methods: {
+        updateTotal: function(cart) {
+            let total = 0
+            for (var i = 0; i < cart.length; i++) {
+                total = total + (cart[i].quantity * cart[i].price)
+            }
+            this.cartTotal = total.toFixed(2)
+        },
+        cartUpdate: function(product) {
+            this.$root.cartUpdate(product)
+        }
+    },
+    mounted: function() {
+    }
 }
 </script>
 
