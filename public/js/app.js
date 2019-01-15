@@ -58878,6 +58878,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -58885,41 +58909,106 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'LaScuola',
   data: function data() {
     return {
-      controller: null
+      controller: null,
+      about: false,
+      tenuta: false,
+      scuola: false
     };
   },
   methods: {
-    init: function init() {// this.controller = new ScrollMagic.Controller()
-      // let scuola = new ScrollMagic.Scene({
-      //     triggerElement: '#section-one',
-      //     offset: 0,
-      //     duration: 200,
-      //     triggerHook: 'onEnter'
-      // })
-      //     .addIndicators({ name: 'about'})
-      //     // .setTween(master)
-      //     .addTo(this.controller)
+    init: function init() {
+      var _this = this;
+
+      this.controller = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Controller();
+      var scuola = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Scene({
+        triggerElement: '#section-one',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'about'})
+      // .setTween(master)
+      .addTo(this.controller);
+      var tenuta = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Scene({
+        triggerElement: '#section-two',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'tenuta'})
+      .on('enter', function () {
+        if (!_this.tenuta) {
+          var objs = {
+            title: '#about-tenuta',
+            description: '#about-tenuta-description',
+            image: '#about-tenuta-image'
+          };
+
+          _this.animate(objs);
+
+          _this.tenuta = true;
+        }
+      }).addTo(this.controller);
+      var storia = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Scene({
+        triggerElement: '#section-three',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'storia'})
+      .on('enter', function () {
+        if (!_this.storia) {
+          var objs = {
+            title: '#about-storia',
+            description: '#about-storia-description',
+            image: '#about-storia-image'
+          };
+
+          _this.animate(objs);
+
+          _this.storia = true;
+        }
+      }).addTo(this.controller);
     },
     animate: function animate() {
-      var title = this.$refs.title,
-          description = this.$refs.description,
-          image = this.$refs.image;
+      var objs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var title, description, image;
+
+      if (objs) {
+        title = objs.title;
+        description = objs.description;
+        image = objs.image;
+      } else {
+        title = this.$refs.title;
+        description = this.$refs.description;
+        image = this.$refs.image;
+      }
+
       var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
         paused: true
       });
-      master.from(title, .6, {
+      master.fromTo(title, .6, {
         autoAlpha: 0,
         y: 20,
+        ease: Power2.easeInOut
+      }, {
+        autoAlpha: 1,
+        y: 0,
         ease: Power2.easeInOut
       }, .1);
-      master.from(description, .6, {
+      master.fromTo(description, .6, {
         autoAlpha: 0,
         y: 20,
         ease: Power2.easeInOut
+      }, {
+        autoAlpha: 1,
+        y: 0,
+        ease: Power2.easeInOut
       }, .2);
-      master.from(image, .8, {
+      master.fromTo(image, .8, {
         autoAlpha: 0,
         x: 60,
+        ease: Power2.easeOut
+      }, {
+        autoAlpha: 1,
+        x: 0,
         ease: Power2.easeOut
       }, .4);
       master.play();
@@ -58929,6 +59018,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     // this.$root.navbar = 1
     this.init();
     this.animate();
+    TweenMax.set(['#about-tenuta', '#about-tenuta-description', '#about-tenuta-image', '#about-storia', '#about-storia-description', '#about-storia-image'], {
+      autoAlpha: 0
+    });
   }
 });
 
@@ -59721,10 +59813,75 @@ var render = function() {
           attrs: { src: "/images/about.jpg", alt: "" }
         })
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm._m(0),
+    _vm._v(" "),
+    _vm._m(1)
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row section" }, [
+      _c("div", { staticClass: "trigger", attrs: { id: "section-two" } }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6 order-md-2" }, [
+        _c("h1", { attrs: { id: "about-tenuta" } }, [_vm._v("La Tenuta")]),
+        _vm._v(" "),
+        _c("p", { attrs: { id: "about-tenuta-description" } }, [
+          _vm._v(
+            "\n                Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.\n            "
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6 order-md-1" }, [
+        _c("img", {
+          staticClass: "img-fluid",
+          attrs: {
+            src: "/images/tenuta.jpg",
+            alt: "",
+            id: "about-tenuta-image"
+          }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row section" }, [
+      _c("div", { staticClass: "trigger", attrs: { id: "section-three" } }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("h1", { attrs: { id: "about-storia" } }, [
+          _vm._v("La Nostra Storia")
+        ]),
+        _vm._v(" "),
+        _c("p", { attrs: { id: "about-storia-description" } }, [
+          _vm._v(
+            "\n                Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.\n            "
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("img", {
+          staticClass: "img-fluid",
+          attrs: {
+            src: "/images/storia.jpg",
+            alt: "",
+            id: "about-storia-image"
+          }
+        })
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -60249,14 +60406,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     init: function init() {
       this.setPadding();
     },
-    setPadding: function setPadding() {
-      var main = this.$refs.main;
-
-      if (main.offsetHeight > this.$root.window.h) {
-        main.style.paddingTop = '100px';
-      } else {
-        main.style.paddingTop = null;
-      }
+    setPadding: function setPadding() {// let main = this.$refs.main
+      // if (main.offsetHeight > this.$root.window.h) {
+      //     main.style.paddingTop = '100px'
+      // } else {
+      //     main.style.paddingTop = null
+      // }
     },
     menuOpen: function menuOpen() {
       this.$refs.menu.toggleMobile();

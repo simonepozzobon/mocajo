@@ -44,12 +44,12 @@ export default {
             this.setPadding()
         },
         setPadding: function() {
-            let main = this.$refs.main
-            if (main.offsetHeight > this.$root.window.h) {
-                main.style.paddingTop = '100px'
-            } else {
-                main.style.paddingTop = null
-            }
+            // let main = this.$refs.main
+            // if (main.offsetHeight > this.$root.window.h) {
+            //     main.style.paddingTop = '100px'
+            // } else {
+            //     main.style.paddingTop = null
+            // }
         },
         menuOpen: function() {
             this.$refs.menu.toggleMobile()
