@@ -20,7 +20,25 @@ const app = new Vue({
     },
     data: function() {
         return {
-            navbar: 1
+            navbar: 1,
+            window: {
+                h: 0,
+                w: 0,
+            }
         }
+    },
+    methods: {
+        getSize: function() {
+            this.window = {
+                h: window.innerHeight,
+                w: window.innerWidth
+            }
+        }
+    },
+    mounted: function() {
+        this.getSize()
+        window.addEventListener('resize', () => {
+            this.getSize()
+        })
     }
 }).$mount('#app')

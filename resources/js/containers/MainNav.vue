@@ -1,54 +1,33 @@
 <template lang="html">
     <nav class="navbar navbar-dark navbar-expand-lg" ref="navbar" :class="this.navClass">
         <router-link tag="a" class="navbar-brand" :to="{ path: '/' }" exact-active-class="active" v-if="hasLogo">
-            <!-- <nav-logo :width="this.logoSize" ref="logo"/> -->
-            Logo
+            <nav-logo width="56px" ref="logo"/>
         </router-link>
 
-        <!-- <div class="d-lg-none position-relative">
-            <burger :width="burgerSize" @toggle-mobile="toggleMobile"/>
-        </div> -->
-        <div class="ml-auto">
+        <div class="ml-auto d-flex">
+            <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/cart' }" exact-active-class="active">
+                <cart-icon width="24px" color="#333"/>
+            </router-link>
             <a href="#" class="nav-link-item d-flex align-items-center" @click="menuToggle">
-                <span ref="text" class="mr-2">MENU </span> <menu-anim ref="menu" size="32px" :speed="1.6" class="mr-2"/>
+                <span ref="text" class="mr-2">MENU </span> <menu-anim ref="menu" size="32px" :speed="1.6" class="mr-2" @changeStatus="changeStatus"/>
             </a>
         </div>
-        <!-- <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active">
-                        Home
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/about' }" exact-active-class="active" ref="odontoiatria">
-                        La Scuola di Mocajo
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/vini' }" exact-active-class="active" ref="estetica">
-                        Vini
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/partner' }" exact-active-class="active">
-                        I Nostri Partner
-                    </router-link>
-                </li>
-            </ul>
-        </div> -->
     </nav>
 </template>
 
 <script>
-import {TimelineMax} from 'gsap'
-import SplitText from 'gsap/SplitText'
+import CartIcon from '../components/CartIcon.vue'
 import MenuAnim from '../components/MenuAnim.vue'
+import NavLogo from '../components/NavLogo.vue'
+import SplitText from 'gsap/SplitText'
+import {TimelineMax} from 'gsap'
 
 export default {
     name: 'MainNav',
     components: {
-        MenuAnim
+        CartIcon,
+        MenuAnim,
+        NavLogo
     },
     props: {
         hasLogo: {
@@ -67,6 +46,9 @@ export default {
         }
     },
     methods: {
+        changeStatus: function(value) {
+            this.opened = value
+        },
         menuToggle: function($event) {
             $event.preventDefault()
             let text = new SplitText(this.$refs.text, {type: 'chars'})
@@ -96,7 +78,7 @@ export default {
                             y: 0
                         }, .05)
                     })
-
+                this.$emit('menu-close')
                 this.$refs.menu.close()
             } else {
                 let text = new SplitText(this.$refs.text, {type: 'chars'})
@@ -126,7 +108,7 @@ export default {
                         }, .05)
                     })
 
-
+                this.$emit('menu-open')
                 this.$refs.menu.open()
             }
         },
@@ -137,7 +119,6 @@ export default {
 <style lang="scss">
 @import '~styles/shared';
 .navbar {
-    // min-height: 112px;
     position: fixed;
     top: 0;
     left: 0;
@@ -152,6 +133,10 @@ export default {
     .nav-link {
         font-weight: normal;
         letter-spacing: 1px;
+    }
+
+    .navbar-brand {
+        padding-top: $spacer;
     }
 }
 </style>

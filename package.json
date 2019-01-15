@@ -28,6 +28,7 @@
         "vue-router": "^3.0.2"
     },
     "dependencies": {
-        "lottie-web": "^5.4.3"
+        "lottie-web": "^5.4.3",
+        "scrollmagic": "^2.0.6"
     }
 }
