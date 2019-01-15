@@ -6,7 +6,7 @@
 
         <div class="ml-auto d-flex">
             <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" v-if="hasCart">
-                <cart-icon width="24px" color="#333"/>
+                <cart-icon width="24px" color="#333" ref="icon"/>
             </router-link>
             <a href="#" class="nav-link-item d-flex align-items-center" @click="menuToggle">
                 <span ref="text" class="mr-2">MENU </span> <menu-anim ref="menu" size="32px" :speed="1.6" class="mr-2" @changeStatus="changeStatus"/>
@@ -48,8 +48,12 @@ export default {
     },
     watch: {
         '$root.cart': function(cart) {
-            if (cart) {
+            if (cart && cart.length > 0) {
                 this.hasCart = true
+                this.$refs.icon.play()
+            } else {
+                this.hasCart = false
+                this.$refs.icon.hide()
             }
         }
     },
