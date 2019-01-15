@@ -31,11 +31,6 @@ const app = new Vue({
             cart: null
         }
     },
-    watch: {
-        cart: function(cart) {
-            console.log('cambiato')
-        }
-    },
     methods: {
         getSize: function() {
             this.window = {

@@ -21983,11 +21983,6 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
       cart: null
     };
   },
-  watch: {
-    cart: function cart(_cart) {
-      console.log('cambiato');
-    }
-  },
   methods: {
     getSize: function getSize() {
       this.window = {
