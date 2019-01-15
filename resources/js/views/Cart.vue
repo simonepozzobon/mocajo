@@ -19,7 +19,8 @@
                             :title="product.title"
                             :price="product.price"
                             :quantity="product.quantity"
-                            @cart-update="cartUpdate"/>
+                            @cart-update="cartUpdate"
+                            @cart-remove="cartRemove"/>
                     </tbody>
                     <tfoot>
                         <tr>
@@ -67,9 +68,15 @@ export default {
         },
         cartUpdate: function(product) {
             this.$root.cartUpdate(product)
+        },
+        cartRemove: function(idx) {
+            this.$root.cartRemove(idx)
         }
     },
     mounted: function() {
+        if (this.$root.cart) {
+            this.updateTotal(this.$root.cart)
+        }
     }
 }
 </script>

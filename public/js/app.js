@@ -21990,6 +21990,23 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
         w: window.innerWidth
       };
     },
+    cartRemove: function cartRemove(productIdx) {
+      if (this.cart) {
+        var idx = this.cart.findIndex(function (item) {
+          return item.id == productIdx;
+        });
+
+        if (idx >= 0) {
+          this.cart.splice(idx, 1);
+          this.$cookie.set('mocajo-cart', JSON.stringify(this.cart));
+
+          if (this.cart.lenght == 0) {
+            this.$cookie.destroy('mocajo-cart');
+            this.cart = null;
+          }
+        }
+      }
+    },
     cartUpdate: function cartUpdate(product) {
       if (this.cart) {
         var cart = this.cart;
@@ -22008,17 +22025,19 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
     },
     addToCart: function addToCart(product) {
       if (this.cart) {
-        var idx = this.cart.findIndex(function (item) {
+        var cart = this.cart;
+        var idx = cart.findIndex(function (item) {
           return item.id == product.id;
         });
 
         if (idx >= 0) {
-          this.cart[idx].quantity = this.cart[idx].quantity + product.quantity;
-          console.log(idx, this.cart);
+          cart[idx].quantity = cart[idx].quantity + product.quantity;
         } else {
-          this.cart.push(product);
-          console.log(idx, this.cart);
+          cart.push(product);
         }
+
+        this.cart = [];
+        this.cart = cart;
       } else {
         this.cart = [];
         this.cart.push(product);
@@ -22038,7 +22057,6 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 
     if (cart) {
       this.cart = JSON.parse(cart);
-      console.log(this.cart);
     }
   }
 }).$mount('#app');
@@ -60172,7 +60190,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(2)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -60219,13 +60237,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
     '$root.window': function $rootWindow(value) {
-      var main = this.$refs.main;
-
-      if (main.offsetHeight > value.h) {
-        main.style.paddingTop = '100px';
-      } else {
-        main.style.paddingTop = null;
-      }
+      this.setPadding();
     }
   },
   data: function data() {
@@ -60234,12 +60246,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   methods: {
+    init: function init() {
+      this.setPadding();
+    },
+    setPadding: function setPadding() {
+      var main = this.$refs.main;
+
+      if (main.offsetHeight > this.$root.window.h) {
+        main.style.paddingTop = '100px';
+      } else {
+        main.style.paddingTop = null;
+      }
+    },
     menuOpen: function menuOpen() {
       this.$refs.menu.toggleMobile();
     },
     menuClose: function menuClose() {
       this.$refs.menu.toggleMobile();
     }
+  },
+  mounted: function mounted() {
+    this.init();
   }
 });
 
@@ -60385,9 +60412,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   data: function data() {
     return {
+      hasCart: false,
       opened: false,
       text: {}
     };
+  },
+  watch: {
+    '$root.cart': function $rootCart(cart) {
+      if (cart) {
+        this.hasCart = true;
+      }
+    }
   },
   methods: {
     changeStatus: function changeStatus(value) {
@@ -75574,19 +75609,17 @@ var render = function() {
         "div",
         { staticClass: "ml-auto d-flex" },
         [
-          _c(
-            "router-link",
-            {
-              staticClass: "nav-link-item mr-4",
-              attrs: {
-                tag: "a",
-                to: { path: "/carrello" },
-                "exact-active-class": "active"
-              }
-            },
-            [_c("cart-icon", { attrs: { width: "24px", color: "#333" } })],
-            1
-          ),
+          _vm.hasCart
+            ? _c(
+                "router-link",
+                {
+                  staticClass: "nav-link-item mr-4",
+                  attrs: { tag: "a", to: { path: "/carrello" } }
+                },
+                [_c("cart-icon", { attrs: { width: "24px", color: "#333" } })],
+                1
+              )
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "a",
@@ -79908,6 +79941,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Cart',
@@ -79936,9 +79970,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     cartUpdate: function cartUpdate(product) {
       this.$root.cartUpdate(product);
+    },
+    cartRemove: function cartRemove(idx) {
+      this.$root.cartRemove(idx);
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    if (this.$root.cart) {
+      this.updateTotal(this.$root.cart);
+    }
+  }
 });
 
 /***/ }),
@@ -79968,7 +80009,10 @@ var render = function() {
                   price: product.price,
                   quantity: product.quantity
                 },
-                on: { "cart-update": _vm.cartUpdate }
+                on: {
+                  "cart-update": _vm.cartUpdate,
+                  "cart-remove": _vm.cartRemove
+                }
               })
             }),
             1
@@ -80158,7 +80202,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(2)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -80168,6 +80212,11 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
 //
 //
 //
@@ -80206,9 +80255,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return total.toFixed(2);
     }
   },
+  data: function data() {
+    return {
+      hasTrash: 'invisible'
+    };
+  },
   methods: {
+    showTrash: function showTrash() {
+      this.hasTrash = 'visible';
+    },
+    hideTrash: function hideTrash() {
+      this.hasTrash = 'invisible';
+    },
+    remove: function remove() {
+      this.$emit('cart-remove', this.idx);
+    },
     addQuantity: function addQuantity() {
-      // this.quantity = this.quantity + 1
       var item = {
         id: this.idx,
         quantity: this.quantity + 1
@@ -80217,7 +80279,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     removeQuantity: function removeQuantity() {
       if (this.quantity > 0) {
-        // this.quantity = this.quantity - 1
         var item = {
           id: this.idx,
           quantity: this.quantity - 1
@@ -80236,25 +80297,38 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("tr", [
-    _c("td", [_vm._v(_vm._s(_vm.title))]),
-    _vm._v(" "),
-    _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-link", on: { click: _vm.removeQuantity } },
-        [_vm._v("-")]
-      ),
-      _vm._v("\n        " + _vm._s(_vm.quantity) + "\n        "),
-      _c(
-        "button",
-        { staticClass: "btn btn-link", on: { click: _vm.addQuantity } },
-        [_vm._v("+")]
-      )
-    ]),
-    _vm._v(" "),
-    _c("td", [_vm._v("€ " + _vm._s(_vm.total))])
-  ])
+  return _c(
+    "tr",
+    { on: { mouseenter: _vm.showTrash, mouseleave: _vm.hideTrash } },
+    [
+      _c("td", [
+        _vm._v("\n        " + _vm._s(_vm.title) + "\n        "),
+        _c("span", { class: _vm.hasTrash }, [
+          _c(
+            "button",
+            { staticClass: "btn btn-link btn-sm", on: { click: _vm.remove } },
+            [_vm._v("Rimuovi dal carrello")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("td", [
+        _c(
+          "button",
+          { staticClass: "btn btn-link", on: { click: _vm.removeQuantity } },
+          [_vm._v("-")]
+        ),
+        _vm._v("\n        " + _vm._s(_vm.quantity) + "\n        "),
+        _c(
+          "button",
+          { staticClass: "btn btn-link", on: { click: _vm.addQuantity } },
+          [_vm._v("+")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("td", [_vm._v("€ " + _vm._s(_vm.total))])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

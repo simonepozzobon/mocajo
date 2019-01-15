@@ -38,6 +38,19 @@ const app = new Vue({
                 w: window.innerWidth
             }
         },
+        cartRemove: function(productIdx) {
+            if (this.cart) {
+                let idx = this.cart.findIndex(item => item.id == productIdx)
+                if (idx >= 0) {
+                    this.cart.splice(idx, 1)
+                    this.$cookie.set('mocajo-cart', JSON.stringify(this.cart))
+                    if (this.cart.lenght == 0) {
+                        this.$cookie.destroy('mocajo-cart')
+                        this.cart = null
+                    }
+                }
+            }
+        },
         cartUpdate: function(product) {
             if (this.cart) {
                 let cart = this.cart
@@ -52,14 +65,15 @@ const app = new Vue({
         },
         addToCart: function(product) {
             if (this.cart) {
-                let idx = this.cart.findIndex(item => item.id == product.id)
+                let cart = this.cart
+                let idx = cart.findIndex(item => item.id == product.id)
                 if (idx >= 0) {
-                    this.cart[idx].quantity = this.cart[idx].quantity + product.quantity
-                    console.log(idx, this.cart)
+                    cart[idx].quantity = cart[idx].quantity + product.quantity
                 } else {
-                    this.cart.push(product)
-                    console.log(idx, this.cart)
+                    cart.push(product)
                 }
+                this.cart = []
+                this.cart = cart
             } else {
                 this.cart = []
                 this.cart.push(product)
@@ -76,7 +90,6 @@ const app = new Vue({
         let cart = this.$cookie.get('mocajo-cart')
         if (cart) {
             this.cart = JSON.parse(cart)
-            console.log(this.cart)
         }
     }
 }).$mount('#app')

@@ -5,7 +5,7 @@
         </router-link>
 
         <div class="ml-auto d-flex">
-            <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" exact-active-class="active">
+            <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" v-if="hasCart">
                 <cart-icon width="24px" color="#333"/>
             </router-link>
             <a href="#" class="nav-link-item d-flex align-items-center" @click="menuToggle">
@@ -41,8 +41,16 @@ export default {
     },
     data: function() {
         return {
+            hasCart: false,
             opened: false,
             text: {}
+        }
+    },
+    watch: {
+        '$root.cart': function(cart) {
+            if (cart) {
+                this.hasCart = true
+            }
         }
     },
     methods: {

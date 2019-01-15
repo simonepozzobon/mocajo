@@ -31,12 +31,7 @@ export default {
             }
         },
         '$root.window': function(value) {
-            let main = this.$refs.main
-            if (main.offsetHeight > value.h) {
-                main.style.paddingTop = '100px'
-            } else {
-                main.style.paddingTop = null
-            }
+            this.setPadding()
         }
     },
     data: function() {
@@ -45,12 +40,26 @@ export default {
         }
     },
     methods: {
+        init: function() {
+            this.setPadding()
+        },
+        setPadding: function() {
+            let main = this.$refs.main
+            if (main.offsetHeight > this.$root.window.h) {
+                main.style.paddingTop = '100px'
+            } else {
+                main.style.paddingTop = null
+            }
+        },
         menuOpen: function() {
             this.$refs.menu.toggleMobile()
         },
         menuClose: function() {
             this.$refs.menu.toggleMobile()
         },
+    },
+    mounted: function() {
+        this.init()
     }
 }
 </script>
