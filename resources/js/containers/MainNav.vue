@@ -5,7 +5,7 @@
         </router-link>
 
         <div class="ml-auto d-flex">
-            <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/cart' }" exact-active-class="active">
+            <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" exact-active-class="active">
                 <cart-icon width="24px" color="#333"/>
             </router-link>
             <a href="#" class="nav-link-item d-flex align-items-center" @click="menuToggle">

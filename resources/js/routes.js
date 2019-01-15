@@ -14,6 +14,11 @@ const routes = [
         name: 'vini',
         component: require('./views/Vini.vue')
     },
+    {
+        path: '/carrello',
+        name: 'cart',
+        component: require('./views/Cart.vue')
+    },
 ]
 
 export default routes
