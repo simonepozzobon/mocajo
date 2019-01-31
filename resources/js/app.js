@@ -28,7 +28,8 @@ const app = new Vue({
                 h: 0,
                 w: 0,
             },
-            cart: null
+            cart: null,
+            navLogo: true,
         }
     },
     methods: {

@@ -106,7 +106,7 @@ export default {
     position: fixed;
     width: 100vw;
     min-height: 100vh;
-    background-color: $white;
+    background-color: $black;
     z-index: 4;
     display: flex;
     justify-content: center;
@@ -123,6 +123,10 @@ export default {
         text-align: center;
 
         li {
+            .nav-link {
+                color: $white;
+            }
+
             .mobile-nav-link {
                 font-size: 1.5rem;
                 font-weight: bold;

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 26);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,7 +71,7 @@
 
 
 var bind = __webpack_require__(12);
-var isBuffer = __webpack_require__(32);
+var isBuffer = __webpack_require__(33);
 
 /*global toString:true*/
 
@@ -375,6 +375,434 @@ module.exports = {
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function (useSourceMap) {
+  var list = []; // return the list of modules as css string
+
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = cssWithMappingToString(item, useSourceMap);
+
+      if (item[2]) {
+        return '@media ' + item[2] + '{' + content + '}';
+      } else {
+        return content;
+      }
+    }).join('');
+  }; // import a list of modules into the list
+
+
+  list.i = function (modules, mediaQuery) {
+    if (typeof modules === 'string') {
+      modules = [[null, modules, '']];
+    }
+
+    var alreadyImportedModules = {};
+
+    for (var i = 0; i < this.length; i++) {
+      var id = this[i][0];
+
+      if (id != null) {
+        alreadyImportedModules[id] = true;
+      }
+    }
+
+    for (i = 0; i < modules.length; i++) {
+      var item = modules[i]; // skip already imported module
+      // this implementation is not 100% perfect for weird media query combinations
+      // when a module is imported multiple times with different media queries.
+      // I hope this will never occur (Hey this way we have smaller bundles)
+
+      if (item[0] == null || !alreadyImportedModules[item[0]]) {
+        if (mediaQuery && !item[2]) {
+          item[2] = mediaQuery;
+        } else if (mediaQuery) {
+          item[2] = '(' + item[2] + ') and (' + mediaQuery + ')';
+        }
+
+        list.push(item);
+      }
+    }
+  };
+
+  return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+  var content = item[1] || '';
+  var cssMapping = item[3];
+
+  if (!cssMapping) {
+    return content;
+  }
+
+  if (useSourceMap && typeof btoa === 'function') {
+    var sourceMapping = toComment(cssMapping);
+    var sourceURLs = cssMapping.sources.map(function (source) {
+      return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */';
+    });
+    return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+  }
+
+  return [content].join('\n');
+} // Adapted from convert-source-map (MIT)
+
+
+function toComment(sourceMap) {
+  // eslint-disable-next-line no-undef
+  var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+  var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+  return '/*# ' + data + ' */';
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(58)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2371,435 +2799,7 @@ var Power4 = globals.Power4;
 var TweenPlugin = globals.TweenPlugin;
 var EventDispatcher = nonGlobals.events.EventDispatcher;
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(69)(module), __webpack_require__(5)))
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function (useSourceMap) {
-  var list = []; // return the list of modules as css string
-
-  list.toString = function toString() {
-    return this.map(function (item) {
-      var content = cssWithMappingToString(item, useSourceMap);
-
-      if (item[2]) {
-        return '@media ' + item[2] + '{' + content + '}';
-      } else {
-        return content;
-      }
-    }).join('');
-  }; // import a list of modules into the list
-
-
-  list.i = function (modules, mediaQuery) {
-    if (typeof modules === 'string') {
-      modules = [[null, modules, '']];
-    }
-
-    var alreadyImportedModules = {};
-
-    for (var i = 0; i < this.length; i++) {
-      var id = this[i][0];
-
-      if (id != null) {
-        alreadyImportedModules[id] = true;
-      }
-    }
-
-    for (i = 0; i < modules.length; i++) {
-      var item = modules[i]; // skip already imported module
-      // this implementation is not 100% perfect for weird media query combinations
-      // when a module is imported multiple times with different media queries.
-      // I hope this will never occur (Hey this way we have smaller bundles)
-
-      if (item[0] == null || !alreadyImportedModules[item[0]]) {
-        if (mediaQuery && !item[2]) {
-          item[2] = mediaQuery;
-        } else if (mediaQuery) {
-          item[2] = '(' + item[2] + ') and (' + mediaQuery + ')';
-        }
-
-        list.push(item);
-      }
-    }
-  };
-
-  return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-  var content = item[1] || '';
-  var cssMapping = item[3];
-
-  if (!cssMapping) {
-    return content;
-  }
-
-  if (useSourceMap && typeof btoa === 'function') {
-    var sourceMapping = toComment(cssMapping);
-    var sourceURLs = cssMapping.sources.map(function (source) {
-      return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */';
-    });
-    return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-  }
-
-  return [content].join('\n');
-} // Adapted from convert-source-map (MIT)
-
-
-function toComment(sourceMap) {
-  // eslint-disable-next-line no-undef
-  var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-  var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-  return '/*# ' + data + ' */';
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-  Modified by Evan You @yyx990803
-*/
-
-var hasDocument = typeof document !== 'undefined'
-
-if (typeof DEBUG !== 'undefined' && DEBUG) {
-  if (!hasDocument) {
-    throw new Error(
-    'vue-style-loader cannot be used in a non-browser environment. ' +
-    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
-  ) }
-}
-
-var listToStyles = __webpack_require__(57)
-
-/*
-type StyleObject = {
-  id: number;
-  parts: Array<StyleObjectPart>
-}
-
-type StyleObjectPart = {
-  css: string;
-  media: string;
-  sourceMap: ?string
-}
-*/
-
-var stylesInDom = {/*
-  [id: number]: {
-    id: number,
-    refs: number,
-    parts: Array<(obj?: StyleObjectPart) => void>
-  }
-*/}
-
-var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
-var singletonElement = null
-var singletonCounter = 0
-var isProduction = false
-var noop = function () {}
-var options = null
-var ssrIdKey = 'data-vue-ssr-id'
-
-// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-// tags it will allow on a page
-var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
-
-module.exports = function (parentId, list, _isProduction, _options) {
-  isProduction = _isProduction
-
-  options = _options || {}
-
-  var styles = listToStyles(parentId, list)
-  addStylesToDom(styles)
-
-  return function update (newList) {
-    var mayRemove = []
-    for (var i = 0; i < styles.length; i++) {
-      var item = styles[i]
-      var domStyle = stylesInDom[item.id]
-      domStyle.refs--
-      mayRemove.push(domStyle)
-    }
-    if (newList) {
-      styles = listToStyles(parentId, newList)
-      addStylesToDom(styles)
-    } else {
-      styles = []
-    }
-    for (var i = 0; i < mayRemove.length; i++) {
-      var domStyle = mayRemove[i]
-      if (domStyle.refs === 0) {
-        for (var j = 0; j < domStyle.parts.length; j++) {
-          domStyle.parts[j]()
-        }
-        delete stylesInDom[domStyle.id]
-      }
-    }
-  }
-}
-
-function addStylesToDom (styles /* Array<StyleObject> */) {
-  for (var i = 0; i < styles.length; i++) {
-    var item = styles[i]
-    var domStyle = stylesInDom[item.id]
-    if (domStyle) {
-      domStyle.refs++
-      for (var j = 0; j < domStyle.parts.length; j++) {
-        domStyle.parts[j](item.parts[j])
-      }
-      for (; j < item.parts.length; j++) {
-        domStyle.parts.push(addStyle(item.parts[j]))
-      }
-      if (domStyle.parts.length > item.parts.length) {
-        domStyle.parts.length = item.parts.length
-      }
-    } else {
-      var parts = []
-      for (var j = 0; j < item.parts.length; j++) {
-        parts.push(addStyle(item.parts[j]))
-      }
-      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
-    }
-  }
-}
-
-function createStyleElement () {
-  var styleElement = document.createElement('style')
-  styleElement.type = 'text/css'
-  head.appendChild(styleElement)
-  return styleElement
-}
-
-function addStyle (obj /* StyleObjectPart */) {
-  var update, remove
-  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
-
-  if (styleElement) {
-    if (isProduction) {
-      // has SSR styles and in production mode.
-      // simply do nothing.
-      return noop
-    } else {
-      // has SSR styles but in dev mode.
-      // for some reason Chrome can't handle source map in server-rendered
-      // style tags - source maps in <style> only works if the style tag is
-      // created and inserted dynamically. So we remove the server rendered
-      // styles and inject new ones.
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  if (isOldIE) {
-    // use singleton mode for IE9.
-    var styleIndex = singletonCounter++
-    styleElement = singletonElement || (singletonElement = createStyleElement())
-    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
-    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
-  } else {
-    // use multi-style-tag mode in all other cases
-    styleElement = createStyleElement()
-    update = applyToTag.bind(null, styleElement)
-    remove = function () {
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  update(obj)
-
-  return function updateStyle (newObj /* StyleObjectPart */) {
-    if (newObj) {
-      if (newObj.css === obj.css &&
-          newObj.media === obj.media &&
-          newObj.sourceMap === obj.sourceMap) {
-        return
-      }
-      update(obj = newObj)
-    } else {
-      remove()
-    }
-  }
-}
-
-var replaceText = (function () {
-  var textStore = []
-
-  return function (index, replacement) {
-    textStore[index] = replacement
-    return textStore.filter(Boolean).join('\n')
-  }
-})()
-
-function applyToSingletonTag (styleElement, index, remove, obj) {
-  var css = remove ? '' : obj.css
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = replaceText(index, css)
-  } else {
-    var cssNode = document.createTextNode(css)
-    var childNodes = styleElement.childNodes
-    if (childNodes[index]) styleElement.removeChild(childNodes[index])
-    if (childNodes.length) {
-      styleElement.insertBefore(cssNode, childNodes[index])
-    } else {
-      styleElement.appendChild(cssNode)
-    }
-  }
-}
-
-function applyToTag (styleElement, obj) {
-  var css = obj.css
-  var media = obj.media
-  var sourceMap = obj.sourceMap
-
-  if (media) {
-    styleElement.setAttribute('media', media)
-  }
-  if (options.ssrId) {
-    styleElement.setAttribute(ssrIdKey, obj.id)
-  }
-
-  if (sourceMap) {
-    // https://developer.chrome.com/devtools/docs/javascript-debugging
-    // this makes source maps inside style tags work properly in Chrome
-    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
-    // http://stackoverflow.com/a/26603875
-    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
-  }
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = css
-  } else {
-    while (styleElement.firstChild) {
-      styleElement.removeChild(styleElement.firstChild)
-    }
-    styleElement.appendChild(document.createTextNode(css))
-  }
-}
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(70)(module), __webpack_require__(5)))
 
 /***/ }),
 /* 5 */
@@ -2830,13 +2830,84 @@ module.exports = g;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__TimelineLite_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__TimelineMax_js__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__TweenMax_js__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__CSSPlugin_js__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__AttrPlugin_js__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__RoundPropsPlugin_js__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__DirectionalRotationPlugin_js__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__BezierPlugin_js__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__EasePack_js__ = __webpack_require__(24);
+/* unused harmony reexport default */
+/* unused harmony reexport TweenLite */
+/* unused harmony reexport TweenMax */
+/* unused harmony reexport TimelineLite */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_2__TimelineMax_js__["a"]; });
+/* unused harmony reexport CSSPlugin */
+/* unused harmony reexport AttrPlugin */
+/* unused harmony reexport BezierPlugin */
+/* unused harmony reexport RoundPropsPlugin */
+/* unused harmony reexport DirectionalRotationPlugin */
+/* unused harmony reexport TweenPlugin */
+/* unused harmony reexport Ease */
+/* unused harmony reexport Power0 */
+/* unused harmony reexport Power1 */
+/* unused harmony reexport Power2 */
+/* unused harmony reexport Power3 */
+/* unused harmony reexport Power4 */
+/* unused harmony reexport Linear */
+/* unused harmony reexport Back */
+/* unused harmony reexport Elastic */
+/* unused harmony reexport Bounce */
+/* unused harmony reexport RoughEase */
+/* unused harmony reexport SlowMo */
+/* unused harmony reexport SteppedEase */
+/* unused harmony reexport Circ */
+/* unused harmony reexport Expo */
+/* unused harmony reexport Sine */
+/* unused harmony reexport ExpoScaleEase */
+/* unused harmony reexport _gsScope */
+/*!
+ * VERSION: 2.0.2
+ * DATE: 2018-08-27
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * @license Copyright (c) 2008-2018, GreenSock. All rights reserved.
+ * This work is subject to the terms at http://greensock.com/standard-license or for
+ * Club GreenSock members, the software agreement that was issued with your membership.
+ *
+ * @author: Jack Doyle, jack@greensock.com
+ **/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(34);
+var normalizeHeaderName = __webpack_require__(35);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -2933,84 +3004,13 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__TimelineLite_js__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__TimelineMax_js__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__TweenMax_js__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__CSSPlugin_js__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__AttrPlugin_js__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__RoundPropsPlugin_js__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__DirectionalRotationPlugin_js__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__BezierPlugin_js__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__EasePack_js__ = __webpack_require__(24);
-/* unused harmony reexport default */
-/* unused harmony reexport TweenLite */
-/* unused harmony reexport TweenMax */
-/* unused harmony reexport TimelineLite */
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_2__TimelineMax_js__["a"]; });
-/* unused harmony reexport CSSPlugin */
-/* unused harmony reexport AttrPlugin */
-/* unused harmony reexport BezierPlugin */
-/* unused harmony reexport RoundPropsPlugin */
-/* unused harmony reexport DirectionalRotationPlugin */
-/* unused harmony reexport TweenPlugin */
-/* unused harmony reexport Ease */
-/* unused harmony reexport Power0 */
-/* unused harmony reexport Power1 */
-/* unused harmony reexport Power2 */
-/* unused harmony reexport Power3 */
-/* unused harmony reexport Power4 */
-/* unused harmony reexport Linear */
-/* unused harmony reexport Back */
-/* unused harmony reexport Elastic */
-/* unused harmony reexport Bounce */
-/* unused harmony reexport RoughEase */
-/* unused harmony reexport SlowMo */
-/* unused harmony reexport SteppedEase */
-/* unused harmony reexport Circ */
-/* unused harmony reexport Expo */
-/* unused harmony reexport Sine */
-/* unused harmony reexport ExpoScaleEase */
-/* unused harmony reexport _gsScope */
-/*!
- * VERSION: 2.0.2
- * DATE: 2018-08-27
- * UPDATES AND DOCS AT: http://greensock.com
- *
- * @license Copyright (c) 2008-2018, GreenSock. All rights reserved.
- * This work is subject to the terms at http://greensock.com/standard-license or for
- * Club GreenSock members, the software agreement that was issued with your membership.
- *
- * @author: Jack Doyle, jack@greensock.com
- **/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/***/ }),
 /* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export TimelineLite */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TimelineLite; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /*!
  * VERSION: 2.0.2
  * DATE: 2018-08-27
@@ -16756,7 +16756,7 @@ return jQuery;
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(31);
+module.exports = __webpack_require__(32);
 
 /***/ }),
 /* 12 */
@@ -16974,12 +16974,12 @@ process.umask = function() { return 0; };
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(35);
-var buildURL = __webpack_require__(37);
-var parseHeaders = __webpack_require__(38);
-var isURLSameOrigin = __webpack_require__(39);
+var settle = __webpack_require__(36);
+var buildURL = __webpack_require__(38);
+var parseHeaders = __webpack_require__(39);
+var isURLSameOrigin = __webpack_require__(40);
 var createError = __webpack_require__(15);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(40);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(41);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -17076,7 +17076,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(41);
+      var cookies = __webpack_require__(42);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -17160,7 +17160,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(36);
+var enhanceError = __webpack_require__(37);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -17223,7 +17223,7 @@ module.exports = Cancel;
 "use strict";
 /* unused harmony export TimelineMax */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TimelineMax; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__TimelineLite_js__ = __webpack_require__(8);
 /* unused harmony reexport TimelineLite */
 /*!
@@ -17758,7 +17758,7 @@ var TimelineMax = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["g" /* globals */]
 "use strict";
 /* unused harmony export CSSPlugin */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CSSPlugin; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /*!
  * VERSION: 2.0.2
  * DATE: 2018-08-27
@@ -20674,7 +20674,7 @@ var CSSPlugin = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["g" /* globals */].C
 "use strict";
 /* unused harmony export AttrPlugin */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AttrPlugin; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /*!
  * VERSION: 0.6.1
  * DATE: 2018-08-27
@@ -20729,7 +20729,7 @@ var AttrPlugin = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["e" /* _gsScope */]
 /* unused harmony export _roundLinkedList */
 /* unused harmony export p */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RoundPropsPlugin; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /*!
  * VERSION: 1.6.0
  * DATE: 2018-08-27
@@ -20837,7 +20837,7 @@ var RoundPropsPlugin = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["e" /* _gsSco
 "use strict";
 /* unused harmony export DirectionalRotationPlugin */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DirectionalRotationPlugin; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /*!
  * VERSION: 0.3.1
  * DATE: 2018-08-27
@@ -20931,7 +20931,7 @@ DirectionalRotationPlugin._autoCSS = true;
 "use strict";
 /* unused harmony export BezierPlugin */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BezierPlugin; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /*!
  * VERSION: 1.3.8
  * DATE: 2018-05-30
@@ -21551,7 +21551,7 @@ DirectionalRotationPlugin._autoCSS = true;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return Expo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return Sine; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return ExpoScaleEase; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /* unused harmony reexport Linear */
 /* unused harmony reexport Power0 */
 /* unused harmony reexport Power1 */
@@ -21937,24 +21937,2825 @@ var ExpoScaleEase = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["g" /* globals *
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(26);
-module.exports = __webpack_require__(96);
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * ScrollMagic v2.0.6 (2018-10-08)
+ * The javascript library for magical scroll interactions.
+ * (c) 2018 Jan Paepke (@janpaepke)
+ * Project Website: http://scrollmagic.io
+ * 
+ * @version 2.0.6
+ * @license Dual licensed under MIT license and GPL.
+ * @author Jan Paepke - e-mail@janpaepke.de
+ *
+ * @file ScrollMagic main library.
+ */
+/**
+ * @namespace ScrollMagic
+ */
+(function (root, factory) {
+	if (true) {
+		// AMD. Register as an anonymous module.
+		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if (typeof exports === 'object') {
+		// CommonJS
+		module.exports = factory();
+	} else {
+		// Browser global
+		root.ScrollMagic = factory();
+	}
+}(this, function () {
+	"use strict";
 
+	var ScrollMagic = function () {
+		_util.log(2, '(COMPATIBILITY NOTICE) -> As of ScrollMagic 2.0.0 you need to use \'new ScrollMagic.Controller()\' to create a new controller instance. Use \'new ScrollMagic.Scene()\' to instance a scene.');
+	};
+
+	ScrollMagic.version = "2.0.6";
+
+	// TODO: temporary workaround for chrome's scroll jitter bug
+	window.addEventListener("mousewheel", function () {});
+
+	// global const
+	var PIN_SPACER_ATTRIBUTE = "data-scrollmagic-pin-spacer";
+
+	/**
+	 * The main class that is needed once per scroll container.
+	 *
+	 * @class
+	 *
+	 * @example
+	 * // basic initialization
+	 * var controller = new ScrollMagic.Controller();
+	 *
+	 * // passing options
+	 * var controller = new ScrollMagic.Controller({container: "#myContainer", loglevel: 3});
+	 *
+	 * @param {object} [options] - An object containing one or more options for the controller.
+	 * @param {(string|object)} [options.container=window] - A selector, DOM object that references the main container for scrolling.
+	 * @param {boolean} [options.vertical=true] - Sets the scroll mode to vertical (`true`) or horizontal (`false`) scrolling.
+	 * @param {object} [options.globalSceneOptions={}] - These options will be passed to every Scene that is added to the controller using the addScene method. For more information on Scene options see {@link ScrollMagic.Scene}.
+	 * @param {number} [options.loglevel=2] Loglevel for debugging. Note that logging is disabled in the minified version of ScrollMagic.
+	 ** `0` => silent
+	 ** `1` => errors
+	 ** `2` => errors, warnings
+	 ** `3` => errors, warnings, debuginfo
+	 * @param {boolean} [options.refreshInterval=100] - Some changes don't call events by default, like changing the container size or moving a scene trigger element.  
+	 This interval polls these parameters to fire the necessary events.  
+	 If you don't use custom containers, trigger elements or have static layouts, where the positions of the trigger elements don't change, you can set this to 0 disable interval checking and improve performance.
+	 *
+	 */
+	ScrollMagic.Controller = function (options) {
+/*
+	 * ----------------------------------------------------------------
+	 * settings
+	 * ----------------------------------------------------------------
+	 */
+		var
+		NAMESPACE = 'ScrollMagic.Controller',
+			SCROLL_DIRECTION_FORWARD = 'FORWARD',
+			SCROLL_DIRECTION_REVERSE = 'REVERSE',
+			SCROLL_DIRECTION_PAUSED = 'PAUSED',
+			DEFAULT_OPTIONS = CONTROLLER_OPTIONS.defaults;
+
+/*
+	 * ----------------------------------------------------------------
+	 * private vars
+	 * ----------------------------------------------------------------
+	 */
+		var
+		Controller = this,
+			_options = _util.extend({}, DEFAULT_OPTIONS, options),
+			_sceneObjects = [],
+			_updateScenesOnNextCycle = false,
+			// can be boolean (true => all scenes) or an array of scenes to be updated
+			_scrollPos = 0,
+			_scrollDirection = SCROLL_DIRECTION_PAUSED,
+			_isDocument = true,
+			_viewPortSize = 0,
+			_enabled = true,
+			_updateTimeout, _refreshTimeout;
+
+/*
+	 * ----------------------------------------------------------------
+	 * private functions
+	 * ----------------------------------------------------------------
+	 */
+
+		/**
+		 * Internal constructor function of the ScrollMagic Controller
+		 * @private
+		 */
+		var construct = function () {
+			for (var key in _options) {
+				if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
+					log(2, "WARNING: Unknown option \"" + key + "\"");
+					delete _options[key];
+				}
+			}
+			_options.container = _util.get.elements(_options.container)[0];
+			// check ScrollContainer
+			if (!_options.container) {
+				log(1, "ERROR creating object " + NAMESPACE + ": No valid scroll container supplied");
+				throw NAMESPACE + " init failed."; // cancel
+			}
+			_isDocument = _options.container === window || _options.container === document.body || !document.body.contains(_options.container);
+			// normalize to window
+			if (_isDocument) {
+				_options.container = window;
+			}
+			// update container size immediately
+			_viewPortSize = getViewportSize();
+			// set event handlers
+			_options.container.addEventListener("resize", onChange);
+			_options.container.addEventListener("scroll", onChange);
+
+			var ri = parseInt(_options.refreshInterval, 10);
+			_options.refreshInterval = _util.type.Number(ri) ? ri : DEFAULT_OPTIONS.refreshInterval;
+			scheduleRefresh();
+
+			log(3, "added new " + NAMESPACE + " controller (v" + ScrollMagic.version + ")");
+		};
+
+		/**
+		 * Schedule the next execution of the refresh function
+		 * @private
+		 */
+		var scheduleRefresh = function () {
+			if (_options.refreshInterval > 0) {
+				_refreshTimeout = window.setTimeout(refresh, _options.refreshInterval);
+			}
+		};
+
+		/**
+		 * Default function to get scroll pos - overwriteable using `Controller.scrollPos(newFunction)`
+		 * @private
+		 */
+		var getScrollPos = function () {
+			return _options.vertical ? _util.get.scrollTop(_options.container) : _util.get.scrollLeft(_options.container);
+		};
+
+		/**
+		 * Returns the current viewport Size (width vor horizontal, height for vertical)
+		 * @private
+		 */
+		var getViewportSize = function () {
+			return _options.vertical ? _util.get.height(_options.container) : _util.get.width(_options.container);
+		};
+
+		/**
+		 * Default function to set scroll pos - overwriteable using `Controller.scrollTo(newFunction)`
+		 * Make available publicly for pinned mousewheel workaround.
+		 * @private
+		 */
+		var setScrollPos = this._setScrollPos = function (pos) {
+			if (_options.vertical) {
+				if (_isDocument) {
+					window.scrollTo(_util.get.scrollLeft(), pos);
+				} else {
+					_options.container.scrollTop = pos;
+				}
+			} else {
+				if (_isDocument) {
+					window.scrollTo(pos, _util.get.scrollTop());
+				} else {
+					_options.container.scrollLeft = pos;
+				}
+			}
+		};
+
+		/**
+		 * Handle updates in cycles instead of on scroll (performance)
+		 * @private
+		 */
+		var updateScenes = function () {
+			if (_enabled && _updateScenesOnNextCycle) {
+				// determine scenes to update
+				var scenesToUpdate = _util.type.Array(_updateScenesOnNextCycle) ? _updateScenesOnNextCycle : _sceneObjects.slice(0);
+				// reset scenes
+				_updateScenesOnNextCycle = false;
+				var oldScrollPos = _scrollPos;
+				// update scroll pos now instead of onChange, as it might have changed since scheduling (i.e. in-browser smooth scroll)
+				_scrollPos = Controller.scrollPos();
+				var deltaScroll = _scrollPos - oldScrollPos;
+				if (deltaScroll !== 0) { // scroll position changed?
+					_scrollDirection = (deltaScroll > 0) ? SCROLL_DIRECTION_FORWARD : SCROLL_DIRECTION_REVERSE;
+				}
+				// reverse order of scenes if scrolling reverse
+				if (_scrollDirection === SCROLL_DIRECTION_REVERSE) {
+					scenesToUpdate.reverse();
+				}
+				// update scenes
+				scenesToUpdate.forEach(function (scene, index) {
+					log(3, "updating Scene " + (index + 1) + "/" + scenesToUpdate.length + " (" + _sceneObjects.length + " total)");
+					scene.update(true);
+				});
+				if (scenesToUpdate.length === 0 && _options.loglevel >= 3) {
+					log(3, "updating 0 Scenes (nothing added to controller)");
+				}
+			}
+		};
+
+		/**
+		 * Initializes rAF callback
+		 * @private
+		 */
+		var debounceUpdate = function () {
+			_updateTimeout = _util.rAF(updateScenes);
+		};
+
+		/**
+		 * Handles Container changes
+		 * @private
+		 */
+		var onChange = function (e) {
+			log(3, "event fired causing an update:", e.type);
+			if (e.type == "resize") {
+				// resize
+				_viewPortSize = getViewportSize();
+				_scrollDirection = SCROLL_DIRECTION_PAUSED;
+			}
+			// schedule update
+			if (_updateScenesOnNextCycle !== true) {
+				_updateScenesOnNextCycle = true;
+				debounceUpdate();
+			}
+		};
+
+		var refresh = function () {
+			if (!_isDocument) {
+				// simulate resize event. Only works for viewport relevant param (performance)
+				if (_viewPortSize != getViewportSize()) {
+					var resizeEvent;
+					try {
+						resizeEvent = new Event('resize', {
+							bubbles: false,
+							cancelable: false
+						});
+					} catch (e) { // stupid IE
+						resizeEvent = document.createEvent("Event");
+						resizeEvent.initEvent("resize", false, false);
+					}
+					_options.container.dispatchEvent(resizeEvent);
+				}
+			}
+			_sceneObjects.forEach(function (scene, index) { // refresh all scenes
+				scene.refresh();
+			});
+			scheduleRefresh();
+		};
+
+		/**
+		 * Send a debug message to the console.
+		 * provided publicly with _log for plugins
+		 * @private
+		 *
+		 * @param {number} loglevel - The loglevel required to initiate output for the message.
+		 * @param {...mixed} output - One or more variables that should be passed to the console.
+		 */
+		var log = this._log = function (loglevel, output) {
+			if (_options.loglevel >= loglevel) {
+				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ") ->");
+				_util.log.apply(window, arguments);
+			}
+		};
+		// for scenes we have getters for each option, but for the controller we don't, so we need to make it available externally for plugins
+		this._options = _options;
+
+		/**
+		 * Sort scenes in ascending order of their start offset.
+		 * @private
+		 *
+		 * @param {array} ScenesArray - an array of ScrollMagic Scenes that should be sorted
+		 * @return {array} The sorted array of Scenes.
+		 */
+		var sortScenes = function (ScenesArray) {
+			if (ScenesArray.length <= 1) {
+				return ScenesArray;
+			} else {
+				var scenes = ScenesArray.slice(0);
+				scenes.sort(function (a, b) {
+					return a.scrollOffset() > b.scrollOffset() ? 1 : -1;
+				});
+				return scenes;
+			}
+		};
+
+		/**
+		 * ----------------------------------------------------------------
+		 * public functions
+		 * ----------------------------------------------------------------
+		 */
+
+		/**
+		 * Add one ore more scene(s) to the controller.  
+		 * This is the equivalent to `Scene.addTo(controller)`.
+		 * @public
+		 * @example
+		 * // with a previously defined scene
+		 * controller.addScene(scene);
+		 *
+		 * // with a newly created scene.
+		 * controller.addScene(new ScrollMagic.Scene({duration : 0}));
+		 *
+		 * // adding multiple scenes
+		 * controller.addScene([scene, scene2, new ScrollMagic.Scene({duration : 0})]);
+		 *
+		 * @param {(ScrollMagic.Scene|array)} newScene - ScrollMagic Scene or Array of Scenes to be added to the controller.
+		 * @return {Controller} Parent object for chaining.
+		 */
+		this.addScene = function (newScene) {
+			if (_util.type.Array(newScene)) {
+				newScene.forEach(function (scene, index) {
+					Controller.addScene(scene);
+				});
+			} else if (newScene instanceof ScrollMagic.Scene) {
+				if (newScene.controller() !== Controller) {
+					newScene.addTo(Controller);
+				} else if (_sceneObjects.indexOf(newScene) < 0) {
+					// new scene
+					_sceneObjects.push(newScene); // add to array
+					_sceneObjects = sortScenes(_sceneObjects); // sort
+					newScene.on("shift.controller_sort", function () { // resort whenever scene moves
+						_sceneObjects = sortScenes(_sceneObjects);
+					});
+					// insert Global defaults.
+					for (var key in _options.globalSceneOptions) {
+						if (newScene[key]) {
+							newScene[key].call(newScene, _options.globalSceneOptions[key]);
+						}
+					}
+					log(3, "adding Scene (now " + _sceneObjects.length + " total)");
+				}
+			} else {
+				log(1, "ERROR: invalid argument supplied for '.addScene()'");
+			}
+			return Controller;
+		};
+
+		/**
+		 * Remove one ore more scene(s) from the controller.  
+		 * This is the equivalent to `Scene.remove()`.
+		 * @public
+		 * @example
+		 * // remove a scene from the controller
+		 * controller.removeScene(scene);
+		 *
+		 * // remove multiple scenes from the controller
+		 * controller.removeScene([scene, scene2, scene3]);
+		 *
+		 * @param {(ScrollMagic.Scene|array)} Scene - ScrollMagic Scene or Array of Scenes to be removed from the controller.
+		 * @returns {Controller} Parent object for chaining.
+		 */
+		this.removeScene = function (Scene) {
+			if (_util.type.Array(Scene)) {
+				Scene.forEach(function (scene, index) {
+					Controller.removeScene(scene);
+				});
+			} else {
+				var index = _sceneObjects.indexOf(Scene);
+				if (index > -1) {
+					Scene.off("shift.controller_sort");
+					_sceneObjects.splice(index, 1);
+					log(3, "removing Scene (now " + _sceneObjects.length + " left)");
+					Scene.remove();
+				}
+			}
+			return Controller;
+		};
+
+		/**
+		 * Update one ore more scene(s) according to the scroll position of the container.  
+		 * This is the equivalent to `Scene.update()`.  
+		 * The update method calculates the scene's start and end position (based on the trigger element, trigger hook, duration and offset) and checks it against the current scroll position of the container.  
+		 * It then updates the current scene state accordingly (or does nothing, if the state is already correct) – Pins will be set to their correct position and tweens will be updated to their correct progress.  
+		 * _**Note:** This method gets called constantly whenever Controller detects a change. The only application for you is if you change something outside of the realm of ScrollMagic, like moving the trigger or changing tween parameters._
+		 * @public
+		 * @example
+		 * // update a specific scene on next cycle
+		 * controller.updateScene(scene);
+		 *
+		 * // update a specific scene immediately
+		 * controller.updateScene(scene, true);
+		 *
+		 * // update multiple scenes scene on next cycle
+		 * controller.updateScene([scene1, scene2, scene3]);
+		 *
+		 * @param {ScrollMagic.Scene} Scene - ScrollMagic Scene or Array of Scenes that is/are supposed to be updated.
+		 * @param {boolean} [immediately=false] - If `true` the update will be instant, if `false` it will wait until next update cycle.  
+		 This is useful when changing multiple properties of the scene - this way it will only be updated once all new properties are set (updateScenes).
+		 * @return {Controller} Parent object for chaining.
+		 */
+		this.updateScene = function (Scene, immediately) {
+			if (_util.type.Array(Scene)) {
+				Scene.forEach(function (scene, index) {
+					Controller.updateScene(scene, immediately);
+				});
+			} else {
+				if (immediately) {
+					Scene.update(true);
+				} else if (_updateScenesOnNextCycle !== true && Scene instanceof ScrollMagic.Scene) { // if _updateScenesOnNextCycle is true, all connected scenes are already scheduled for update
+					// prep array for next update cycle
+					_updateScenesOnNextCycle = _updateScenesOnNextCycle || [];
+					if (_updateScenesOnNextCycle.indexOf(Scene) == -1) {
+						_updateScenesOnNextCycle.push(Scene);
+					}
+					_updateScenesOnNextCycle = sortScenes(_updateScenesOnNextCycle); // sort
+					debounceUpdate();
+				}
+			}
+			return Controller;
+		};
+
+		/**
+		 * Updates the controller params and calls updateScene on every scene, that is attached to the controller.  
+		 * See `Controller.updateScene()` for more information about what this means.  
+		 * In most cases you will not need this function, as it is called constantly, whenever ScrollMagic detects a state change event, like resize or scroll.  
+		 * The only application for this method is when ScrollMagic fails to detect these events.  
+		 * One application is with some external scroll libraries (like iScroll) that move an internal container to a negative offset instead of actually scrolling. In this case the update on the controller needs to be called whenever the child container's position changes.
+		 * For this case there will also be the need to provide a custom function to calculate the correct scroll position. See `Controller.scrollPos()` for details.
+		 * @public
+		 * @example
+		 * // update the controller on next cycle (saves performance due to elimination of redundant updates)
+		 * controller.update();
+		 *
+		 * // update the controller immediately
+		 * controller.update(true);
+		 *
+		 * @param {boolean} [immediately=false] - If `true` the update will be instant, if `false` it will wait until next update cycle (better performance)
+		 * @return {Controller} Parent object for chaining.
+		 */
+		this.update = function (immediately) {
+			onChange({
+				type: "resize"
+			}); // will update size and set _updateScenesOnNextCycle to true
+			if (immediately) {
+				updateScenes();
+			}
+			return Controller;
+		};
+
+		/**
+		 * Scroll to a numeric scroll offset, a DOM element, the start of a scene or provide an alternate method for scrolling.  
+		 * For vertical controllers it will change the top scroll offset and for horizontal applications it will change the left offset.
+		 * @public
+		 *
+		 * @since 1.1.0
+		 * @example
+		 * // scroll to an offset of 100
+		 * controller.scrollTo(100);
+		 *
+		 * // scroll to a DOM element
+		 * controller.scrollTo("#anchor");
+		 *
+		 * // scroll to the beginning of a scene
+		 * var scene = new ScrollMagic.Scene({offset: 200});
+		 * controller.scrollTo(scene);
+		 *
+		 * // define a new scroll position modification function (jQuery animate instead of jump)
+		 * controller.scrollTo(function (newScrollPos) {
+		 *	$("html, body").animate({scrollTop: newScrollPos});
+		 * });
+		 * controller.scrollTo(100); // call as usual, but the new function will be used instead
+		 *
+		 * // define a new scroll function with an additional parameter
+		 * controller.scrollTo(function (newScrollPos, message) {
+		 *  console.log(message);
+		 *	$(this).animate({scrollTop: newScrollPos});
+		 * });
+		 * // call as usual, but supply an extra parameter to the defined custom function
+		 * controller.scrollTo(100, "my message");
+		 *
+		 * // define a new scroll function with an additional parameter containing multiple variables
+		 * controller.scrollTo(function (newScrollPos, options) {
+		 *  someGlobalVar = options.a + options.b;
+		 *	$(this).animate({scrollTop: newScrollPos});
+		 * });
+		 * // call as usual, but supply an extra parameter containing multiple options
+		 * controller.scrollTo(100, {a: 1, b: 2});
+		 *
+		 * // define a new scroll function with a callback supplied as an additional parameter
+		 * controller.scrollTo(function (newScrollPos, callback) {
+		 *	$(this).animate({scrollTop: newScrollPos}, 400, "swing", callback);
+		 * });
+		 * // call as usual, but supply an extra parameter, which is used as a callback in the previously defined custom scroll function
+		 * controller.scrollTo(100, function() {
+		 *	console.log("scroll has finished.");
+		 * });
+		 *
+		 * @param {mixed} scrollTarget - The supplied argument can be one of these types:
+		 * 1. `number` -> The container will scroll to this new scroll offset.
+		 * 2. `string` or `object` -> Can be a selector or a DOM object.  
+		 *  The container will scroll to the position of this element.
+		 * 3. `ScrollMagic Scene` -> The container will scroll to the start of this scene.
+		 * 4. `function` -> This function will be used for future scroll position modifications.  
+		 *  This provides a way for you to change the behaviour of scrolling and adding new behaviour like animation. The function receives the new scroll position as a parameter and a reference to the container element using `this`.  
+		 *  It may also optionally receive an optional additional parameter (see below)  
+		 *  _**NOTE:**  
+		 *  All other options will still work as expected, using the new function to scroll._
+		 * @param {mixed} [additionalParameter] - If a custom scroll function was defined (see above 4.), you may want to supply additional parameters to it, when calling it. You can do this using this parameter – see examples for details. Please note, that this parameter will have no effect, if you use the default scrolling function.
+		 * @returns {Controller} Parent object for chaining.
+		 */
+		this.scrollTo = function (scrollTarget, additionalParameter) {
+			if (_util.type.Number(scrollTarget)) { // excecute
+				setScrollPos.call(_options.container, scrollTarget, additionalParameter);
+			} else if (scrollTarget instanceof ScrollMagic.Scene) { // scroll to scene
+				if (scrollTarget.controller() === Controller) { // check if the controller is associated with this scene
+					Controller.scrollTo(scrollTarget.scrollOffset(), additionalParameter);
+				} else {
+					log(2, "scrollTo(): The supplied scene does not belong to this controller. Scroll cancelled.", scrollTarget);
+				}
+			} else if (_util.type.Function(scrollTarget)) { // assign new scroll function
+				setScrollPos = scrollTarget;
+			} else { // scroll to element
+				var elem = _util.get.elements(scrollTarget)[0];
+				if (elem) {
+					// if parent is pin spacer, use spacer position instead so correct start position is returned for pinned elements.
+					while (elem.parentNode.hasAttribute(PIN_SPACER_ATTRIBUTE)) {
+						elem = elem.parentNode;
+					}
+
+					var
+					param = _options.vertical ? "top" : "left",
+						// which param is of interest ?
+						containerOffset = _util.get.offset(_options.container),
+						// container position is needed because element offset is returned in relation to document, not in relation to container.
+						elementOffset = _util.get.offset(elem);
+
+					if (!_isDocument) { // container is not the document root, so substract scroll Position to get correct trigger element position relative to scrollcontent
+						containerOffset[param] -= Controller.scrollPos();
+					}
+
+					Controller.scrollTo(elementOffset[param] - containerOffset[param], additionalParameter);
+				} else {
+					log(2, "scrollTo(): The supplied argument is invalid. Scroll cancelled.", scrollTarget);
+				}
+			}
+			return Controller;
+		};
+
+		/**
+		 * **Get** the current scrollPosition or **Set** a new method to calculate it.  
+		 * -> **GET**:
+		 * When used as a getter this function will return the current scroll position.  
+		 * To get a cached value use Controller.info("scrollPos"), which will be updated in the update cycle.  
+		 * For vertical controllers it will return the top scroll offset and for horizontal applications it will return the left offset.
+		 *
+		 * -> **SET**:
+		 * When used as a setter this method prodes a way to permanently overwrite the controller's scroll position calculation.  
+		 * A typical usecase is when the scroll position is not reflected by the containers scrollTop or scrollLeft values, but for example by the inner offset of a child container.  
+		 * Moving a child container inside a parent is a commonly used method for several scrolling frameworks, including iScroll.  
+		 * By providing an alternate calculation function you can make sure ScrollMagic receives the correct scroll position.  
+		 * Please also bear in mind that your function should return y values for vertical scrolls an x for horizontals.
+		 *
+		 * To change the current scroll position please use `Controller.scrollTo()`.
+		 * @public
+		 *
+		 * @example
+		 * // get the current scroll Position
+		 * var scrollPos = controller.scrollPos();
+		 *
+		 * // set a new scroll position calculation method
+		 * controller.scrollPos(function () {
+		 *	return this.info("vertical") ? -mychildcontainer.y : -mychildcontainer.x
+		 * });
+		 *
+		 * @param {function} [scrollPosMethod] - The function to be used for the scroll position calculation of the container.
+		 * @returns {(number|Controller)} Current scroll position or parent object for chaining.
+		 */
+		this.scrollPos = function (scrollPosMethod) {
+			if (!arguments.length) { // get
+				return getScrollPos.call(Controller);
+			} else { // set
+				if (_util.type.Function(scrollPosMethod)) {
+					getScrollPos = scrollPosMethod;
+				} else {
+					log(2, "Provided value for method 'scrollPos' is not a function. To change the current scroll position use 'scrollTo()'.");
+				}
+			}
+			return Controller;
+		};
+
+		/**
+		 * **Get** all infos or one in particular about the controller.
+		 * @public
+		 * @example
+		 * // returns the current scroll position (number)
+		 * var scrollPos = controller.info("scrollPos");
+		 *
+		 * // returns all infos as an object
+		 * var infos = controller.info();
+		 *
+		 * @param {string} [about] - If passed only this info will be returned instead of an object containing all.  
+		 Valid options are:
+		 ** `"size"` => the current viewport size of the container
+		 ** `"vertical"` => true if vertical scrolling, otherwise false
+		 ** `"scrollPos"` => the current scroll position
+		 ** `"scrollDirection"` => the last known direction of the scroll
+		 ** `"container"` => the container element
+		 ** `"isDocument"` => true if container element is the document.
+		 * @returns {(mixed|object)} The requested info(s).
+		 */
+		this.info = function (about) {
+			var values = {
+				size: _viewPortSize,
+				// contains height or width (in regard to orientation);
+				vertical: _options.vertical,
+				scrollPos: _scrollPos,
+				scrollDirection: _scrollDirection,
+				container: _options.container,
+				isDocument: _isDocument
+			};
+			if (!arguments.length) { // get all as an object
+				return values;
+			} else if (values[about] !== undefined) {
+				return values[about];
+			} else {
+				log(1, "ERROR: option \"" + about + "\" is not available");
+				return;
+			}
+		};
+
+		/**
+		 * **Get** or **Set** the current loglevel option value.
+		 * @public
+		 *
+		 * @example
+		 * // get the current value
+		 * var loglevel = controller.loglevel();
+		 *
+		 * // set a new value
+		 * controller.loglevel(3);
+		 *
+		 * @param {number} [newLoglevel] - The new loglevel setting of the Controller. `[0-3]`
+		 * @returns {(number|Controller)} Current loglevel or parent object for chaining.
+		 */
+		this.loglevel = function (newLoglevel) {
+			if (!arguments.length) { // get
+				return _options.loglevel;
+			} else if (_options.loglevel != newLoglevel) { // set
+				_options.loglevel = newLoglevel;
+			}
+			return Controller;
+		};
+
+		/**
+		 * **Get** or **Set** the current enabled state of the controller.  
+		 * This can be used to disable all Scenes connected to the controller without destroying or removing them.
+		 * @public
+		 *
+		 * @example
+		 * // get the current value
+		 * var enabled = controller.enabled();
+		 *
+		 * // disable the controller
+		 * controller.enabled(false);
+		 *
+		 * @param {boolean} [newState] - The new enabled state of the controller `true` or `false`.
+		 * @returns {(boolean|Controller)} Current enabled state or parent object for chaining.
+		 */
+		this.enabled = function (newState) {
+			if (!arguments.length) { // get
+				return _enabled;
+			} else if (_enabled != newState) { // set
+				_enabled = !! newState;
+				Controller.updateScene(_sceneObjects, true);
+			}
+			return Controller;
+		};
+
+		/**
+		 * Destroy the Controller, all Scenes and everything.
+		 * @public
+		 *
+		 * @example
+		 * // without resetting the scenes
+		 * controller = controller.destroy();
+		 *
+		 * // with scene reset
+		 * controller = controller.destroy(true);
+		 *
+		 * @param {boolean} [resetScenes=false] - If `true` the pins and tweens (if existent) of all scenes will be reset.
+		 * @returns {null} Null to unset handler variables.
+		 */
+		this.destroy = function (resetScenes) {
+			window.clearTimeout(_refreshTimeout);
+			var i = _sceneObjects.length;
+			while (i--) {
+				_sceneObjects[i].destroy(resetScenes);
+			}
+			_options.container.removeEventListener("resize", onChange);
+			_options.container.removeEventListener("scroll", onChange);
+			_util.cAF(_updateTimeout);
+			log(3, "destroyed " + NAMESPACE + " (reset: " + (resetScenes ? "true" : "false") + ")");
+			return null;
+		};
+
+		// INIT
+		construct();
+		return Controller;
+	};
+
+	// store pagewide controller options
+	var CONTROLLER_OPTIONS = {
+		defaults: {
+			container: window,
+			vertical: true,
+			globalSceneOptions: {},
+			loglevel: 2,
+			refreshInterval: 100
+		}
+	};
+/*
+ * method used to add an option to ScrollMagic Scenes.
+ */
+	ScrollMagic.Controller.addOption = function (name, defaultValue) {
+		CONTROLLER_OPTIONS.defaults[name] = defaultValue;
+	};
+	// instance extension function for plugins
+	ScrollMagic.Controller.extend = function (extension) {
+		var oldClass = this;
+		ScrollMagic.Controller = function () {
+			oldClass.apply(this, arguments);
+			this.$super = _util.extend({}, this); // copy parent state
+			return extension.apply(this, arguments) || this;
+		};
+		_util.extend(ScrollMagic.Controller, oldClass); // copy properties
+		ScrollMagic.Controller.prototype = oldClass.prototype; // copy prototype
+		ScrollMagic.Controller.prototype.constructor = ScrollMagic.Controller; // restore constructor
+	};
+
+
+	/**
+	 * A Scene defines where the controller should react and how.
+	 *
+	 * @class
+	 *
+	 * @example
+	 * // create a standard scene and add it to a controller
+	 * new ScrollMagic.Scene()
+	 *		.addTo(controller);
+	 *
+	 * // create a scene with custom options and assign a handler to it.
+	 * var scene = new ScrollMagic.Scene({
+	 * 		duration: 100,
+	 *		offset: 200,
+	 *		triggerHook: "onEnter",
+	 *		reverse: false
+	 * });
+	 *
+	 * @param {object} [options] - Options for the Scene. The options can be updated at any time.  
+	 Instead of setting the options for each scene individually you can also set them globally in the controller as the controllers `globalSceneOptions` option. The object accepts the same properties as the ones below.  
+	 When a scene is added to the controller the options defined using the Scene constructor will be overwritten by those set in `globalSceneOptions`.
+	 * @param {(number|function)} [options.duration=0] - The duration of the scene. 
+	 If `0` tweens will auto-play when reaching the scene start point, pins will be pinned indefinetly starting at the start position.  
+	 A function retuning the duration value is also supported. Please see `Scene.duration()` for details.
+	 * @param {number} [options.offset=0] - Offset Value for the Trigger Position. If no triggerElement is defined this will be the scroll distance from the start of the page, after which the scene will start.
+	 * @param {(string|object)} [options.triggerElement=null] - Selector or DOM object that defines the start of the scene. If undefined the scene will start right at the start of the page (unless an offset is set).
+	 * @param {(number|string)} [options.triggerHook="onCenter"] - Can be a number between 0 and 1 defining the position of the trigger Hook in relation to the viewport.  
+	 Can also be defined using a string:
+	 ** `"onEnter"` => `1`
+	 ** `"onCenter"` => `0.5`
+	 ** `"onLeave"` => `0`
+	 * @param {boolean} [options.reverse=true] - Should the scene reverse, when scrolling up?
+	 * @param {number} [options.loglevel=2] - Loglevel for debugging. Note that logging is disabled in the minified version of ScrollMagic.
+	 ** `0` => silent
+	 ** `1` => errors
+	 ** `2` => errors, warnings
+	 ** `3` => errors, warnings, debuginfo
+	 * 
+	 */
+	ScrollMagic.Scene = function (options) {
+
+/*
+	 * ----------------------------------------------------------------
+	 * settings
+	 * ----------------------------------------------------------------
+	 */
+
+		var
+		NAMESPACE = 'ScrollMagic.Scene',
+			SCENE_STATE_BEFORE = 'BEFORE',
+			SCENE_STATE_DURING = 'DURING',
+			SCENE_STATE_AFTER = 'AFTER',
+			DEFAULT_OPTIONS = SCENE_OPTIONS.defaults;
+
+/*
+	 * ----------------------------------------------------------------
+	 * private vars
+	 * ----------------------------------------------------------------
+	 */
+
+		var
+		Scene = this,
+			_options = _util.extend({}, DEFAULT_OPTIONS, options),
+			_state = SCENE_STATE_BEFORE,
+			_progress = 0,
+			_scrollOffset = {
+				start: 0,
+				end: 0
+			},
+			// reflects the controllers's scroll position for the start and end of the scene respectively
+			_triggerPos = 0,
+			_enabled = true,
+			_durationUpdateMethod, _controller;
+
+		/**
+		 * Internal constructor function of the ScrollMagic Scene
+		 * @private
+		 */
+		var construct = function () {
+			for (var key in _options) { // check supplied options
+				if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
+					log(2, "WARNING: Unknown option \"" + key + "\"");
+					delete _options[key];
+				}
+			}
+			// add getters/setters for all possible options
+			for (var optionName in DEFAULT_OPTIONS) {
+				addSceneOption(optionName);
+			}
+			// validate all options
+			validateOption();
+		};
+
+/*
+ * ----------------------------------------------------------------
+ * Event Management
+ * ----------------------------------------------------------------
+ */
+
+		var _listeners = {};
+		/**
+		 * Scene start event.  
+		 * Fires whenever the scroll position its the starting point of the scene.  
+		 * It will also fire when scrolling back up going over the start position of the scene. If you want something to happen only when scrolling down/right, use the scrollDirection parameter passed to the callback.
+		 *
+		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
+		 *
+		 * @event ScrollMagic.Scene#start
+		 *
+		 * @example
+		 * scene.on("start", function (event) {
+		 * 	console.log("Hit start point of scene.");
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {number} event.progress - Reflects the current progress of the scene
+		 * @property {string} event.state - The current state of the scene `"BEFORE"` or `"DURING"`
+		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
+		 */
+		/**
+		 * Scene end event.  
+		 * Fires whenever the scroll position its the ending point of the scene.  
+		 * It will also fire when scrolling back up from after the scene and going over its end position. If you want something to happen only when scrolling down/right, use the scrollDirection parameter passed to the callback.
+		 *
+		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
+		 *
+		 * @event ScrollMagic.Scene#end
+		 *
+		 * @example
+		 * scene.on("end", function (event) {
+		 * 	console.log("Hit end point of scene.");
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {number} event.progress - Reflects the current progress of the scene
+		 * @property {string} event.state - The current state of the scene `"DURING"` or `"AFTER"`
+		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
+		 */
+		/**
+		 * Scene enter event.  
+		 * Fires whenever the scene enters the "DURING" state.  
+		 * Keep in mind that it doesn't matter if the scene plays forward or backward: This event always fires when the scene enters its active scroll timeframe, regardless of the scroll-direction.
+		 *
+		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
+		 *
+		 * @event ScrollMagic.Scene#enter
+		 *
+		 * @example
+		 * scene.on("enter", function (event) {
+		 * 	console.log("Scene entered.");
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {number} event.progress - Reflects the current progress of the scene
+		 * @property {string} event.state - The current state of the scene - always `"DURING"`
+		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
+		 */
+		/**
+		 * Scene leave event.  
+		 * Fires whenever the scene's state goes from "DURING" to either "BEFORE" or "AFTER".  
+		 * Keep in mind that it doesn't matter if the scene plays forward or backward: This event always fires when the scene leaves its active scroll timeframe, regardless of the scroll-direction.
+		 *
+		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
+		 *
+		 * @event ScrollMagic.Scene#leave
+		 *
+		 * @example
+		 * scene.on("leave", function (event) {
+		 * 	console.log("Scene left.");
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {number} event.progress - Reflects the current progress of the scene
+		 * @property {string} event.state - The current state of the scene `"BEFORE"` or `"AFTER"`
+		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
+		 */
+		/**
+		 * Scene update event.  
+		 * Fires whenever the scene is updated (but not necessarily changes the progress).
+		 *
+		 * @event ScrollMagic.Scene#update
+		 *
+		 * @example
+		 * scene.on("update", function (event) {
+		 * 	console.log("Scene updated.");
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {number} event.startPos - The starting position of the scene (in relation to the conainer)
+		 * @property {number} event.endPos - The ending position of the scene (in relation to the conainer)
+		 * @property {number} event.scrollPos - The current scroll position of the container
+		 */
+		/**
+		 * Scene progress event.  
+		 * Fires whenever the progress of the scene changes.
+		 *
+		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
+		 *
+		 * @event ScrollMagic.Scene#progress
+		 *
+		 * @example
+		 * scene.on("progress", function (event) {
+		 * 	console.log("Scene progress changed to " + event.progress);
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {number} event.progress - Reflects the current progress of the scene
+		 * @property {string} event.state - The current state of the scene `"BEFORE"`, `"DURING"` or `"AFTER"`
+		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
+		 */
+		/**
+		 * Scene change event.  
+		 * Fires whenvever a property of the scene is changed.
+		 *
+		 * @event ScrollMagic.Scene#change
+		 *
+		 * @example
+		 * scene.on("change", function (event) {
+		 * 	console.log("Scene Property \"" + event.what + "\" changed to " + event.newval);
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {string} event.what - Indicates what value has been changed
+		 * @property {mixed} event.newval - The new value of the changed property
+		 */
+		/**
+		 * Scene shift event.  
+		 * Fires whenvever the start or end **scroll offset** of the scene change.
+		 * This happens explicitely, when one of these values change: `offset`, `duration` or `triggerHook`.
+		 * It will fire implicitly when the `triggerElement` changes, if the new element has a different position (most cases).
+		 * It will also fire implicitly when the size of the container changes and the triggerHook is anything other than `onLeave`.
+		 *
+		 * @event ScrollMagic.Scene#shift
+		 * @since 1.1.0
+		 *
+		 * @example
+		 * scene.on("shift", function (event) {
+		 * 	console.log("Scene moved, because the " + event.reason + " has changed.)");
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {string} event.reason - Indicates why the scene has shifted
+		 */
+		/**
+		 * Scene destroy event.  
+		 * Fires whenvever the scene is destroyed.
+		 * This can be used to tidy up custom behaviour used in events.
+		 *
+		 * @event ScrollMagic.Scene#destroy
+		 * @since 1.1.0
+		 *
+		 * @example
+		 * scene.on("enter", function (event) {
+		 *        // add custom action
+		 *        $("#my-elem").left("200");
+		 *      })
+		 *      .on("destroy", function (event) {
+		 *        // reset my element to start position
+		 *        if (event.reset) {
+		 *          $("#my-elem").left("0");
+		 *        }
+		 *      });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {boolean} event.reset - Indicates if the destroy method was called with reset `true` or `false`.
+		 */
+		/**
+		 * Scene add event.  
+		 * Fires when the scene is added to a controller.
+		 * This is mostly used by plugins to know that change might be due.
+		 *
+		 * @event ScrollMagic.Scene#add
+		 * @since 2.0.0
+		 *
+		 * @example
+		 * scene.on("add", function (event) {
+		 * 	console.log('Scene was added to a new controller.');
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 * @property {boolean} event.controller - The controller object the scene was added to.
+		 */
+		/**
+		 * Scene remove event.  
+		 * Fires when the scene is removed from a controller.
+		 * This is mostly used by plugins to know that change might be due.
+		 *
+		 * @event ScrollMagic.Scene#remove
+		 * @since 2.0.0
+		 *
+		 * @example
+		 * scene.on("remove", function (event) {
+		 * 	console.log('Scene was removed from its controller.');
+		 * });
+		 *
+		 * @property {object} event - The event Object passed to each callback
+		 * @property {string} event.type - The name of the event
+		 * @property {Scene} event.target - The Scene object that triggered this event
+		 */
+
+		/**
+		 * Add one ore more event listener.  
+		 * The callback function will be fired at the respective event, and an object containing relevant data will be passed to the callback.
+		 * @method ScrollMagic.Scene#on
+		 *
+		 * @example
+		 * function callback (event) {
+		 * 		console.log("Event fired! (" + event.type + ")");
+		 * }
+		 * // add listeners
+		 * scene.on("change update progress start end enter leave", callback);
+		 *
+		 * @param {string} names - The name or names of the event the callback should be attached to.
+		 * @param {function} callback - A function that should be executed, when the event is dispatched. An event object will be passed to the callback.
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.on = function (names, callback) {
+			if (_util.type.Function(callback)) {
+				names = names.trim().split(' ');
+				names.forEach(function (fullname) {
+					var
+					nameparts = fullname.split('.'),
+						eventname = nameparts[0],
+						namespace = nameparts[1];
+					if (eventname != "*") { // disallow wildcards
+						if (!_listeners[eventname]) {
+							_listeners[eventname] = [];
+						}
+						_listeners[eventname].push({
+							namespace: namespace || '',
+							callback: callback
+						});
+					}
+				});
+			} else {
+				log(1, "ERROR when calling '.on()': Supplied callback for '" + names + "' is not a valid function!");
+			}
+			return Scene;
+		};
+
+		/**
+		 * Remove one or more event listener.
+		 * @method ScrollMagic.Scene#off
+		 *
+		 * @example
+		 * function callback (event) {
+		 * 		console.log("Event fired! (" + event.type + ")");
+		 * }
+		 * // add listeners
+		 * scene.on("change update", callback);
+		 * // remove listeners
+		 * scene.off("change update", callback);
+		 *
+		 * @param {string} names - The name or names of the event that should be removed.
+		 * @param {function} [callback] - A specific callback function that should be removed. If none is passed all callbacks to the event listener will be removed.
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.off = function (names, callback) {
+			if (!names) {
+				log(1, "ERROR: Invalid event name supplied.");
+				return Scene;
+			}
+			names = names.trim().split(' ');
+			names.forEach(function (fullname, key) {
+				var
+				nameparts = fullname.split('.'),
+					eventname = nameparts[0],
+					namespace = nameparts[1] || '',
+					removeList = eventname === '*' ? Object.keys(_listeners) : [eventname];
+				removeList.forEach(function (remove) {
+					var
+					list = _listeners[remove] || [],
+						i = list.length;
+					while (i--) {
+						var listener = list[i];
+						if (listener && (namespace === listener.namespace || namespace === '*') && (!callback || callback == listener.callback)) {
+							list.splice(i, 1);
+						}
+					}
+					if (!list.length) {
+						delete _listeners[remove];
+					}
+				});
+			});
+			return Scene;
+		};
+
+		/**
+		 * Trigger an event.
+		 * @method ScrollMagic.Scene#trigger
+		 *
+		 * @example
+		 * this.trigger("change");
+		 *
+		 * @param {string} name - The name of the event that should be triggered.
+		 * @param {object} [vars] - An object containing info that should be passed to the callback.
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.trigger = function (name, vars) {
+			if (name) {
+				var
+				nameparts = name.trim().split('.'),
+					eventname = nameparts[0],
+					namespace = nameparts[1],
+					listeners = _listeners[eventname];
+				log(3, 'event fired:', eventname, vars ? "->" : '', vars || '');
+				if (listeners) {
+					listeners.forEach(function (listener, key) {
+						if (!namespace || namespace === listener.namespace) {
+							listener.callback.call(Scene, new ScrollMagic.Event(eventname, listener.namespace, Scene, vars));
+						}
+					});
+				}
+			} else {
+				log(1, "ERROR: Invalid event name supplied.");
+			}
+			return Scene;
+		};
+
+		// set event listeners
+		Scene.on("change.internal", function (e) {
+			if (e.what !== "loglevel" && e.what !== "tweenChanges") { // no need for a scene update scene with these options...
+				if (e.what === "triggerElement") {
+					updateTriggerElementPosition();
+				} else if (e.what === "reverse") { // the only property left that may have an impact on the current scene state. Everything else is handled by the shift event.
+					Scene.update();
+				}
+			}
+		}).on("shift.internal", function (e) {
+			updateScrollOffset();
+			Scene.update(); // update scene to reflect new position
+		});
+
+		/**
+		 * Send a debug message to the console.
+		 * @private
+		 * but provided publicly with _log for plugins
+		 *
+		 * @param {number} loglevel - The loglevel required to initiate output for the message.
+		 * @param {...mixed} output - One or more variables that should be passed to the console.
+		 */
+		var log = this._log = function (loglevel, output) {
+			if (_options.loglevel >= loglevel) {
+				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ") ->");
+				_util.log.apply(window, arguments);
+			}
+		};
+
+		/**
+		 * Add the scene to a controller.  
+		 * This is the equivalent to `Controller.addScene(scene)`.
+		 * @method ScrollMagic.Scene#addTo
+		 *
+		 * @example
+		 * // add a scene to a ScrollMagic Controller
+		 * scene.addTo(controller);
+		 *
+		 * @param {ScrollMagic.Controller} controller - The controller to which the scene should be added.
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.addTo = function (controller) {
+			if (!(controller instanceof ScrollMagic.Controller)) {
+				log(1, "ERROR: supplied argument of 'addTo()' is not a valid ScrollMagic Controller");
+			} else if (_controller != controller) {
+				// new controller
+				if (_controller) { // was associated to a different controller before, so remove it...
+					_controller.removeScene(Scene);
+				}
+				_controller = controller;
+				validateOption();
+				updateDuration(true);
+				updateTriggerElementPosition(true);
+				updateScrollOffset();
+				_controller.info("container").addEventListener('resize', onContainerResize);
+				controller.addScene(Scene);
+				Scene.trigger("add", {
+					controller: _controller
+				});
+				log(3, "added " + NAMESPACE + " to controller");
+				Scene.update();
+			}
+			return Scene;
+		};
+
+		/**
+		 * **Get** or **Set** the current enabled state of the scene.  
+		 * This can be used to disable this scene without removing or destroying it.
+		 * @method ScrollMagic.Scene#enabled
+		 *
+		 * @example
+		 * // get the current value
+		 * var enabled = scene.enabled();
+		 *
+		 * // disable the scene
+		 * scene.enabled(false);
+		 *
+		 * @param {boolean} [newState] - The new enabled state of the scene `true` or `false`.
+		 * @returns {(boolean|Scene)} Current enabled state or parent object for chaining.
+		 */
+		this.enabled = function (newState) {
+			if (!arguments.length) { // get
+				return _enabled;
+			} else if (_enabled != newState) { // set
+				_enabled = !! newState;
+				Scene.update(true);
+			}
+			return Scene;
+		};
+
+		/**
+		 * Remove the scene from the controller.  
+		 * This is the equivalent to `Controller.removeScene(scene)`.
+		 * The scene will not be updated anymore until you readd it to a controller.
+		 * To remove the pin or the tween you need to call removeTween() or removePin() respectively.
+		 * @method ScrollMagic.Scene#remove
+		 * @example
+		 * // remove the scene from its controller
+		 * scene.remove();
+		 *
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.remove = function () {
+			if (_controller) {
+				_controller.info("container").removeEventListener('resize', onContainerResize);
+				var tmpParent = _controller;
+				_controller = undefined;
+				tmpParent.removeScene(Scene);
+				Scene.trigger("remove");
+				log(3, "removed " + NAMESPACE + " from controller");
+			}
+			return Scene;
+		};
+
+		/**
+		 * Destroy the scene and everything.
+		 * @method ScrollMagic.Scene#destroy
+		 * @example
+		 * // destroy the scene without resetting the pin and tween to their initial positions
+		 * scene = scene.destroy();
+		 *
+		 * // destroy the scene and reset the pin and tween
+		 * scene = scene.destroy(true);
+		 *
+		 * @param {boolean} [reset=false] - If `true` the pin and tween (if existent) will be reset.
+		 * @returns {null} Null to unset handler variables.
+		 */
+		this.destroy = function (reset) {
+			Scene.trigger("destroy", {
+				reset: reset
+			});
+			Scene.remove();
+			Scene.off("*.*");
+			log(3, "destroyed " + NAMESPACE + " (reset: " + (reset ? "true" : "false") + ")");
+			return null;
+		};
+
+
+		/**
+		 * Updates the Scene to reflect the current state.  
+		 * This is the equivalent to `Controller.updateScene(scene, immediately)`.  
+		 * The update method calculates the scene's start and end position (based on the trigger element, trigger hook, duration and offset) and checks it against the current scroll position of the container.  
+		 * It then updates the current scene state accordingly (or does nothing, if the state is already correct) – Pins will be set to their correct position and tweens will be updated to their correct progress.
+		 * This means an update doesn't necessarily result in a progress change. The `progress` event will be fired if the progress has indeed changed between this update and the last.  
+		 * _**NOTE:** This method gets called constantly whenever ScrollMagic detects a change. The only application for you is if you change something outside of the realm of ScrollMagic, like moving the trigger or changing tween parameters._
+		 * @method ScrollMagic.Scene#update
+		 * @example
+		 * // update the scene on next tick
+		 * scene.update();
+		 *
+		 * // update the scene immediately
+		 * scene.update(true);
+		 *
+		 * @fires Scene.update
+		 *
+		 * @param {boolean} [immediately=false] - If `true` the update will be instant, if `false` it will wait until next update cycle (better performance).
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.update = function (immediately) {
+			if (_controller) {
+				if (immediately) {
+					if (_controller.enabled() && _enabled) {
+						var
+						scrollPos = _controller.info("scrollPos"),
+							newProgress;
+
+						if (_options.duration > 0) {
+							newProgress = (scrollPos - _scrollOffset.start) / (_scrollOffset.end - _scrollOffset.start);
+						} else {
+							newProgress = scrollPos >= _scrollOffset.start ? 1 : 0;
+						}
+
+						Scene.trigger("update", {
+							startPos: _scrollOffset.start,
+							endPos: _scrollOffset.end,
+							scrollPos: scrollPos
+						});
+
+						Scene.progress(newProgress);
+					} else if (_pin && _state === SCENE_STATE_DURING) {
+						updatePinState(true); // unpin in position
+					}
+				} else {
+					_controller.updateScene(Scene, false);
+				}
+			}
+			return Scene;
+		};
+
+		/**
+		 * Updates dynamic scene variables like the trigger element position or the duration.
+		 * This method is automatically called in regular intervals from the controller. See {@link ScrollMagic.Controller} option `refreshInterval`.
+		 * 
+		 * You can call it to minimize lag, for example when you intentionally change the position of the triggerElement.
+		 * If you don't it will simply be updated in the next refresh interval of the container, which is usually sufficient.
+		 *
+		 * @method ScrollMagic.Scene#refresh
+		 * @since 1.1.0
+		 * @example
+		 * scene = new ScrollMagic.Scene({triggerElement: "#trigger"});
+		 * 
+		 * // change the position of the trigger
+		 * $("#trigger").css("top", 500);
+		 * // immediately let the scene know of this change
+		 * scene.refresh();
+		 *
+		 * @fires {@link Scene.shift}, if the trigger element position or the duration changed
+		 * @fires {@link Scene.change}, if the duration changed
+		 *
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.refresh = function () {
+			updateDuration();
+			updateTriggerElementPosition();
+			// update trigger element position
+			return Scene;
+		};
+
+		/**
+		 * **Get** or **Set** the scene's progress.  
+		 * Usually it shouldn't be necessary to use this as a setter, as it is set automatically by scene.update().  
+		 * The order in which the events are fired depends on the duration of the scene:
+		 *  1. Scenes with `duration == 0`:  
+		 *  Scenes that have no duration by definition have no ending. Thus the `end` event will never be fired.  
+		 *  When the trigger position of the scene is passed the events are always fired in this order:  
+		 *  `enter`, `start`, `progress` when scrolling forward  
+		 *  and  
+		 *  `progress`, `start`, `leave` when scrolling in reverse
+		 *  2. Scenes with `duration > 0`:  
+		 *  Scenes with a set duration have a defined start and end point.  
+		 *  When scrolling past the start position of the scene it will fire these events in this order:  
+		 *  `enter`, `start`, `progress`  
+		 *  When continuing to scroll and passing the end point it will fire these events:  
+		 *  `progress`, `end`, `leave`  
+		 *  When reversing through the end point these events are fired:  
+		 *  `enter`, `end`, `progress`  
+		 *  And when continuing to scroll past the start position in reverse it will fire:  
+		 *  `progress`, `start`, `leave`  
+		 *  In between start and end the `progress` event will be called constantly, whenever the progress changes.
+		 * 
+		 * In short:  
+		 * `enter` events will always trigger **before** the progress update and `leave` envents will trigger **after** the progress update.  
+		 * `start` and `end` will always trigger at their respective position.
+		 * 
+		 * Please review the event descriptions for details on the events and the event object that is passed to the callback.
+		 * 
+		 * @method ScrollMagic.Scene#progress
+		 * @example
+		 * // get the current scene progress
+		 * var progress = scene.progress();
+		 *
+		 * // set new scene progress
+		 * scene.progress(0.3);
+		 *
+		 * @fires {@link Scene.enter}, when used as setter
+		 * @fires {@link Scene.start}, when used as setter
+		 * @fires {@link Scene.progress}, when used as setter
+		 * @fires {@link Scene.end}, when used as setter
+		 * @fires {@link Scene.leave}, when used as setter
+		 *
+		 * @param {number} [progress] - The new progress value of the scene `[0-1]`.
+		 * @returns {number} `get` -  Current scene progress.
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+		this.progress = function (progress) {
+			if (!arguments.length) { // get
+				return _progress;
+			} else { // set
+				var
+				doUpdate = false,
+					oldState = _state,
+					scrollDirection = _controller ? _controller.info("scrollDirection") : 'PAUSED',
+					reverseOrForward = _options.reverse || progress >= _progress;
+				if (_options.duration === 0) {
+					// zero duration scenes
+					doUpdate = _progress != progress;
+					_progress = progress < 1 && reverseOrForward ? 0 : 1;
+					_state = _progress === 0 ? SCENE_STATE_BEFORE : SCENE_STATE_DURING;
+				} else {
+					// scenes with start and end
+					if (progress < 0 && _state !== SCENE_STATE_BEFORE && reverseOrForward) {
+						// go back to initial state
+						_progress = 0;
+						_state = SCENE_STATE_BEFORE;
+						doUpdate = true;
+					} else if (progress >= 0 && progress < 1 && reverseOrForward) {
+						_progress = progress;
+						_state = SCENE_STATE_DURING;
+						doUpdate = true;
+					} else if (progress >= 1 && _state !== SCENE_STATE_AFTER) {
+						_progress = 1;
+						_state = SCENE_STATE_AFTER;
+						doUpdate = true;
+					} else if (_state === SCENE_STATE_DURING && !reverseOrForward) {
+						updatePinState(); // in case we scrolled backwards mid-scene and reverse is disabled => update the pin position, so it doesn't move back as well.
+					}
+				}
+				if (doUpdate) {
+					// fire events
+					var
+					eventVars = {
+						progress: _progress,
+						state: _state,
+						scrollDirection: scrollDirection
+					},
+						stateChanged = _state != oldState;
+
+					var trigger = function (eventName) { // tmp helper to simplify code
+						Scene.trigger(eventName, eventVars);
+					};
+
+					if (stateChanged) { // enter events
+						if (oldState !== SCENE_STATE_DURING) {
+							trigger("enter");
+							trigger(oldState === SCENE_STATE_BEFORE ? "start" : "end");
+						}
+					}
+					trigger("progress");
+					if (stateChanged) { // leave events
+						if (_state !== SCENE_STATE_DURING) {
+							trigger(_state === SCENE_STATE_BEFORE ? "start" : "end");
+							trigger("leave");
+						}
+					}
+				}
+
+				return Scene;
+			}
+		};
+
+
+		/**
+		 * Update the start and end scrollOffset of the container.
+		 * The positions reflect what the controller's scroll position will be at the start and end respectively.
+		 * Is called, when:
+		 *   - Scene event "change" is called with: offset, triggerHook, duration 
+		 *   - scroll container event "resize" is called
+		 *   - the position of the triggerElement changes
+		 *   - the controller changes -> addTo()
+		 * @private
+		 */
+		var updateScrollOffset = function () {
+			_scrollOffset = {
+				start: _triggerPos + _options.offset
+			};
+			if (_controller && _options.triggerElement) {
+				// take away triggerHook portion to get relative to top
+				_scrollOffset.start -= _controller.info("size") * _options.triggerHook;
+			}
+			_scrollOffset.end = _scrollOffset.start + _options.duration;
+		};
+
+		/**
+		 * Updates the duration if set to a dynamic function.
+		 * This method is called when the scene is added to a controller and in regular intervals from the controller through scene.refresh().
+		 * 
+		 * @fires {@link Scene.change}, if the duration changed
+		 * @fires {@link Scene.shift}, if the duration changed
+		 *
+		 * @param {boolean} [suppressEvents=false] - If true the shift event will be suppressed.
+		 * @private
+		 */
+		var updateDuration = function (suppressEvents) {
+			// update duration
+			if (_durationUpdateMethod) {
+				var varname = "duration";
+				if (changeOption(varname, _durationUpdateMethod.call(Scene)) && !suppressEvents) { // set
+					Scene.trigger("change", {
+						what: varname,
+						newval: _options[varname]
+					});
+					Scene.trigger("shift", {
+						reason: varname
+					});
+				}
+			}
+		};
+
+		/**
+		 * Updates the position of the triggerElement, if present.
+		 * This method is called ...
+		 *  - ... when the triggerElement is changed
+		 *  - ... when the scene is added to a (new) controller
+		 *  - ... in regular intervals from the controller through scene.refresh().
+		 * 
+		 * @fires {@link Scene.shift}, if the position changed
+		 *
+		 * @param {boolean} [suppressEvents=false] - If true the shift event will be suppressed.
+		 * @private
+		 */
+		var updateTriggerElementPosition = function (suppressEvents) {
+			var
+			elementPos = 0,
+				telem = _options.triggerElement;
+			if (_controller && (telem || _triggerPos > 0)) { // either an element exists or was removed and the triggerPos is still > 0
+				if (telem) { // there currently a triggerElement set
+					if (telem.parentNode) { // check if element is still attached to DOM
+						var
+						controllerInfo = _controller.info(),
+							containerOffset = _util.get.offset(controllerInfo.container),
+							// container position is needed because element offset is returned in relation to document, not in relation to container.
+							param = controllerInfo.vertical ? "top" : "left"; // which param is of interest ?
+						// if parent is spacer, use spacer position instead so correct start position is returned for pinned elements.
+						while (telem.parentNode.hasAttribute(PIN_SPACER_ATTRIBUTE)) {
+							telem = telem.parentNode;
+						}
+
+						var elementOffset = _util.get.offset(telem);
+
+						if (!controllerInfo.isDocument) { // container is not the document root, so substract scroll Position to get correct trigger element position relative to scrollcontent
+							containerOffset[param] -= _controller.scrollPos();
+						}
+
+						elementPos = elementOffset[param] - containerOffset[param];
+
+					} else { // there was an element, but it was removed from DOM
+						log(2, "WARNING: triggerElement was removed from DOM and will be reset to", undefined);
+						Scene.triggerElement(undefined); // unset, so a change event is triggered
+					}
+				}
+
+				var changed = elementPos != _triggerPos;
+				_triggerPos = elementPos;
+				if (changed && !suppressEvents) {
+					Scene.trigger("shift", {
+						reason: "triggerElementPosition"
+					});
+				}
+			}
+		};
+
+		/**
+		 * Trigger a shift event, when the container is resized and the triggerHook is > 1.
+		 * @private
+		 */
+		var onContainerResize = function (e) {
+			if (_options.triggerHook > 0) {
+				Scene.trigger("shift", {
+					reason: "containerResize"
+				});
+			}
+		};
+
+
+		var _validate = _util.extend(SCENE_OPTIONS.validate, {
+			// validation for duration handled internally for reference to private var _durationMethod
+			duration: function (val) {
+				if (_util.type.String(val) && val.match(/^(\.|\d)*\d+%$/)) {
+					// percentage value
+					var perc = parseFloat(val) / 100;
+					val = function () {
+						return _controller ? _controller.info("size") * perc : 0;
+					};
+				}
+				if (_util.type.Function(val)) {
+					// function
+					_durationUpdateMethod = val;
+					try {
+						val = parseFloat(_durationUpdateMethod());
+					} catch (e) {
+						val = -1; // will cause error below
+					}
+				}
+				// val has to be float
+				val = parseFloat(val);
+				if (!_util.type.Number(val) || val < 0) {
+					if (_durationUpdateMethod) {
+						_durationUpdateMethod = undefined;
+						throw ["Invalid return value of supplied function for option \"duration\":", val];
+					} else {
+						throw ["Invalid value for option \"duration\":", val];
+					}
+				}
+				return val;
+			}
+		});
+
+		/**
+		 * Checks the validity of a specific or all options and reset to default if neccessary.
+		 * @private
+		 */
+		var validateOption = function (check) {
+			check = arguments.length ? [check] : Object.keys(_validate);
+			check.forEach(function (optionName, key) {
+				var value;
+				if (_validate[optionName]) { // there is a validation method for this option
+					try { // validate value
+						value = _validate[optionName](_options[optionName]);
+					} catch (e) { // validation failed -> reset to default
+						value = DEFAULT_OPTIONS[optionName];
+						var logMSG = _util.type.String(e) ? [e] : e;
+						if (_util.type.Array(logMSG)) {
+							logMSG[0] = "ERROR: " + logMSG[0];
+							logMSG.unshift(1); // loglevel 1 for error msg
+							log.apply(this, logMSG);
+						} else {
+							log(1, "ERROR: Problem executing validation callback for option '" + optionName + "':", e.message);
+						}
+					} finally {
+						_options[optionName] = value;
+					}
+				}
+			});
+		};
+
+		/**
+		 * Helper used by the setter/getters for scene options
+		 * @private
+		 */
+		var changeOption = function (varname, newval) {
+			var
+			changed = false,
+				oldval = _options[varname];
+			if (_options[varname] != newval) {
+				_options[varname] = newval;
+				validateOption(varname); // resets to default if necessary
+				changed = oldval != _options[varname];
+			}
+			return changed;
+		};
+
+		// generate getters/setters for all options
+		var addSceneOption = function (optionName) {
+			if (!Scene[optionName]) {
+				Scene[optionName] = function (newVal) {
+					if (!arguments.length) { // get
+						return _options[optionName];
+					} else {
+						if (optionName === "duration") { // new duration is set, so any previously set function must be unset
+							_durationUpdateMethod = undefined;
+						}
+						if (changeOption(optionName, newVal)) { // set
+							Scene.trigger("change", {
+								what: optionName,
+								newval: _options[optionName]
+							});
+							if (SCENE_OPTIONS.shifts.indexOf(optionName) > -1) {
+								Scene.trigger("shift", {
+									reason: optionName
+								});
+							}
+						}
+					}
+					return Scene;
+				};
+			}
+		};
+
+		/**
+		 * **Get** or **Set** the duration option value.
+		 * As a setter it also accepts a function returning a numeric value.  
+		 * This is particularly useful for responsive setups.
+		 *
+		 * The duration is updated using the supplied function every time `Scene.refresh()` is called, which happens periodically from the controller (see ScrollMagic.Controller option `refreshInterval`).  
+		 * _**NOTE:** Be aware that it's an easy way to kill performance, if you supply a function that has high CPU demand.  
+		 * Even for size and position calculations it is recommended to use a variable to cache the value. (see example)  
+		 * This counts double if you use the same function for multiple scenes._
+		 *
+		 * @method ScrollMagic.Scene#duration
+		 * @example
+		 * // get the current duration value
+		 * var duration = scene.duration();
+		 *
+		 * // set a new duration
+		 * scene.duration(300);
+		 *
+		 * // use a function to automatically adjust the duration to the window height.
+		 * var durationValueCache;
+		 * function getDuration () {
+		 *   return durationValueCache;
+		 * }
+		 * function updateDuration (e) {
+		 *   durationValueCache = window.innerHeight;
+		 * }
+		 * $(window).on("resize", updateDuration); // update the duration when the window size changes
+		 * $(window).triggerHandler("resize"); // set to initial value
+		 * scene.duration(getDuration); // supply duration method
+		 *
+		 * @fires {@link Scene.change}, when used as setter
+		 * @fires {@link Scene.shift}, when used as setter
+		 * @param {(number|function)} [newDuration] - The new duration of the scene.
+		 * @returns {number} `get` -  Current scene duration.
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+
+		/**
+		 * **Get** or **Set** the offset option value.
+		 * @method ScrollMagic.Scene#offset
+		 * @example
+		 * // get the current offset
+		 * var offset = scene.offset();
+		 *
+		 * // set a new offset
+		 * scene.offset(100);
+		 *
+		 * @fires {@link Scene.change}, when used as setter
+		 * @fires {@link Scene.shift}, when used as setter
+		 * @param {number} [newOffset] - The new offset of the scene.
+		 * @returns {number} `get` -  Current scene offset.
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+
+		/**
+		 * **Get** or **Set** the triggerElement option value.
+		 * Does **not** fire `Scene.shift`, because changing the trigger Element doesn't necessarily mean the start position changes. This will be determined in `Scene.refresh()`, which is automatically triggered.
+		 * @method ScrollMagic.Scene#triggerElement
+		 * @example
+		 * // get the current triggerElement
+		 * var triggerElement = scene.triggerElement();
+		 *
+		 * // set a new triggerElement using a selector
+		 * scene.triggerElement("#trigger");
+		 * // set a new triggerElement using a DOM object
+		 * scene.triggerElement(document.getElementById("trigger"));
+		 *
+		 * @fires {@link Scene.change}, when used as setter
+		 * @param {(string|object)} [newTriggerElement] - The new trigger element for the scene.
+		 * @returns {(string|object)} `get` -  Current triggerElement.
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+
+		/**
+		 * **Get** or **Set** the triggerHook option value.
+		 * @method ScrollMagic.Scene#triggerHook
+		 * @example
+		 * // get the current triggerHook value
+		 * var triggerHook = scene.triggerHook();
+		 *
+		 * // set a new triggerHook using a string
+		 * scene.triggerHook("onLeave");
+		 * // set a new triggerHook using a number
+		 * scene.triggerHook(0.7);
+		 *
+		 * @fires {@link Scene.change}, when used as setter
+		 * @fires {@link Scene.shift}, when used as setter
+		 * @param {(number|string)} [newTriggerHook] - The new triggerHook of the scene. See {@link Scene} parameter description for value options.
+		 * @returns {number} `get` -  Current triggerHook (ALWAYS numerical).
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+
+		/**
+		 * **Get** or **Set** the reverse option value.
+		 * @method ScrollMagic.Scene#reverse
+		 * @example
+		 * // get the current reverse option
+		 * var reverse = scene.reverse();
+		 *
+		 * // set new reverse option
+		 * scene.reverse(false);
+		 *
+		 * @fires {@link Scene.change}, when used as setter
+		 * @param {boolean} [newReverse] - The new reverse setting of the scene.
+		 * @returns {boolean} `get` -  Current reverse option value.
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+
+		/**
+		 * **Get** or **Set** the loglevel option value.
+		 * @method ScrollMagic.Scene#loglevel
+		 * @example
+		 * // get the current loglevel
+		 * var loglevel = scene.loglevel();
+		 *
+		 * // set new loglevel
+		 * scene.loglevel(3);
+		 *
+		 * @fires {@link Scene.change}, when used as setter
+		 * @param {number} [newLoglevel] - The new loglevel setting of the scene. `[0-3]`
+		 * @returns {number} `get` -  Current loglevel.
+		 * @returns {Scene} `set` -  Parent object for chaining.
+		 */
+
+		/**
+		 * **Get** the associated controller.
+		 * @method ScrollMagic.Scene#controller
+		 * @example
+		 * // get the controller of a scene
+		 * var controller = scene.controller();
+		 *
+		 * @returns {ScrollMagic.Controller} Parent controller or `undefined`
+		 */
+		this.controller = function () {
+			return _controller;
+		};
+
+		/**
+		 * **Get** the current state.
+		 * @method ScrollMagic.Scene#state
+		 * @example
+		 * // get the current state
+		 * var state = scene.state();
+		 *
+		 * @returns {string} `"BEFORE"`, `"DURING"` or `"AFTER"`
+		 */
+		this.state = function () {
+			return _state;
+		};
+
+		/**
+		 * **Get** the current scroll offset for the start of the scene.  
+		 * Mind, that the scrollOffset is related to the size of the container, if `triggerHook` is bigger than `0` (or `"onLeave"`).  
+		 * This means, that resizing the container or changing the `triggerHook` will influence the scene's start offset.
+		 * @method ScrollMagic.Scene#scrollOffset
+		 * @example
+		 * // get the current scroll offset for the start and end of the scene.
+		 * var start = scene.scrollOffset();
+		 * var end = scene.scrollOffset() + scene.duration();
+		 * console.log("the scene starts at", start, "and ends at", end);
+		 *
+		 * @returns {number} The scroll offset (of the container) at which the scene will trigger. Y value for vertical and X value for horizontal scrolls.
+		 */
+		this.scrollOffset = function () {
+			return _scrollOffset.start;
+		};
+
+		/**
+		 * **Get** the trigger position of the scene (including the value of the `offset` option).  
+		 * @method ScrollMagic.Scene#triggerPosition
+		 * @example
+		 * // get the scene's trigger position
+		 * var triggerPosition = scene.triggerPosition();
+		 *
+		 * @returns {number} Start position of the scene. Top position value for vertical and left position value for horizontal scrolls.
+		 */
+		this.triggerPosition = function () {
+			var pos = _options.offset; // the offset is the basis
+			if (_controller) {
+				// get the trigger position
+				if (_options.triggerElement) {
+					// Element as trigger
+					pos += _triggerPos;
+				} else {
+					// return the height of the triggerHook to start at the beginning
+					pos += _controller.info("size") * Scene.triggerHook();
+				}
+			}
+			return pos;
+		};
+
+		var
+		_pin, _pinOptions;
+
+		Scene.on("shift.internal", function (e) {
+			var durationChanged = e.reason === "duration";
+			if ((_state === SCENE_STATE_AFTER && durationChanged) || (_state === SCENE_STATE_DURING && _options.duration === 0)) {
+				// if [duration changed after a scene (inside scene progress updates pin position)] or [duration is 0, we are in pin phase and some other value changed].
+				updatePinState();
+			}
+			if (durationChanged) {
+				updatePinDimensions();
+			}
+		}).on("progress.internal", function (e) {
+			updatePinState();
+		}).on("add.internal", function (e) {
+			updatePinDimensions();
+		}).on("destroy.internal", function (e) {
+			Scene.removePin(e.reset);
+		});
+		/**
+		 * Update the pin state.
+		 * @private
+		 */
+		var updatePinState = function (forceUnpin) {
+			if (_pin && _controller) {
+				var
+				containerInfo = _controller.info(),
+					pinTarget = _pinOptions.spacer.firstChild; // may be pin element or another spacer, if cascading pins
+				if (!forceUnpin && _state === SCENE_STATE_DURING) { // during scene or if duration is 0 and we are past the trigger
+					// pinned state
+					if (_util.css(pinTarget, "position") != "fixed") {
+						// change state before updating pin spacer (position changes due to fixed collapsing might occur.)
+						_util.css(pinTarget, {
+							"position": "fixed"
+						});
+						// update pin spacer
+						updatePinDimensions();
+					}
+
+					var
+					fixedPos = _util.get.offset(_pinOptions.spacer, true),
+						// get viewport position of spacer
+						scrollDistance = _options.reverse || _options.duration === 0 ? containerInfo.scrollPos - _scrollOffset.start // quicker
+						: Math.round(_progress * _options.duration * 10) / 10; // if no reverse and during pin the position needs to be recalculated using the progress
+					// add scrollDistance
+					fixedPos[containerInfo.vertical ? "top" : "left"] += scrollDistance;
+
+					// set new values
+					_util.css(_pinOptions.spacer.firstChild, {
+						top: fixedPos.top,
+						left: fixedPos.left
+					});
+				} else {
+					// unpinned state
+					var
+					newCSS = {
+						position: _pinOptions.inFlow ? "relative" : "absolute",
+						top: 0,
+						left: 0
+					},
+						change = _util.css(pinTarget, "position") != newCSS.position;
+
+					if (!_pinOptions.pushFollowers) {
+						newCSS[containerInfo.vertical ? "top" : "left"] = _options.duration * _progress;
+					} else if (_options.duration > 0) { // only concerns scenes with duration
+						if (_state === SCENE_STATE_AFTER && parseFloat(_util.css(_pinOptions.spacer, "padding-top")) === 0) {
+							change = true; // if in after state but havent updated spacer yet (jumped past pin)
+						} else if (_state === SCENE_STATE_BEFORE && parseFloat(_util.css(_pinOptions.spacer, "padding-bottom")) === 0) { // before
+							change = true; // jumped past fixed state upward direction
+						}
+					}
+					// set new values
+					_util.css(pinTarget, newCSS);
+					if (change) {
+						// update pin spacer if state changed
+						updatePinDimensions();
+					}
+				}
+			}
+		};
+
+		/**
+		 * Update the pin spacer and/or element size.
+		 * The size of the spacer needs to be updated whenever the duration of the scene changes, if it is to push down following elements.
+		 * @private
+		 */
+		var updatePinDimensions = function () {
+			if (_pin && _controller && _pinOptions.inFlow) { // no spacerresize, if original position is absolute
+				var
+				after = (_state === SCENE_STATE_AFTER),
+					before = (_state === SCENE_STATE_BEFORE),
+					during = (_state === SCENE_STATE_DURING),
+					vertical = _controller.info("vertical"),
+					pinTarget = _pinOptions.spacer.firstChild,
+					// usually the pined element but can also be another spacer (cascaded pins)
+					marginCollapse = _util.isMarginCollapseType(_util.css(_pinOptions.spacer, "display")),
+					css = {};
+
+				// set new size
+				// if relsize: spacer -> pin | else: pin -> spacer
+				if (_pinOptions.relSize.width || _pinOptions.relSize.autoFullWidth) {
+					if (during) {
+						_util.css(_pin, {
+							"width": _util.get.width(_pinOptions.spacer)
+						});
+					} else {
+						_util.css(_pin, {
+							"width": "100%"
+						});
+					}
+				} else {
+					// minwidth is needed for cascaded pins.
+					css["min-width"] = _util.get.width(vertical ? _pin : pinTarget, true, true);
+					css.width = during ? css["min-width"] : "auto";
+				}
+				if (_pinOptions.relSize.height) {
+					if (during) {
+						// the only padding the spacer should ever include is the duration (if pushFollowers = true), so we need to substract that.
+						_util.css(_pin, {
+							"height": _util.get.height(_pinOptions.spacer) - (_pinOptions.pushFollowers ? _options.duration : 0)
+						});
+					} else {
+						_util.css(_pin, {
+							"height": "100%"
+						});
+					}
+				} else {
+					// margin is only included if it's a cascaded pin to resolve an IE9 bug
+					css["min-height"] = _util.get.height(vertical ? pinTarget : _pin, true, !marginCollapse); // needed for cascading pins
+					css.height = during ? css["min-height"] : "auto";
+				}
+
+				// add space for duration if pushFollowers is true
+				if (_pinOptions.pushFollowers) {
+					css["padding" + (vertical ? "Top" : "Left")] = _options.duration * _progress;
+					css["padding" + (vertical ? "Bottom" : "Right")] = _options.duration * (1 - _progress);
+				}
+				_util.css(_pinOptions.spacer, css);
+			}
+		};
+
+		/**
+		 * Updates the Pin state (in certain scenarios)
+		 * If the controller container is not the document and we are mid-pin-phase scrolling or resizing the main document can result to wrong pin positions.
+		 * So this function is called on resize and scroll of the document.
+		 * @private
+		 */
+		var updatePinInContainer = function () {
+			if (_controller && _pin && _state === SCENE_STATE_DURING && !_controller.info("isDocument")) {
+				updatePinState();
+			}
+		};
+
+		/**
+		 * Updates the Pin spacer size state (in certain scenarios)
+		 * If container is resized during pin and relatively sized the size of the pin might need to be updated...
+		 * So this function is called on resize of the container.
+		 * @private
+		 */
+		var updateRelativePinSpacer = function () {
+			if (_controller && _pin && // well, duh
+			_state === SCENE_STATE_DURING && // element in pinned state?
+			( // is width or height relatively sized, but not in relation to body? then we need to recalc.
+			((_pinOptions.relSize.width || _pinOptions.relSize.autoFullWidth) && _util.get.width(window) != _util.get.width(_pinOptions.spacer.parentNode)) || (_pinOptions.relSize.height && _util.get.height(window) != _util.get.height(_pinOptions.spacer.parentNode)))) {
+				updatePinDimensions();
+			}
+		};
+
+		/**
+		 * Is called, when the mousewhel is used while over a pinned element inside a div container.
+		 * If the scene is in fixed state scroll events would be counted towards the body. This forwards the event to the scroll container.
+		 * @private
+		 */
+		var onMousewheelOverPin = function (e) {
+			if (_controller && _pin && _state === SCENE_STATE_DURING && !_controller.info("isDocument")) { // in pin state
+				e.preventDefault();
+				_controller._setScrollPos(_controller.info("scrollPos") - ((e.wheelDelta || e[_controller.info("vertical") ? "wheelDeltaY" : "wheelDeltaX"]) / 3 || -e.detail * 30));
+			}
+		};
+
+		/**
+		 * Pin an element for the duration of the tween.  
+		 * If the scene duration is 0 the element will only be unpinned, if the user scrolls back past the start position.  
+		 * Make sure only one pin is applied to an element at the same time.
+		 * An element can be pinned multiple times, but only successively.
+		 * _**NOTE:** The option `pushFollowers` has no effect, when the scene duration is 0._
+		 * @method ScrollMagic.Scene#setPin
+		 * @example
+		 * // pin element and push all following elements down by the amount of the pin duration.
+		 * scene.setPin("#pin");
+		 *
+		 * // pin element and keeping all following elements in their place. The pinned element will move past them.
+		 * scene.setPin("#pin", {pushFollowers: false});
+		 *
+		 * @param {(string|object)} element - A Selector targeting an element or a DOM object that is supposed to be pinned.
+		 * @param {object} [settings] - settings for the pin
+		 * @param {boolean} [settings.pushFollowers=true] - If `true` following elements will be "pushed" down for the duration of the pin, if `false` the pinned element will just scroll past them.  
+		 Ignored, when duration is `0`.
+		 * @param {string} [settings.spacerClass="scrollmagic-pin-spacer"] - Classname of the pin spacer element, which is used to replace the element.
+		 *
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.setPin = function (element, settings) {
+			var
+			defaultSettings = {
+				pushFollowers: true,
+				spacerClass: "scrollmagic-pin-spacer"
+			};
+			settings = _util.extend({}, defaultSettings, settings);
+
+			// validate Element
+			element = _util.get.elements(element)[0];
+			if (!element) {
+				log(1, "ERROR calling method 'setPin()': Invalid pin element supplied.");
+				return Scene; // cancel
+			} else if (_util.css(element, "position") === "fixed") {
+				log(1, "ERROR calling method 'setPin()': Pin does not work with elements that are positioned 'fixed'.");
+				return Scene; // cancel
+			}
+
+			if (_pin) { // preexisting pin?
+				if (_pin === element) {
+					// same pin we already have -> do nothing
+					return Scene; // cancel
+				} else {
+					// kill old pin
+					Scene.removePin();
+				}
+
+			}
+			_pin = element;
+
+			var
+			parentDisplay = _pin.parentNode.style.display,
+				boundsParams = ["top", "left", "bottom", "right", "margin", "marginLeft", "marginRight", "marginTop", "marginBottom"];
+
+			_pin.parentNode.style.display = 'none'; // hack start to force css to return stylesheet values instead of calculated px values.
+			var
+			inFlow = _util.css(_pin, "position") != "absolute",
+				pinCSS = _util.css(_pin, boundsParams.concat(["display"])),
+				sizeCSS = _util.css(_pin, ["width", "height"]);
+			_pin.parentNode.style.display = parentDisplay; // hack end.
+			if (!inFlow && settings.pushFollowers) {
+				log(2, "WARNING: If the pinned element is positioned absolutely pushFollowers will be disabled.");
+				settings.pushFollowers = false;
+			}
+			window.setTimeout(function () { // wait until all finished, because with responsive duration it will only be set after scene is added to controller
+				if (_pin && _options.duration === 0 && settings.pushFollowers) {
+					log(2, "WARNING: pushFollowers =", true, "has no effect, when scene duration is 0.");
+				}
+			}, 0);
+
+			// create spacer and insert
+			var
+			spacer = _pin.parentNode.insertBefore(document.createElement('div'), _pin),
+				spacerCSS = _util.extend(pinCSS, {
+					position: inFlow ? "relative" : "absolute",
+					boxSizing: "content-box",
+					mozBoxSizing: "content-box",
+					webkitBoxSizing: "content-box"
+				});
+
+			if (!inFlow) { // copy size if positioned absolutely, to work for bottom/right positioned elements.
+				_util.extend(spacerCSS, _util.css(_pin, ["width", "height"]));
+			}
+
+			_util.css(spacer, spacerCSS);
+			spacer.setAttribute(PIN_SPACER_ATTRIBUTE, "");
+			_util.addClass(spacer, settings.spacerClass);
+
+			// set the pin Options
+			_pinOptions = {
+				spacer: spacer,
+				relSize: { // save if size is defined using % values. if so, handle spacer resize differently...
+					width: sizeCSS.width.slice(-1) === "%",
+					height: sizeCSS.height.slice(-1) === "%",
+					autoFullWidth: sizeCSS.width === "auto" && inFlow && _util.isMarginCollapseType(pinCSS.display)
+				},
+				pushFollowers: settings.pushFollowers,
+				inFlow: inFlow,
+				// stores if the element takes up space in the document flow
+			};
+
+			if (!_pin.___origStyle) {
+				_pin.___origStyle = {};
+				var
+				pinInlineCSS = _pin.style,
+					copyStyles = boundsParams.concat(["width", "height", "position", "boxSizing", "mozBoxSizing", "webkitBoxSizing"]);
+				copyStyles.forEach(function (val) {
+					_pin.___origStyle[val] = pinInlineCSS[val] || "";
+				});
+			}
+
+			// if relative size, transfer it to spacer and make pin calculate it...
+			if (_pinOptions.relSize.width) {
+				_util.css(spacer, {
+					width: sizeCSS.width
+				});
+			}
+			if (_pinOptions.relSize.height) {
+				_util.css(spacer, {
+					height: sizeCSS.height
+				});
+			}
+
+			// now place the pin element inside the spacer	
+			spacer.appendChild(_pin);
+			// and set new css
+			_util.css(_pin, {
+				position: inFlow ? "relative" : "absolute",
+				margin: "auto",
+				top: "auto",
+				left: "auto",
+				bottom: "auto",
+				right: "auto"
+			});
+
+			if (_pinOptions.relSize.width || _pinOptions.relSize.autoFullWidth) {
+				_util.css(_pin, {
+					boxSizing: "border-box",
+					mozBoxSizing: "border-box",
+					webkitBoxSizing: "border-box"
+				});
+			}
+
+			// add listener to document to update pin position in case controller is not the document.
+			window.addEventListener('scroll', updatePinInContainer);
+			window.addEventListener('resize', updatePinInContainer);
+			window.addEventListener('resize', updateRelativePinSpacer);
+			// add mousewheel listener to catch scrolls over fixed elements
+			_pin.addEventListener("mousewheel", onMousewheelOverPin);
+			_pin.addEventListener("DOMMouseScroll", onMousewheelOverPin);
+
+			log(3, "added pin");
+
+			// finally update the pin to init
+			updatePinState();
+
+			return Scene;
+		};
+
+		/**
+		 * Remove the pin from the scene.
+		 * @method ScrollMagic.Scene#removePin
+		 * @example
+		 * // remove the pin from the scene without resetting it (the spacer is not removed)
+		 * scene.removePin();
+		 *
+		 * // remove the pin from the scene and reset the pin element to its initial position (spacer is removed)
+		 * scene.removePin(true);
+		 *
+		 * @param {boolean} [reset=false] - If `false` the spacer will not be removed and the element's position will not be reset.
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.removePin = function (reset) {
+			if (_pin) {
+				if (_state === SCENE_STATE_DURING) {
+					updatePinState(true); // force unpin at position
+				}
+				if (reset || !_controller) { // if there's no controller no progress was made anyway...
+					var pinTarget = _pinOptions.spacer.firstChild; // usually the pin element, but may be another spacer (cascaded pins)...
+					if (pinTarget.hasAttribute(PIN_SPACER_ATTRIBUTE)) { // copy margins to child spacer
+						var
+						style = _pinOptions.spacer.style,
+							values = ["margin", "marginLeft", "marginRight", "marginTop", "marginBottom"],
+							margins = {};
+						values.forEach(function (val) {
+							margins[val] = style[val] || "";
+						});
+						_util.css(pinTarget, margins);
+					}
+					_pinOptions.spacer.parentNode.insertBefore(pinTarget, _pinOptions.spacer);
+					_pinOptions.spacer.parentNode.removeChild(_pinOptions.spacer);
+					if (!_pin.parentNode.hasAttribute(PIN_SPACER_ATTRIBUTE)) { // if it's the last pin for this element -> restore inline styles
+						// TODO: only correctly set for first pin (when cascading) - how to fix?
+						_util.css(_pin, _pin.___origStyle);
+						delete _pin.___origStyle;
+					}
+				}
+				window.removeEventListener('scroll', updatePinInContainer);
+				window.removeEventListener('resize', updatePinInContainer);
+				window.removeEventListener('resize', updateRelativePinSpacer);
+				_pin.removeEventListener("mousewheel", onMousewheelOverPin);
+				_pin.removeEventListener("DOMMouseScroll", onMousewheelOverPin);
+				_pin = undefined;
+				log(3, "removed pin (reset: " + (reset ? "true" : "false") + ")");
+			}
+			return Scene;
+		};
+
+
+		var
+		_cssClasses, _cssClassElems = [];
+
+		Scene.on("destroy.internal", function (e) {
+			Scene.removeClassToggle(e.reset);
+		});
+		/**
+		 * Define a css class modification while the scene is active.  
+		 * When the scene triggers the classes will be added to the supplied element and removed, when the scene is over.
+		 * If the scene duration is 0 the classes will only be removed if the user scrolls back past the start position.
+		 * @method ScrollMagic.Scene#setClassToggle
+		 * @example
+		 * // add the class 'myclass' to the element with the id 'my-elem' for the duration of the scene
+		 * scene.setClassToggle("#my-elem", "myclass");
+		 *
+		 * // add multiple classes to multiple elements defined by the selector '.classChange'
+		 * scene.setClassToggle(".classChange", "class1 class2 class3");
+		 *
+		 * @param {(string|object)} element - A Selector targeting one or more elements or a DOM object that is supposed to be modified.
+		 * @param {string} classes - One or more Classnames (separated by space) that should be added to the element during the scene.
+		 *
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.setClassToggle = function (element, classes) {
+			var elems = _util.get.elements(element);
+			if (elems.length === 0 || !_util.type.String(classes)) {
+				log(1, "ERROR calling method 'setClassToggle()': Invalid " + (elems.length === 0 ? "element" : "classes") + " supplied.");
+				return Scene;
+			}
+			if (_cssClassElems.length > 0) {
+				// remove old ones
+				Scene.removeClassToggle();
+			}
+			_cssClasses = classes;
+			_cssClassElems = elems;
+			Scene.on("enter.internal_class leave.internal_class", function (e) {
+				var toggle = e.type === "enter" ? _util.addClass : _util.removeClass;
+				_cssClassElems.forEach(function (elem, key) {
+					toggle(elem, _cssClasses);
+				});
+			});
+			return Scene;
+		};
+
+		/**
+		 * Remove the class binding from the scene.
+		 * @method ScrollMagic.Scene#removeClassToggle
+		 * @example
+		 * // remove class binding from the scene without reset
+		 * scene.removeClassToggle();
+		 *
+		 * // remove class binding and remove the changes it caused
+		 * scene.removeClassToggle(true);
+		 *
+		 * @param {boolean} [reset=false] - If `false` and the classes are currently active, they will remain on the element. If `true` they will be removed.
+		 * @returns {Scene} Parent object for chaining.
+		 */
+		this.removeClassToggle = function (reset) {
+			if (reset) {
+				_cssClassElems.forEach(function (elem, key) {
+					_util.removeClass(elem, _cssClasses);
+				});
+			}
+			Scene.off("start.internal_class end.internal_class");
+			_cssClasses = undefined;
+			_cssClassElems = [];
+			return Scene;
+		};
+
+		// INIT
+		construct();
+		return Scene;
+	};
+
+	// store pagewide scene options
+	var SCENE_OPTIONS = {
+		defaults: {
+			duration: 0,
+			offset: 0,
+			triggerElement: undefined,
+			triggerHook: 0.5,
+			reverse: true,
+			loglevel: 2
+		},
+		validate: {
+			offset: function (val) {
+				val = parseFloat(val);
+				if (!_util.type.Number(val)) {
+					throw ["Invalid value for option \"offset\":", val];
+				}
+				return val;
+			},
+			triggerElement: function (val) {
+				val = val || undefined;
+				if (val) {
+					var elem = _util.get.elements(val)[0];
+					if (elem && elem.parentNode) {
+						val = elem;
+					} else {
+						throw ["Element defined in option \"triggerElement\" was not found:", val];
+					}
+				}
+				return val;
+			},
+			triggerHook: function (val) {
+				var translate = {
+					"onCenter": 0.5,
+					"onEnter": 1,
+					"onLeave": 0
+				};
+				if (_util.type.Number(val)) {
+					val = Math.max(0, Math.min(parseFloat(val), 1)); //  make sure its betweeen 0 and 1
+				} else if (val in translate) {
+					val = translate[val];
+				} else {
+					throw ["Invalid value for option \"triggerHook\": ", val];
+				}
+				return val;
+			},
+			reverse: function (val) {
+				return !!val; // force boolean
+			},
+			loglevel: function (val) {
+				val = parseInt(val);
+				if (!_util.type.Number(val) || val < 0 || val > 3) {
+					throw ["Invalid value for option \"loglevel\":", val];
+				}
+				return val;
+			}
+		},
+		// holder for  validation methods. duration validation is handled in 'getters-setters.js'
+		shifts: ["duration", "offset", "triggerHook"],
+		// list of options that trigger a `shift` event
+	};
+/*
+ * method used to add an option to ScrollMagic Scenes.
+ * TODO: DOC (private for dev)
+ */
+	ScrollMagic.Scene.addOption = function (name, defaultValue, validationCallback, shifts) {
+		if (!(name in SCENE_OPTIONS.defaults)) {
+			SCENE_OPTIONS.defaults[name] = defaultValue;
+			SCENE_OPTIONS.validate[name] = validationCallback;
+			if (shifts) {
+				SCENE_OPTIONS.shifts.push(name);
+			}
+		} else {
+			ScrollMagic._util.log(1, "[static] ScrollMagic.Scene -> Cannot add Scene option '" + name + "', because it already exists.");
+		}
+	};
+	// instance extension function for plugins
+	// TODO: DOC (private for dev)
+	ScrollMagic.Scene.extend = function (extension) {
+		var oldClass = this;
+		ScrollMagic.Scene = function () {
+			oldClass.apply(this, arguments);
+			this.$super = _util.extend({}, this); // copy parent state
+			return extension.apply(this, arguments) || this;
+		};
+		_util.extend(ScrollMagic.Scene, oldClass); // copy properties
+		ScrollMagic.Scene.prototype = oldClass.prototype; // copy prototype
+		ScrollMagic.Scene.prototype.constructor = ScrollMagic.Scene; // restore constructor
+	};
+
+
+
+	/**
+	 * TODO: DOCS (private for dev)
+	 * @class
+	 * @private
+	 */
+
+	ScrollMagic.Event = function (type, namespace, target, vars) {
+		vars = vars || {};
+		for (var key in vars) {
+			this[key] = vars[key];
+		}
+		this.type = type;
+		this.target = this.currentTarget = target;
+		this.namespace = namespace || '';
+		this.timeStamp = this.timestamp = Date.now();
+		return this;
+	};
+
+/*
+ * TODO: DOCS (private for dev)
+ */
+
+	var _util = ScrollMagic._util = (function (window) {
+		var U = {},
+			i;
+
+		/**
+		 * ------------------------------
+		 * internal helpers
+		 * ------------------------------
+		 */
+
+		// parse float and fall back to 0.
+		var floatval = function (number) {
+			return parseFloat(number) || 0;
+		};
+		// get current style IE safe (otherwise IE would return calculated values for 'auto')
+		var _getComputedStyle = function (elem) {
+			return elem.currentStyle ? elem.currentStyle : window.getComputedStyle(elem);
+		};
+
+		// get element dimension (width or height)
+		var _dimension = function (which, elem, outer, includeMargin) {
+			elem = (elem === document) ? window : elem;
+			if (elem === window) {
+				includeMargin = false;
+			} else if (!_type.DomElement(elem)) {
+				return 0;
+			}
+			which = which.charAt(0).toUpperCase() + which.substr(1).toLowerCase();
+			var dimension = (outer ? elem['offset' + which] || elem['outer' + which] : elem['client' + which] || elem['inner' + which]) || 0;
+			if (outer && includeMargin) {
+				var style = _getComputedStyle(elem);
+				dimension += which === 'Height' ? floatval(style.marginTop) + floatval(style.marginBottom) : floatval(style.marginLeft) + floatval(style.marginRight);
+			}
+			return dimension;
+		};
+		// converts 'margin-top' into 'marginTop'
+		var _camelCase = function (str) {
+			return str.replace(/^[^a-z]+([a-z])/g, '$1').replace(/-([a-z])/g, function (g) {
+				return g[1].toUpperCase();
+			});
+		};
+
+		/**
+		 * ------------------------------
+		 * external helpers
+		 * ------------------------------
+		 */
+
+		// extend obj – same as jQuery.extend({}, objA, objB)
+		U.extend = function (obj) {
+			obj = obj || {};
+			for (i = 1; i < arguments.length; i++) {
+				if (!arguments[i]) {
+					continue;
+				}
+				for (var key in arguments[i]) {
+					if (arguments[i].hasOwnProperty(key)) {
+						obj[key] = arguments[i][key];
+					}
+				}
+			}
+			return obj;
+		};
+
+		// check if a css display type results in margin-collapse or not
+		U.isMarginCollapseType = function (str) {
+			return ["block", "flex", "list-item", "table", "-webkit-box"].indexOf(str) > -1;
+		};
+
+		// implementation of requestAnimationFrame
+		// based on https://gist.github.com/paulirish/1579671
+		var
+		lastTime = 0,
+			vendors = ['ms', 'moz', 'webkit', 'o'];
+		var _requestAnimationFrame = window.requestAnimationFrame;
+		var _cancelAnimationFrame = window.cancelAnimationFrame;
+		// try vendor prefixes if the above doesn't work
+		for (i = 0; !_requestAnimationFrame && i < vendors.length; ++i) {
+			_requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+			_cancelAnimationFrame = window[vendors[i] + 'CancelAnimationFrame'] || window[vendors[i] + 'CancelRequestAnimationFrame'];
+		}
+
+		// fallbacks
+		if (!_requestAnimationFrame) {
+			_requestAnimationFrame = function (callback) {
+				var
+				currTime = new Date().getTime(),
+					timeToCall = Math.max(0, 16 - (currTime - lastTime)),
+					id = window.setTimeout(function () {
+						callback(currTime + timeToCall);
+					}, timeToCall);
+				lastTime = currTime + timeToCall;
+				return id;
+			};
+		}
+		if (!_cancelAnimationFrame) {
+			_cancelAnimationFrame = function (id) {
+				window.clearTimeout(id);
+			};
+		}
+		U.rAF = _requestAnimationFrame.bind(window);
+		U.cAF = _cancelAnimationFrame.bind(window);
+
+		var
+		loglevels = ["error", "warn", "log"],
+			console = window.console || {};
+
+		console.log = console.log ||
+		function () {}; // no console log, well - do nothing then...
+		// make sure methods for all levels exist.
+		for (i = 0; i < loglevels.length; i++) {
+			var method = loglevels[i];
+			if (!console[method]) {
+				console[method] = console.log; // prefer .log over nothing
+			}
+		}
+		U.log = function (loglevel) {
+			if (loglevel > loglevels.length || loglevel <= 0) loglevel = loglevels.length;
+			var now = new Date(),
+				time = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2) + ":" + ("00" + now.getMilliseconds()).slice(-3),
+				method = loglevels[loglevel - 1],
+				args = Array.prototype.splice.call(arguments, 1),
+				func = Function.prototype.bind.call(console[method], console);
+			args.unshift(time);
+			func.apply(console, args);
+		};
+
+		/**
+		 * ------------------------------
+		 * type testing
+		 * ------------------------------
+		 */
+
+		var _type = U.type = function (v) {
+			return Object.prototype.toString.call(v).replace(/^\[object (.+)\]$/, "$1").toLowerCase();
+		};
+		_type.String = function (v) {
+			return _type(v) === 'string';
+		};
+		_type.Function = function (v) {
+			return _type(v) === 'function';
+		};
+		_type.Array = function (v) {
+			return Array.isArray(v);
+		};
+		_type.Number = function (v) {
+			return !_type.Array(v) && (v - parseFloat(v) + 1) >= 0;
+		};
+		_type.DomElement = function (o) {
+			return (
+			typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+			o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string");
+		};
+
+		/**
+		 * ------------------------------
+		 * DOM Element info
+		 * ------------------------------
+		 */
+		// always returns a list of matching DOM elements, from a selector, a DOM element or an list of elements or even an array of selectors
+		var _get = U.get = {};
+		_get.elements = function (selector) {
+			var arr = [];
+			if (_type.String(selector)) {
+				try {
+					selector = document.querySelectorAll(selector);
+				} catch (e) { // invalid selector
+					return arr;
+				}
+			}
+			if (_type(selector) === 'nodelist' || _type.Array(selector)) {
+				for (var i = 0, ref = arr.length = selector.length; i < ref; i++) { // list of elements
+					var elem = selector[i];
+					arr[i] = _type.DomElement(elem) ? elem : _get.elements(elem); // if not an element, try to resolve recursively
+				}
+			} else if (_type.DomElement(selector) || selector === document || selector === window) {
+				arr = [selector]; // only the element
+			}
+			return arr;
+		};
+		// get scroll top value
+		_get.scrollTop = function (elem) {
+			return (elem && typeof elem.scrollTop === 'number') ? elem.scrollTop : window.pageYOffset || 0;
+		};
+		// get scroll left value
+		_get.scrollLeft = function (elem) {
+			return (elem && typeof elem.scrollLeft === 'number') ? elem.scrollLeft : window.pageXOffset || 0;
+		};
+		// get element height
+		_get.width = function (elem, outer, includeMargin) {
+			return _dimension('width', elem, outer, includeMargin);
+		};
+		// get element width
+		_get.height = function (elem, outer, includeMargin) {
+			return _dimension('height', elem, outer, includeMargin);
+		};
+
+		// get element position (optionally relative to viewport)
+		_get.offset = function (elem, relativeToViewport) {
+			var offset = {
+				top: 0,
+				left: 0
+			};
+			if (elem && elem.getBoundingClientRect) { // check if available
+				var rect = elem.getBoundingClientRect();
+				offset.top = rect.top;
+				offset.left = rect.left;
+				if (!relativeToViewport) { // clientRect is by default relative to viewport...
+					offset.top += _get.scrollTop();
+					offset.left += _get.scrollLeft();
+				}
+			}
+			return offset;
+		};
+
+		/**
+		 * ------------------------------
+		 * DOM Element manipulation
+		 * ------------------------------
+		 */
+
+		U.addClass = function (elem, classname) {
+			if (classname) {
+				if (elem.classList) elem.classList.add(classname);
+				else elem.className += ' ' + classname;
+			}
+		};
+		U.removeClass = function (elem, classname) {
+			if (classname) {
+				if (elem.classList) elem.classList.remove(classname);
+				else elem.className = elem.className.replace(new RegExp('(^|\\b)' + classname.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+			}
+		};
+		// if options is string -> returns css value
+		// if options is array -> returns object with css value pairs
+		// if options is object -> set new css values
+		U.css = function (elem, options) {
+			if (_type.String(options)) {
+				return _getComputedStyle(elem)[_camelCase(options)];
+			} else if (_type.Array(options)) {
+				var
+				obj = {},
+					style = _getComputedStyle(elem);
+				options.forEach(function (option, key) {
+					obj[option] = style[_camelCase(option)];
+				});
+				return obj;
+			} else {
+				for (var option in options) {
+					var val = options[option];
+					if (val == parseFloat(val)) { // assume pixel for seemingly numerical values
+						val += 'px';
+					}
+					elem.style[_camelCase(option)] = val;
+				}
+			}
+		};
+
+		return U;
+	}(window || {}));
+
+	ScrollMagic.Scene.prototype.addIndicators = function () {
+		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling addIndicators() due to missing Plugin \'debug.addIndicators\'. Please make sure to include plugins/debug.addIndicators.js');
+		return this;
+	}
+	ScrollMagic.Scene.prototype.removeIndicators = function () {
+		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling removeIndicators() due to missing Plugin \'debug.addIndicators\'. Please make sure to include plugins/debug.addIndicators.js');
+		return this;
+	}
+	ScrollMagic.Scene.prototype.setTween = function () {
+		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling setTween() due to missing Plugin \'animation.gsap\'. Please make sure to include plugins/animation.gsap.js');
+		return this;
+	}
+	ScrollMagic.Scene.prototype.removeTween = function () {
+		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling removeTween() due to missing Plugin \'animation.gsap\'. Please make sure to include plugins/animation.gsap.js');
+		return this;
+	}
+	ScrollMagic.Scene.prototype.setVelocity = function () {
+		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling setVelocity() due to missing Plugin \'animation.velocity\'. Please make sure to include plugins/animation.velocity.js');
+		return this;
+	}
+	ScrollMagic.Scene.prototype.removeVelocity = function () {
+		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling removeVelocity() due to missing Plugin \'animation.velocity\'. Please make sure to include plugins/animation.velocity.js');
+		return this;
+	}
+
+	return ScrollMagic;
+}));
 
 /***/ }),
 /* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(27);
+module.exports = __webpack_require__(123);
+
+
+/***/ }),
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(49);
+/* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__routes__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__containers_MainTemplate_vue__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__routes__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__containers_MainTemplate_vue__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__containers_MainTemplate_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__containers_MainTemplate_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Cookies__ = __webpack_require__(129);
-__webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Cookies__ = __webpack_require__(122);
+__webpack_require__(28);
 
 
 
@@ -21980,7 +24781,8 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
         h: 0,
         w: 0
       },
-      cart: null
+      cart: null,
+      navLogo: true
     };
   },
   methods: {
@@ -22063,10 +24865,10 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "/"))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-window._ = __webpack_require__(28);
+window._ = __webpack_require__(29);
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -22077,7 +24879,7 @@ try {
   window.Popper = __webpack_require__(9).default;
   window.$ = window.jQuery = __webpack_require__(10);
 
-  __webpack_require__(30);
+  __webpack_require__(31);
 } catch (e) {}
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -22116,7 +24918,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -39228,10 +42030,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(29)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(30)(module)))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -39259,7 +42061,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -43514,7 +46316,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43522,8 +46324,8 @@ module.exports = function(module) {
 
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(12);
-var Axios = __webpack_require__(33);
-var defaults = __webpack_require__(6);
+var Axios = __webpack_require__(34);
+var defaults = __webpack_require__(7);
 
 /**
  * Create an instance of Axios
@@ -43557,14 +46359,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(17);
-axios.CancelToken = __webpack_require__(47);
+axios.CancelToken = __webpack_require__(48);
 axios.isCancel = __webpack_require__(16);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(48);
+axios.spread = __webpack_require__(49);
 
 module.exports = axios;
 
@@ -43573,7 +46375,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /*!
@@ -43600,16 +46402,16 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(6);
+var defaults = __webpack_require__(7);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(42);
-var dispatchRequest = __webpack_require__(43);
+var InterceptorManager = __webpack_require__(43);
+var dispatchRequest = __webpack_require__(44);
 
 /**
  * Create a new instance of Axios
@@ -43686,7 +46488,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43705,7 +46507,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43738,7 +46540,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43766,7 +46568,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43839,7 +46641,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43899,7 +46701,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43974,7 +46776,7 @@ module.exports = (
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44017,7 +46819,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44077,7 +46879,7 @@ module.exports = (
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44136,18 +46938,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(44);
+var transformData = __webpack_require__(45);
 var isCancel = __webpack_require__(16);
-var defaults = __webpack_require__(6);
-var isAbsoluteURL = __webpack_require__(45);
-var combineURLs = __webpack_require__(46);
+var defaults = __webpack_require__(7);
+var isAbsoluteURL = __webpack_require__(46);
+var combineURLs = __webpack_require__(47);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -44229,7 +47031,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44256,7 +47058,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44277,7 +47079,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44298,7 +47100,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44362,7 +47164,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44396,7 +47198,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55483,10 +58285,10 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(50).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(51).setImmediate))
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -55542,7 +58344,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(51);
+__webpack_require__(52);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -55556,7 +58358,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -55749,7 +58551,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(13)))
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58374,43 +61176,43 @@ if (inBrowser && window.Vue) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 var routes = [{
   path: '/',
   name: 'home',
-  component: __webpack_require__(54)
+  component: __webpack_require__(55)
 }, {
   path: '/about',
   name: 'about',
-  component: __webpack_require__(65)
+  component: __webpack_require__(66)
 }, {
   path: '/vini',
   name: 'vini',
-  component: __webpack_require__(73)
+  component: __webpack_require__(75)
 }, {
   path: '/carrello',
   name: 'cart',
-  component: __webpack_require__(117)
+  component: __webpack_require__(80)
 }];
 /* harmony default export */ __webpack_exports__["a"] = (routes);
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(55)
+  __webpack_require__(56)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(58)
+var __vue_script__ = __webpack_require__(59)
 /* template */
-var __vue_template__ = __webpack_require__(64)
+var __vue_template__ = __webpack_require__(65)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -58449,17 +61251,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(56);
+var content = __webpack_require__(57);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("fa1883be", content, false, {});
+var update = __webpack_require__(2)("fa1883be", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -58475,17 +61277,17 @@ if(false) {
 }
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
-exports.push([module.i, "\n#home {\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  position: relative;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n#home .home-img {\n    max-width: 80%;\n    max-width: 240px;\n    height: auto;\n}\n", ""]);
+exports.push([module.i, "\n#home {\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  position: relative;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n#home .home-img {\n    max-width: 80%;\n    max-width: 260px;\n    height: auto;\n}\n@media (min-width: 1200px) {\n#home .home-img {\n        max-width: 80%;\n        max-width: 330px;\n}\n}\n", ""]);
 
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports) {
 
 /**
@@ -58518,12 +61320,12 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__);
 //
 //
@@ -58540,23 +61342,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'Home',
   components: {
     VideoBg: __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue___default.a
+  },
+  mounted: function mounted() {
+    this.$root.navLogo = false;
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.$root.navLogo = true;
   }
 });
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(60)
+  __webpack_require__(61)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(62)
+var __vue_script__ = __webpack_require__(63)
 /* template */
-var __vue_template__ = __webpack_require__(63)
+var __vue_template__ = __webpack_require__(64)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -58595,17 +61403,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(61);
+var content = __webpack_require__(62);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("e4dc3ef8", content, false, {});
+var update = __webpack_require__(2)("e4dc3ef8", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -58621,17 +61429,17 @@ if(false) {
 }
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
 exports.push([module.i, "\n.bg-video[data-v-103ff8f6]::after {\n  content: '';\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: -99;\n  top: 0;\n  left: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  -webkit-box-shadow: inset 0 0 80vw 0 black;\n          box-shadow: inset 0 0 80vw 0 black;\n}\n.background-vid[data-v-103ff8f6] {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  min-width: 100%;\n  min-height: 100%;\n  width: auto;\n  height: auto;\n  z-index: -100;\n  -webkit-transform: translateX(-50%) translateY(-50%);\n          transform: translateX(-50%) translateY(-50%);\n  background-size: cover;\n}\n.text-overlay[data-v-103ff8f6] {\n  font-weight: 100;\n  background: rgba(0, 0, 0, 0.3);\n  color: white;\n  padding: 2rem;\n  width: 33%;\n  margin: 2rem;\n  float: right;\n  font-size: 1.2rem;\n  min-height: 410px;\n}\n.text-overlay h1[data-v-103ff8f6] {\n  color: #fff;\n  font-size: 38px;\n}\n.text-overlay h2[data-v-103ff8f6] {\n  font-size: 28px;\n  color: #fff;\n}\n.text-overlay p[data-v-103ff8f6] {\n  font-size: 14px;\n}\n", ""]);
 
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58681,7 +61489,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 });
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -58730,7 +61538,7 @@ if (false) {
 }
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -58764,19 +61572,19 @@ if (false) {
 }
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(66)
+  __webpack_require__(67)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(68)
+var __vue_script__ = __webpack_require__(69)
 /* template */
-var __vue_template__ = __webpack_require__(72)
+var __vue_template__ = __webpack_require__(74)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -58815,17 +61623,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(67);
+var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("2c5504ce", content, false, {});
+var update = __webpack_require__(2)("2c5504ce", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -58841,25 +61649,25 @@ if(false) {
 }
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
 exports.push([module.i, "\n.section {\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
 
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scrollmagic__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scrollmagic__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scrollmagic__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__);
 //
 //
@@ -59025,7 +61833,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = function(originalModule) {
@@ -59055,14 +61863,14 @@ module.exports = function(originalModule) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export TweenMax */
 /* unused harmony export default */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__TweenMaxBase_js__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__TweenMaxBase_js__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CSSPlugin_js__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__AttrPlugin_js__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__RoundPropsPlugin_js__ = __webpack_require__(21);
@@ -59129,14 +61937,14 @@ TweenMax._autoActivated = [__WEBPACK_IMPORTED_MODULE_6__TimelineLite_js__["a" /*
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export TweenMax */
 /* unused harmony export TweenMaxBase */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TweenMax; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
 /* unused harmony reexport TweenLite */
 /* unused harmony reexport Ease */
 /* unused harmony reexport Power0 */
@@ -59785,7 +62593,687 @@ var TweenMaxBase = TweenMax;
 
 
 /***/ }),
-/* 72 */
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * ScrollMagic v2.0.6 (2018-10-08)
+ * The javascript library for magical scroll interactions.
+ * (c) 2018 Jan Paepke (@janpaepke)
+ * Project Website: http://scrollmagic.io
+ * 
+ * @version 2.0.6
+ * @license Dual licensed under MIT license and GPL.
+ * @author Jan Paepke - e-mail@janpaepke.de
+ *
+ * @file Debug Extension for ScrollMagic.
+ */
+/**
+ * This plugin was formerly known as the ScrollMagic debug extension.
+ *
+ * It enables you to add visual indicators to your page, to be able to see exactly when a scene is triggered.
+ *
+ * To have access to this extension, please include `plugins/debug.addIndicators.js`.
+ * @mixin debug.addIndicators
+ */
+(function (root, factory) {
+	if (true) {
+		// AMD. Register as an anonymous module.
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if (typeof exports === 'object') {
+		// CommonJS
+		factory(require('scrollmagic'));
+	} else {
+		// no browser global export needed, just execute
+		factory(root.ScrollMagic || (root.jQuery && root.jQuery.ScrollMagic));
+	}
+}(this, function (ScrollMagic) {
+	"use strict";
+	var NAMESPACE = "debug.addIndicators";
+
+	var
+	console = window.console || {},
+		err = Function.prototype.bind.call(console.error || console.log ||
+		function () {}, console);
+	if (!ScrollMagic) {
+		err("(" + NAMESPACE + ") -> ERROR: The ScrollMagic main module could not be found. Please make sure it's loaded before this plugin or use an asynchronous loader like requirejs.");
+	}
+
+	// plugin settings
+	var
+	FONT_SIZE = "0.85em",
+		ZINDEX = "9999",
+		EDGE_OFFSET = 15; // minimum edge distance, added to indentation
+
+	// overall vars
+	var
+	_util = ScrollMagic._util,
+		_autoindex = 0;
+
+
+
+	ScrollMagic.Scene.extend(function () {
+		var
+		Scene = this,
+			_indicator;
+
+		var log = function () {
+			if (Scene._log) { // not available, when main source minified
+				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ")", "->");
+				Scene._log.apply(this, arguments);
+			}
+		};
+
+		/**
+		 * Add visual indicators for a ScrollMagic.Scene.  
+		 * @memberof! debug.addIndicators#
+		 *
+		 * @example
+		 * // add basic indicators
+		 * scene.addIndicators()
+		 *
+		 * // passing options
+		 * scene.addIndicators({name: "pin scene", colorEnd: "#FFFFFF"});
+		 *
+		 * @param {object} [options] - An object containing one or more options for the indicators.
+		 * @param {(string|object)} [options.parent=undefined] - A selector, DOM Object or a jQuery object that the indicators should be added to.  
+		 If undefined, the controller's container will be used.
+		 * @param {number} [options.name=""] - This string will be displayed at the start and end indicators of the scene for identification purposes. If no name is supplied an automatic index will be used.
+		 * @param {number} [options.indent=0] - Additional position offset for the indicators (useful, when having multiple scenes starting at the same position).
+		 * @param {string} [options.colorStart=green] - CSS color definition for the start indicator.
+		 * @param {string} [options.colorEnd=red] - CSS color definition for the end indicator.
+		 * @param {string} [options.colorTrigger=blue] - CSS color definition for the trigger indicator.
+		 */
+		Scene.addIndicators = function (options) {
+			if (!_indicator) {
+				var
+				DEFAULT_OPTIONS = {
+					name: "",
+					indent: 0,
+					parent: undefined,
+					colorStart: "green",
+					colorEnd: "red",
+					colorTrigger: "blue",
+				};
+
+				options = _util.extend({}, DEFAULT_OPTIONS, options);
+
+				_autoindex++;
+				_indicator = new Indicator(Scene, options);
+
+				Scene.on("add.plugin_addIndicators", _indicator.add);
+				Scene.on("remove.plugin_addIndicators", _indicator.remove);
+				Scene.on("destroy.plugin_addIndicators", Scene.removeIndicators);
+
+				// it the scene already has a controller we can start right away.
+				if (Scene.controller()) {
+					_indicator.add();
+				}
+			}
+			return Scene;
+		};
+
+		/**
+		 * Removes visual indicators from a ScrollMagic.Scene.
+		 * @memberof! debug.addIndicators#
+		 *
+		 * @example
+		 * // remove previously added indicators
+		 * scene.removeIndicators()
+		 *
+		 */
+		Scene.removeIndicators = function () {
+			if (_indicator) {
+				_indicator.remove();
+				this.off("*.plugin_addIndicators");
+				_indicator = undefined;
+			}
+			return Scene;
+		};
+
+	});
+
+
+/*
+	 * ----------------------------------------------------------------
+	 * Extension for controller to store and update related indicators
+	 * ----------------------------------------------------------------
+	 */
+	// add option to globally auto-add indicators to scenes
+	/**
+	 * Every ScrollMagic.Controller instance now accepts an additional option.  
+	 * See {@link ScrollMagic.Controller} for a complete list of the standard options.
+	 * @memberof! debug.addIndicators#
+	 * @method new ScrollMagic.Controller(options)
+	 * @example
+	 * // make a controller and add indicators to all scenes attached
+	 * var controller = new ScrollMagic.Controller({addIndicators: true});
+	 * // this scene will automatically have indicators added to it
+	 * new ScrollMagic.Scene()
+	 *                .addTo(controller);
+	 *
+	 * @param {object} [options] - Options for the Controller.
+	 * @param {boolean} [options.addIndicators=false] - If set to `true` every scene that is added to the controller will automatically get indicators added to it.
+	 */
+	ScrollMagic.Controller.addOption("addIndicators", false);
+	// extend Controller
+	ScrollMagic.Controller.extend(function () {
+		var
+		Controller = this,
+			_info = Controller.info(),
+			_container = _info.container,
+			_isDocument = _info.isDocument,
+			_vertical = _info.vertical,
+			_indicators = { // container for all indicators and methods
+				groups: []
+			};
+
+		var log = function () {
+			if (Controller._log) { // not available, when main source minified
+				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ")", "->");
+				Controller._log.apply(this, arguments);
+			}
+		};
+		if (Controller._indicators) {
+			log(2, "WARNING: Scene already has a property '_indicators', which will be overwritten by plugin.");
+		}
+
+		// add indicators container
+		this._indicators = _indicators;
+/*
+			needed updates:
+			+++++++++++++++
+			start/end position on scene shift (handled in Indicator class)
+			trigger parameters on triggerHook value change (handled in Indicator class)
+			bounds position on container scroll or resize (to keep alignment to bottom/right)
+			trigger position on container resize, window resize (if container isn't document) and window scroll (if container isn't document)
+		*/
+
+		// event handler for when associated bounds markers need to be repositioned
+		var handleBoundsPositionChange = function () {
+			_indicators.updateBoundsPositions();
+		};
+
+		// event handler for when associated trigger groups need to be repositioned
+		var handleTriggerPositionChange = function () {
+			_indicators.updateTriggerGroupPositions();
+		};
+
+		_container.addEventListener("resize", handleTriggerPositionChange);
+		if (!_isDocument) {
+			window.addEventListener("resize", handleTriggerPositionChange);
+			window.addEventListener("scroll", handleTriggerPositionChange);
+		}
+		// update all related bounds containers
+		_container.addEventListener("resize", handleBoundsPositionChange);
+		_container.addEventListener("scroll", handleBoundsPositionChange);
+
+
+		// updates the position of the bounds container to aligned to the right for vertical containers and to the bottom for horizontal
+		this._indicators.updateBoundsPositions = function (specificIndicator) {
+			var // constant for all bounds
+			groups = specificIndicator ? [_util.extend({}, specificIndicator.triggerGroup, {
+				members: [specificIndicator]
+			})] : // create a group with only one element
+			_indicators.groups,
+				// use all
+				g = groups.length,
+				css = {},
+				paramPos = _vertical ? "left" : "top",
+				paramDimension = _vertical ? "width" : "height",
+				edge = _vertical ? _util.get.scrollLeft(_container) + _util.get.width(_container) - EDGE_OFFSET : _util.get.scrollTop(_container) + _util.get.height(_container) - EDGE_OFFSET,
+				b, triggerSize, group;
+			while (g--) { // group loop
+				group = groups[g];
+				b = group.members.length;
+				triggerSize = _util.get[paramDimension](group.element.firstChild);
+				while (b--) { // indicators loop
+					css[paramPos] = edge - triggerSize;
+					_util.css(group.members[b].bounds, css);
+				}
+			}
+		};
+
+		// updates the positions of all trigger groups attached to a controller or a specific one, if provided
+		this._indicators.updateTriggerGroupPositions = function (specificGroup) {
+			var // constant vars
+			groups = specificGroup ? [specificGroup] : _indicators.groups,
+				i = groups.length,
+				container = _isDocument ? document.body : _container,
+				containerOffset = _isDocument ? {
+					top: 0,
+					left: 0
+				} : _util.get.offset(container, true),
+				edge = _vertical ? _util.get.width(_container) - EDGE_OFFSET : _util.get.height(_container) - EDGE_OFFSET,
+				paramDimension = _vertical ? "width" : "height",
+				paramTransform = _vertical ? "Y" : "X";
+			var // changing vars
+			group, elem, pos, elemSize, transform;
+			while (i--) {
+				group = groups[i];
+				elem = group.element;
+				pos = group.triggerHook * Controller.info("size");
+				elemSize = _util.get[paramDimension](elem.firstChild.firstChild);
+				transform = pos > elemSize ? "translate" + paramTransform + "(-100%)" : "";
+
+				_util.css(elem, {
+					top: containerOffset.top + (_vertical ? pos : edge - group.members[0].options.indent),
+					left: containerOffset.left + (_vertical ? edge - group.members[0].options.indent : pos)
+				});
+				_util.css(elem.firstChild.firstChild, {
+					"-ms-transform": transform,
+					"-webkit-transform": transform,
+					"transform": transform
+				});
+			}
+		};
+
+		// updates the label for the group to contain the name, if it only has one member
+		this._indicators.updateTriggerGroupLabel = function (group) {
+			var
+			text = "trigger" + (group.members.length > 1 ? "" : " " + group.members[0].options.name),
+				elem = group.element.firstChild.firstChild,
+				doUpdate = elem.textContent !== text;
+			if (doUpdate) {
+				elem.textContent = text;
+				if (_vertical) { // bounds position is dependent on text length, so update
+					_indicators.updateBoundsPositions();
+				}
+			}
+		};
+
+		// add indicators if global option is set
+		this.addScene = function (newScene) {
+
+			if (this._options.addIndicators && newScene instanceof ScrollMagic.Scene && newScene.controller() === Controller) {
+				newScene.addIndicators();
+			}
+			// call original destroy method
+			this.$super.addScene.apply(this, arguments);
+		};
+
+		// remove all previously set listeners on destroy
+		this.destroy = function () {
+			_container.removeEventListener("resize", handleTriggerPositionChange);
+			if (!_isDocument) {
+				window.removeEventListener("resize", handleTriggerPositionChange);
+				window.removeEventListener("scroll", handleTriggerPositionChange);
+			}
+			_container.removeEventListener("resize", handleBoundsPositionChange);
+			_container.removeEventListener("scroll", handleBoundsPositionChange);
+			// call original destroy method
+			this.$super.destroy.apply(this, arguments);
+		};
+		return Controller;
+
+	});
+
+/*
+	 * ----------------------------------------------------------------
+	 * Internal class for the construction of Indicators
+	 * ----------------------------------------------------------------
+	 */
+	var Indicator = function (Scene, options) {
+		var
+		Indicator = this,
+			_elemBounds = TPL.bounds(),
+			_elemStart = TPL.start(options.colorStart),
+			_elemEnd = TPL.end(options.colorEnd),
+			_boundsContainer = options.parent && _util.get.elements(options.parent)[0],
+			_vertical, _ctrl;
+
+		var log = function () {
+			if (Scene._log) { // not available, when main source minified
+				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ")", "->");
+				Scene._log.apply(this, arguments);
+			}
+		};
+
+		options.name = options.name || _autoindex;
+
+		// prepare bounds elements
+		_elemStart.firstChild.textContent += " " + options.name;
+		_elemEnd.textContent += " " + options.name;
+		_elemBounds.appendChild(_elemStart);
+		_elemBounds.appendChild(_elemEnd);
+
+		// set public variables
+		Indicator.options = options;
+		Indicator.bounds = _elemBounds;
+		// will be set later
+		Indicator.triggerGroup = undefined;
+
+		// add indicators to DOM
+		this.add = function () {
+			_ctrl = Scene.controller();
+			_vertical = _ctrl.info("vertical");
+
+			var isDocument = _ctrl.info("isDocument");
+
+			if (!_boundsContainer) {
+				// no parent supplied or doesnt exist
+				_boundsContainer = isDocument ? document.body : _ctrl.info("container"); // check if window/document (then use body)
+			}
+			if (!isDocument && _util.css(_boundsContainer, "position") === 'static') {
+				// position mode needed for correct positioning of indicators
+				_util.css(_boundsContainer, {
+					position: "relative"
+				});
+			}
+
+			// add listeners for updates
+			Scene.on("change.plugin_addIndicators", handleTriggerParamsChange);
+			Scene.on("shift.plugin_addIndicators", handleBoundsParamsChange);
+
+			// updates trigger & bounds (will add elements if needed)
+			updateTriggerGroup();
+			updateBounds();
+
+			setTimeout(function () { // do after all execution is finished otherwise sometimes size calculations are off
+				_ctrl._indicators.updateBoundsPositions(Indicator);
+			}, 0);
+
+			log(3, "added indicators");
+		};
+
+		// remove indicators from DOM
+		this.remove = function () {
+			if (Indicator.triggerGroup) { // if not set there's nothing to remove
+				Scene.off("change.plugin_addIndicators", handleTriggerParamsChange);
+				Scene.off("shift.plugin_addIndicators", handleBoundsParamsChange);
+
+				if (Indicator.triggerGroup.members.length > 1) {
+					// just remove from memberlist of old group
+					var group = Indicator.triggerGroup;
+					group.members.splice(group.members.indexOf(Indicator), 1);
+					_ctrl._indicators.updateTriggerGroupLabel(group);
+					_ctrl._indicators.updateTriggerGroupPositions(group);
+					Indicator.triggerGroup = undefined;
+				} else {
+					// remove complete group
+					removeTriggerGroup();
+				}
+				removeBounds();
+
+				log(3, "removed indicators");
+			}
+		};
+
+/*
+		 * ----------------------------------------------------------------
+		 * internal Event Handlers
+		 * ----------------------------------------------------------------
+		 */
+
+		// event handler for when bounds params change
+		var handleBoundsParamsChange = function () {
+			updateBounds();
+		};
+
+		// event handler for when trigger params change
+		var handleTriggerParamsChange = function (e) {
+			if (e.what === "triggerHook") {
+				updateTriggerGroup();
+			}
+		};
+
+/*
+		 * ----------------------------------------------------------------
+		 * Bounds (start / stop) management
+		 * ----------------------------------------------------------------
+		 */
+
+		// adds an new bounds elements to the array and to the DOM
+		var addBounds = function () {
+			var v = _ctrl.info("vertical");
+			// apply stuff we didn't know before...
+			_util.css(_elemStart.firstChild, {
+				"border-bottom-width": v ? 1 : 0,
+				"border-right-width": v ? 0 : 1,
+				"bottom": v ? -1 : options.indent,
+				"right": v ? options.indent : -1,
+				"padding": v ? "0 8px" : "2px 4px",
+			});
+			_util.css(_elemEnd, {
+				"border-top-width": v ? 1 : 0,
+				"border-left-width": v ? 0 : 1,
+				"top": v ? "100%" : "",
+				"right": v ? options.indent : "",
+				"bottom": v ? "" : options.indent,
+				"left": v ? "" : "100%",
+				"padding": v ? "0 8px" : "2px 4px"
+			});
+			// append
+			_boundsContainer.appendChild(_elemBounds);
+		};
+
+		// remove bounds from list and DOM
+		var removeBounds = function () {
+			_elemBounds.parentNode.removeChild(_elemBounds);
+		};
+
+		// update the start and end positions of the scene
+		var updateBounds = function () {
+			if (_elemBounds.parentNode !== _boundsContainer) {
+				addBounds(); // Add Bounds elements (start/end)
+			}
+			var css = {};
+			css[_vertical ? "top" : "left"] = Scene.triggerPosition();
+			css[_vertical ? "height" : "width"] = Scene.duration();
+			_util.css(_elemBounds, css);
+			_util.css(_elemEnd, {
+				display: Scene.duration() > 0 ? "" : "none"
+			});
+		};
+
+/*
+		 * ----------------------------------------------------------------
+		 * trigger and trigger group management
+		 * ----------------------------------------------------------------
+		 */
+
+		// adds an new trigger group to the array and to the DOM
+		var addTriggerGroup = function () {
+			var triggerElem = TPL.trigger(options.colorTrigger); // new trigger element
+			var css = {};
+			css[_vertical ? "right" : "bottom"] = 0;
+			css[_vertical ? "border-top-width" : "border-left-width"] = 1;
+			_util.css(triggerElem.firstChild, css);
+			_util.css(triggerElem.firstChild.firstChild, {
+				padding: _vertical ? "0 8px 3px 8px" : "3px 4px"
+			});
+			document.body.appendChild(triggerElem); // directly add to body
+			var newGroup = {
+				triggerHook: Scene.triggerHook(),
+				element: triggerElem,
+				members: [Indicator]
+			};
+			_ctrl._indicators.groups.push(newGroup);
+			Indicator.triggerGroup = newGroup;
+			// update right away
+			_ctrl._indicators.updateTriggerGroupLabel(newGroup);
+			_ctrl._indicators.updateTriggerGroupPositions(newGroup);
+		};
+
+		var removeTriggerGroup = function () {
+			_ctrl._indicators.groups.splice(_ctrl._indicators.groups.indexOf(Indicator.triggerGroup), 1);
+			Indicator.triggerGroup.element.parentNode.removeChild(Indicator.triggerGroup.element);
+			Indicator.triggerGroup = undefined;
+		};
+
+		// updates the trigger group -> either join existing or add new one
+/*	
+		 * Logic:
+		 * 1 if a trigger group exist, check if it's in sync with Scene settings – if so, nothing else needs to happen
+		 * 2 try to find an existing one that matches Scene parameters
+		 * 	 2.1 If a match is found check if already assigned to an existing group
+		 *			 If so:
+		 *       A: it was the last member of existing group -> kill whole group
+		 *       B: the existing group has other members -> just remove from member list
+		 *	 2.2 Assign to matching group
+		 * 3 if no new match could be found, check if assigned to existing group
+		 *   A: yes, and it's the only member -> just update parameters and positions and keep using this group
+		 *   B: yes but there are other members -> remove from member list and create a new one
+		 *   C: no, so create a new one
+		 */
+		var updateTriggerGroup = function () {
+			var
+			triggerHook = Scene.triggerHook(),
+				closeEnough = 0.0001;
+
+			// Have a group, check if it still matches
+			if (Indicator.triggerGroup) {
+				if (Math.abs(Indicator.triggerGroup.triggerHook - triggerHook) < closeEnough) {
+					// _util.log(0, "trigger", options.name, "->", "no need to change, still in sync");
+					return; // all good
+				}
+			}
+			// Don't have a group, check if a matching one exists
+			// _util.log(0, "trigger", options.name, "->", "out of sync!");
+			var
+			groups = _ctrl._indicators.groups,
+				group, i = groups.length;
+			while (i--) {
+				group = groups[i];
+				if (Math.abs(group.triggerHook - triggerHook) < closeEnough) {
+					// found a match!
+					// _util.log(0, "trigger", options.name, "->", "found match");
+					if (Indicator.triggerGroup) { // do I have an old group that is out of sync?
+						if (Indicator.triggerGroup.members.length === 1) { // is it the only remaining group?
+							// _util.log(0, "trigger", options.name, "->", "kill");
+							// was the last member, remove the whole group
+							removeTriggerGroup();
+						} else {
+							Indicator.triggerGroup.members.splice(Indicator.triggerGroup.members.indexOf(Indicator), 1); // just remove from memberlist of old group
+							_ctrl._indicators.updateTriggerGroupLabel(Indicator.triggerGroup);
+							_ctrl._indicators.updateTriggerGroupPositions(Indicator.triggerGroup);
+							// _util.log(0, "trigger", options.name, "->", "removing from previous member list");
+						}
+					}
+					// join new group
+					group.members.push(Indicator);
+					Indicator.triggerGroup = group;
+					_ctrl._indicators.updateTriggerGroupLabel(group);
+					return;
+				}
+			}
+
+			// at this point I am obviously out of sync and don't match any other group
+			if (Indicator.triggerGroup) {
+				if (Indicator.triggerGroup.members.length === 1) {
+					// _util.log(0, "trigger", options.name, "->", "updating existing");
+					// out of sync but i'm the only member => just change and update
+					Indicator.triggerGroup.triggerHook = triggerHook;
+					_ctrl._indicators.updateTriggerGroupPositions(Indicator.triggerGroup);
+					return;
+				} else {
+					// _util.log(0, "trigger", options.name, "->", "removing from previous member list");
+					Indicator.triggerGroup.members.splice(Indicator.triggerGroup.members.indexOf(Indicator), 1); // just remove from memberlist of old group
+					_ctrl._indicators.updateTriggerGroupLabel(Indicator.triggerGroup);
+					_ctrl._indicators.updateTriggerGroupPositions(Indicator.triggerGroup);
+					Indicator.triggerGroup = undefined; // need a brand new group...
+				}
+			}
+			// _util.log(0, "trigger", options.name, "->", "add a new one");
+			// did not find any match, make new trigger group
+			addTriggerGroup();
+		};
+	};
+
+/*
+	 * ----------------------------------------------------------------
+	 * Templates for the indicators
+	 * ----------------------------------------------------------------
+	 */
+	var TPL = {
+		start: function (color) {
+			// inner element (for bottom offset -1, while keeping top position 0)
+			var inner = document.createElement("div");
+			inner.textContent = "start";
+			_util.css(inner, {
+				position: "absolute",
+				overflow: "visible",
+				"border-width": 0,
+				"border-style": "solid",
+				color: color,
+				"border-color": color
+			});
+			var e = document.createElement('div');
+			// wrapper
+			_util.css(e, {
+				position: "absolute",
+				overflow: "visible",
+				width: 0,
+				height: 0
+			});
+			e.appendChild(inner);
+			return e;
+		},
+		end: function (color) {
+			var e = document.createElement('div');
+			e.textContent = "end";
+			_util.css(e, {
+				position: "absolute",
+				overflow: "visible",
+				"border-width": 0,
+				"border-style": "solid",
+				color: color,
+				"border-color": color
+			});
+			return e;
+		},
+		bounds: function () {
+			var e = document.createElement('div');
+			_util.css(e, {
+				position: "absolute",
+				overflow: "visible",
+				"white-space": "nowrap",
+				"pointer-events": "none",
+				"font-size": FONT_SIZE
+			});
+			e.style.zIndex = ZINDEX;
+			return e;
+		},
+		trigger: function (color) {
+			// inner to be above or below line but keep position
+			var inner = document.createElement('div');
+			inner.textContent = "trigger";
+			_util.css(inner, {
+				position: "relative",
+			});
+			// inner wrapper for right: 0 and main element has no size
+			var w = document.createElement('div');
+			_util.css(w, {
+				position: "absolute",
+				overflow: "visible",
+				"border-width": 0,
+				"border-style": "solid",
+				color: color,
+				"border-color": color
+			});
+			w.appendChild(inner);
+			// wrapper
+			var e = document.createElement('div');
+			_util.css(e, {
+				position: "fixed",
+				overflow: "visible",
+				"white-space": "nowrap",
+				"pointer-events": "none",
+				"font-size": FONT_SIZE
+			});
+			e.style.zIndex = ZINDEX;
+			e.appendChild(w);
+			return e;
+		},
+	};
+
+}));
+
+/***/ }),
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -59892,19 +63380,19 @@ if (false) {
 }
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(74)
+  __webpack_require__(76)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(76)
+var __vue_script__ = __webpack_require__(78)
 /* template */
-var __vue_template__ = __webpack_require__(77)
+var __vue_template__ = __webpack_require__(79)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -59943,17 +63431,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(75);
+var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("1b71750f", content, false, {});
+var update = __webpack_require__(2)("1b71750f", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -59969,22 +63457,22 @@ if(false) {
 }
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
 exports.push([module.i, "\n.section {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.product-container {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.product-container .product-image {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.product-container .product-image .image {\n      max-width: 240px;\n      height: auto;\n      max-height: 80vh;\n}\n", ""]);
 
 
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(6);
 //
 //
 //
@@ -60104,7 +63592,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -60265,19 +63753,518 @@ if (false) {
 }
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(79)
+  __webpack_require__(81)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(81)
+var __vue_script__ = __webpack_require__(83)
 /* template */
-var __vue_template__ = __webpack_require__(95)
+var __vue_template__ = __webpack_require__(89)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/views/Cart.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-29106a82", Component.options)
+  } else {
+    hotAPI.reload("data-v-29106a82", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(82);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("63d70d1a", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-29106a82\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Cart.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-29106a82\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Cart.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// Module
+exports.push([module.i, "\n.section {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 83 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'Cart',
+  components: {
+    CartRow: __WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue___default.a
+  },
+  data: function data() {
+    return {
+      cartTotal: 0
+    };
+  },
+  watch: {
+    '$root.cart': function $rootCart(cart) {
+      this.updateTotal(cart);
+    }
+  },
+  methods: {
+    updateTotal: function updateTotal(cart) {
+      var total = 0;
+
+      for (var i = 0; i < cart.length; i++) {
+        total = total + cart[i].quantity * cart[i].price;
+      }
+
+      this.cartTotal = total.toFixed(2);
+    },
+    cartUpdate: function cartUpdate(product) {
+      this.$root.cartUpdate(product);
+    },
+    cartRemove: function cartRemove(idx) {
+      this.$root.cartRemove(idx);
+    }
+  },
+  mounted: function mounted() {
+    if (this.$root.cart) {
+      this.updateTotal(this.$root.cart);
+    }
+  }
+});
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(85)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(87)
+/* template */
+var __vue_template__ = __webpack_require__(88)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/CartRow.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6bbc8202", Component.options)
+  } else {
+    hotAPI.reload("data-v-6bbc8202", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(86);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("1cf38d8c", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6bbc8202\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartRow.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6bbc8202\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartRow.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// Module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+
+
+/***/ }),
+/* 87 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'CartRow',
+  props: {
+    title: {
+      type: String,
+      default: 'prodotto'
+    },
+    quantity: {
+      type: Number,
+      default: 0
+    },
+    price: {
+      type: Number,
+      default: 0
+    },
+    idx: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    total: function total() {
+      var total = this.price * this.quantity;
+      return total.toFixed(2);
+    }
+  },
+  data: function data() {
+    return {
+      hasTrash: 'invisible'
+    };
+  },
+  methods: {
+    showTrash: function showTrash() {
+      this.hasTrash = 'visible';
+    },
+    hideTrash: function hideTrash() {
+      this.hasTrash = 'invisible';
+    },
+    remove: function remove() {
+      this.$emit('cart-remove', this.idx);
+    },
+    addQuantity: function addQuantity() {
+      var item = {
+        id: this.idx,
+        quantity: this.quantity + 1
+      };
+      this.$emit('cart-update', item);
+    },
+    removeQuantity: function removeQuantity() {
+      if (this.quantity > 0) {
+        var item = {
+          id: this.idx,
+          quantity: this.quantity - 1
+        };
+        this.$emit('cart-update', item);
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "tr",
+    { on: { mouseenter: _vm.showTrash, mouseleave: _vm.hideTrash } },
+    [
+      _c("td", [
+        _vm._v("\n        " + _vm._s(_vm.title) + "\n        "),
+        _c("span", { class: _vm.hasTrash }, [
+          _c(
+            "button",
+            { staticClass: "btn btn-link btn-sm", on: { click: _vm.remove } },
+            [_vm._v("Rimuovi dal carrello")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("td", [
+        _c(
+          "button",
+          { staticClass: "btn btn-link", on: { click: _vm.removeQuantity } },
+          [_vm._v("-")]
+        ),
+        _vm._v("\n        " + _vm._s(_vm.quantity) + "\n        "),
+        _c(
+          "button",
+          { staticClass: "btn btn-link", on: { click: _vm.addQuantity } },
+          [_vm._v("+")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("td", [_vm._v("€ " + _vm._s(_vm.total))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-6bbc8202", module.exports)
+  }
+}
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row section" }, [
+      _c("div", { staticClass: "col" }, [
+        _c("h1", [_vm._v("Carrello")]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table my-4" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(this.$root.cart, function(product) {
+              return _c("cart-row", {
+                key: product.id,
+                attrs: {
+                  idx: product.id,
+                  title: product.title,
+                  price: product.price,
+                  quantity: product.quantity
+                },
+                on: {
+                  "cart-update": _vm.cartUpdate,
+                  "cart-remove": _vm.cartRemove
+                }
+              })
+            }),
+            1
+          ),
+          _vm._v(" "),
+          _c("tfoot", [
+            _c("tr", [
+              _c("td", { attrs: { colspan: "2" } }, [_vm._v("Totale")]),
+              _vm._v(" "),
+              _c("td", [_vm._v("€ " + _vm._s(this.cartTotal))])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "btns" },
+          [
+            _c("a", { staticClass: "btn btn-primary", attrs: { href: "#" } }, [
+              _vm._v("Procedi con il pagamento")
+            ]),
+            _vm._v(" "),
+            _c(
+              "router-link",
+              {
+                staticClass: "btn btn-link",
+                attrs: {
+                  tag: "a",
+                  to: { path: "/vini" },
+                  "exact-active-class": "active"
+                }
+              },
+              [
+                _vm._v(
+                  "\n                    Continua con lo shopping\n                "
+                )
+              ]
+            )
+          ],
+          1
+        )
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("td", [_vm._v("Prodotto")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Quantità")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Prezzo")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-29106a82", module.exports)
+  }
+}
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(91)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(93)
+/* template */
+var __vue_template__ = __webpack_require__(121)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -60316,17 +64303,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 79 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(80);
+var content = __webpack_require__(92);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("2bee08c2", content, false, {});
+var update = __webpack_require__(2)("2bee08c2", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -60342,24 +64329,24 @@ if(false) {
 }
 
 /***/ }),
-/* 80 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
 exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
 /***/ }),
-/* 81 */
+/* 93 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MainNav_vue__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MainNav_vue__ = __webpack_require__(94);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MainNav_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__MainNav_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__MenuOverlay_vue__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__MenuOverlay_vue__ = __webpack_require__(116);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__MenuOverlay_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__MenuOverlay_vue__);
 //
 //
@@ -60426,19 +64413,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 82 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(83)
+  __webpack_require__(95)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(85)
+var __vue_script__ = __webpack_require__(97)
 /* template */
-var __vue_template__ = __webpack_require__(94)
+var __vue_template__ = __webpack_require__(115)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -60477,17 +64464,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 83 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(84);
+var content = __webpack_require__(96);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("39225d31", content, false, {});
+var update = __webpack_require__(2)("39225d31", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -60503,29 +64490,34 @@ if(false) {
 }
 
 /***/ }),
-/* 84 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
 exports.push([module.i, "\n.navbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  min-height: 60px;\n  height: 70px;\n  background-color: rgba(255, 255, 255, 0);\n  z-index: 9999;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n.navbar .nav-link {\n    font-weight: normal;\n    letter-spacing: 1px;\n}\n.navbar .navbar-brand {\n    padding-top: 1rem;\n}\n", ""]);
 
 
 
 /***/ }),
-/* 85 */
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue__ = __webpack_require__(98);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue__ = __webpack_require__(103);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue__ = __webpack_require__(110);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__ = __webpack_require__(86);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_gsap__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_gsap__ = __webpack_require__(6);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -60568,6 +64560,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       hasCart: false,
+      hasLogo: true,
+      menuClass: 'ml-auto',
       opened: false,
       text: {}
     };
@@ -60581,86 +64575,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.hasCart = false;
         this.$refs.icon.hide();
       }
+    },
+    '$root.navLogo': function $rootNavLogo(logo) {
+      if (!logo) {
+        this.hasLogo = false;
+        this.menuClass = 'mr-auto';
+        return true;
+      }
+
+      this.hasLogo = true;
+      this.menuClass = 'ml-auto';
     }
   },
   methods: {
+    hoverAnim: function hoverAnim() {
+      this.$refs.menu.hoverAnim();
+    },
     changeStatus: function changeStatus(value) {
       this.opened = value;
     },
     menuToggle: function menuToggle($event) {
-      var _this = this;
-
       $event.preventDefault();
-      var text = new __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__["a" /* default */](this.$refs.text, {
-        type: 'chars'
-      });
 
       if (this.opened) {
-        var t1 = new __WEBPACK_IMPORTED_MODULE_4_gsap__["a" /* TimelineMax */]();
-        t1.staggerTo(text.chars, .1, {
-          opacity: 0,
-          y: -10
-        }, .05).set(this.$refs.text, {
-          opacity: 0
-        }).eventCallback('onComplete', function () {
-          t1.pause();
-          text.revert();
-          _this.$refs.text.innerHTML = 'MENU';
-          text = new __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__["a" /* default */](_this.$refs.text, {
-            type: 'chars'
-          });
-
-          for (var i = 0; i < text.chars.length; i++) {
-            text.chars[i].style.opacity = 0;
-          }
-
-          _this.$refs.text.style.opacity = 1;
-          TweenMax.staggerFromTo(text.chars, .1, {
-            opacity: 0,
-            y: -10
-          }, {
-            opacity: 1,
-            y: 0
-          }, .05);
-        });
         this.$emit('menu-close');
         this.$refs.menu.close();
       } else {
-        var _text = new __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__["a" /* default */](this.$refs.text, {
-          type: 'chars'
-        });
-
-        var _t = new __WEBPACK_IMPORTED_MODULE_4_gsap__["a" /* TimelineMax */]();
-
-        _t.staggerTo(_text.chars, .1, {
-          opacity: 0,
-          y: -10
-        }, .05).set(this.$refs.text, {
-          opacity: 0
-        }).eventCallback('onComplete', function () {
-          _t.pause();
-
-          _text.revert();
-
-          _this.$refs.text.innerHTML = 'CHIUDI';
-          _text = new __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__["a" /* default */](_this.$refs.text, {
-            type: 'chars'
-          });
-
-          for (var i = 0; i < _text.chars.length; i++) {
-            _text.chars[i].style.opacity = 0;
-          }
-
-          _this.$refs.text.style.opacity = 1;
-          TweenMax.staggerFromTo(_text.chars, .1, {
-            opacity: 0,
-            y: -10
-          }, {
-            opacity: 1,
-            y: 0
-          }, .05);
-        });
-
         this.$emit('menu-open');
         this.$refs.menu.open();
       }
@@ -60669,589 +64609,225 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 86 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export SplitText */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SplitText; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__ = __webpack_require__(1);
-/*!
- * VERSION: 0.6.1
- * DATE: 2018-08-27
- * UPDATES AND DOCS AT: http://greensock.com
- *
- * @license Copyright (c) 2008-2018, GreenSock. All rights reserved.
- * SplitText is a Club GreenSock membership benefit; You must have a valid membership to use
- * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
- * This work is subject to the software agreement that was issued with your membership.
- * 
- * @author: Jack Doyle, jack@greensock.com
- */
-
-
-
-(function(window) {
-	
-	"use strict";
-	var _globals = window.GreenSockGlobals || window,
-		_namespace = function(ns) {
-			var a = ns.split("."),
-				p = _globals, i;
-			for (i = 0; i < a.length; i++) {
-				p[a[i]] = p = p[a[i]] || {};
-			}
-			return p;
-		},
-		pkg = _namespace("com.greensock.utils"),
-		_getText = function(e) {
-			var type = e.nodeType,
-				result = "";
-			if (type === 1 || type === 9 || type === 11) {
-				if (typeof(e.textContent) === "string") {
-					return e.textContent;
-				} else {
-					for ( e = e.firstChild; e; e = e.nextSibling ) {
-						result += _getText(e);
-					}
-				}
-			} else if (type === 3 || type === 4) {
-				return e.nodeValue;
-			}
-			return result;
-		},
-		_doc = document,
-		_getComputedStyle = _doc.defaultView ? _doc.defaultView.getComputedStyle : function() {},
-		_capsExp = /([A-Z])/g,
-		_getStyle = function(t, p, cs, str) {
-			var result;
-			if ((cs = cs || _getComputedStyle(t, null))) {
-				t = cs.getPropertyValue(p.replace(_capsExp, "-$1").toLowerCase());
-				result = (t || cs.length) ? t : cs[p]; //Opera behaves VERY strangely - length is usually 0 and cs[p] is the only way to get accurate results EXCEPT when checking for -o-transform which only works with cs.getPropertyValue()!
-			} else if (t.currentStyle) {
-				cs = t.currentStyle;
-				result = cs[p];
-			}
-			return str ? result : parseInt(result, 10) || 0;
-		},
-		_isArrayLike = function(e) {
-			return (e.length && e[0] && ((e[0].nodeType && e[0].style && !e.nodeType) || (e[0].length && e[0][0]))) ? true : false; //could be an array of jQuery objects too, so accommodate that.
-		},
-		_flattenArray = function(a) {
-			var result = [],
-				l = a.length,
-				i, e, j;
-			for (i = 0; i < l; i++) {
-				e = a[i];
-				if (_isArrayLike(e)) {
-					j = e.length;
-					for (j = 0; j < e.length; j++) {
-						result.push(e[j]);
-					}
-				} else {
-					result.push(e);
-				}
-			}
-			return result;
-		},
-		//some characters are combining marks (think diacritics/accents in European languages) which involve 2 or 4 characters that combine in the browser to form a single character. Pass in the remaining text and an array of the special characters to search for and if the text starts with one of those special characters, it'll spit back the number of characters to retain (often 2 or 4). Used in the specialChars features that was introduced in 0.6.0.
-		_findSpecialChars = function(text, chars) {
-			var i = chars.length,
-				s;
-			while (--i > -1) {
-				s = chars[i];
-				if (text.substr(0, s.length) === s) {
-					return s.length;
-				}
-			}
-		},
-		_stripExp = /(?:\r|\n|\t\t)/g, //find carriage returns, new line feeds and double-tabs.
-		_multipleSpacesExp = /(?:\s\s+)/g,
-		_emojiStart = 0xD800,
-		_emojiEnd = 0xDBFF,
-		_emojiLowStart = 0xDC00,
-		_emojiRegionStart = 0x1F1E6,
-		_emojiRegionEnd = 0x1F1FF,
-		_emojiModStart = 0x1f3fb,
-		_emojiModEnd = 0x1f3ff,
-		_emojiPairCode = function(s) {
-			return ((s.charCodeAt(0) - _emojiStart) << 10) + (s.charCodeAt(1) - _emojiLowStart) + 0x10000;
-		},
-		_isOldIE = (_doc.all && !_doc.addEventListener),
-		_divStart = " style='position:relative;display:inline-block;" + (_isOldIE ? "*display:inline;*zoom:1;'" : "'"), //note: we must use both display:inline-block and *display:inline for IE8 and earlier, otherwise it won't flow correctly (and if we only use display:inline, IE won't render most of the property tweens - very odd).
-		_cssClassFunc = function(cssClass, tag) {
-			cssClass = cssClass || "";
-			var iterate = (cssClass.indexOf("++") !== -1),
-				num = 1;
-			if (iterate) {
-				cssClass = cssClass.split("++").join("");
-			}
-			return function() {
-				return "<" + tag + _divStart + (cssClass ? " class='" + cssClass + (iterate ? num++ : "") + "'>" : ">");
-			};
-		},
-		SplitText = pkg.SplitText = _globals.SplitText = function(element, vars) {
-			if (typeof(element) === "string") {
-				element = SplitText.selector(element);
-			}
-			if (!element) {
-				throw("cannot split a null element.");
-			}
-			this.elements = _isArrayLike(element) ? _flattenArray(element) : [element];
-			this.chars = [];
-			this.words = [];
-			this.lines = [];
-			this._originals = [];
-			this.vars = vars || {};
-			this.split(vars);
-		},
-		_swapText = function(element, oldText, newText) {
-			var type = element.nodeType;
-			if (type === 1 || type === 9 || type === 11) {
-				for (element = element.firstChild; element; element = element.nextSibling) {
-					_swapText(element, oldText, newText);
-				}
-			} else if (type === 3 || type === 4) {
-				element.nodeValue = element.nodeValue.split(oldText).join(newText);
-			}
-		},
-		_pushReversed = function(a, merge) {
-			var i = merge.length;
-			while (--i > -1) {
-				a.push(merge[i]);
-			}
-		},
-		_slice = function(a) { //don't use Array.prototype.slice.call(target, 0) because that doesn't work in IE8 with a NodeList that's returned by querySelectorAll()
-			var b = [],
-				l = a.length,
-				i;
-			for (i = 0; i !== l; b.push(a[i++])) {}
-			return b;
-		},
-		_isBeforeWordDelimiter = function(e, root, wordDelimiter) {
-			var next;
-			while (e && e !== root) {
-				next = e._next || e.nextSibling;
-				if (next) {
-					return next.textContent.charAt(0) === wordDelimiter;
-				}
-				e = e.parentNode || e._parent;
-			}
-			return false;
-		},
-		_deWordify = function(e) {
-			var children = _slice(e.childNodes),
-				l = children.length,
-				i, child;
-			for (i = 0; i < l; i++) {
-				child = children[i];
-				if (child._isSplit) {
-					_deWordify(child);
-				} else {
-					if (i && child.previousSibling.nodeType === 3) {
-						child.previousSibling.nodeValue += (child.nodeType === 3) ? child.nodeValue : child.firstChild.nodeValue;
-					} else if (child.nodeType !== 3) {
-						e.insertBefore(child.firstChild, child);
-					}
-					e.removeChild(child);
-				}
-			}
-		},
-		_setPositionsAfterSplit = function(element, vars, allChars, allWords, allLines, origWidth, origHeight) {
-			var cs = _getComputedStyle(element),
-				paddingLeft = _getStyle(element, "paddingLeft", cs),
-				lineOffsetY = -999,
-				borderTopAndBottom = _getStyle(element, "borderBottomWidth", cs) + _getStyle(element, "borderTopWidth", cs),
-				borderLeftAndRight = _getStyle(element, "borderLeftWidth", cs) + _getStyle(element, "borderRightWidth", cs),
-				padTopAndBottom = _getStyle(element, "paddingTop", cs) + _getStyle(element, "paddingBottom", cs),
-				padLeftAndRight = _getStyle(element, "paddingLeft", cs) + _getStyle(element, "paddingRight", cs),
-				lineThreshold = _getStyle(element, "fontSize") * 0.2,
-				textAlign = _getStyle(element, "textAlign", cs, true),
-				charArray = [],
-				wordArray = [],
-				lineArray = [],
-				wordDelimiter = vars.wordDelimiter || " ",
-				tag = vars.span ? "span" : "div",
-				types = vars.type || vars.split || "chars,words,lines",
-				lines = (allLines && types.indexOf("lines") !== -1) ? [] : null,
-				words = (types.indexOf("words") !== -1),
-				chars = (types.indexOf("chars") !== -1),
-				absolute = (vars.position === "absolute" || vars.absolute === true),
-				linesClass = vars.linesClass,
-				iterateLine = ((linesClass || "").indexOf("++") !== -1),
-				spaceNodesToRemove = [],
-				i, j, l, node, nodes, isChild, curLine, addWordSpaces, style, lineNode, lineWidth, offset;
-			if (iterateLine) {
-				linesClass = linesClass.split("++").join("");
-			}
-
-			//copy all the descendant nodes into an array (we can't use a regular nodeList because it's live and we may need to renest things)
-			j = element.getElementsByTagName("*");
-			l = j.length;
-			nodes = [];
-			for (i = 0; i < l; i++) {
-				nodes[i] = j[i];
-			}
-
-			//for absolute positioning, we need to record the x/y offsets and width/height for every <div>. And even if we're not positioning things absolutely, in order to accommodate lines, we must figure out where the y offset changes so that we can sense where the lines break, and we populate the lines array.
-			if (lines || absolute) {
-				for (i = 0; i < l; i++) {
-					node = nodes[i];
-					isChild = (node.parentNode === element);
-					if (isChild || absolute || (chars && !words)) {
-						offset = node.offsetTop;
-						if (lines && isChild && Math.abs(offset - lineOffsetY) > lineThreshold && (node.nodeName !== "BR" || i === 0)) { //we found some rare occasions where a certain character like &#8209; could cause the offsetTop to be off by 1 pixel, so we build in a threshold.
-							curLine = [];
-							lines.push(curLine);
-							lineOffsetY = offset;
-						}
-						if (absolute) { //record offset x and y, as well as width and height so that we can access them later for positioning. Grabbing them at once ensures we don't trigger a browser paint & we maximize performance.
-							node._x = node.offsetLeft;
-							node._y = offset;
-							node._w = node.offsetWidth;
-							node._h = node.offsetHeight;
-						}
-						if (lines) {
-							if ((node._isSplit && isChild) || (!chars && isChild) || (words && isChild) || (!words && node.parentNode.parentNode === element && !node.parentNode._isSplit)) {
-								curLine.push(node);
-								node._x -= paddingLeft;
-								if (_isBeforeWordDelimiter(node, element, wordDelimiter)) {
-									node._wordEnd = true;
-								}
-							}
-							if (node.nodeName === "BR" && ((node.nextSibling && node.nextSibling.nodeName === "BR") || i === 0)) { //two consecutive <br> tags signify a new [empty] line. Also, if the entire block of content STARTS with a <br>, add a line.
-								lines.push([]);
-							}
-						}
-					}
-				}
-			}
-
-			for (i = 0; i < l; i++) {
-				node = nodes[i];
-				isChild = (node.parentNode === element);
-				if (node.nodeName === "BR") {
-					if (lines || absolute) {
-						if (node.parentNode) {
-							node.parentNode.removeChild(node);
-						}
-						nodes.splice(i--, 1);
-						l--;
-					} else if (!words) {
-						element.appendChild(node);
-					}
-					continue;
-				}
-
-				if (absolute) {
-					style = node.style;
-					if (!words && !isChild) {
-						node._x += node.parentNode._x;
-						node._y += node.parentNode._y;
-					}
-					style.left = node._x + "px";
-					style.top = node._y + "px";
-					style.position = "absolute";
-					style.display = "block";
-					//if we don't set the width/height, things collapse in older versions of IE and the origin for transforms is thrown off in all browsers.
-					style.width = (node._w + 1) + "px"; //IE is 1px short sometimes. Avoid wrapping
-					style.height = node._h + "px";
-				}
-
-				if (!words && chars) {
-					//we always start out wrapping words in their own <div> so that line breaks happen correctly, but here we'll remove those <div> tags if necessary and renest the characters directly into the element rather than inside the word <div>
-					if (node._isSplit) {
-						node._next = node.nextSibling;
-						node.parentNode.appendChild(node); //put it at the end to keep the order correct.
-
-					} else if (node.parentNode._isSplit) {
-						node._parent = node.parentNode;
-						if (!node.previousSibling && node.firstChild) {
-							node.firstChild._isFirst = true;
-						}
-						if (node.nextSibling && node.nextSibling.textContent === " " && !node.nextSibling.nextSibling) { //if the last node inside a nested element is just a space (like T<span>nested </span>), remove it otherwise it'll get placed in the wrong order. Don't remove it right away, though, because we need to sense when words/characters are before a space like _isBeforeWordDelimiter(). Removing it now would make that a false negative.
-							spaceNodesToRemove.push(node.nextSibling);
-						}
-						node._next = (node.nextSibling && node.nextSibling._isFirst) ? null : node.nextSibling;
-						node.parentNode.removeChild(node);
-						nodes.splice(i--, 1);
-						l--;
-					} else if (!isChild) {
-						offset = (!node.nextSibling && _isBeforeWordDelimiter(node.parentNode, element, wordDelimiter)); //if this is the last letter in the word (and we're not breaking by lines and not positioning things absolutely), we need to add a space afterwards so that the characters don't just mash together
-						if (node.parentNode._parent) {
-							node.parentNode._parent.appendChild(node);
-						}
-						if (offset) {
-							node.parentNode.appendChild(_doc.createTextNode(" "));
-						}
-						if (vars.span) {
-							node.style.display = "inline"; //so that word breaks are honored properly.
-						}
-						charArray.push(node);
-					}
-				} else if (node.parentNode._isSplit && !node._isSplit && node.innerHTML !== "") {
-					wordArray.push(node);
-				} else if (chars && !node._isSplit) {
-					if (vars.span) {
-						node.style.display = "inline";
-					}
-					charArray.push(node);
-				}
-			}
-
-			i = spaceNodesToRemove.length;
-			while (--i > -1) {
-				spaceNodesToRemove[i].parentNode.removeChild(spaceNodesToRemove[i]);
-			}
-
-			if (lines) {
-				//the next 7 lines just give us the line width in the most reliable way and figure out the left offset (if position isn't relative or absolute). We must set the width along with text-align to ensure everything works properly for various alignments.
-				if (absolute) {
-					lineNode = _doc.createElement(tag);
-					element.appendChild(lineNode);
-					lineWidth = lineNode.offsetWidth + "px";
-					offset = (lineNode.offsetParent === element) ? 0 : element.offsetLeft;
-					element.removeChild(lineNode);
-				}
-				style = element.style.cssText;
-				element.style.cssText = "display:none;"; //to improve performance, set display:none on the element so that the browser doesn't have to worry about reflowing or rendering while we're renesting things. We'll revert the cssText later.
-				//we can't use element.innerHTML = "" because that causes IE to literally delete all the nodes and their content even though we've stored them in an array! So we must loop through the children and remove them.
-				while (element.firstChild) {
-					element.removeChild(element.firstChild);
-				}
-				addWordSpaces = (wordDelimiter === " " && (!absolute || (!words && !chars)));
-				for (i = 0; i < lines.length; i++) {
-					curLine = lines[i];
-					lineNode = _doc.createElement(tag);
-					lineNode.style.cssText = "display:block;text-align:" + textAlign + ";position:" + (absolute ? "absolute;" : "relative;");
-					if (linesClass) {
-						lineNode.className = linesClass + (iterateLine ? i+1 : "");
-					}
-					lineArray.push(lineNode);
-					l = curLine.length;
-					for (j = 0; j < l; j++) {
-						if (curLine[j].nodeName !== "BR") {
-							node = curLine[j];
-							lineNode.appendChild(node);
-							if (addWordSpaces && node._wordEnd) {
-								lineNode.appendChild(_doc.createTextNode(" "));
-							}
-							if (absolute) {
-								if (j === 0) {
-									lineNode.style.top = (node._y) + "px";
-									lineNode.style.left = (paddingLeft + offset) + "px";
-								}
-								node.style.top = "0px";
-								if (offset) {
-									node.style.left = (node._x - offset) + "px";
-								}
-							}
-						}
-					}
-					if (l === 0) { //if there are no nodes in the line (typically meaning there were two consecutive <br> tags, just add a non-breaking space so that things display properly.
-						lineNode.innerHTML = "&nbsp;";
-					} else if (!words && !chars) {
-						_deWordify(lineNode);
-						_swapText(lineNode, String.fromCharCode(160), " ");
-					}
-					if (absolute) {
-						lineNode.style.width = lineWidth;
-						lineNode.style.height = node._h + "px";
-					}
-					element.appendChild(lineNode);
-				}
-				element.style.cssText = style;
-			}
-
-			//if everything shifts to being position:absolute, the container can collapse in terms of height or width, so fix that here.
-			if (absolute) {
-				if (origHeight > element.clientHeight) {
-					element.style.height = (origHeight - padTopAndBottom) + "px";
-					if (element.clientHeight < origHeight) { //IE8 and earlier use a different box model - we must include padding and borders
-						element.style.height = (origHeight + borderTopAndBottom)+ "px";
-					}
-				}
-				if (origWidth > element.clientWidth) {
-					element.style.width = (origWidth - padLeftAndRight) + "px";
-					if (element.clientWidth < origWidth) { //IE8 and earlier use a different box model - we must include padding and borders
-						element.style.width = (origWidth + borderLeftAndRight)+ "px";
-					}
-				}
-			}
-			_pushReversed(allChars, charArray);
-			_pushReversed(allWords, wordArray);
-			_pushReversed(allLines, lineArray);
-		},
-		_splitRawText = function(element, vars, wordStart, charStart) {
-			var tag = vars.span ? "span" : "div",
-				types = vars.type || vars.split || "chars,words,lines",
-				//words = (types.indexOf("words") !== -1),
-				chars = (types.indexOf("chars") !== -1),
-				absolute = (vars.position === "absolute" || vars.absolute === true),
-				wordDelimiter = vars.wordDelimiter || " ",
-				space = wordDelimiter !== " " ? "" : (absolute ? "&#173; " : " "),
-				wordEnd = vars.span ? "</span>" : "</div>",
-				wordIsOpen = true,
-				specialChars = vars.specialChars ? (typeof(vars.specialChars) === "function" ? vars.specialChars : _findSpecialChars) : null, //specialChars can be an array or a function. For performance reasons, we always set this local "specialChars" to a function to which we pass the remaining text and whatever the original vars.specialChars was so that if it's an array, it works with the _findSpecialChars() function.
-				text, splitText, i, j, l, character, hasTagStart, emojiPair1, emojiPair2, testResult,
-				container = _doc.createElement("div"),
-				parent = element.parentNode;
-
-			parent.insertBefore(container, element);
-			container.textContent = element.nodeValue;
-			parent.removeChild(element);
-			element = container;
-			text = _getText(element);
-			hasTagStart = text.indexOf("<") !== -1;
-
-			if (vars.reduceWhiteSpace !== false) {
-				text = text.replace(_multipleSpacesExp, " ").replace(_stripExp, "");
-			}
-			if (hasTagStart) {
-				text = text.split("<").join("{{LT}}"); //we can't leave "<" in the string, or when we set the innerHTML, it can be interpreted as a node
-			}
-			l = text.length;
-			splitText = ((text.charAt(0) === " ") ? space : "") + wordStart();
-			for (i = 0; i < l; i++) {
-				character = text.charAt(i);
-				if (specialChars && (testResult = specialChars(text.substr(i), vars.specialChars))) { // look for any specialChars that were declared. Remember, they can be passed in like {specialChars:["मी", "पा", "है"]} or a function could be defined instead. Either way, the function should return the number of characters that should be grouped together for this "character".
-					character = text.substr(i, testResult || 1);
-					splitText += (chars && character !== " ") ? charStart() + character + "</" + tag + ">" : character;
-					i += testResult - 1;
-
-				} else if (character === wordDelimiter && text.charAt(i-1) !== wordDelimiter && i) {
-					splitText += wordIsOpen ? wordEnd : "";
-					wordIsOpen = false;
-					while (text.charAt(i + 1) === wordDelimiter) { //skip over empty spaces (to avoid making them words)
-						splitText += space;
-						i++;
-					}
-					if (i === l-1) {
-						splitText += space;
-					} else if (text.charAt(i + 1) !== ")") {
-						splitText += space + wordStart();
-						wordIsOpen = true;
-					}
-
-				} else if (character === "{" && text.substr(i, 6) === "{{LT}}") {
-					splitText += chars ? charStart() + "{{LT}}" + "</" + tag + ">" : "{{LT}}";
-					i += 5;
-
-				} else if ((character.charCodeAt(0) >= _emojiStart && character.charCodeAt(0) <= _emojiEnd) || (text.charCodeAt(i+1) >= 0xFE00 && text.charCodeAt(i+1) <= 0xFE0F)) { //special emoji characters use 2 or 4 unicode characters that we must keep together.
-					emojiPair1 = _emojiPairCode(text.substr(i, 2));
-					emojiPair2 = _emojiPairCode(text.substr(i + 2, 2));
-					j = ((emojiPair1 >= _emojiRegionStart && emojiPair1 <= _emojiRegionEnd && emojiPair2 >= _emojiRegionStart && emojiPair2 <= _emojiRegionEnd) || (emojiPair2 >= _emojiModStart && emojiPair2 <= _emojiModEnd)) ? 4 : 2;
-					splitText += (chars && character !== " ") ? charStart() + text.substr(i, j) + "</" + tag + ">" : text.substr(i, j);
-					i += j - 1;
-				} else {
-					splitText += (chars && character !== " ") ? charStart() + character + "</" + tag + ">" : character;
-				}
-			}
-			element.outerHTML = splitText + (wordIsOpen ? wordEnd : "");
-			if (hasTagStart) {
-				_swapText(parent, "{{LT}}", "<"); //note: don't perform this on "element" because that gets replaced with all new elements when we set element.outerHTML.
-			}
-		},
-		_split = function(element, vars, wordStart, charStart) {
-			var children = _slice(element.childNodes),
-				l = children.length,
-				absolute = (vars.position === "absolute" || vars.absolute === true),
-				i, child;
-
-			if (element.nodeType !== 3 || l > 1) {
-				vars.absolute = false;
-				for (i = 0; i < l; i++) {
-					child = children[i];
-					if (child.nodeType !== 3 || /\S+/.test(child.nodeValue)) {
-						if (absolute && child.nodeType !== 3 && _getStyle(child, "display", null, true) === "inline") { //if there's a child node that's display:inline, switch it to inline-block so that absolute positioning works properly (most browsers don't report offsetTop/offsetLeft properly inside a <span> for example)
-							child.style.display = "inline-block";
-							child.style.position = "relative";
-						}
-						child._isSplit = true;
-						_split(child, vars, wordStart, charStart); //don't split lines on child elements
-					}
-				}
-				vars.absolute = absolute;
-				element._isSplit = true;
-				return;
-			}
-
-			_splitRawText(element, vars, wordStart, charStart);
-
-		},
-		p = SplitText.prototype;
-
-	p.split = function(vars) {
-		if (this.isSplit) {
-			this.revert();
-		}
-		this.vars = vars = vars || this.vars;
-		this._originals.length = this.chars.length = this.words.length = this.lines.length = 0;
-		var i = this.elements.length,
-			tag = vars.span ? "span" : "div",
-			wordStart = _cssClassFunc(vars.wordsClass, tag),
-			charStart = _cssClassFunc(vars.charsClass, tag),
-			origHeight, origWidth, e;
-		//we split in reversed order so that if/when we position:absolute elements, they don't affect the position of the ones after them in the document flow (shifting them up as they're taken out of the document flow).
-		while (--i > -1) {
-			e = this.elements[i];
-			this._originals[i] = e.innerHTML;
-			origHeight = e.clientHeight;
-			origWidth = e.clientWidth;
-			_split(e, vars, wordStart, charStart);
-			_setPositionsAfterSplit(e, vars, this.chars, this.words, this.lines, origWidth, origHeight);
-		}
-		this.chars.reverse();
-		this.words.reverse();
-		this.lines.reverse();
-		this.isSplit = true;
-		return this;
-	};
-
-	p.revert = function() {
-		if (!this._originals) {
-			throw("revert() call wasn't scoped properly.");
-		}
-		var i = this._originals.length;
-		while (--i > -1) {
-			this.elements[i].innerHTML = this._originals[i];
-		}
-		this.chars = [];
-		this.words = [];
-		this.lines = [];
-		this.isSplit = false;
-		return this;
-	};
-
-	SplitText.selector = window.$ || window.jQuery || function(e) {
-		var selector = window.$ || window.jQuery;
-		if (selector) {
-			SplitText.selector = selector;
-			return selector(e);
-		}
-		return (typeof(document) === "undefined") ? e : (document.querySelectorAll ? document.querySelectorAll(e) : document.getElementById((e.charAt(0) === "#") ? e.substr(1) : e));
-	};
-	SplitText.version = "0.6.1";
-	
-})(__WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__["e" /* _gsScope */]);
-
-var SplitText = __WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__["g" /* globals */].SplitText;
-
-
-/***/ }),
-/* 87 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(88)
+  __webpack_require__(99)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(90)
+var __vue_script__ = __webpack_require__(101)
 /* template */
-var __vue_template__ = __webpack_require__(93)
+var __vue_template__ = __webpack_require__(102)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/CartIcon.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4e1f2ca4", Component.options)
+  } else {
+    hotAPI.reload("data-v-4e1f2ca4", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(100);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("a48249e2", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4e1f2ca4\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartIcon.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4e1f2ca4\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartIcon.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// Module
+exports.push([module.i, "", ""]);
+
+
+
+/***/ }),
+/* 101 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(6);
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'CartIcon',
+  props: {
+    width: {
+      type: String,
+      default: '32px'
+    },
+    color: {
+      type: String,
+      default: '#000000'
+    }
+  },
+  methods: {
+    play: function play() {
+      var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.set(this.$refs.item, {
+        trasformOrigin: 'center center',
+        autoAlpha: 1
+      });
+      master.to(this.$refs.item, .2, {
+        fill: '#d85840',
+        scale: 0.7,
+        ease: Power2.easeInOut
+      });
+      master.to(this.$refs.item, .3, {
+        scale: 1,
+        ease: Back.easeInOut
+      });
+      master.to(this.$refs.item, .6, {
+        fill: this.color,
+        ease: Power2.easeInOut
+      }, .6);
+      master.play();
+    },
+    hide: function hide() {
+      var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.to(this.$refs.item, .5, {
+        autoAlpha: 0
+      });
+      master.play();
+    }
+  }
+});
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "svg",
+    {
+      attrs: {
+        width: _vm.width,
+        viewBox: "0 0 128 128",
+        version: "1.1",
+        xmlns: "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      }
+    },
+    [
+      _c(
+        "g",
+        {
+          attrs: {
+            id: "cart",
+            stroke: "none",
+            "stroke-width": "1",
+            fill: "none",
+            "fill-rule": "evenodd"
+          }
+        },
+        [
+          _c("path", {
+            ref: "item",
+            attrs: {
+              d:
+                "M49.4615385,107.923077 C49.4615385,113.223558 45.0697115,117.615385 39.7692308,117.615385 C34.46875,117.615385 30.0769231,113.223558 30.0769231,107.923077 C30.0769231,102.622596 34.46875,98.2307692 39.7692308,98.2307692 C45.0697115,98.2307692 49.4615385,102.622596 49.4615385,107.923077 Z M117.307692,107.923077 C117.307692,113.223558 112.915865,117.615385 107.615385,117.615385 C102.314904,117.615385 97.9230769,113.223558 97.9230769,107.923077 C97.9230769,102.622596 102.314904,98.2307692 107.615385,98.2307692 C112.915865,98.2307692 117.307692,102.622596 117.307692,107.923077 Z M127,25.5384615 L127,64.3076923 C127,66.7307692 125.106971,68.8509615 122.683894,69.1538462 L43.6310096,78.3918269 C44.0096154,80.1334135 44.6153846,81.875 44.6153846,83.6923077 C44.6153846,85.4338942 43.5552885,87.0240385 42.7980769,88.5384615 L112.461538,88.5384615 C115.111779,88.5384615 117.307692,90.734375 117.307692,93.3846154 C117.307692,96.0348558 115.111779,98.2307692 112.461538,98.2307692 L34.9230769,98.2307692 C32.2728365,98.2307692 30.0769231,96.0348558 30.0769231,93.3846154 C30.0769231,91.0372596 33.484375,85.3581731 34.6959135,83.0108173 L21.2932692,20.6923077 L5.84615385,20.6923077 C3.19591346,20.6923077 1,18.4963942 1,15.8461538 C1,13.1959135 3.19591346,11 5.84615385,11 L25.2307692,11 C30.3040865,11 30.4555288,17.0576923 31.2127404,20.6923077 L122.153846,20.6923077 C124.804087,20.6923077 127,22.8882212 127,25.5384615 Z",
+              fill: _vm.color
+            }
+          })
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4e1f2ca4", module.exports)
+  }
+}
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(104)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(106)
+/* template */
+var __vue_template__ = __webpack_require__(109)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -61290,17 +64866,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 88 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(89);
+var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("5d96bb37", content, false, {});
+var update = __webpack_require__(2)("5d96bb37", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -61316,26 +64892,26 @@ if(false) {
 }
 
 /***/ }),
-/* 89 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
 exports.push([module.i, "", ""]);
 
 
 
 /***/ }),
-/* 90 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lottie_web__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lottie_web__ = __webpack_require__(107);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lottie_web___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lottie_web__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animations_Menu_json__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animations_Menu_json__ = __webpack_require__(108);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animations_Menu_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__animations_Menu_json__);
 //
 //
@@ -61364,7 +64940,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       duration: 0,
       split: 0,
       opened: false,
-      data: null
+      data: null,
+      hovering: false
     };
   },
   watch: {
@@ -61374,29 +64951,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
-    open: function open() {
+    hoverAnim: function hoverAnim() {
       var _this = this;
 
-      this.anim.playSegments([0, this.split], true);
+      if (!this.hovering) {
+        this.hovering = true;
+        this.anim.playSegments([0, 76], true);
+        this.anim.addEventListener('complete', function () {
+          _this.hovering = false;
+        });
+      }
+    },
+    open: function open() {
+      var _this2 = this;
+
+      // this.anim.playSegments([0, this.split], true)
+      this.anim.playSegments([0]);
       this.anim.addEventListener('complete', function () {
-        _this.opened = true;
+        _this2.opened = true;
       });
     },
     close: function close() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.anim.playSegments([this.split, this.duration], true);
       this.anim.addEventListener('complete', function () {
-        _this2.opened = false;
+        _this3.opened = false;
       });
     },
     getData: function getData() {
-      var _this3 = this;
+      var _this4 = this;
 
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/js/animations/Menu.json').then(function (response) {
-        _this3.data = response.data;
+        _this4.data = response.data;
 
-        _this3.init();
+        _this4.init();
       });
     },
     init: function init() {
@@ -61428,7 +65017,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 91 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;(typeof navigator !== "undefined") && (function(root, factory) {
@@ -75703,13 +79292,13 @@ GroupEffect.prototype.init = function(data,element){
 
 
 /***/ }),
-/* 92 */
+/* 108 */
 /***/ (function(module, exports) {
 
-module.exports = {"v":"5.1.20","fr":60,"ip":0,"op":120,"w":500,"h":500,"nm":"menu","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"top contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":0,"s":[0],"e":[-45]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":60,"s":[-45],"e":[0]},{"t":120}],"ix":10,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":0,"s":[250,164,0],"e":[250,264.5,0],"to":[0,16.75,0],"ti":[0,0,0]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":60,"s":[250,264.5,0],"e":[250,164,0],"to":[0,0,0],"ti":[0,16.75,0]},{"t":120}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[194.5,14.5,0],"ix":1},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"n":["0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167"],"t":0,"s":[100,100,100],"e":[80,100,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"n":["0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167"],"t":60,"s":[80,100,100],"e":[100,100,100]},{"t":120}],"ix":6,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[14.5,14.5],[374.5,14.5]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":29,"ix":5},"lc":1,"lj":1,"ml":10,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":120,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"middle contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[253.171,250,0],"ix":2},"a":{"a":0,"k":[299.171,298,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[123.816,0],[0,124.54],[-124.54,0],[-1.786,-123],[0,0]],"o":[[2.341,123.535],[-124.54,0],[0,-124.54],[123.425,0],[0.017,1.111],[0,0]],"v":[[224.33,0.5],[-1.17,225.5],[-226.67,0],[-1.17,-225.5],[224.33,0.5],[-183.17,0.5]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":29,"ix":5},"lc":1,"lj":1,"ml":10,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[299.17,298],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":0,"s":[80.26],"e":[0]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":50,"s":[0],"e":[0]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":60,"s":[0],"e":[0]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":68,"s":[0],"e":[80.26]},{"t":120}],"ix":1,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"e":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":0,"s":[100],"e":[78.5]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":60,"s":[78.5],"e":[100]},{"t":120}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"Taglia tracciati 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":0,"op":120,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"bottom contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":0,"s":[0],"e":[45]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"n":["0p833_0p833_0p167_0p167"],"t":60,"s":[45],"e":[0]},{"t":120}],"ix":10,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":0,"s":[250,337,0],"e":[250,264.5,0],"to":[0,-12.0833330154419,0],"ti":[0,0,0]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":60,"s":[250,264.5,0],"e":[250,337,0],"to":[0,0,0],"ti":[0,-12.0833330154419,0]},{"t":120}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[194.5,14.5,0],"ix":1},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"n":["0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167"],"t":0,"s":[100,100,100],"e":[80,100,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"n":["0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167","0p833_0p833_0p167_0p167"],"t":60,"s":[80,100,100],"e":[100,100,100]},{"t":120}],"ix":6,"x":"var $bm_rt;\nfunction easeandwizz_inoutCirc(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(div($bm_neg(c), 2), sub(Math.sqrt(sub(1, mul(t, t))), 1)), b);\n    return sum(mul(div(c, 2), sum(Math.sqrt(sub(1, mul(t -= 2, t))), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1.time;\n    eX = sub(key2.time, key1.time);\n    if (time < key1.time || time > key2.time) {\n        return null;\n    } else {\n        return valueAtTime(easeandwizz_inoutCirc(t, sX, eX, d));\n    }\n}\n$bm_rt = easeAndWizz() || value;"}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[14.5,14.5],[374.5,14.5]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":29,"ix":5},"lc":1,"lj":1,"ml":10,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":120,"st":0,"bm":0}],"markers":[]}
+module.exports = {"v":"5.4.3","fr":25,"ip":0,"op":76,"w":300,"h":300,"nm":"mocajo-menu","ddd":0,"assets":[{"id":"comp_0","layers":[{"ddd":0,"ind":7,"ty":4,"nm":"top 4 contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":0,"s":[150,80,0],"e":[425,80,0],"to":[45.8333320617676,0,0],"ti":[-45.8333320617676,0,0]},{"t":42}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutQuad(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(mul(div(c, 2), t), t), b);\n    return sum(mul(div($bm_neg(c), 2), sub(mul(--t, sub(t, 2)), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX, sY, eY, sZ, eZ, val1, val2, val2, val3;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    var dim = 1;\n    try {\n        key(1)[1].length;\n        dim = 2;\n        key(1)[2].length;\n        dim = 3;\n    } catch (e) {\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1[0];\n    eX = sub(key2[0], key1[0]);\n    if (dim >= 2) {\n        sY = key1[1];\n        eY = sub(key2[1], key1[1]);\n        if (dim >= 3) {\n            sZ = key1[2];\n            eZ = sub(key2[2], key1[2]);\n        }\n    }\n    if (time < key1.time || time > key2.time) {\n        return value;\n    } else {\n        val1 = easeandwizz_inoutQuad(t, sX, eX, d);\n        switch (dim) {\n        case 1:\n            return val1;\n            break;\n        case 2:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            return [\n                val1,\n                val2\n            ];\n            break;\n        case 3:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            val3 = easeandwizz_inoutQuad(t, sZ, eZ, d);\n            return [\n                val1,\n                val2,\n                val3\n            ];\n            break;\n        default:\n            return null;\n        }\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[114,4,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[4,4],[224,4]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":8,"ix":5},"lc":1,"lj":1,"ml":10,"ml2":{"a":0,"k":10,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0},{"ddd":0,"ind":8,"ty":4,"nm":"mid 4 contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":12,"s":[150,150,0],"e":[425,150,0],"to":[45.8333320617676,0,0],"ti":[-45.8333320617676,0,0]},{"t":59}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutQuad(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(mul(div(c, 2), t), t), b);\n    return sum(mul(div($bm_neg(c), 2), sub(mul(--t, sub(t, 2)), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX, sY, eY, sZ, eZ, val1, val2, val2, val3;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    var dim = 1;\n    try {\n        key(1)[1].length;\n        dim = 2;\n        key(1)[2].length;\n        dim = 3;\n    } catch (e) {\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1[0];\n    eX = sub(key2[0], key1[0]);\n    if (dim >= 2) {\n        sY = key1[1];\n        eY = sub(key2[1], key1[1]);\n        if (dim >= 3) {\n            sZ = key1[2];\n            eZ = sub(key2[2], key1[2]);\n        }\n    }\n    if (time < key1.time || time > key2.time) {\n        return value;\n    } else {\n        val1 = easeandwizz_inoutQuad(t, sX, eX, d);\n        switch (dim) {\n        case 1:\n            return val1;\n            break;\n        case 2:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            return [\n                val1,\n                val2\n            ];\n            break;\n        case 3:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            val3 = easeandwizz_inoutQuad(t, sZ, eZ, d);\n            return [\n                val1,\n                val2,\n                val3\n            ];\n            break;\n        default:\n            return null;\n        }\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[114,4,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[4,4],[224,4]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":8,"ix":5},"lc":1,"lj":1,"ml":10,"ml2":{"a":0,"k":10,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0},{"ddd":0,"ind":9,"ty":4,"nm":"bt 4 contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":24,"s":[150,220,0],"e":[425,220,0],"to":[45.8333320617676,0,0],"ti":[-45.8333320617676,0,0]},{"t":73}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutQuad(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(mul(div(c, 2), t), t), b);\n    return sum(mul(div($bm_neg(c), 2), sub(mul(--t, sub(t, 2)), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX, sY, eY, sZ, eZ, val1, val2, val2, val3;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    var dim = 1;\n    try {\n        key(1)[1].length;\n        dim = 2;\n        key(1)[2].length;\n        dim = 3;\n    } catch (e) {\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1[0];\n    eX = sub(key2[0], key1[0]);\n    if (dim >= 2) {\n        sY = key1[1];\n        eY = sub(key2[1], key1[1]);\n        if (dim >= 3) {\n            sZ = key1[2];\n            eZ = sub(key2[2], key1[2]);\n        }\n    }\n    if (time < key1.time || time > key2.time) {\n        return value;\n    } else {\n        val1 = easeandwizz_inoutQuad(t, sX, eX, d);\n        switch (dim) {\n        case 1:\n            return val1;\n            break;\n        case 2:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            return [\n                val1,\n                val2\n            ];\n            break;\n        case 3:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            val3 = easeandwizz_inoutQuad(t, sZ, eZ, d);\n            return [\n                val1,\n                val2,\n                val3\n            ];\n            break;\n        default:\n            return null;\n        }\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[114,4,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[4,4],[224,4]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":8,"ix":5},"lc":1,"lj":1,"ml":10,"ml2":{"a":0,"k":10,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0},{"ddd":0,"ind":10,"ty":4,"nm":"top 3 contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":0,"s":[-130,80,0],"e":[150,80,0],"to":[46.6666679382324,0,0],"ti":[-46.6666679382324,0,0]},{"t":39}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutQuad(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(mul(div(c, 2), t), t), b);\n    return sum(mul(div($bm_neg(c), 2), sub(mul(--t, sub(t, 2)), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX, sY, eY, sZ, eZ, val1, val2, val2, val3;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    var dim = 1;\n    try {\n        key(1)[1].length;\n        dim = 2;\n        key(1)[2].length;\n        dim = 3;\n    } catch (e) {\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1[0];\n    eX = sub(key2[0], key1[0]);\n    if (dim >= 2) {\n        sY = key1[1];\n        eY = sub(key2[1], key1[1]);\n        if (dim >= 3) {\n            sZ = key1[2];\n            eZ = sub(key2[2], key1[2]);\n        }\n    }\n    if (time < key1.time || time > key2.time) {\n        return value;\n    } else {\n        val1 = easeandwizz_inoutQuad(t, sX, eX, d);\n        switch (dim) {\n        case 1:\n            return val1;\n            break;\n        case 2:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            return [\n                val1,\n                val2\n            ];\n            break;\n        case 3:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            val3 = easeandwizz_inoutQuad(t, sZ, eZ, d);\n            return [\n                val1,\n                val2,\n                val3\n            ];\n            break;\n        default:\n            return null;\n        }\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[114,4,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[4,4],[224,4]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":8,"ix":5},"lc":1,"lj":1,"ml":10,"ml2":{"a":0,"k":10,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0},{"ddd":0,"ind":11,"ty":4,"nm":"mid 3 contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":18,"s":[-130,150,0],"e":[150,150,0],"to":[46.6666679382324,0,0],"ti":[-46.6666679382324,0,0]},{"t":54}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutQuad(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(mul(div(c, 2), t), t), b);\n    return sum(mul(div($bm_neg(c), 2), sub(mul(--t, sub(t, 2)), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX, sY, eY, sZ, eZ, val1, val2, val2, val3;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    var dim = 1;\n    try {\n        key(1)[1].length;\n        dim = 2;\n        key(1)[2].length;\n        dim = 3;\n    } catch (e) {\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1[0];\n    eX = sub(key2[0], key1[0]);\n    if (dim >= 2) {\n        sY = key1[1];\n        eY = sub(key2[1], key1[1]);\n        if (dim >= 3) {\n            sZ = key1[2];\n            eZ = sub(key2[2], key1[2]);\n        }\n    }\n    if (time < key1.time || time > key2.time) {\n        return value;\n    } else {\n        val1 = easeandwizz_inoutQuad(t, sX, eX, d);\n        switch (dim) {\n        case 1:\n            return val1;\n            break;\n        case 2:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            return [\n                val1,\n                val2\n            ];\n            break;\n        case 3:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            val3 = easeandwizz_inoutQuad(t, sZ, eZ, d);\n            return [\n                val1,\n                val2,\n                val3\n            ];\n            break;\n        default:\n            return null;\n        }\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[114,4,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[4,4],[224,4]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":8,"ix":5},"lc":1,"lj":1,"ml":10,"ml2":{"a":0,"k":10,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0},{"ddd":0,"ind":12,"ty":4,"nm":"bt 3 contorni","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"n":"0p833_0p833_0p167_0p167","t":35,"s":[-130,220,0],"e":[150,220,0],"to":[46.6666679382324,0,0],"ti":[-46.6666679382324,0,0]},{"t":66}],"ix":2,"x":"var $bm_rt;\nfunction easeandwizz_inoutQuad(t, b, c, d) {\n    if ((t /= d / 2) < 1)\n        return sum(mul(mul(div(c, 2), t), t), b);\n    return sum(mul(div($bm_neg(c), 2), sub(mul(--t, sub(t, 2)), 1)), b);\n}\nfunction easeAndWizz() {\n    var t, d, sX, eX, sY, eY, sZ, eZ, val1, val2, val2, val3;\n    var n = 0;\n    if (numKeys > 0) {\n        n = nearestKey(time).index;\n        if (key(n).time > time) {\n            n--;\n        }\n    }\n    try {\n        var key1 = key(n);\n        var key2 = key(sum(n, 1));\n    } catch (e) {\n        return null;\n    }\n    var dim = 1;\n    try {\n        key(1)[1].length;\n        dim = 2;\n        key(1)[2].length;\n        dim = 3;\n    } catch (e) {\n    }\n    t = sub(time, key1.time);\n    d = sub(key2.time, key1.time);\n    sX = key1[0];\n    eX = sub(key2[0], key1[0]);\n    if (dim >= 2) {\n        sY = key1[1];\n        eY = sub(key2[1], key1[1]);\n        if (dim >= 3) {\n            sZ = key1[2];\n            eZ = sub(key2[2], key1[2]);\n        }\n    }\n    if (time < key1.time || time > key2.time) {\n        return value;\n    } else {\n        val1 = easeandwizz_inoutQuad(t, sX, eX, d);\n        switch (dim) {\n        case 1:\n            return val1;\n            break;\n        case 2:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            return [\n                val1,\n                val2\n            ];\n            break;\n        case 3:\n            val2 = easeandwizz_inoutQuad(t, sY, eY, d);\n            val3 = easeandwizz_inoutQuad(t, sZ, eZ, d);\n            return [\n                val1,\n                val2,\n                val3\n            ];\n            break;\n        default:\n            return null;\n        }\n    }\n}\n$bm_rt = easeAndWizz() || value;"},"a":{"a":0,"k":[114,4,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[4,4],[224,4]],"c":false},"ix":2},"nm":"Tracciato 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":8,"ix":5},"lc":1,"lj":1,"ml":10,"ml2":{"a":0,"k":10,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Gruppo 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0}]}],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"maschera","td":1,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[147.111,150,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"rc","d":1,"s":{"a":0,"k":[225.777,204.262],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"r":{"a":0,"k":0,"ix":4},"nm":"Tracciato rettangolo 1","mn":"ADBE Vector Shape - Rect","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":0,"ix":5},"lc":1,"lj":1,"ml":4,"ml2":{"a":0,"k":4,"ix":8},"bm":0,"nm":"Traccia 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.941175991881,0.470587995941,0.474510013356,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Riempimento 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[2.889,7.131],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[98.33,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Trasformazione"}],"nm":"Rettangolo 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":300,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":0,"nm":"sub-comp","tt":1,"refId":"comp_0","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[150,150,0],"ix":2},"a":{"a":0,"k":[150,150,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"w":300,"h":300,"ip":0,"op":300,"st":0,"bm":0}],"markers":[]}
 
 /***/ }),
-/* 93 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -75733,7 +79322,185 @@ if (false) {
 }
 
 /***/ }),
-/* 94 */
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(111)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(113)
+/* template */
+var __vue_template__ = __webpack_require__(114)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/NavLogo.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-35d55bd3", Component.options)
+  } else {
+    hotAPI.reload("data-v-35d55bd3", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(112);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("00fb7c82", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-35d55bd3\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./NavLogo.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-35d55bd3\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./NavLogo.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// Module
+exports.push([module.i, "", ""]);
+
+
+
+/***/ }),
+/* 113 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'NavLogo',
+  props: {
+    width: {
+      type: String,
+      default: '32px'
+    }
+  }
+});
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "svg",
+    {
+      attrs: {
+        width: _vm.width,
+        viewBox: "0 0 337 388",
+        version: "1.1",
+        xmlns: "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      }
+    },
+    [
+      _c(
+        "g",
+        {
+          attrs: {
+            id: "logo",
+            stroke: "none",
+            "stroke-width": "1",
+            fill: "none",
+            "fill-rule": "evenodd"
+          }
+        },
+        [
+          _c("path", {
+            attrs: {
+              d:
+                "M76.1438949,198 L111.528234,198 L111.528234,233.415239 L76.1438949,233.415239 L76.1438949,198 Z M125.471766,198 L160.856105,198 L160.856105,233.415239 L125.471766,233.415239 L125.471766,198 Z M76.1438949,245.427366 L111.528234,245.427366 L111.528234,280.842605 L76.1438949,280.842605 L76.1438949,245.427366 Z M125.471766,245.427366 L160.856105,245.427366 L160.856105,280.842605 L125.471766,280.842605 L125.471766,245.427366 Z M17.9474173,308.603744 C21.6410018,308.603744 25.4246737,309.485368 28.077248,311.018191 L28.077248,313.973636 C25.4246737,312.300554 21.5809435,311.368837 18.1376019,311.368837 C13.4630654,311.368837 9.52924779,313.041919 9.52924779,317.279726 C9.52924779,326.927498 30.4895891,322.839968 30.4895891,335.252834 C30.4895891,341.754811 24.6339063,344.219351 18.2877476,344.169259 C13.9135026,344.169259 9.82953922,343.087266 6.52633357,341.263907 L6.52633357,338.358555 C10.0697724,340.422357 14.1036871,341.414184 18.0875533,341.414184 C23.1524686,341.414184 27.5367234,339.891379 27.5367234,335.453203 C27.5367234,325.264434 6.57638214,329.44213 6.57638214,317.37991 C6.58639186,311.358819 12.0917346,308.603744 17.9474173,308.603744 Z M57.585885,308.603744 C61.0292267,308.603744 64.4225197,309.395202 67.2252397,310.918007 L67.2252397,313.873451 C64.7128015,312.250461 61.369557,311.358819 58.0263125,311.358819 C50.4990075,311.358819 42.6313722,316.237806 42.6313722,326.71711 C42.5813236,336.665436 50.6491532,341.394147 58.1764582,341.394147 C61.8199941,341.394147 65.0631414,340.512523 67.5755797,338.879515 L67.5755797,341.784867 C64.7728597,343.307672 61.3295181,344.149222 57.585885,344.149222 C48.9775309,344.149222 39.628458,338.288426 39.6785066,326.71711 C39.6785066,314.704983 48.7773367,308.603744 57.585885,308.603744 Z M106.943785,309.14474 L106.943785,331.305563 C106.943785,340.903243 100.497529,344.159241 92.8701271,344.159241 C85.1926764,344.159241 78.7464206,340.913261 78.7464206,331.305563 L78.7464206,309.14474 L81.6492377,309.14474 L81.6492377,331.205378 C81.6492377,338.739257 86.4238713,341.394147 92.8701271,341.394147 C99.316383,341.394147 104.040968,338.739257 104.040968,331.205378 L104.040968,309.14474 L106.943785,309.14474 Z M136.742704,308.603744 C148.744351,308.603744 154.650082,317.610335 154.650082,326.376483 C154.650082,335.142631 148.744351,344.149222 136.742704,344.149222 C124.741057,344.149222 118.835325,335.142631 118.835325,326.376483 C118.835325,317.610335 124.741057,308.603744 136.742704,308.603744 Z M136.742704,311.358819 C126.652912,311.358819 121.788191,318.892697 121.788191,326.376483 C121.788191,333.860269 126.662922,341.394147 136.742704,341.394147 C146.822486,341.394147 151.697217,333.860269 151.697217,326.376483 C151.707226,318.892697 146.832496,311.358819 136.742704,311.358819 Z M170.405372,309.14474 L170.405372,340.803058 L190.324703,340.803058 L190.324703,343.608226 L167.502555,343.608226 L167.502555,309.14474 L170.405372,309.14474 Z M196.510707,343.608226 L211.855598,309.14474 L215.148794,309.14474 L230.453647,343.608226 L227.300587,343.608226 L223.216624,334.351173 L203.787769,334.351173 L199.653757,343.608226 L196.510707,343.608226 Z M204.928876,331.596098 L222.045487,331.596098 L213.927609,313.23227 C213.777463,312.84155 213.637327,312.490904 213.487182,312.150277 C213.337036,312.490904 213.1969,312.84155 213.046754,313.23227 L204.928876,331.596098 Z M34.7737467,352.995518 L34.7737467,387.459003 L31.8709296,387.459003 L31.8709296,358.605853 L18.2977573,378.692855 L16.4759894,378.692855 L2.90281708,358.605853 L2.90281708,387.459003 L2.84217094e-14,387.459003 L2.84217094e-14,352.995518 L2.46238966,352.995518 L17.4068928,375.09623 L32.311357,352.9855 L34.7737467,352.9855 L34.7737467,352.995518 Z M64.622714,352.454521 C76.6243612,352.454521 82.5300925,361.461113 82.5300925,370.227261 C82.5300925,378.993409 76.6243612,388 64.622714,388 C52.6210669,388 46.7153356,378.993409 46.7153356,370.227261 C46.7153356,361.461113 52.6110571,352.454521 64.622714,352.454521 Z M64.622714,355.209597 C54.5329222,355.209597 49.6682012,362.743475 49.6682012,370.227261 C49.6682012,377.711047 54.542932,385.244925 64.622714,385.244925 C74.7024961,385.244925 79.5772268,377.711047 79.5772268,370.227261 C79.5772268,362.743475 74.7024961,355.209597 64.622714,355.209597 Z M110.367107,352.454521 C113.810449,352.454521 117.203742,353.245979 120.006462,354.768785 L120.006462,357.724229 C117.494024,356.101239 114.150779,355.209597 110.807535,355.209597 C103.28023,355.209597 95.4125945,360.088584 95.4125945,370.567888 C95.3625459,380.516214 103.430375,385.244925 110.95768,385.244925 C114.601216,385.244925 117.844364,384.363301 120.356802,382.730293 L120.356802,385.635645 C117.554082,387.15845 114.11074,388 110.367107,388 C101.758753,388 92.4096803,382.139204 92.4597289,370.567888 C92.4597289,358.555761 101.558559,352.454521 110.367107,352.454521 Z M128.214428,387.459003 L143.559319,352.995518 L146.852515,352.995518 L162.157368,387.459003 L159.004308,387.459003 L154.920345,378.201951 L135.49149,378.201951 L131.357478,387.459003 L128.214428,387.459003 Z M136.622587,375.446876 L153.739198,375.446876 L145.62132,357.083048 C145.471175,356.692328 145.331039,356.341682 145.180893,356.001055 C145.030747,356.341682 144.890611,356.692328 144.740465,357.083048 L136.622587,375.446876 Z M188.112556,352.995518 L188.112556,378.0116 C188.112556,384.95439 183.337923,387.959926 177.191958,387.959926 C173.748617,387.959926 170.555518,387.218561 168.333361,385.846032 L168.333361,382.94068 C170.545508,384.413393 173.498374,385.154759 176.701482,385.154759 C181.616252,385.154759 185.209739,383.231215 185.209739,377.921434 L185.209739,355.810704 L174.579423,355.810704 L174.579423,353.005537 L188.112556,353.005537 L188.112556,352.995518 Z M219.092622,352.454521 C231.094269,352.454521 237,361.461113 237,370.227261 C237,378.993409 231.094269,388 219.092622,388 C207.090974,388 201.185243,378.993409 201.185243,370.227261 C201.185243,361.461113 207.090974,352.454521 219.092622,352.454521 Z M219.092622,355.209597 C209.00283,355.209597 204.138109,362.743475 204.138109,370.227261 C204.138109,377.711047 209.012839,385.244925 219.092622,385.244925 C229.172404,385.244925 234.047134,377.711047 234.047134,370.227261 C234.047134,362.743475 229.172404,355.209597 219.092622,355.209597 Z",
+              id: "Combined-Shape",
+              fill: "#E2452B"
+            }
+          }),
+          _vm._v(" "),
+          _c("path", {
+            attrs: {
+              d:
+                "M337,117.939063 L337,110.202404 L309.209909,111.801714 L332.725371,92.6899678 L332.725371,86.4526616 L328.721036,84.0536977 L295.845438,111.801714 L259.496079,113.401023 L292.101384,81.114967 L328.711025,80.0454289 L328.711025,72.3087703 L300.650641,73.3783084 L318.28974,56.3056819 L312.943952,50.1683326 L274.462284,83.79381 L277.135178,66.4513001 L306.266722,39.5029389 L301.461519,34.1652442 L283.021552,49.1087902 L288.897915,24.8292764 L282.480967,20.2912363 L277.135178,33.8953608 L277.135178,16.0130841 L271.258815,13.6141201 L271.258815,58.4447581 L259.496079,96.5982798 C259.496079,96.5982798 222.886438,126.755255 222.08557,126.755255 C221.284703,126.755255 263.510425,10.1456182 263.510425,10.1456182 L258.164637,8.00654203 L249.61538,28.0178992 L245.871326,2.3989639 L239.994963,3.19861854 L243.739017,40.8223691 L231.175413,72.5786537 L217.810942,49.0987945 L235.720334,0 L229.573679,0 L212.735446,40.8223691 L202.584455,21.6106665 L214.877766,2.84094396e-14 L207.389658,2.84094396e-14 L199.91156,15.2134294 L191.09201,2.84094396e-14 L186.817382,2.3989639 L196.167506,21.6106665 L183.073328,40.8223691 L183.073328,2.3989639 L177.457247,2.3989639 L172.381751,5.86746588 L172.381751,29.3473251 L158.486705,18.9418191 L157.956131,28.0178992 L173.452911,38.6932886 L173.182618,75.5173845 L154.212077,55.2361439 L156.614678,10.9452728 L148.325703,15.4833129 L146.453676,45.6402882 L130.956896,29.3673164 L125.8814,35.5046658 L171.310591,90.2110384 L148.325703,85.9428818 L121.066186,41.9118985 L116.521265,44.8506293 L137.634126,83.0141467 L125.070522,80.6151828 L111.445769,54.7363597 L107.701715,54.7363597 L106.630555,60.6038256 L115.720398,79.0158735 L104.257986,76.6968751 L93.1759867,65.6316541 L93.1759867,82.2844619 L109.944143,99.0272308 L23,185.839737 L23,301 L34.7927692,301 L34.7927692,190.687643 L118.273162,107.323648 L126.031563,115.070302 L201.763566,190.687643 L201.763566,300.970013 L213.556335,300.970013 L213.556335,185.80975 L213.556335,178.023113 L264.561563,158.281639 L289.418479,159.081294 L306.787286,175.094378 L312.403367,171.355992 L300.380348,158.81141 L321.222917,160.41072 L324.696678,152.943944 L284.342983,149.475442 L303.50373,140.109488 L315.336543,146.496729 L321.753491,143.028227 L311.262131,136.321124 L322.033795,131.053399 L330.583052,136.660977 L333.78652,131.053399 L327.10929,127.734832 L335.127973,124.91605 L337,118.508817 L303.924185,131.633148 L288.097048,121.537509 L337,117.939063 Z M183.864184,104.594826 L201.963782,131.14336 L201.953772,138.010394 L156.534592,128.854349 L139.916598,112.261515 L172.37174,101.586126 L183.864184,104.594826 Z M113.868393,86.252748 L160.44883,98.4574768 L132.688771,105.044632 L118.293184,90.6708398 L113.868393,86.252748 Z M167.055984,139.369807 L201.93375,149.285525 L201.903717,174.174775 L167.055984,139.369807 Z M210.773321,126.085544 L186.006504,88.5817421 L186.006504,52.8271843 L199.370975,29.6172085 L226.069885,82.9841597 L210.773321,126.085544 Z M294.644137,135.321555 L213.566346,167.497659 L213.566346,149.315512 L244.800166,125.415834 L275.263151,124.886062 L294.644137,135.321555 Z",
+              id: "Shape",
+              fill: "#354437",
+              "fill-rule": "nonzero"
+            }
+          })
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-35d55bd3", module.exports)
+  }
+}
+
+/***/ }),
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -75766,7 +79533,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "ml-auto d-flex" },
+        { staticClass: "d-flex", class: _vm.menuClass },
         [
           _vm.hasCart
             ? _c(
@@ -75790,17 +79557,13 @@ var render = function() {
             {
               staticClass: "nav-link-item d-flex align-items-center",
               attrs: { href: "#" },
-              on: { click: _vm.menuToggle }
+              on: { click: _vm.menuToggle, mouseenter: _vm.hoverAnim }
             },
             [
-              _c("span", { ref: "text", staticClass: "mr-2" }, [
-                _vm._v("MENU ")
-              ]),
-              _vm._v(" "),
               _c("menu-anim", {
                 ref: "menu",
                 staticClass: "mr-2",
-                attrs: { size: "32px", speed: 1.6 },
+                attrs: { size: "48px", speed: 1.6 },
                 on: { changeStatus: _vm.changeStatus }
               })
             ],
@@ -75824,3542 +79587,19 @@ if (false) {
 }
 
 /***/ }),
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("main-nav", {
-        attrs: { navClass: _vm.navClass },
-        on: { "menu-open": _vm.menuOpen, "menu-close": _vm.menuClose }
-      }),
-      _vm._v(" "),
-      _c("menu-overlay", { ref: "menu" }),
-      _vm._v(" "),
-      _c("main", { ref: "main" }, [_c("transition", [_c("router-view")], 1)], 1)
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-2fa6537c", module.exports)
-  }
-}
-
-/***/ }),
-/* 96 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * ScrollMagic v2.0.6 (2018-10-08)
- * The javascript library for magical scroll interactions.
- * (c) 2018 Jan Paepke (@janpaepke)
- * Project Website: http://scrollmagic.io
- * 
- * @version 2.0.6
- * @license Dual licensed under MIT license and GPL.
- * @author Jan Paepke - e-mail@janpaepke.de
- *
- * @file ScrollMagic main library.
- */
-/**
- * @namespace ScrollMagic
- */
-(function (root, factory) {
-	if (true) {
-		// AMD. Register as an anonymous module.
-		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if (typeof exports === 'object') {
-		// CommonJS
-		module.exports = factory();
-	} else {
-		// Browser global
-		root.ScrollMagic = factory();
-	}
-}(this, function () {
-	"use strict";
-
-	var ScrollMagic = function () {
-		_util.log(2, '(COMPATIBILITY NOTICE) -> As of ScrollMagic 2.0.0 you need to use \'new ScrollMagic.Controller()\' to create a new controller instance. Use \'new ScrollMagic.Scene()\' to instance a scene.');
-	};
-
-	ScrollMagic.version = "2.0.6";
-
-	// TODO: temporary workaround for chrome's scroll jitter bug
-	window.addEventListener("mousewheel", function () {});
-
-	// global const
-	var PIN_SPACER_ATTRIBUTE = "data-scrollmagic-pin-spacer";
-
-	/**
-	 * The main class that is needed once per scroll container.
-	 *
-	 * @class
-	 *
-	 * @example
-	 * // basic initialization
-	 * var controller = new ScrollMagic.Controller();
-	 *
-	 * // passing options
-	 * var controller = new ScrollMagic.Controller({container: "#myContainer", loglevel: 3});
-	 *
-	 * @param {object} [options] - An object containing one or more options for the controller.
-	 * @param {(string|object)} [options.container=window] - A selector, DOM object that references the main container for scrolling.
-	 * @param {boolean} [options.vertical=true] - Sets the scroll mode to vertical (`true`) or horizontal (`false`) scrolling.
-	 * @param {object} [options.globalSceneOptions={}] - These options will be passed to every Scene that is added to the controller using the addScene method. For more information on Scene options see {@link ScrollMagic.Scene}.
-	 * @param {number} [options.loglevel=2] Loglevel for debugging. Note that logging is disabled in the minified version of ScrollMagic.
-	 ** `0` => silent
-	 ** `1` => errors
-	 ** `2` => errors, warnings
-	 ** `3` => errors, warnings, debuginfo
-	 * @param {boolean} [options.refreshInterval=100] - Some changes don't call events by default, like changing the container size or moving a scene trigger element.  
-	 This interval polls these parameters to fire the necessary events.  
-	 If you don't use custom containers, trigger elements or have static layouts, where the positions of the trigger elements don't change, you can set this to 0 disable interval checking and improve performance.
-	 *
-	 */
-	ScrollMagic.Controller = function (options) {
-/*
-	 * ----------------------------------------------------------------
-	 * settings
-	 * ----------------------------------------------------------------
-	 */
-		var
-		NAMESPACE = 'ScrollMagic.Controller',
-			SCROLL_DIRECTION_FORWARD = 'FORWARD',
-			SCROLL_DIRECTION_REVERSE = 'REVERSE',
-			SCROLL_DIRECTION_PAUSED = 'PAUSED',
-			DEFAULT_OPTIONS = CONTROLLER_OPTIONS.defaults;
-
-/*
-	 * ----------------------------------------------------------------
-	 * private vars
-	 * ----------------------------------------------------------------
-	 */
-		var
-		Controller = this,
-			_options = _util.extend({}, DEFAULT_OPTIONS, options),
-			_sceneObjects = [],
-			_updateScenesOnNextCycle = false,
-			// can be boolean (true => all scenes) or an array of scenes to be updated
-			_scrollPos = 0,
-			_scrollDirection = SCROLL_DIRECTION_PAUSED,
-			_isDocument = true,
-			_viewPortSize = 0,
-			_enabled = true,
-			_updateTimeout, _refreshTimeout;
-
-/*
-	 * ----------------------------------------------------------------
-	 * private functions
-	 * ----------------------------------------------------------------
-	 */
-
-		/**
-		 * Internal constructor function of the ScrollMagic Controller
-		 * @private
-		 */
-		var construct = function () {
-			for (var key in _options) {
-				if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
-					log(2, "WARNING: Unknown option \"" + key + "\"");
-					delete _options[key];
-				}
-			}
-			_options.container = _util.get.elements(_options.container)[0];
-			// check ScrollContainer
-			if (!_options.container) {
-				log(1, "ERROR creating object " + NAMESPACE + ": No valid scroll container supplied");
-				throw NAMESPACE + " init failed."; // cancel
-			}
-			_isDocument = _options.container === window || _options.container === document.body || !document.body.contains(_options.container);
-			// normalize to window
-			if (_isDocument) {
-				_options.container = window;
-			}
-			// update container size immediately
-			_viewPortSize = getViewportSize();
-			// set event handlers
-			_options.container.addEventListener("resize", onChange);
-			_options.container.addEventListener("scroll", onChange);
-
-			var ri = parseInt(_options.refreshInterval, 10);
-			_options.refreshInterval = _util.type.Number(ri) ? ri : DEFAULT_OPTIONS.refreshInterval;
-			scheduleRefresh();
-
-			log(3, "added new " + NAMESPACE + " controller (v" + ScrollMagic.version + ")");
-		};
-
-		/**
-		 * Schedule the next execution of the refresh function
-		 * @private
-		 */
-		var scheduleRefresh = function () {
-			if (_options.refreshInterval > 0) {
-				_refreshTimeout = window.setTimeout(refresh, _options.refreshInterval);
-			}
-		};
-
-		/**
-		 * Default function to get scroll pos - overwriteable using `Controller.scrollPos(newFunction)`
-		 * @private
-		 */
-		var getScrollPos = function () {
-			return _options.vertical ? _util.get.scrollTop(_options.container) : _util.get.scrollLeft(_options.container);
-		};
-
-		/**
-		 * Returns the current viewport Size (width vor horizontal, height for vertical)
-		 * @private
-		 */
-		var getViewportSize = function () {
-			return _options.vertical ? _util.get.height(_options.container) : _util.get.width(_options.container);
-		};
-
-		/**
-		 * Default function to set scroll pos - overwriteable using `Controller.scrollTo(newFunction)`
-		 * Make available publicly for pinned mousewheel workaround.
-		 * @private
-		 */
-		var setScrollPos = this._setScrollPos = function (pos) {
-			if (_options.vertical) {
-				if (_isDocument) {
-					window.scrollTo(_util.get.scrollLeft(), pos);
-				} else {
-					_options.container.scrollTop = pos;
-				}
-			} else {
-				if (_isDocument) {
-					window.scrollTo(pos, _util.get.scrollTop());
-				} else {
-					_options.container.scrollLeft = pos;
-				}
-			}
-		};
-
-		/**
-		 * Handle updates in cycles instead of on scroll (performance)
-		 * @private
-		 */
-		var updateScenes = function () {
-			if (_enabled && _updateScenesOnNextCycle) {
-				// determine scenes to update
-				var scenesToUpdate = _util.type.Array(_updateScenesOnNextCycle) ? _updateScenesOnNextCycle : _sceneObjects.slice(0);
-				// reset scenes
-				_updateScenesOnNextCycle = false;
-				var oldScrollPos = _scrollPos;
-				// update scroll pos now instead of onChange, as it might have changed since scheduling (i.e. in-browser smooth scroll)
-				_scrollPos = Controller.scrollPos();
-				var deltaScroll = _scrollPos - oldScrollPos;
-				if (deltaScroll !== 0) { // scroll position changed?
-					_scrollDirection = (deltaScroll > 0) ? SCROLL_DIRECTION_FORWARD : SCROLL_DIRECTION_REVERSE;
-				}
-				// reverse order of scenes if scrolling reverse
-				if (_scrollDirection === SCROLL_DIRECTION_REVERSE) {
-					scenesToUpdate.reverse();
-				}
-				// update scenes
-				scenesToUpdate.forEach(function (scene, index) {
-					log(3, "updating Scene " + (index + 1) + "/" + scenesToUpdate.length + " (" + _sceneObjects.length + " total)");
-					scene.update(true);
-				});
-				if (scenesToUpdate.length === 0 && _options.loglevel >= 3) {
-					log(3, "updating 0 Scenes (nothing added to controller)");
-				}
-			}
-		};
-
-		/**
-		 * Initializes rAF callback
-		 * @private
-		 */
-		var debounceUpdate = function () {
-			_updateTimeout = _util.rAF(updateScenes);
-		};
-
-		/**
-		 * Handles Container changes
-		 * @private
-		 */
-		var onChange = function (e) {
-			log(3, "event fired causing an update:", e.type);
-			if (e.type == "resize") {
-				// resize
-				_viewPortSize = getViewportSize();
-				_scrollDirection = SCROLL_DIRECTION_PAUSED;
-			}
-			// schedule update
-			if (_updateScenesOnNextCycle !== true) {
-				_updateScenesOnNextCycle = true;
-				debounceUpdate();
-			}
-		};
-
-		var refresh = function () {
-			if (!_isDocument) {
-				// simulate resize event. Only works for viewport relevant param (performance)
-				if (_viewPortSize != getViewportSize()) {
-					var resizeEvent;
-					try {
-						resizeEvent = new Event('resize', {
-							bubbles: false,
-							cancelable: false
-						});
-					} catch (e) { // stupid IE
-						resizeEvent = document.createEvent("Event");
-						resizeEvent.initEvent("resize", false, false);
-					}
-					_options.container.dispatchEvent(resizeEvent);
-				}
-			}
-			_sceneObjects.forEach(function (scene, index) { // refresh all scenes
-				scene.refresh();
-			});
-			scheduleRefresh();
-		};
-
-		/**
-		 * Send a debug message to the console.
-		 * provided publicly with _log for plugins
-		 * @private
-		 *
-		 * @param {number} loglevel - The loglevel required to initiate output for the message.
-		 * @param {...mixed} output - One or more variables that should be passed to the console.
-		 */
-		var log = this._log = function (loglevel, output) {
-			if (_options.loglevel >= loglevel) {
-				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ") ->");
-				_util.log.apply(window, arguments);
-			}
-		};
-		// for scenes we have getters for each option, but for the controller we don't, so we need to make it available externally for plugins
-		this._options = _options;
-
-		/**
-		 * Sort scenes in ascending order of their start offset.
-		 * @private
-		 *
-		 * @param {array} ScenesArray - an array of ScrollMagic Scenes that should be sorted
-		 * @return {array} The sorted array of Scenes.
-		 */
-		var sortScenes = function (ScenesArray) {
-			if (ScenesArray.length <= 1) {
-				return ScenesArray;
-			} else {
-				var scenes = ScenesArray.slice(0);
-				scenes.sort(function (a, b) {
-					return a.scrollOffset() > b.scrollOffset() ? 1 : -1;
-				});
-				return scenes;
-			}
-		};
-
-		/**
-		 * ----------------------------------------------------------------
-		 * public functions
-		 * ----------------------------------------------------------------
-		 */
-
-		/**
-		 * Add one ore more scene(s) to the controller.  
-		 * This is the equivalent to `Scene.addTo(controller)`.
-		 * @public
-		 * @example
-		 * // with a previously defined scene
-		 * controller.addScene(scene);
-		 *
-		 * // with a newly created scene.
-		 * controller.addScene(new ScrollMagic.Scene({duration : 0}));
-		 *
-		 * // adding multiple scenes
-		 * controller.addScene([scene, scene2, new ScrollMagic.Scene({duration : 0})]);
-		 *
-		 * @param {(ScrollMagic.Scene|array)} newScene - ScrollMagic Scene or Array of Scenes to be added to the controller.
-		 * @return {Controller} Parent object for chaining.
-		 */
-		this.addScene = function (newScene) {
-			if (_util.type.Array(newScene)) {
-				newScene.forEach(function (scene, index) {
-					Controller.addScene(scene);
-				});
-			} else if (newScene instanceof ScrollMagic.Scene) {
-				if (newScene.controller() !== Controller) {
-					newScene.addTo(Controller);
-				} else if (_sceneObjects.indexOf(newScene) < 0) {
-					// new scene
-					_sceneObjects.push(newScene); // add to array
-					_sceneObjects = sortScenes(_sceneObjects); // sort
-					newScene.on("shift.controller_sort", function () { // resort whenever scene moves
-						_sceneObjects = sortScenes(_sceneObjects);
-					});
-					// insert Global defaults.
-					for (var key in _options.globalSceneOptions) {
-						if (newScene[key]) {
-							newScene[key].call(newScene, _options.globalSceneOptions[key]);
-						}
-					}
-					log(3, "adding Scene (now " + _sceneObjects.length + " total)");
-				}
-			} else {
-				log(1, "ERROR: invalid argument supplied for '.addScene()'");
-			}
-			return Controller;
-		};
-
-		/**
-		 * Remove one ore more scene(s) from the controller.  
-		 * This is the equivalent to `Scene.remove()`.
-		 * @public
-		 * @example
-		 * // remove a scene from the controller
-		 * controller.removeScene(scene);
-		 *
-		 * // remove multiple scenes from the controller
-		 * controller.removeScene([scene, scene2, scene3]);
-		 *
-		 * @param {(ScrollMagic.Scene|array)} Scene - ScrollMagic Scene or Array of Scenes to be removed from the controller.
-		 * @returns {Controller} Parent object for chaining.
-		 */
-		this.removeScene = function (Scene) {
-			if (_util.type.Array(Scene)) {
-				Scene.forEach(function (scene, index) {
-					Controller.removeScene(scene);
-				});
-			} else {
-				var index = _sceneObjects.indexOf(Scene);
-				if (index > -1) {
-					Scene.off("shift.controller_sort");
-					_sceneObjects.splice(index, 1);
-					log(3, "removing Scene (now " + _sceneObjects.length + " left)");
-					Scene.remove();
-				}
-			}
-			return Controller;
-		};
-
-		/**
-		 * Update one ore more scene(s) according to the scroll position of the container.  
-		 * This is the equivalent to `Scene.update()`.  
-		 * The update method calculates the scene's start and end position (based on the trigger element, trigger hook, duration and offset) and checks it against the current scroll position of the container.  
-		 * It then updates the current scene state accordingly (or does nothing, if the state is already correct) – Pins will be set to their correct position and tweens will be updated to their correct progress.  
-		 * _**Note:** This method gets called constantly whenever Controller detects a change. The only application for you is if you change something outside of the realm of ScrollMagic, like moving the trigger or changing tween parameters._
-		 * @public
-		 * @example
-		 * // update a specific scene on next cycle
-		 * controller.updateScene(scene);
-		 *
-		 * // update a specific scene immediately
-		 * controller.updateScene(scene, true);
-		 *
-		 * // update multiple scenes scene on next cycle
-		 * controller.updateScene([scene1, scene2, scene3]);
-		 *
-		 * @param {ScrollMagic.Scene} Scene - ScrollMagic Scene or Array of Scenes that is/are supposed to be updated.
-		 * @param {boolean} [immediately=false] - If `true` the update will be instant, if `false` it will wait until next update cycle.  
-		 This is useful when changing multiple properties of the scene - this way it will only be updated once all new properties are set (updateScenes).
-		 * @return {Controller} Parent object for chaining.
-		 */
-		this.updateScene = function (Scene, immediately) {
-			if (_util.type.Array(Scene)) {
-				Scene.forEach(function (scene, index) {
-					Controller.updateScene(scene, immediately);
-				});
-			} else {
-				if (immediately) {
-					Scene.update(true);
-				} else if (_updateScenesOnNextCycle !== true && Scene instanceof ScrollMagic.Scene) { // if _updateScenesOnNextCycle is true, all connected scenes are already scheduled for update
-					// prep array for next update cycle
-					_updateScenesOnNextCycle = _updateScenesOnNextCycle || [];
-					if (_updateScenesOnNextCycle.indexOf(Scene) == -1) {
-						_updateScenesOnNextCycle.push(Scene);
-					}
-					_updateScenesOnNextCycle = sortScenes(_updateScenesOnNextCycle); // sort
-					debounceUpdate();
-				}
-			}
-			return Controller;
-		};
-
-		/**
-		 * Updates the controller params and calls updateScene on every scene, that is attached to the controller.  
-		 * See `Controller.updateScene()` for more information about what this means.  
-		 * In most cases you will not need this function, as it is called constantly, whenever ScrollMagic detects a state change event, like resize or scroll.  
-		 * The only application for this method is when ScrollMagic fails to detect these events.  
-		 * One application is with some external scroll libraries (like iScroll) that move an internal container to a negative offset instead of actually scrolling. In this case the update on the controller needs to be called whenever the child container's position changes.
-		 * For this case there will also be the need to provide a custom function to calculate the correct scroll position. See `Controller.scrollPos()` for details.
-		 * @public
-		 * @example
-		 * // update the controller on next cycle (saves performance due to elimination of redundant updates)
-		 * controller.update();
-		 *
-		 * // update the controller immediately
-		 * controller.update(true);
-		 *
-		 * @param {boolean} [immediately=false] - If `true` the update will be instant, if `false` it will wait until next update cycle (better performance)
-		 * @return {Controller} Parent object for chaining.
-		 */
-		this.update = function (immediately) {
-			onChange({
-				type: "resize"
-			}); // will update size and set _updateScenesOnNextCycle to true
-			if (immediately) {
-				updateScenes();
-			}
-			return Controller;
-		};
-
-		/**
-		 * Scroll to a numeric scroll offset, a DOM element, the start of a scene or provide an alternate method for scrolling.  
-		 * For vertical controllers it will change the top scroll offset and for horizontal applications it will change the left offset.
-		 * @public
-		 *
-		 * @since 1.1.0
-		 * @example
-		 * // scroll to an offset of 100
-		 * controller.scrollTo(100);
-		 *
-		 * // scroll to a DOM element
-		 * controller.scrollTo("#anchor");
-		 *
-		 * // scroll to the beginning of a scene
-		 * var scene = new ScrollMagic.Scene({offset: 200});
-		 * controller.scrollTo(scene);
-		 *
-		 * // define a new scroll position modification function (jQuery animate instead of jump)
-		 * controller.scrollTo(function (newScrollPos) {
-		 *	$("html, body").animate({scrollTop: newScrollPos});
-		 * });
-		 * controller.scrollTo(100); // call as usual, but the new function will be used instead
-		 *
-		 * // define a new scroll function with an additional parameter
-		 * controller.scrollTo(function (newScrollPos, message) {
-		 *  console.log(message);
-		 *	$(this).animate({scrollTop: newScrollPos});
-		 * });
-		 * // call as usual, but supply an extra parameter to the defined custom function
-		 * controller.scrollTo(100, "my message");
-		 *
-		 * // define a new scroll function with an additional parameter containing multiple variables
-		 * controller.scrollTo(function (newScrollPos, options) {
-		 *  someGlobalVar = options.a + options.b;
-		 *	$(this).animate({scrollTop: newScrollPos});
-		 * });
-		 * // call as usual, but supply an extra parameter containing multiple options
-		 * controller.scrollTo(100, {a: 1, b: 2});
-		 *
-		 * // define a new scroll function with a callback supplied as an additional parameter
-		 * controller.scrollTo(function (newScrollPos, callback) {
-		 *	$(this).animate({scrollTop: newScrollPos}, 400, "swing", callback);
-		 * });
-		 * // call as usual, but supply an extra parameter, which is used as a callback in the previously defined custom scroll function
-		 * controller.scrollTo(100, function() {
-		 *	console.log("scroll has finished.");
-		 * });
-		 *
-		 * @param {mixed} scrollTarget - The supplied argument can be one of these types:
-		 * 1. `number` -> The container will scroll to this new scroll offset.
-		 * 2. `string` or `object` -> Can be a selector or a DOM object.  
-		 *  The container will scroll to the position of this element.
-		 * 3. `ScrollMagic Scene` -> The container will scroll to the start of this scene.
-		 * 4. `function` -> This function will be used for future scroll position modifications.  
-		 *  This provides a way for you to change the behaviour of scrolling and adding new behaviour like animation. The function receives the new scroll position as a parameter and a reference to the container element using `this`.  
-		 *  It may also optionally receive an optional additional parameter (see below)  
-		 *  _**NOTE:**  
-		 *  All other options will still work as expected, using the new function to scroll._
-		 * @param {mixed} [additionalParameter] - If a custom scroll function was defined (see above 4.), you may want to supply additional parameters to it, when calling it. You can do this using this parameter – see examples for details. Please note, that this parameter will have no effect, if you use the default scrolling function.
-		 * @returns {Controller} Parent object for chaining.
-		 */
-		this.scrollTo = function (scrollTarget, additionalParameter) {
-			if (_util.type.Number(scrollTarget)) { // excecute
-				setScrollPos.call(_options.container, scrollTarget, additionalParameter);
-			} else if (scrollTarget instanceof ScrollMagic.Scene) { // scroll to scene
-				if (scrollTarget.controller() === Controller) { // check if the controller is associated with this scene
-					Controller.scrollTo(scrollTarget.scrollOffset(), additionalParameter);
-				} else {
-					log(2, "scrollTo(): The supplied scene does not belong to this controller. Scroll cancelled.", scrollTarget);
-				}
-			} else if (_util.type.Function(scrollTarget)) { // assign new scroll function
-				setScrollPos = scrollTarget;
-			} else { // scroll to element
-				var elem = _util.get.elements(scrollTarget)[0];
-				if (elem) {
-					// if parent is pin spacer, use spacer position instead so correct start position is returned for pinned elements.
-					while (elem.parentNode.hasAttribute(PIN_SPACER_ATTRIBUTE)) {
-						elem = elem.parentNode;
-					}
-
-					var
-					param = _options.vertical ? "top" : "left",
-						// which param is of interest ?
-						containerOffset = _util.get.offset(_options.container),
-						// container position is needed because element offset is returned in relation to document, not in relation to container.
-						elementOffset = _util.get.offset(elem);
-
-					if (!_isDocument) { // container is not the document root, so substract scroll Position to get correct trigger element position relative to scrollcontent
-						containerOffset[param] -= Controller.scrollPos();
-					}
-
-					Controller.scrollTo(elementOffset[param] - containerOffset[param], additionalParameter);
-				} else {
-					log(2, "scrollTo(): The supplied argument is invalid. Scroll cancelled.", scrollTarget);
-				}
-			}
-			return Controller;
-		};
-
-		/**
-		 * **Get** the current scrollPosition or **Set** a new method to calculate it.  
-		 * -> **GET**:
-		 * When used as a getter this function will return the current scroll position.  
-		 * To get a cached value use Controller.info("scrollPos"), which will be updated in the update cycle.  
-		 * For vertical controllers it will return the top scroll offset and for horizontal applications it will return the left offset.
-		 *
-		 * -> **SET**:
-		 * When used as a setter this method prodes a way to permanently overwrite the controller's scroll position calculation.  
-		 * A typical usecase is when the scroll position is not reflected by the containers scrollTop or scrollLeft values, but for example by the inner offset of a child container.  
-		 * Moving a child container inside a parent is a commonly used method for several scrolling frameworks, including iScroll.  
-		 * By providing an alternate calculation function you can make sure ScrollMagic receives the correct scroll position.  
-		 * Please also bear in mind that your function should return y values for vertical scrolls an x for horizontals.
-		 *
-		 * To change the current scroll position please use `Controller.scrollTo()`.
-		 * @public
-		 *
-		 * @example
-		 * // get the current scroll Position
-		 * var scrollPos = controller.scrollPos();
-		 *
-		 * // set a new scroll position calculation method
-		 * controller.scrollPos(function () {
-		 *	return this.info("vertical") ? -mychildcontainer.y : -mychildcontainer.x
-		 * });
-		 *
-		 * @param {function} [scrollPosMethod] - The function to be used for the scroll position calculation of the container.
-		 * @returns {(number|Controller)} Current scroll position or parent object for chaining.
-		 */
-		this.scrollPos = function (scrollPosMethod) {
-			if (!arguments.length) { // get
-				return getScrollPos.call(Controller);
-			} else { // set
-				if (_util.type.Function(scrollPosMethod)) {
-					getScrollPos = scrollPosMethod;
-				} else {
-					log(2, "Provided value for method 'scrollPos' is not a function. To change the current scroll position use 'scrollTo()'.");
-				}
-			}
-			return Controller;
-		};
-
-		/**
-		 * **Get** all infos or one in particular about the controller.
-		 * @public
-		 * @example
-		 * // returns the current scroll position (number)
-		 * var scrollPos = controller.info("scrollPos");
-		 *
-		 * // returns all infos as an object
-		 * var infos = controller.info();
-		 *
-		 * @param {string} [about] - If passed only this info will be returned instead of an object containing all.  
-		 Valid options are:
-		 ** `"size"` => the current viewport size of the container
-		 ** `"vertical"` => true if vertical scrolling, otherwise false
-		 ** `"scrollPos"` => the current scroll position
-		 ** `"scrollDirection"` => the last known direction of the scroll
-		 ** `"container"` => the container element
-		 ** `"isDocument"` => true if container element is the document.
-		 * @returns {(mixed|object)} The requested info(s).
-		 */
-		this.info = function (about) {
-			var values = {
-				size: _viewPortSize,
-				// contains height or width (in regard to orientation);
-				vertical: _options.vertical,
-				scrollPos: _scrollPos,
-				scrollDirection: _scrollDirection,
-				container: _options.container,
-				isDocument: _isDocument
-			};
-			if (!arguments.length) { // get all as an object
-				return values;
-			} else if (values[about] !== undefined) {
-				return values[about];
-			} else {
-				log(1, "ERROR: option \"" + about + "\" is not available");
-				return;
-			}
-		};
-
-		/**
-		 * **Get** or **Set** the current loglevel option value.
-		 * @public
-		 *
-		 * @example
-		 * // get the current value
-		 * var loglevel = controller.loglevel();
-		 *
-		 * // set a new value
-		 * controller.loglevel(3);
-		 *
-		 * @param {number} [newLoglevel] - The new loglevel setting of the Controller. `[0-3]`
-		 * @returns {(number|Controller)} Current loglevel or parent object for chaining.
-		 */
-		this.loglevel = function (newLoglevel) {
-			if (!arguments.length) { // get
-				return _options.loglevel;
-			} else if (_options.loglevel != newLoglevel) { // set
-				_options.loglevel = newLoglevel;
-			}
-			return Controller;
-		};
-
-		/**
-		 * **Get** or **Set** the current enabled state of the controller.  
-		 * This can be used to disable all Scenes connected to the controller without destroying or removing them.
-		 * @public
-		 *
-		 * @example
-		 * // get the current value
-		 * var enabled = controller.enabled();
-		 *
-		 * // disable the controller
-		 * controller.enabled(false);
-		 *
-		 * @param {boolean} [newState] - The new enabled state of the controller `true` or `false`.
-		 * @returns {(boolean|Controller)} Current enabled state or parent object for chaining.
-		 */
-		this.enabled = function (newState) {
-			if (!arguments.length) { // get
-				return _enabled;
-			} else if (_enabled != newState) { // set
-				_enabled = !! newState;
-				Controller.updateScene(_sceneObjects, true);
-			}
-			return Controller;
-		};
-
-		/**
-		 * Destroy the Controller, all Scenes and everything.
-		 * @public
-		 *
-		 * @example
-		 * // without resetting the scenes
-		 * controller = controller.destroy();
-		 *
-		 * // with scene reset
-		 * controller = controller.destroy(true);
-		 *
-		 * @param {boolean} [resetScenes=false] - If `true` the pins and tweens (if existent) of all scenes will be reset.
-		 * @returns {null} Null to unset handler variables.
-		 */
-		this.destroy = function (resetScenes) {
-			window.clearTimeout(_refreshTimeout);
-			var i = _sceneObjects.length;
-			while (i--) {
-				_sceneObjects[i].destroy(resetScenes);
-			}
-			_options.container.removeEventListener("resize", onChange);
-			_options.container.removeEventListener("scroll", onChange);
-			_util.cAF(_updateTimeout);
-			log(3, "destroyed " + NAMESPACE + " (reset: " + (resetScenes ? "true" : "false") + ")");
-			return null;
-		};
-
-		// INIT
-		construct();
-		return Controller;
-	};
-
-	// store pagewide controller options
-	var CONTROLLER_OPTIONS = {
-		defaults: {
-			container: window,
-			vertical: true,
-			globalSceneOptions: {},
-			loglevel: 2,
-			refreshInterval: 100
-		}
-	};
-/*
- * method used to add an option to ScrollMagic Scenes.
- */
-	ScrollMagic.Controller.addOption = function (name, defaultValue) {
-		CONTROLLER_OPTIONS.defaults[name] = defaultValue;
-	};
-	// instance extension function for plugins
-	ScrollMagic.Controller.extend = function (extension) {
-		var oldClass = this;
-		ScrollMagic.Controller = function () {
-			oldClass.apply(this, arguments);
-			this.$super = _util.extend({}, this); // copy parent state
-			return extension.apply(this, arguments) || this;
-		};
-		_util.extend(ScrollMagic.Controller, oldClass); // copy properties
-		ScrollMagic.Controller.prototype = oldClass.prototype; // copy prototype
-		ScrollMagic.Controller.prototype.constructor = ScrollMagic.Controller; // restore constructor
-	};
-
-
-	/**
-	 * A Scene defines where the controller should react and how.
-	 *
-	 * @class
-	 *
-	 * @example
-	 * // create a standard scene and add it to a controller
-	 * new ScrollMagic.Scene()
-	 *		.addTo(controller);
-	 *
-	 * // create a scene with custom options and assign a handler to it.
-	 * var scene = new ScrollMagic.Scene({
-	 * 		duration: 100,
-	 *		offset: 200,
-	 *		triggerHook: "onEnter",
-	 *		reverse: false
-	 * });
-	 *
-	 * @param {object} [options] - Options for the Scene. The options can be updated at any time.  
-	 Instead of setting the options for each scene individually you can also set them globally in the controller as the controllers `globalSceneOptions` option. The object accepts the same properties as the ones below.  
-	 When a scene is added to the controller the options defined using the Scene constructor will be overwritten by those set in `globalSceneOptions`.
-	 * @param {(number|function)} [options.duration=0] - The duration of the scene. 
-	 If `0` tweens will auto-play when reaching the scene start point, pins will be pinned indefinetly starting at the start position.  
-	 A function retuning the duration value is also supported. Please see `Scene.duration()` for details.
-	 * @param {number} [options.offset=0] - Offset Value for the Trigger Position. If no triggerElement is defined this will be the scroll distance from the start of the page, after which the scene will start.
-	 * @param {(string|object)} [options.triggerElement=null] - Selector or DOM object that defines the start of the scene. If undefined the scene will start right at the start of the page (unless an offset is set).
-	 * @param {(number|string)} [options.triggerHook="onCenter"] - Can be a number between 0 and 1 defining the position of the trigger Hook in relation to the viewport.  
-	 Can also be defined using a string:
-	 ** `"onEnter"` => `1`
-	 ** `"onCenter"` => `0.5`
-	 ** `"onLeave"` => `0`
-	 * @param {boolean} [options.reverse=true] - Should the scene reverse, when scrolling up?
-	 * @param {number} [options.loglevel=2] - Loglevel for debugging. Note that logging is disabled in the minified version of ScrollMagic.
-	 ** `0` => silent
-	 ** `1` => errors
-	 ** `2` => errors, warnings
-	 ** `3` => errors, warnings, debuginfo
-	 * 
-	 */
-	ScrollMagic.Scene = function (options) {
-
-/*
-	 * ----------------------------------------------------------------
-	 * settings
-	 * ----------------------------------------------------------------
-	 */
-
-		var
-		NAMESPACE = 'ScrollMagic.Scene',
-			SCENE_STATE_BEFORE = 'BEFORE',
-			SCENE_STATE_DURING = 'DURING',
-			SCENE_STATE_AFTER = 'AFTER',
-			DEFAULT_OPTIONS = SCENE_OPTIONS.defaults;
-
-/*
-	 * ----------------------------------------------------------------
-	 * private vars
-	 * ----------------------------------------------------------------
-	 */
-
-		var
-		Scene = this,
-			_options = _util.extend({}, DEFAULT_OPTIONS, options),
-			_state = SCENE_STATE_BEFORE,
-			_progress = 0,
-			_scrollOffset = {
-				start: 0,
-				end: 0
-			},
-			// reflects the controllers's scroll position for the start and end of the scene respectively
-			_triggerPos = 0,
-			_enabled = true,
-			_durationUpdateMethod, _controller;
-
-		/**
-		 * Internal constructor function of the ScrollMagic Scene
-		 * @private
-		 */
-		var construct = function () {
-			for (var key in _options) { // check supplied options
-				if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
-					log(2, "WARNING: Unknown option \"" + key + "\"");
-					delete _options[key];
-				}
-			}
-			// add getters/setters for all possible options
-			for (var optionName in DEFAULT_OPTIONS) {
-				addSceneOption(optionName);
-			}
-			// validate all options
-			validateOption();
-		};
-
-/*
- * ----------------------------------------------------------------
- * Event Management
- * ----------------------------------------------------------------
- */
-
-		var _listeners = {};
-		/**
-		 * Scene start event.  
-		 * Fires whenever the scroll position its the starting point of the scene.  
-		 * It will also fire when scrolling back up going over the start position of the scene. If you want something to happen only when scrolling down/right, use the scrollDirection parameter passed to the callback.
-		 *
-		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
-		 *
-		 * @event ScrollMagic.Scene#start
-		 *
-		 * @example
-		 * scene.on("start", function (event) {
-		 * 	console.log("Hit start point of scene.");
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {number} event.progress - Reflects the current progress of the scene
-		 * @property {string} event.state - The current state of the scene `"BEFORE"` or `"DURING"`
-		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
-		 */
-		/**
-		 * Scene end event.  
-		 * Fires whenever the scroll position its the ending point of the scene.  
-		 * It will also fire when scrolling back up from after the scene and going over its end position. If you want something to happen only when scrolling down/right, use the scrollDirection parameter passed to the callback.
-		 *
-		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
-		 *
-		 * @event ScrollMagic.Scene#end
-		 *
-		 * @example
-		 * scene.on("end", function (event) {
-		 * 	console.log("Hit end point of scene.");
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {number} event.progress - Reflects the current progress of the scene
-		 * @property {string} event.state - The current state of the scene `"DURING"` or `"AFTER"`
-		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
-		 */
-		/**
-		 * Scene enter event.  
-		 * Fires whenever the scene enters the "DURING" state.  
-		 * Keep in mind that it doesn't matter if the scene plays forward or backward: This event always fires when the scene enters its active scroll timeframe, regardless of the scroll-direction.
-		 *
-		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
-		 *
-		 * @event ScrollMagic.Scene#enter
-		 *
-		 * @example
-		 * scene.on("enter", function (event) {
-		 * 	console.log("Scene entered.");
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {number} event.progress - Reflects the current progress of the scene
-		 * @property {string} event.state - The current state of the scene - always `"DURING"`
-		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
-		 */
-		/**
-		 * Scene leave event.  
-		 * Fires whenever the scene's state goes from "DURING" to either "BEFORE" or "AFTER".  
-		 * Keep in mind that it doesn't matter if the scene plays forward or backward: This event always fires when the scene leaves its active scroll timeframe, regardless of the scroll-direction.
-		 *
-		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
-		 *
-		 * @event ScrollMagic.Scene#leave
-		 *
-		 * @example
-		 * scene.on("leave", function (event) {
-		 * 	console.log("Scene left.");
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {number} event.progress - Reflects the current progress of the scene
-		 * @property {string} event.state - The current state of the scene `"BEFORE"` or `"AFTER"`
-		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
-		 */
-		/**
-		 * Scene update event.  
-		 * Fires whenever the scene is updated (but not necessarily changes the progress).
-		 *
-		 * @event ScrollMagic.Scene#update
-		 *
-		 * @example
-		 * scene.on("update", function (event) {
-		 * 	console.log("Scene updated.");
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {number} event.startPos - The starting position of the scene (in relation to the conainer)
-		 * @property {number} event.endPos - The ending position of the scene (in relation to the conainer)
-		 * @property {number} event.scrollPos - The current scroll position of the container
-		 */
-		/**
-		 * Scene progress event.  
-		 * Fires whenever the progress of the scene changes.
-		 *
-		 * For details on this event and the order in which it is fired, please review the {@link Scene.progress} method.
-		 *
-		 * @event ScrollMagic.Scene#progress
-		 *
-		 * @example
-		 * scene.on("progress", function (event) {
-		 * 	console.log("Scene progress changed to " + event.progress);
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {number} event.progress - Reflects the current progress of the scene
-		 * @property {string} event.state - The current state of the scene `"BEFORE"`, `"DURING"` or `"AFTER"`
-		 * @property {string} event.scrollDirection - Indicates which way we are scrolling `"PAUSED"`, `"FORWARD"` or `"REVERSE"`
-		 */
-		/**
-		 * Scene change event.  
-		 * Fires whenvever a property of the scene is changed.
-		 *
-		 * @event ScrollMagic.Scene#change
-		 *
-		 * @example
-		 * scene.on("change", function (event) {
-		 * 	console.log("Scene Property \"" + event.what + "\" changed to " + event.newval);
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {string} event.what - Indicates what value has been changed
-		 * @property {mixed} event.newval - The new value of the changed property
-		 */
-		/**
-		 * Scene shift event.  
-		 * Fires whenvever the start or end **scroll offset** of the scene change.
-		 * This happens explicitely, when one of these values change: `offset`, `duration` or `triggerHook`.
-		 * It will fire implicitly when the `triggerElement` changes, if the new element has a different position (most cases).
-		 * It will also fire implicitly when the size of the container changes and the triggerHook is anything other than `onLeave`.
-		 *
-		 * @event ScrollMagic.Scene#shift
-		 * @since 1.1.0
-		 *
-		 * @example
-		 * scene.on("shift", function (event) {
-		 * 	console.log("Scene moved, because the " + event.reason + " has changed.)");
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {string} event.reason - Indicates why the scene has shifted
-		 */
-		/**
-		 * Scene destroy event.  
-		 * Fires whenvever the scene is destroyed.
-		 * This can be used to tidy up custom behaviour used in events.
-		 *
-		 * @event ScrollMagic.Scene#destroy
-		 * @since 1.1.0
-		 *
-		 * @example
-		 * scene.on("enter", function (event) {
-		 *        // add custom action
-		 *        $("#my-elem").left("200");
-		 *      })
-		 *      .on("destroy", function (event) {
-		 *        // reset my element to start position
-		 *        if (event.reset) {
-		 *          $("#my-elem").left("0");
-		 *        }
-		 *      });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {boolean} event.reset - Indicates if the destroy method was called with reset `true` or `false`.
-		 */
-		/**
-		 * Scene add event.  
-		 * Fires when the scene is added to a controller.
-		 * This is mostly used by plugins to know that change might be due.
-		 *
-		 * @event ScrollMagic.Scene#add
-		 * @since 2.0.0
-		 *
-		 * @example
-		 * scene.on("add", function (event) {
-		 * 	console.log('Scene was added to a new controller.');
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 * @property {boolean} event.controller - The controller object the scene was added to.
-		 */
-		/**
-		 * Scene remove event.  
-		 * Fires when the scene is removed from a controller.
-		 * This is mostly used by plugins to know that change might be due.
-		 *
-		 * @event ScrollMagic.Scene#remove
-		 * @since 2.0.0
-		 *
-		 * @example
-		 * scene.on("remove", function (event) {
-		 * 	console.log('Scene was removed from its controller.');
-		 * });
-		 *
-		 * @property {object} event - The event Object passed to each callback
-		 * @property {string} event.type - The name of the event
-		 * @property {Scene} event.target - The Scene object that triggered this event
-		 */
-
-		/**
-		 * Add one ore more event listener.  
-		 * The callback function will be fired at the respective event, and an object containing relevant data will be passed to the callback.
-		 * @method ScrollMagic.Scene#on
-		 *
-		 * @example
-		 * function callback (event) {
-		 * 		console.log("Event fired! (" + event.type + ")");
-		 * }
-		 * // add listeners
-		 * scene.on("change update progress start end enter leave", callback);
-		 *
-		 * @param {string} names - The name or names of the event the callback should be attached to.
-		 * @param {function} callback - A function that should be executed, when the event is dispatched. An event object will be passed to the callback.
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.on = function (names, callback) {
-			if (_util.type.Function(callback)) {
-				names = names.trim().split(' ');
-				names.forEach(function (fullname) {
-					var
-					nameparts = fullname.split('.'),
-						eventname = nameparts[0],
-						namespace = nameparts[1];
-					if (eventname != "*") { // disallow wildcards
-						if (!_listeners[eventname]) {
-							_listeners[eventname] = [];
-						}
-						_listeners[eventname].push({
-							namespace: namespace || '',
-							callback: callback
-						});
-					}
-				});
-			} else {
-				log(1, "ERROR when calling '.on()': Supplied callback for '" + names + "' is not a valid function!");
-			}
-			return Scene;
-		};
-
-		/**
-		 * Remove one or more event listener.
-		 * @method ScrollMagic.Scene#off
-		 *
-		 * @example
-		 * function callback (event) {
-		 * 		console.log("Event fired! (" + event.type + ")");
-		 * }
-		 * // add listeners
-		 * scene.on("change update", callback);
-		 * // remove listeners
-		 * scene.off("change update", callback);
-		 *
-		 * @param {string} names - The name or names of the event that should be removed.
-		 * @param {function} [callback] - A specific callback function that should be removed. If none is passed all callbacks to the event listener will be removed.
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.off = function (names, callback) {
-			if (!names) {
-				log(1, "ERROR: Invalid event name supplied.");
-				return Scene;
-			}
-			names = names.trim().split(' ');
-			names.forEach(function (fullname, key) {
-				var
-				nameparts = fullname.split('.'),
-					eventname = nameparts[0],
-					namespace = nameparts[1] || '',
-					removeList = eventname === '*' ? Object.keys(_listeners) : [eventname];
-				removeList.forEach(function (remove) {
-					var
-					list = _listeners[remove] || [],
-						i = list.length;
-					while (i--) {
-						var listener = list[i];
-						if (listener && (namespace === listener.namespace || namespace === '*') && (!callback || callback == listener.callback)) {
-							list.splice(i, 1);
-						}
-					}
-					if (!list.length) {
-						delete _listeners[remove];
-					}
-				});
-			});
-			return Scene;
-		};
-
-		/**
-		 * Trigger an event.
-		 * @method ScrollMagic.Scene#trigger
-		 *
-		 * @example
-		 * this.trigger("change");
-		 *
-		 * @param {string} name - The name of the event that should be triggered.
-		 * @param {object} [vars] - An object containing info that should be passed to the callback.
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.trigger = function (name, vars) {
-			if (name) {
-				var
-				nameparts = name.trim().split('.'),
-					eventname = nameparts[0],
-					namespace = nameparts[1],
-					listeners = _listeners[eventname];
-				log(3, 'event fired:', eventname, vars ? "->" : '', vars || '');
-				if (listeners) {
-					listeners.forEach(function (listener, key) {
-						if (!namespace || namespace === listener.namespace) {
-							listener.callback.call(Scene, new ScrollMagic.Event(eventname, listener.namespace, Scene, vars));
-						}
-					});
-				}
-			} else {
-				log(1, "ERROR: Invalid event name supplied.");
-			}
-			return Scene;
-		};
-
-		// set event listeners
-		Scene.on("change.internal", function (e) {
-			if (e.what !== "loglevel" && e.what !== "tweenChanges") { // no need for a scene update scene with these options...
-				if (e.what === "triggerElement") {
-					updateTriggerElementPosition();
-				} else if (e.what === "reverse") { // the only property left that may have an impact on the current scene state. Everything else is handled by the shift event.
-					Scene.update();
-				}
-			}
-		}).on("shift.internal", function (e) {
-			updateScrollOffset();
-			Scene.update(); // update scene to reflect new position
-		});
-
-		/**
-		 * Send a debug message to the console.
-		 * @private
-		 * but provided publicly with _log for plugins
-		 *
-		 * @param {number} loglevel - The loglevel required to initiate output for the message.
-		 * @param {...mixed} output - One or more variables that should be passed to the console.
-		 */
-		var log = this._log = function (loglevel, output) {
-			if (_options.loglevel >= loglevel) {
-				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ") ->");
-				_util.log.apply(window, arguments);
-			}
-		};
-
-		/**
-		 * Add the scene to a controller.  
-		 * This is the equivalent to `Controller.addScene(scene)`.
-		 * @method ScrollMagic.Scene#addTo
-		 *
-		 * @example
-		 * // add a scene to a ScrollMagic Controller
-		 * scene.addTo(controller);
-		 *
-		 * @param {ScrollMagic.Controller} controller - The controller to which the scene should be added.
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.addTo = function (controller) {
-			if (!(controller instanceof ScrollMagic.Controller)) {
-				log(1, "ERROR: supplied argument of 'addTo()' is not a valid ScrollMagic Controller");
-			} else if (_controller != controller) {
-				// new controller
-				if (_controller) { // was associated to a different controller before, so remove it...
-					_controller.removeScene(Scene);
-				}
-				_controller = controller;
-				validateOption();
-				updateDuration(true);
-				updateTriggerElementPosition(true);
-				updateScrollOffset();
-				_controller.info("container").addEventListener('resize', onContainerResize);
-				controller.addScene(Scene);
-				Scene.trigger("add", {
-					controller: _controller
-				});
-				log(3, "added " + NAMESPACE + " to controller");
-				Scene.update();
-			}
-			return Scene;
-		};
-
-		/**
-		 * **Get** or **Set** the current enabled state of the scene.  
-		 * This can be used to disable this scene without removing or destroying it.
-		 * @method ScrollMagic.Scene#enabled
-		 *
-		 * @example
-		 * // get the current value
-		 * var enabled = scene.enabled();
-		 *
-		 * // disable the scene
-		 * scene.enabled(false);
-		 *
-		 * @param {boolean} [newState] - The new enabled state of the scene `true` or `false`.
-		 * @returns {(boolean|Scene)} Current enabled state or parent object for chaining.
-		 */
-		this.enabled = function (newState) {
-			if (!arguments.length) { // get
-				return _enabled;
-			} else if (_enabled != newState) { // set
-				_enabled = !! newState;
-				Scene.update(true);
-			}
-			return Scene;
-		};
-
-		/**
-		 * Remove the scene from the controller.  
-		 * This is the equivalent to `Controller.removeScene(scene)`.
-		 * The scene will not be updated anymore until you readd it to a controller.
-		 * To remove the pin or the tween you need to call removeTween() or removePin() respectively.
-		 * @method ScrollMagic.Scene#remove
-		 * @example
-		 * // remove the scene from its controller
-		 * scene.remove();
-		 *
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.remove = function () {
-			if (_controller) {
-				_controller.info("container").removeEventListener('resize', onContainerResize);
-				var tmpParent = _controller;
-				_controller = undefined;
-				tmpParent.removeScene(Scene);
-				Scene.trigger("remove");
-				log(3, "removed " + NAMESPACE + " from controller");
-			}
-			return Scene;
-		};
-
-		/**
-		 * Destroy the scene and everything.
-		 * @method ScrollMagic.Scene#destroy
-		 * @example
-		 * // destroy the scene without resetting the pin and tween to their initial positions
-		 * scene = scene.destroy();
-		 *
-		 * // destroy the scene and reset the pin and tween
-		 * scene = scene.destroy(true);
-		 *
-		 * @param {boolean} [reset=false] - If `true` the pin and tween (if existent) will be reset.
-		 * @returns {null} Null to unset handler variables.
-		 */
-		this.destroy = function (reset) {
-			Scene.trigger("destroy", {
-				reset: reset
-			});
-			Scene.remove();
-			Scene.off("*.*");
-			log(3, "destroyed " + NAMESPACE + " (reset: " + (reset ? "true" : "false") + ")");
-			return null;
-		};
-
-
-		/**
-		 * Updates the Scene to reflect the current state.  
-		 * This is the equivalent to `Controller.updateScene(scene, immediately)`.  
-		 * The update method calculates the scene's start and end position (based on the trigger element, trigger hook, duration and offset) and checks it against the current scroll position of the container.  
-		 * It then updates the current scene state accordingly (or does nothing, if the state is already correct) – Pins will be set to their correct position and tweens will be updated to their correct progress.
-		 * This means an update doesn't necessarily result in a progress change. The `progress` event will be fired if the progress has indeed changed between this update and the last.  
-		 * _**NOTE:** This method gets called constantly whenever ScrollMagic detects a change. The only application for you is if you change something outside of the realm of ScrollMagic, like moving the trigger or changing tween parameters._
-		 * @method ScrollMagic.Scene#update
-		 * @example
-		 * // update the scene on next tick
-		 * scene.update();
-		 *
-		 * // update the scene immediately
-		 * scene.update(true);
-		 *
-		 * @fires Scene.update
-		 *
-		 * @param {boolean} [immediately=false] - If `true` the update will be instant, if `false` it will wait until next update cycle (better performance).
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.update = function (immediately) {
-			if (_controller) {
-				if (immediately) {
-					if (_controller.enabled() && _enabled) {
-						var
-						scrollPos = _controller.info("scrollPos"),
-							newProgress;
-
-						if (_options.duration > 0) {
-							newProgress = (scrollPos - _scrollOffset.start) / (_scrollOffset.end - _scrollOffset.start);
-						} else {
-							newProgress = scrollPos >= _scrollOffset.start ? 1 : 0;
-						}
-
-						Scene.trigger("update", {
-							startPos: _scrollOffset.start,
-							endPos: _scrollOffset.end,
-							scrollPos: scrollPos
-						});
-
-						Scene.progress(newProgress);
-					} else if (_pin && _state === SCENE_STATE_DURING) {
-						updatePinState(true); // unpin in position
-					}
-				} else {
-					_controller.updateScene(Scene, false);
-				}
-			}
-			return Scene;
-		};
-
-		/**
-		 * Updates dynamic scene variables like the trigger element position or the duration.
-		 * This method is automatically called in regular intervals from the controller. See {@link ScrollMagic.Controller} option `refreshInterval`.
-		 * 
-		 * You can call it to minimize lag, for example when you intentionally change the position of the triggerElement.
-		 * If you don't it will simply be updated in the next refresh interval of the container, which is usually sufficient.
-		 *
-		 * @method ScrollMagic.Scene#refresh
-		 * @since 1.1.0
-		 * @example
-		 * scene = new ScrollMagic.Scene({triggerElement: "#trigger"});
-		 * 
-		 * // change the position of the trigger
-		 * $("#trigger").css("top", 500);
-		 * // immediately let the scene know of this change
-		 * scene.refresh();
-		 *
-		 * @fires {@link Scene.shift}, if the trigger element position or the duration changed
-		 * @fires {@link Scene.change}, if the duration changed
-		 *
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.refresh = function () {
-			updateDuration();
-			updateTriggerElementPosition();
-			// update trigger element position
-			return Scene;
-		};
-
-		/**
-		 * **Get** or **Set** the scene's progress.  
-		 * Usually it shouldn't be necessary to use this as a setter, as it is set automatically by scene.update().  
-		 * The order in which the events are fired depends on the duration of the scene:
-		 *  1. Scenes with `duration == 0`:  
-		 *  Scenes that have no duration by definition have no ending. Thus the `end` event will never be fired.  
-		 *  When the trigger position of the scene is passed the events are always fired in this order:  
-		 *  `enter`, `start`, `progress` when scrolling forward  
-		 *  and  
-		 *  `progress`, `start`, `leave` when scrolling in reverse
-		 *  2. Scenes with `duration > 0`:  
-		 *  Scenes with a set duration have a defined start and end point.  
-		 *  When scrolling past the start position of the scene it will fire these events in this order:  
-		 *  `enter`, `start`, `progress`  
-		 *  When continuing to scroll and passing the end point it will fire these events:  
-		 *  `progress`, `end`, `leave`  
-		 *  When reversing through the end point these events are fired:  
-		 *  `enter`, `end`, `progress`  
-		 *  And when continuing to scroll past the start position in reverse it will fire:  
-		 *  `progress`, `start`, `leave`  
-		 *  In between start and end the `progress` event will be called constantly, whenever the progress changes.
-		 * 
-		 * In short:  
-		 * `enter` events will always trigger **before** the progress update and `leave` envents will trigger **after** the progress update.  
-		 * `start` and `end` will always trigger at their respective position.
-		 * 
-		 * Please review the event descriptions for details on the events and the event object that is passed to the callback.
-		 * 
-		 * @method ScrollMagic.Scene#progress
-		 * @example
-		 * // get the current scene progress
-		 * var progress = scene.progress();
-		 *
-		 * // set new scene progress
-		 * scene.progress(0.3);
-		 *
-		 * @fires {@link Scene.enter}, when used as setter
-		 * @fires {@link Scene.start}, when used as setter
-		 * @fires {@link Scene.progress}, when used as setter
-		 * @fires {@link Scene.end}, when used as setter
-		 * @fires {@link Scene.leave}, when used as setter
-		 *
-		 * @param {number} [progress] - The new progress value of the scene `[0-1]`.
-		 * @returns {number} `get` -  Current scene progress.
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-		this.progress = function (progress) {
-			if (!arguments.length) { // get
-				return _progress;
-			} else { // set
-				var
-				doUpdate = false,
-					oldState = _state,
-					scrollDirection = _controller ? _controller.info("scrollDirection") : 'PAUSED',
-					reverseOrForward = _options.reverse || progress >= _progress;
-				if (_options.duration === 0) {
-					// zero duration scenes
-					doUpdate = _progress != progress;
-					_progress = progress < 1 && reverseOrForward ? 0 : 1;
-					_state = _progress === 0 ? SCENE_STATE_BEFORE : SCENE_STATE_DURING;
-				} else {
-					// scenes with start and end
-					if (progress < 0 && _state !== SCENE_STATE_BEFORE && reverseOrForward) {
-						// go back to initial state
-						_progress = 0;
-						_state = SCENE_STATE_BEFORE;
-						doUpdate = true;
-					} else if (progress >= 0 && progress < 1 && reverseOrForward) {
-						_progress = progress;
-						_state = SCENE_STATE_DURING;
-						doUpdate = true;
-					} else if (progress >= 1 && _state !== SCENE_STATE_AFTER) {
-						_progress = 1;
-						_state = SCENE_STATE_AFTER;
-						doUpdate = true;
-					} else if (_state === SCENE_STATE_DURING && !reverseOrForward) {
-						updatePinState(); // in case we scrolled backwards mid-scene and reverse is disabled => update the pin position, so it doesn't move back as well.
-					}
-				}
-				if (doUpdate) {
-					// fire events
-					var
-					eventVars = {
-						progress: _progress,
-						state: _state,
-						scrollDirection: scrollDirection
-					},
-						stateChanged = _state != oldState;
-
-					var trigger = function (eventName) { // tmp helper to simplify code
-						Scene.trigger(eventName, eventVars);
-					};
-
-					if (stateChanged) { // enter events
-						if (oldState !== SCENE_STATE_DURING) {
-							trigger("enter");
-							trigger(oldState === SCENE_STATE_BEFORE ? "start" : "end");
-						}
-					}
-					trigger("progress");
-					if (stateChanged) { // leave events
-						if (_state !== SCENE_STATE_DURING) {
-							trigger(_state === SCENE_STATE_BEFORE ? "start" : "end");
-							trigger("leave");
-						}
-					}
-				}
-
-				return Scene;
-			}
-		};
-
-
-		/**
-		 * Update the start and end scrollOffset of the container.
-		 * The positions reflect what the controller's scroll position will be at the start and end respectively.
-		 * Is called, when:
-		 *   - Scene event "change" is called with: offset, triggerHook, duration 
-		 *   - scroll container event "resize" is called
-		 *   - the position of the triggerElement changes
-		 *   - the controller changes -> addTo()
-		 * @private
-		 */
-		var updateScrollOffset = function () {
-			_scrollOffset = {
-				start: _triggerPos + _options.offset
-			};
-			if (_controller && _options.triggerElement) {
-				// take away triggerHook portion to get relative to top
-				_scrollOffset.start -= _controller.info("size") * _options.triggerHook;
-			}
-			_scrollOffset.end = _scrollOffset.start + _options.duration;
-		};
-
-		/**
-		 * Updates the duration if set to a dynamic function.
-		 * This method is called when the scene is added to a controller and in regular intervals from the controller through scene.refresh().
-		 * 
-		 * @fires {@link Scene.change}, if the duration changed
-		 * @fires {@link Scene.shift}, if the duration changed
-		 *
-		 * @param {boolean} [suppressEvents=false] - If true the shift event will be suppressed.
-		 * @private
-		 */
-		var updateDuration = function (suppressEvents) {
-			// update duration
-			if (_durationUpdateMethod) {
-				var varname = "duration";
-				if (changeOption(varname, _durationUpdateMethod.call(Scene)) && !suppressEvents) { // set
-					Scene.trigger("change", {
-						what: varname,
-						newval: _options[varname]
-					});
-					Scene.trigger("shift", {
-						reason: varname
-					});
-				}
-			}
-		};
-
-		/**
-		 * Updates the position of the triggerElement, if present.
-		 * This method is called ...
-		 *  - ... when the triggerElement is changed
-		 *  - ... when the scene is added to a (new) controller
-		 *  - ... in regular intervals from the controller through scene.refresh().
-		 * 
-		 * @fires {@link Scene.shift}, if the position changed
-		 *
-		 * @param {boolean} [suppressEvents=false] - If true the shift event will be suppressed.
-		 * @private
-		 */
-		var updateTriggerElementPosition = function (suppressEvents) {
-			var
-			elementPos = 0,
-				telem = _options.triggerElement;
-			if (_controller && (telem || _triggerPos > 0)) { // either an element exists or was removed and the triggerPos is still > 0
-				if (telem) { // there currently a triggerElement set
-					if (telem.parentNode) { // check if element is still attached to DOM
-						var
-						controllerInfo = _controller.info(),
-							containerOffset = _util.get.offset(controllerInfo.container),
-							// container position is needed because element offset is returned in relation to document, not in relation to container.
-							param = controllerInfo.vertical ? "top" : "left"; // which param is of interest ?
-						// if parent is spacer, use spacer position instead so correct start position is returned for pinned elements.
-						while (telem.parentNode.hasAttribute(PIN_SPACER_ATTRIBUTE)) {
-							telem = telem.parentNode;
-						}
-
-						var elementOffset = _util.get.offset(telem);
-
-						if (!controllerInfo.isDocument) { // container is not the document root, so substract scroll Position to get correct trigger element position relative to scrollcontent
-							containerOffset[param] -= _controller.scrollPos();
-						}
-
-						elementPos = elementOffset[param] - containerOffset[param];
-
-					} else { // there was an element, but it was removed from DOM
-						log(2, "WARNING: triggerElement was removed from DOM and will be reset to", undefined);
-						Scene.triggerElement(undefined); // unset, so a change event is triggered
-					}
-				}
-
-				var changed = elementPos != _triggerPos;
-				_triggerPos = elementPos;
-				if (changed && !suppressEvents) {
-					Scene.trigger("shift", {
-						reason: "triggerElementPosition"
-					});
-				}
-			}
-		};
-
-		/**
-		 * Trigger a shift event, when the container is resized and the triggerHook is > 1.
-		 * @private
-		 */
-		var onContainerResize = function (e) {
-			if (_options.triggerHook > 0) {
-				Scene.trigger("shift", {
-					reason: "containerResize"
-				});
-			}
-		};
-
-
-		var _validate = _util.extend(SCENE_OPTIONS.validate, {
-			// validation for duration handled internally for reference to private var _durationMethod
-			duration: function (val) {
-				if (_util.type.String(val) && val.match(/^(\.|\d)*\d+%$/)) {
-					// percentage value
-					var perc = parseFloat(val) / 100;
-					val = function () {
-						return _controller ? _controller.info("size") * perc : 0;
-					};
-				}
-				if (_util.type.Function(val)) {
-					// function
-					_durationUpdateMethod = val;
-					try {
-						val = parseFloat(_durationUpdateMethod());
-					} catch (e) {
-						val = -1; // will cause error below
-					}
-				}
-				// val has to be float
-				val = parseFloat(val);
-				if (!_util.type.Number(val) || val < 0) {
-					if (_durationUpdateMethod) {
-						_durationUpdateMethod = undefined;
-						throw ["Invalid return value of supplied function for option \"duration\":", val];
-					} else {
-						throw ["Invalid value for option \"duration\":", val];
-					}
-				}
-				return val;
-			}
-		});
-
-		/**
-		 * Checks the validity of a specific or all options and reset to default if neccessary.
-		 * @private
-		 */
-		var validateOption = function (check) {
-			check = arguments.length ? [check] : Object.keys(_validate);
-			check.forEach(function (optionName, key) {
-				var value;
-				if (_validate[optionName]) { // there is a validation method for this option
-					try { // validate value
-						value = _validate[optionName](_options[optionName]);
-					} catch (e) { // validation failed -> reset to default
-						value = DEFAULT_OPTIONS[optionName];
-						var logMSG = _util.type.String(e) ? [e] : e;
-						if (_util.type.Array(logMSG)) {
-							logMSG[0] = "ERROR: " + logMSG[0];
-							logMSG.unshift(1); // loglevel 1 for error msg
-							log.apply(this, logMSG);
-						} else {
-							log(1, "ERROR: Problem executing validation callback for option '" + optionName + "':", e.message);
-						}
-					} finally {
-						_options[optionName] = value;
-					}
-				}
-			});
-		};
-
-		/**
-		 * Helper used by the setter/getters for scene options
-		 * @private
-		 */
-		var changeOption = function (varname, newval) {
-			var
-			changed = false,
-				oldval = _options[varname];
-			if (_options[varname] != newval) {
-				_options[varname] = newval;
-				validateOption(varname); // resets to default if necessary
-				changed = oldval != _options[varname];
-			}
-			return changed;
-		};
-
-		// generate getters/setters for all options
-		var addSceneOption = function (optionName) {
-			if (!Scene[optionName]) {
-				Scene[optionName] = function (newVal) {
-					if (!arguments.length) { // get
-						return _options[optionName];
-					} else {
-						if (optionName === "duration") { // new duration is set, so any previously set function must be unset
-							_durationUpdateMethod = undefined;
-						}
-						if (changeOption(optionName, newVal)) { // set
-							Scene.trigger("change", {
-								what: optionName,
-								newval: _options[optionName]
-							});
-							if (SCENE_OPTIONS.shifts.indexOf(optionName) > -1) {
-								Scene.trigger("shift", {
-									reason: optionName
-								});
-							}
-						}
-					}
-					return Scene;
-				};
-			}
-		};
-
-		/**
-		 * **Get** or **Set** the duration option value.
-		 * As a setter it also accepts a function returning a numeric value.  
-		 * This is particularly useful for responsive setups.
-		 *
-		 * The duration is updated using the supplied function every time `Scene.refresh()` is called, which happens periodically from the controller (see ScrollMagic.Controller option `refreshInterval`).  
-		 * _**NOTE:** Be aware that it's an easy way to kill performance, if you supply a function that has high CPU demand.  
-		 * Even for size and position calculations it is recommended to use a variable to cache the value. (see example)  
-		 * This counts double if you use the same function for multiple scenes._
-		 *
-		 * @method ScrollMagic.Scene#duration
-		 * @example
-		 * // get the current duration value
-		 * var duration = scene.duration();
-		 *
-		 * // set a new duration
-		 * scene.duration(300);
-		 *
-		 * // use a function to automatically adjust the duration to the window height.
-		 * var durationValueCache;
-		 * function getDuration () {
-		 *   return durationValueCache;
-		 * }
-		 * function updateDuration (e) {
-		 *   durationValueCache = window.innerHeight;
-		 * }
-		 * $(window).on("resize", updateDuration); // update the duration when the window size changes
-		 * $(window).triggerHandler("resize"); // set to initial value
-		 * scene.duration(getDuration); // supply duration method
-		 *
-		 * @fires {@link Scene.change}, when used as setter
-		 * @fires {@link Scene.shift}, when used as setter
-		 * @param {(number|function)} [newDuration] - The new duration of the scene.
-		 * @returns {number} `get` -  Current scene duration.
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-
-		/**
-		 * **Get** or **Set** the offset option value.
-		 * @method ScrollMagic.Scene#offset
-		 * @example
-		 * // get the current offset
-		 * var offset = scene.offset();
-		 *
-		 * // set a new offset
-		 * scene.offset(100);
-		 *
-		 * @fires {@link Scene.change}, when used as setter
-		 * @fires {@link Scene.shift}, when used as setter
-		 * @param {number} [newOffset] - The new offset of the scene.
-		 * @returns {number} `get` -  Current scene offset.
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-
-		/**
-		 * **Get** or **Set** the triggerElement option value.
-		 * Does **not** fire `Scene.shift`, because changing the trigger Element doesn't necessarily mean the start position changes. This will be determined in `Scene.refresh()`, which is automatically triggered.
-		 * @method ScrollMagic.Scene#triggerElement
-		 * @example
-		 * // get the current triggerElement
-		 * var triggerElement = scene.triggerElement();
-		 *
-		 * // set a new triggerElement using a selector
-		 * scene.triggerElement("#trigger");
-		 * // set a new triggerElement using a DOM object
-		 * scene.triggerElement(document.getElementById("trigger"));
-		 *
-		 * @fires {@link Scene.change}, when used as setter
-		 * @param {(string|object)} [newTriggerElement] - The new trigger element for the scene.
-		 * @returns {(string|object)} `get` -  Current triggerElement.
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-
-		/**
-		 * **Get** or **Set** the triggerHook option value.
-		 * @method ScrollMagic.Scene#triggerHook
-		 * @example
-		 * // get the current triggerHook value
-		 * var triggerHook = scene.triggerHook();
-		 *
-		 * // set a new triggerHook using a string
-		 * scene.triggerHook("onLeave");
-		 * // set a new triggerHook using a number
-		 * scene.triggerHook(0.7);
-		 *
-		 * @fires {@link Scene.change}, when used as setter
-		 * @fires {@link Scene.shift}, when used as setter
-		 * @param {(number|string)} [newTriggerHook] - The new triggerHook of the scene. See {@link Scene} parameter description for value options.
-		 * @returns {number} `get` -  Current triggerHook (ALWAYS numerical).
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-
-		/**
-		 * **Get** or **Set** the reverse option value.
-		 * @method ScrollMagic.Scene#reverse
-		 * @example
-		 * // get the current reverse option
-		 * var reverse = scene.reverse();
-		 *
-		 * // set new reverse option
-		 * scene.reverse(false);
-		 *
-		 * @fires {@link Scene.change}, when used as setter
-		 * @param {boolean} [newReverse] - The new reverse setting of the scene.
-		 * @returns {boolean} `get` -  Current reverse option value.
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-
-		/**
-		 * **Get** or **Set** the loglevel option value.
-		 * @method ScrollMagic.Scene#loglevel
-		 * @example
-		 * // get the current loglevel
-		 * var loglevel = scene.loglevel();
-		 *
-		 * // set new loglevel
-		 * scene.loglevel(3);
-		 *
-		 * @fires {@link Scene.change}, when used as setter
-		 * @param {number} [newLoglevel] - The new loglevel setting of the scene. `[0-3]`
-		 * @returns {number} `get` -  Current loglevel.
-		 * @returns {Scene} `set` -  Parent object for chaining.
-		 */
-
-		/**
-		 * **Get** the associated controller.
-		 * @method ScrollMagic.Scene#controller
-		 * @example
-		 * // get the controller of a scene
-		 * var controller = scene.controller();
-		 *
-		 * @returns {ScrollMagic.Controller} Parent controller or `undefined`
-		 */
-		this.controller = function () {
-			return _controller;
-		};
-
-		/**
-		 * **Get** the current state.
-		 * @method ScrollMagic.Scene#state
-		 * @example
-		 * // get the current state
-		 * var state = scene.state();
-		 *
-		 * @returns {string} `"BEFORE"`, `"DURING"` or `"AFTER"`
-		 */
-		this.state = function () {
-			return _state;
-		};
-
-		/**
-		 * **Get** the current scroll offset for the start of the scene.  
-		 * Mind, that the scrollOffset is related to the size of the container, if `triggerHook` is bigger than `0` (or `"onLeave"`).  
-		 * This means, that resizing the container or changing the `triggerHook` will influence the scene's start offset.
-		 * @method ScrollMagic.Scene#scrollOffset
-		 * @example
-		 * // get the current scroll offset for the start and end of the scene.
-		 * var start = scene.scrollOffset();
-		 * var end = scene.scrollOffset() + scene.duration();
-		 * console.log("the scene starts at", start, "and ends at", end);
-		 *
-		 * @returns {number} The scroll offset (of the container) at which the scene will trigger. Y value for vertical and X value for horizontal scrolls.
-		 */
-		this.scrollOffset = function () {
-			return _scrollOffset.start;
-		};
-
-		/**
-		 * **Get** the trigger position of the scene (including the value of the `offset` option).  
-		 * @method ScrollMagic.Scene#triggerPosition
-		 * @example
-		 * // get the scene's trigger position
-		 * var triggerPosition = scene.triggerPosition();
-		 *
-		 * @returns {number} Start position of the scene. Top position value for vertical and left position value for horizontal scrolls.
-		 */
-		this.triggerPosition = function () {
-			var pos = _options.offset; // the offset is the basis
-			if (_controller) {
-				// get the trigger position
-				if (_options.triggerElement) {
-					// Element as trigger
-					pos += _triggerPos;
-				} else {
-					// return the height of the triggerHook to start at the beginning
-					pos += _controller.info("size") * Scene.triggerHook();
-				}
-			}
-			return pos;
-		};
-
-		var
-		_pin, _pinOptions;
-
-		Scene.on("shift.internal", function (e) {
-			var durationChanged = e.reason === "duration";
-			if ((_state === SCENE_STATE_AFTER && durationChanged) || (_state === SCENE_STATE_DURING && _options.duration === 0)) {
-				// if [duration changed after a scene (inside scene progress updates pin position)] or [duration is 0, we are in pin phase and some other value changed].
-				updatePinState();
-			}
-			if (durationChanged) {
-				updatePinDimensions();
-			}
-		}).on("progress.internal", function (e) {
-			updatePinState();
-		}).on("add.internal", function (e) {
-			updatePinDimensions();
-		}).on("destroy.internal", function (e) {
-			Scene.removePin(e.reset);
-		});
-		/**
-		 * Update the pin state.
-		 * @private
-		 */
-		var updatePinState = function (forceUnpin) {
-			if (_pin && _controller) {
-				var
-				containerInfo = _controller.info(),
-					pinTarget = _pinOptions.spacer.firstChild; // may be pin element or another spacer, if cascading pins
-				if (!forceUnpin && _state === SCENE_STATE_DURING) { // during scene or if duration is 0 and we are past the trigger
-					// pinned state
-					if (_util.css(pinTarget, "position") != "fixed") {
-						// change state before updating pin spacer (position changes due to fixed collapsing might occur.)
-						_util.css(pinTarget, {
-							"position": "fixed"
-						});
-						// update pin spacer
-						updatePinDimensions();
-					}
-
-					var
-					fixedPos = _util.get.offset(_pinOptions.spacer, true),
-						// get viewport position of spacer
-						scrollDistance = _options.reverse || _options.duration === 0 ? containerInfo.scrollPos - _scrollOffset.start // quicker
-						: Math.round(_progress * _options.duration * 10) / 10; // if no reverse and during pin the position needs to be recalculated using the progress
-					// add scrollDistance
-					fixedPos[containerInfo.vertical ? "top" : "left"] += scrollDistance;
-
-					// set new values
-					_util.css(_pinOptions.spacer.firstChild, {
-						top: fixedPos.top,
-						left: fixedPos.left
-					});
-				} else {
-					// unpinned state
-					var
-					newCSS = {
-						position: _pinOptions.inFlow ? "relative" : "absolute",
-						top: 0,
-						left: 0
-					},
-						change = _util.css(pinTarget, "position") != newCSS.position;
-
-					if (!_pinOptions.pushFollowers) {
-						newCSS[containerInfo.vertical ? "top" : "left"] = _options.duration * _progress;
-					} else if (_options.duration > 0) { // only concerns scenes with duration
-						if (_state === SCENE_STATE_AFTER && parseFloat(_util.css(_pinOptions.spacer, "padding-top")) === 0) {
-							change = true; // if in after state but havent updated spacer yet (jumped past pin)
-						} else if (_state === SCENE_STATE_BEFORE && parseFloat(_util.css(_pinOptions.spacer, "padding-bottom")) === 0) { // before
-							change = true; // jumped past fixed state upward direction
-						}
-					}
-					// set new values
-					_util.css(pinTarget, newCSS);
-					if (change) {
-						// update pin spacer if state changed
-						updatePinDimensions();
-					}
-				}
-			}
-		};
-
-		/**
-		 * Update the pin spacer and/or element size.
-		 * The size of the spacer needs to be updated whenever the duration of the scene changes, if it is to push down following elements.
-		 * @private
-		 */
-		var updatePinDimensions = function () {
-			if (_pin && _controller && _pinOptions.inFlow) { // no spacerresize, if original position is absolute
-				var
-				after = (_state === SCENE_STATE_AFTER),
-					before = (_state === SCENE_STATE_BEFORE),
-					during = (_state === SCENE_STATE_DURING),
-					vertical = _controller.info("vertical"),
-					pinTarget = _pinOptions.spacer.firstChild,
-					// usually the pined element but can also be another spacer (cascaded pins)
-					marginCollapse = _util.isMarginCollapseType(_util.css(_pinOptions.spacer, "display")),
-					css = {};
-
-				// set new size
-				// if relsize: spacer -> pin | else: pin -> spacer
-				if (_pinOptions.relSize.width || _pinOptions.relSize.autoFullWidth) {
-					if (during) {
-						_util.css(_pin, {
-							"width": _util.get.width(_pinOptions.spacer)
-						});
-					} else {
-						_util.css(_pin, {
-							"width": "100%"
-						});
-					}
-				} else {
-					// minwidth is needed for cascaded pins.
-					css["min-width"] = _util.get.width(vertical ? _pin : pinTarget, true, true);
-					css.width = during ? css["min-width"] : "auto";
-				}
-				if (_pinOptions.relSize.height) {
-					if (during) {
-						// the only padding the spacer should ever include is the duration (if pushFollowers = true), so we need to substract that.
-						_util.css(_pin, {
-							"height": _util.get.height(_pinOptions.spacer) - (_pinOptions.pushFollowers ? _options.duration : 0)
-						});
-					} else {
-						_util.css(_pin, {
-							"height": "100%"
-						});
-					}
-				} else {
-					// margin is only included if it's a cascaded pin to resolve an IE9 bug
-					css["min-height"] = _util.get.height(vertical ? pinTarget : _pin, true, !marginCollapse); // needed for cascading pins
-					css.height = during ? css["min-height"] : "auto";
-				}
-
-				// add space for duration if pushFollowers is true
-				if (_pinOptions.pushFollowers) {
-					css["padding" + (vertical ? "Top" : "Left")] = _options.duration * _progress;
-					css["padding" + (vertical ? "Bottom" : "Right")] = _options.duration * (1 - _progress);
-				}
-				_util.css(_pinOptions.spacer, css);
-			}
-		};
-
-		/**
-		 * Updates the Pin state (in certain scenarios)
-		 * If the controller container is not the document and we are mid-pin-phase scrolling or resizing the main document can result to wrong pin positions.
-		 * So this function is called on resize and scroll of the document.
-		 * @private
-		 */
-		var updatePinInContainer = function () {
-			if (_controller && _pin && _state === SCENE_STATE_DURING && !_controller.info("isDocument")) {
-				updatePinState();
-			}
-		};
-
-		/**
-		 * Updates the Pin spacer size state (in certain scenarios)
-		 * If container is resized during pin and relatively sized the size of the pin might need to be updated...
-		 * So this function is called on resize of the container.
-		 * @private
-		 */
-		var updateRelativePinSpacer = function () {
-			if (_controller && _pin && // well, duh
-			_state === SCENE_STATE_DURING && // element in pinned state?
-			( // is width or height relatively sized, but not in relation to body? then we need to recalc.
-			((_pinOptions.relSize.width || _pinOptions.relSize.autoFullWidth) && _util.get.width(window) != _util.get.width(_pinOptions.spacer.parentNode)) || (_pinOptions.relSize.height && _util.get.height(window) != _util.get.height(_pinOptions.spacer.parentNode)))) {
-				updatePinDimensions();
-			}
-		};
-
-		/**
-		 * Is called, when the mousewhel is used while over a pinned element inside a div container.
-		 * If the scene is in fixed state scroll events would be counted towards the body. This forwards the event to the scroll container.
-		 * @private
-		 */
-		var onMousewheelOverPin = function (e) {
-			if (_controller && _pin && _state === SCENE_STATE_DURING && !_controller.info("isDocument")) { // in pin state
-				e.preventDefault();
-				_controller._setScrollPos(_controller.info("scrollPos") - ((e.wheelDelta || e[_controller.info("vertical") ? "wheelDeltaY" : "wheelDeltaX"]) / 3 || -e.detail * 30));
-			}
-		};
-
-		/**
-		 * Pin an element for the duration of the tween.  
-		 * If the scene duration is 0 the element will only be unpinned, if the user scrolls back past the start position.  
-		 * Make sure only one pin is applied to an element at the same time.
-		 * An element can be pinned multiple times, but only successively.
-		 * _**NOTE:** The option `pushFollowers` has no effect, when the scene duration is 0._
-		 * @method ScrollMagic.Scene#setPin
-		 * @example
-		 * // pin element and push all following elements down by the amount of the pin duration.
-		 * scene.setPin("#pin");
-		 *
-		 * // pin element and keeping all following elements in their place. The pinned element will move past them.
-		 * scene.setPin("#pin", {pushFollowers: false});
-		 *
-		 * @param {(string|object)} element - A Selector targeting an element or a DOM object that is supposed to be pinned.
-		 * @param {object} [settings] - settings for the pin
-		 * @param {boolean} [settings.pushFollowers=true] - If `true` following elements will be "pushed" down for the duration of the pin, if `false` the pinned element will just scroll past them.  
-		 Ignored, when duration is `0`.
-		 * @param {string} [settings.spacerClass="scrollmagic-pin-spacer"] - Classname of the pin spacer element, which is used to replace the element.
-		 *
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.setPin = function (element, settings) {
-			var
-			defaultSettings = {
-				pushFollowers: true,
-				spacerClass: "scrollmagic-pin-spacer"
-			};
-			settings = _util.extend({}, defaultSettings, settings);
-
-			// validate Element
-			element = _util.get.elements(element)[0];
-			if (!element) {
-				log(1, "ERROR calling method 'setPin()': Invalid pin element supplied.");
-				return Scene; // cancel
-			} else if (_util.css(element, "position") === "fixed") {
-				log(1, "ERROR calling method 'setPin()': Pin does not work with elements that are positioned 'fixed'.");
-				return Scene; // cancel
-			}
-
-			if (_pin) { // preexisting pin?
-				if (_pin === element) {
-					// same pin we already have -> do nothing
-					return Scene; // cancel
-				} else {
-					// kill old pin
-					Scene.removePin();
-				}
-
-			}
-			_pin = element;
-
-			var
-			parentDisplay = _pin.parentNode.style.display,
-				boundsParams = ["top", "left", "bottom", "right", "margin", "marginLeft", "marginRight", "marginTop", "marginBottom"];
-
-			_pin.parentNode.style.display = 'none'; // hack start to force css to return stylesheet values instead of calculated px values.
-			var
-			inFlow = _util.css(_pin, "position") != "absolute",
-				pinCSS = _util.css(_pin, boundsParams.concat(["display"])),
-				sizeCSS = _util.css(_pin, ["width", "height"]);
-			_pin.parentNode.style.display = parentDisplay; // hack end.
-			if (!inFlow && settings.pushFollowers) {
-				log(2, "WARNING: If the pinned element is positioned absolutely pushFollowers will be disabled.");
-				settings.pushFollowers = false;
-			}
-			window.setTimeout(function () { // wait until all finished, because with responsive duration it will only be set after scene is added to controller
-				if (_pin && _options.duration === 0 && settings.pushFollowers) {
-					log(2, "WARNING: pushFollowers =", true, "has no effect, when scene duration is 0.");
-				}
-			}, 0);
-
-			// create spacer and insert
-			var
-			spacer = _pin.parentNode.insertBefore(document.createElement('div'), _pin),
-				spacerCSS = _util.extend(pinCSS, {
-					position: inFlow ? "relative" : "absolute",
-					boxSizing: "content-box",
-					mozBoxSizing: "content-box",
-					webkitBoxSizing: "content-box"
-				});
-
-			if (!inFlow) { // copy size if positioned absolutely, to work for bottom/right positioned elements.
-				_util.extend(spacerCSS, _util.css(_pin, ["width", "height"]));
-			}
-
-			_util.css(spacer, spacerCSS);
-			spacer.setAttribute(PIN_SPACER_ATTRIBUTE, "");
-			_util.addClass(spacer, settings.spacerClass);
-
-			// set the pin Options
-			_pinOptions = {
-				spacer: spacer,
-				relSize: { // save if size is defined using % values. if so, handle spacer resize differently...
-					width: sizeCSS.width.slice(-1) === "%",
-					height: sizeCSS.height.slice(-1) === "%",
-					autoFullWidth: sizeCSS.width === "auto" && inFlow && _util.isMarginCollapseType(pinCSS.display)
-				},
-				pushFollowers: settings.pushFollowers,
-				inFlow: inFlow,
-				// stores if the element takes up space in the document flow
-			};
-
-			if (!_pin.___origStyle) {
-				_pin.___origStyle = {};
-				var
-				pinInlineCSS = _pin.style,
-					copyStyles = boundsParams.concat(["width", "height", "position", "boxSizing", "mozBoxSizing", "webkitBoxSizing"]);
-				copyStyles.forEach(function (val) {
-					_pin.___origStyle[val] = pinInlineCSS[val] || "";
-				});
-			}
-
-			// if relative size, transfer it to spacer and make pin calculate it...
-			if (_pinOptions.relSize.width) {
-				_util.css(spacer, {
-					width: sizeCSS.width
-				});
-			}
-			if (_pinOptions.relSize.height) {
-				_util.css(spacer, {
-					height: sizeCSS.height
-				});
-			}
-
-			// now place the pin element inside the spacer	
-			spacer.appendChild(_pin);
-			// and set new css
-			_util.css(_pin, {
-				position: inFlow ? "relative" : "absolute",
-				margin: "auto",
-				top: "auto",
-				left: "auto",
-				bottom: "auto",
-				right: "auto"
-			});
-
-			if (_pinOptions.relSize.width || _pinOptions.relSize.autoFullWidth) {
-				_util.css(_pin, {
-					boxSizing: "border-box",
-					mozBoxSizing: "border-box",
-					webkitBoxSizing: "border-box"
-				});
-			}
-
-			// add listener to document to update pin position in case controller is not the document.
-			window.addEventListener('scroll', updatePinInContainer);
-			window.addEventListener('resize', updatePinInContainer);
-			window.addEventListener('resize', updateRelativePinSpacer);
-			// add mousewheel listener to catch scrolls over fixed elements
-			_pin.addEventListener("mousewheel", onMousewheelOverPin);
-			_pin.addEventListener("DOMMouseScroll", onMousewheelOverPin);
-
-			log(3, "added pin");
-
-			// finally update the pin to init
-			updatePinState();
-
-			return Scene;
-		};
-
-		/**
-		 * Remove the pin from the scene.
-		 * @method ScrollMagic.Scene#removePin
-		 * @example
-		 * // remove the pin from the scene without resetting it (the spacer is not removed)
-		 * scene.removePin();
-		 *
-		 * // remove the pin from the scene and reset the pin element to its initial position (spacer is removed)
-		 * scene.removePin(true);
-		 *
-		 * @param {boolean} [reset=false] - If `false` the spacer will not be removed and the element's position will not be reset.
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.removePin = function (reset) {
-			if (_pin) {
-				if (_state === SCENE_STATE_DURING) {
-					updatePinState(true); // force unpin at position
-				}
-				if (reset || !_controller) { // if there's no controller no progress was made anyway...
-					var pinTarget = _pinOptions.spacer.firstChild; // usually the pin element, but may be another spacer (cascaded pins)...
-					if (pinTarget.hasAttribute(PIN_SPACER_ATTRIBUTE)) { // copy margins to child spacer
-						var
-						style = _pinOptions.spacer.style,
-							values = ["margin", "marginLeft", "marginRight", "marginTop", "marginBottom"],
-							margins = {};
-						values.forEach(function (val) {
-							margins[val] = style[val] || "";
-						});
-						_util.css(pinTarget, margins);
-					}
-					_pinOptions.spacer.parentNode.insertBefore(pinTarget, _pinOptions.spacer);
-					_pinOptions.spacer.parentNode.removeChild(_pinOptions.spacer);
-					if (!_pin.parentNode.hasAttribute(PIN_SPACER_ATTRIBUTE)) { // if it's the last pin for this element -> restore inline styles
-						// TODO: only correctly set for first pin (when cascading) - how to fix?
-						_util.css(_pin, _pin.___origStyle);
-						delete _pin.___origStyle;
-					}
-				}
-				window.removeEventListener('scroll', updatePinInContainer);
-				window.removeEventListener('resize', updatePinInContainer);
-				window.removeEventListener('resize', updateRelativePinSpacer);
-				_pin.removeEventListener("mousewheel", onMousewheelOverPin);
-				_pin.removeEventListener("DOMMouseScroll", onMousewheelOverPin);
-				_pin = undefined;
-				log(3, "removed pin (reset: " + (reset ? "true" : "false") + ")");
-			}
-			return Scene;
-		};
-
-
-		var
-		_cssClasses, _cssClassElems = [];
-
-		Scene.on("destroy.internal", function (e) {
-			Scene.removeClassToggle(e.reset);
-		});
-		/**
-		 * Define a css class modification while the scene is active.  
-		 * When the scene triggers the classes will be added to the supplied element and removed, when the scene is over.
-		 * If the scene duration is 0 the classes will only be removed if the user scrolls back past the start position.
-		 * @method ScrollMagic.Scene#setClassToggle
-		 * @example
-		 * // add the class 'myclass' to the element with the id 'my-elem' for the duration of the scene
-		 * scene.setClassToggle("#my-elem", "myclass");
-		 *
-		 * // add multiple classes to multiple elements defined by the selector '.classChange'
-		 * scene.setClassToggle(".classChange", "class1 class2 class3");
-		 *
-		 * @param {(string|object)} element - A Selector targeting one or more elements or a DOM object that is supposed to be modified.
-		 * @param {string} classes - One or more Classnames (separated by space) that should be added to the element during the scene.
-		 *
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.setClassToggle = function (element, classes) {
-			var elems = _util.get.elements(element);
-			if (elems.length === 0 || !_util.type.String(classes)) {
-				log(1, "ERROR calling method 'setClassToggle()': Invalid " + (elems.length === 0 ? "element" : "classes") + " supplied.");
-				return Scene;
-			}
-			if (_cssClassElems.length > 0) {
-				// remove old ones
-				Scene.removeClassToggle();
-			}
-			_cssClasses = classes;
-			_cssClassElems = elems;
-			Scene.on("enter.internal_class leave.internal_class", function (e) {
-				var toggle = e.type === "enter" ? _util.addClass : _util.removeClass;
-				_cssClassElems.forEach(function (elem, key) {
-					toggle(elem, _cssClasses);
-				});
-			});
-			return Scene;
-		};
-
-		/**
-		 * Remove the class binding from the scene.
-		 * @method ScrollMagic.Scene#removeClassToggle
-		 * @example
-		 * // remove class binding from the scene without reset
-		 * scene.removeClassToggle();
-		 *
-		 * // remove class binding and remove the changes it caused
-		 * scene.removeClassToggle(true);
-		 *
-		 * @param {boolean} [reset=false] - If `false` and the classes are currently active, they will remain on the element. If `true` they will be removed.
-		 * @returns {Scene} Parent object for chaining.
-		 */
-		this.removeClassToggle = function (reset) {
-			if (reset) {
-				_cssClassElems.forEach(function (elem, key) {
-					_util.removeClass(elem, _cssClasses);
-				});
-			}
-			Scene.off("start.internal_class end.internal_class");
-			_cssClasses = undefined;
-			_cssClassElems = [];
-			return Scene;
-		};
-
-		// INIT
-		construct();
-		return Scene;
-	};
-
-	// store pagewide scene options
-	var SCENE_OPTIONS = {
-		defaults: {
-			duration: 0,
-			offset: 0,
-			triggerElement: undefined,
-			triggerHook: 0.5,
-			reverse: true,
-			loglevel: 2
-		},
-		validate: {
-			offset: function (val) {
-				val = parseFloat(val);
-				if (!_util.type.Number(val)) {
-					throw ["Invalid value for option \"offset\":", val];
-				}
-				return val;
-			},
-			triggerElement: function (val) {
-				val = val || undefined;
-				if (val) {
-					var elem = _util.get.elements(val)[0];
-					if (elem && elem.parentNode) {
-						val = elem;
-					} else {
-						throw ["Element defined in option \"triggerElement\" was not found:", val];
-					}
-				}
-				return val;
-			},
-			triggerHook: function (val) {
-				var translate = {
-					"onCenter": 0.5,
-					"onEnter": 1,
-					"onLeave": 0
-				};
-				if (_util.type.Number(val)) {
-					val = Math.max(0, Math.min(parseFloat(val), 1)); //  make sure its betweeen 0 and 1
-				} else if (val in translate) {
-					val = translate[val];
-				} else {
-					throw ["Invalid value for option \"triggerHook\": ", val];
-				}
-				return val;
-			},
-			reverse: function (val) {
-				return !!val; // force boolean
-			},
-			loglevel: function (val) {
-				val = parseInt(val);
-				if (!_util.type.Number(val) || val < 0 || val > 3) {
-					throw ["Invalid value for option \"loglevel\":", val];
-				}
-				return val;
-			}
-		},
-		// holder for  validation methods. duration validation is handled in 'getters-setters.js'
-		shifts: ["duration", "offset", "triggerHook"],
-		// list of options that trigger a `shift` event
-	};
-/*
- * method used to add an option to ScrollMagic Scenes.
- * TODO: DOC (private for dev)
- */
-	ScrollMagic.Scene.addOption = function (name, defaultValue, validationCallback, shifts) {
-		if (!(name in SCENE_OPTIONS.defaults)) {
-			SCENE_OPTIONS.defaults[name] = defaultValue;
-			SCENE_OPTIONS.validate[name] = validationCallback;
-			if (shifts) {
-				SCENE_OPTIONS.shifts.push(name);
-			}
-		} else {
-			ScrollMagic._util.log(1, "[static] ScrollMagic.Scene -> Cannot add Scene option '" + name + "', because it already exists.");
-		}
-	};
-	// instance extension function for plugins
-	// TODO: DOC (private for dev)
-	ScrollMagic.Scene.extend = function (extension) {
-		var oldClass = this;
-		ScrollMagic.Scene = function () {
-			oldClass.apply(this, arguments);
-			this.$super = _util.extend({}, this); // copy parent state
-			return extension.apply(this, arguments) || this;
-		};
-		_util.extend(ScrollMagic.Scene, oldClass); // copy properties
-		ScrollMagic.Scene.prototype = oldClass.prototype; // copy prototype
-		ScrollMagic.Scene.prototype.constructor = ScrollMagic.Scene; // restore constructor
-	};
-
-
-
-	/**
-	 * TODO: DOCS (private for dev)
-	 * @class
-	 * @private
-	 */
-
-	ScrollMagic.Event = function (type, namespace, target, vars) {
-		vars = vars || {};
-		for (var key in vars) {
-			this[key] = vars[key];
-		}
-		this.type = type;
-		this.target = this.currentTarget = target;
-		this.namespace = namespace || '';
-		this.timeStamp = this.timestamp = Date.now();
-		return this;
-	};
-
-/*
- * TODO: DOCS (private for dev)
- */
-
-	var _util = ScrollMagic._util = (function (window) {
-		var U = {},
-			i;
-
-		/**
-		 * ------------------------------
-		 * internal helpers
-		 * ------------------------------
-		 */
-
-		// parse float and fall back to 0.
-		var floatval = function (number) {
-			return parseFloat(number) || 0;
-		};
-		// get current style IE safe (otherwise IE would return calculated values for 'auto')
-		var _getComputedStyle = function (elem) {
-			return elem.currentStyle ? elem.currentStyle : window.getComputedStyle(elem);
-		};
-
-		// get element dimension (width or height)
-		var _dimension = function (which, elem, outer, includeMargin) {
-			elem = (elem === document) ? window : elem;
-			if (elem === window) {
-				includeMargin = false;
-			} else if (!_type.DomElement(elem)) {
-				return 0;
-			}
-			which = which.charAt(0).toUpperCase() + which.substr(1).toLowerCase();
-			var dimension = (outer ? elem['offset' + which] || elem['outer' + which] : elem['client' + which] || elem['inner' + which]) || 0;
-			if (outer && includeMargin) {
-				var style = _getComputedStyle(elem);
-				dimension += which === 'Height' ? floatval(style.marginTop) + floatval(style.marginBottom) : floatval(style.marginLeft) + floatval(style.marginRight);
-			}
-			return dimension;
-		};
-		// converts 'margin-top' into 'marginTop'
-		var _camelCase = function (str) {
-			return str.replace(/^[^a-z]+([a-z])/g, '$1').replace(/-([a-z])/g, function (g) {
-				return g[1].toUpperCase();
-			});
-		};
-
-		/**
-		 * ------------------------------
-		 * external helpers
-		 * ------------------------------
-		 */
-
-		// extend obj – same as jQuery.extend({}, objA, objB)
-		U.extend = function (obj) {
-			obj = obj || {};
-			for (i = 1; i < arguments.length; i++) {
-				if (!arguments[i]) {
-					continue;
-				}
-				for (var key in arguments[i]) {
-					if (arguments[i].hasOwnProperty(key)) {
-						obj[key] = arguments[i][key];
-					}
-				}
-			}
-			return obj;
-		};
-
-		// check if a css display type results in margin-collapse or not
-		U.isMarginCollapseType = function (str) {
-			return ["block", "flex", "list-item", "table", "-webkit-box"].indexOf(str) > -1;
-		};
-
-		// implementation of requestAnimationFrame
-		// based on https://gist.github.com/paulirish/1579671
-		var
-		lastTime = 0,
-			vendors = ['ms', 'moz', 'webkit', 'o'];
-		var _requestAnimationFrame = window.requestAnimationFrame;
-		var _cancelAnimationFrame = window.cancelAnimationFrame;
-		// try vendor prefixes if the above doesn't work
-		for (i = 0; !_requestAnimationFrame && i < vendors.length; ++i) {
-			_requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
-			_cancelAnimationFrame = window[vendors[i] + 'CancelAnimationFrame'] || window[vendors[i] + 'CancelRequestAnimationFrame'];
-		}
-
-		// fallbacks
-		if (!_requestAnimationFrame) {
-			_requestAnimationFrame = function (callback) {
-				var
-				currTime = new Date().getTime(),
-					timeToCall = Math.max(0, 16 - (currTime - lastTime)),
-					id = window.setTimeout(function () {
-						callback(currTime + timeToCall);
-					}, timeToCall);
-				lastTime = currTime + timeToCall;
-				return id;
-			};
-		}
-		if (!_cancelAnimationFrame) {
-			_cancelAnimationFrame = function (id) {
-				window.clearTimeout(id);
-			};
-		}
-		U.rAF = _requestAnimationFrame.bind(window);
-		U.cAF = _cancelAnimationFrame.bind(window);
-
-		var
-		loglevels = ["error", "warn", "log"],
-			console = window.console || {};
-
-		console.log = console.log ||
-		function () {}; // no console log, well - do nothing then...
-		// make sure methods for all levels exist.
-		for (i = 0; i < loglevels.length; i++) {
-			var method = loglevels[i];
-			if (!console[method]) {
-				console[method] = console.log; // prefer .log over nothing
-			}
-		}
-		U.log = function (loglevel) {
-			if (loglevel > loglevels.length || loglevel <= 0) loglevel = loglevels.length;
-			var now = new Date(),
-				time = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2) + ":" + ("00" + now.getMilliseconds()).slice(-3),
-				method = loglevels[loglevel - 1],
-				args = Array.prototype.splice.call(arguments, 1),
-				func = Function.prototype.bind.call(console[method], console);
-			args.unshift(time);
-			func.apply(console, args);
-		};
-
-		/**
-		 * ------------------------------
-		 * type testing
-		 * ------------------------------
-		 */
-
-		var _type = U.type = function (v) {
-			return Object.prototype.toString.call(v).replace(/^\[object (.+)\]$/, "$1").toLowerCase();
-		};
-		_type.String = function (v) {
-			return _type(v) === 'string';
-		};
-		_type.Function = function (v) {
-			return _type(v) === 'function';
-		};
-		_type.Array = function (v) {
-			return Array.isArray(v);
-		};
-		_type.Number = function (v) {
-			return !_type.Array(v) && (v - parseFloat(v) + 1) >= 0;
-		};
-		_type.DomElement = function (o) {
-			return (
-			typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-			o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string");
-		};
-
-		/**
-		 * ------------------------------
-		 * DOM Element info
-		 * ------------------------------
-		 */
-		// always returns a list of matching DOM elements, from a selector, a DOM element or an list of elements or even an array of selectors
-		var _get = U.get = {};
-		_get.elements = function (selector) {
-			var arr = [];
-			if (_type.String(selector)) {
-				try {
-					selector = document.querySelectorAll(selector);
-				} catch (e) { // invalid selector
-					return arr;
-				}
-			}
-			if (_type(selector) === 'nodelist' || _type.Array(selector)) {
-				for (var i = 0, ref = arr.length = selector.length; i < ref; i++) { // list of elements
-					var elem = selector[i];
-					arr[i] = _type.DomElement(elem) ? elem : _get.elements(elem); // if not an element, try to resolve recursively
-				}
-			} else if (_type.DomElement(selector) || selector === document || selector === window) {
-				arr = [selector]; // only the element
-			}
-			return arr;
-		};
-		// get scroll top value
-		_get.scrollTop = function (elem) {
-			return (elem && typeof elem.scrollTop === 'number') ? elem.scrollTop : window.pageYOffset || 0;
-		};
-		// get scroll left value
-		_get.scrollLeft = function (elem) {
-			return (elem && typeof elem.scrollLeft === 'number') ? elem.scrollLeft : window.pageXOffset || 0;
-		};
-		// get element height
-		_get.width = function (elem, outer, includeMargin) {
-			return _dimension('width', elem, outer, includeMargin);
-		};
-		// get element width
-		_get.height = function (elem, outer, includeMargin) {
-			return _dimension('height', elem, outer, includeMargin);
-		};
-
-		// get element position (optionally relative to viewport)
-		_get.offset = function (elem, relativeToViewport) {
-			var offset = {
-				top: 0,
-				left: 0
-			};
-			if (elem && elem.getBoundingClientRect) { // check if available
-				var rect = elem.getBoundingClientRect();
-				offset.top = rect.top;
-				offset.left = rect.left;
-				if (!relativeToViewport) { // clientRect is by default relative to viewport...
-					offset.top += _get.scrollTop();
-					offset.left += _get.scrollLeft();
-				}
-			}
-			return offset;
-		};
-
-		/**
-		 * ------------------------------
-		 * DOM Element manipulation
-		 * ------------------------------
-		 */
-
-		U.addClass = function (elem, classname) {
-			if (classname) {
-				if (elem.classList) elem.classList.add(classname);
-				else elem.className += ' ' + classname;
-			}
-		};
-		U.removeClass = function (elem, classname) {
-			if (classname) {
-				if (elem.classList) elem.classList.remove(classname);
-				else elem.className = elem.className.replace(new RegExp('(^|\\b)' + classname.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-			}
-		};
-		// if options is string -> returns css value
-		// if options is array -> returns object with css value pairs
-		// if options is object -> set new css values
-		U.css = function (elem, options) {
-			if (_type.String(options)) {
-				return _getComputedStyle(elem)[_camelCase(options)];
-			} else if (_type.Array(options)) {
-				var
-				obj = {},
-					style = _getComputedStyle(elem);
-				options.forEach(function (option, key) {
-					obj[option] = style[_camelCase(option)];
-				});
-				return obj;
-			} else {
-				for (var option in options) {
-					var val = options[option];
-					if (val == parseFloat(val)) { // assume pixel for seemingly numerical values
-						val += 'px';
-					}
-					elem.style[_camelCase(option)] = val;
-				}
-			}
-		};
-
-		return U;
-	}(window || {}));
-
-	ScrollMagic.Scene.prototype.addIndicators = function () {
-		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling addIndicators() due to missing Plugin \'debug.addIndicators\'. Please make sure to include plugins/debug.addIndicators.js');
-		return this;
-	}
-	ScrollMagic.Scene.prototype.removeIndicators = function () {
-		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling removeIndicators() due to missing Plugin \'debug.addIndicators\'. Please make sure to include plugins/debug.addIndicators.js');
-		return this;
-	}
-	ScrollMagic.Scene.prototype.setTween = function () {
-		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling setTween() due to missing Plugin \'animation.gsap\'. Please make sure to include plugins/animation.gsap.js');
-		return this;
-	}
-	ScrollMagic.Scene.prototype.removeTween = function () {
-		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling removeTween() due to missing Plugin \'animation.gsap\'. Please make sure to include plugins/animation.gsap.js');
-		return this;
-	}
-	ScrollMagic.Scene.prototype.setVelocity = function () {
-		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling setVelocity() due to missing Plugin \'animation.velocity\'. Please make sure to include plugins/animation.velocity.js');
-		return this;
-	}
-	ScrollMagic.Scene.prototype.removeVelocity = function () {
-		ScrollMagic._util.log(1, '(ScrollMagic.Scene) -> ERROR calling removeVelocity() due to missing Plugin \'animation.velocity\'. Please make sure to include plugins/animation.velocity.js');
-		return this;
-	}
-
-	return ScrollMagic;
-}));
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * ScrollMagic v2.0.6 (2018-10-08)
- * The javascript library for magical scroll interactions.
- * (c) 2018 Jan Paepke (@janpaepke)
- * Project Website: http://scrollmagic.io
- * 
- * @version 2.0.6
- * @license Dual licensed under MIT license and GPL.
- * @author Jan Paepke - e-mail@janpaepke.de
- *
- * @file Debug Extension for ScrollMagic.
- */
-/**
- * This plugin was formerly known as the ScrollMagic debug extension.
- *
- * It enables you to add visual indicators to your page, to be able to see exactly when a scene is triggered.
- *
- * To have access to this extension, please include `plugins/debug.addIndicators.js`.
- * @mixin debug.addIndicators
- */
-(function (root, factory) {
-	if (true) {
-		// AMD. Register as an anonymous module.
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(100)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if (typeof exports === 'object') {
-		// CommonJS
-		factory(require('scrollmagic'));
-	} else {
-		// no browser global export needed, just execute
-		factory(root.ScrollMagic || (root.jQuery && root.jQuery.ScrollMagic));
-	}
-}(this, function (ScrollMagic) {
-	"use strict";
-	var NAMESPACE = "debug.addIndicators";
-
-	var
-	console = window.console || {},
-		err = Function.prototype.bind.call(console.error || console.log ||
-		function () {}, console);
-	if (!ScrollMagic) {
-		err("(" + NAMESPACE + ") -> ERROR: The ScrollMagic main module could not be found. Please make sure it's loaded before this plugin or use an asynchronous loader like requirejs.");
-	}
-
-	// plugin settings
-	var
-	FONT_SIZE = "0.85em",
-		ZINDEX = "9999",
-		EDGE_OFFSET = 15; // minimum edge distance, added to indentation
-
-	// overall vars
-	var
-	_util = ScrollMagic._util,
-		_autoindex = 0;
-
-
-
-	ScrollMagic.Scene.extend(function () {
-		var
-		Scene = this,
-			_indicator;
-
-		var log = function () {
-			if (Scene._log) { // not available, when main source minified
-				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ")", "->");
-				Scene._log.apply(this, arguments);
-			}
-		};
-
-		/**
-		 * Add visual indicators for a ScrollMagic.Scene.  
-		 * @memberof! debug.addIndicators#
-		 *
-		 * @example
-		 * // add basic indicators
-		 * scene.addIndicators()
-		 *
-		 * // passing options
-		 * scene.addIndicators({name: "pin scene", colorEnd: "#FFFFFF"});
-		 *
-		 * @param {object} [options] - An object containing one or more options for the indicators.
-		 * @param {(string|object)} [options.parent=undefined] - A selector, DOM Object or a jQuery object that the indicators should be added to.  
-		 If undefined, the controller's container will be used.
-		 * @param {number} [options.name=""] - This string will be displayed at the start and end indicators of the scene for identification purposes. If no name is supplied an automatic index will be used.
-		 * @param {number} [options.indent=0] - Additional position offset for the indicators (useful, when having multiple scenes starting at the same position).
-		 * @param {string} [options.colorStart=green] - CSS color definition for the start indicator.
-		 * @param {string} [options.colorEnd=red] - CSS color definition for the end indicator.
-		 * @param {string} [options.colorTrigger=blue] - CSS color definition for the trigger indicator.
-		 */
-		Scene.addIndicators = function (options) {
-			if (!_indicator) {
-				var
-				DEFAULT_OPTIONS = {
-					name: "",
-					indent: 0,
-					parent: undefined,
-					colorStart: "green",
-					colorEnd: "red",
-					colorTrigger: "blue",
-				};
-
-				options = _util.extend({}, DEFAULT_OPTIONS, options);
-
-				_autoindex++;
-				_indicator = new Indicator(Scene, options);
-
-				Scene.on("add.plugin_addIndicators", _indicator.add);
-				Scene.on("remove.plugin_addIndicators", _indicator.remove);
-				Scene.on("destroy.plugin_addIndicators", Scene.removeIndicators);
-
-				// it the scene already has a controller we can start right away.
-				if (Scene.controller()) {
-					_indicator.add();
-				}
-			}
-			return Scene;
-		};
-
-		/**
-		 * Removes visual indicators from a ScrollMagic.Scene.
-		 * @memberof! debug.addIndicators#
-		 *
-		 * @example
-		 * // remove previously added indicators
-		 * scene.removeIndicators()
-		 *
-		 */
-		Scene.removeIndicators = function () {
-			if (_indicator) {
-				_indicator.remove();
-				this.off("*.plugin_addIndicators");
-				_indicator = undefined;
-			}
-			return Scene;
-		};
-
-	});
-
-
-/*
-	 * ----------------------------------------------------------------
-	 * Extension for controller to store and update related indicators
-	 * ----------------------------------------------------------------
-	 */
-	// add option to globally auto-add indicators to scenes
-	/**
-	 * Every ScrollMagic.Controller instance now accepts an additional option.  
-	 * See {@link ScrollMagic.Controller} for a complete list of the standard options.
-	 * @memberof! debug.addIndicators#
-	 * @method new ScrollMagic.Controller(options)
-	 * @example
-	 * // make a controller and add indicators to all scenes attached
-	 * var controller = new ScrollMagic.Controller({addIndicators: true});
-	 * // this scene will automatically have indicators added to it
-	 * new ScrollMagic.Scene()
-	 *                .addTo(controller);
-	 *
-	 * @param {object} [options] - Options for the Controller.
-	 * @param {boolean} [options.addIndicators=false] - If set to `true` every scene that is added to the controller will automatically get indicators added to it.
-	 */
-	ScrollMagic.Controller.addOption("addIndicators", false);
-	// extend Controller
-	ScrollMagic.Controller.extend(function () {
-		var
-		Controller = this,
-			_info = Controller.info(),
-			_container = _info.container,
-			_isDocument = _info.isDocument,
-			_vertical = _info.vertical,
-			_indicators = { // container for all indicators and methods
-				groups: []
-			};
-
-		var log = function () {
-			if (Controller._log) { // not available, when main source minified
-				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ")", "->");
-				Controller._log.apply(this, arguments);
-			}
-		};
-		if (Controller._indicators) {
-			log(2, "WARNING: Scene already has a property '_indicators', which will be overwritten by plugin.");
-		}
-
-		// add indicators container
-		this._indicators = _indicators;
-/*
-			needed updates:
-			+++++++++++++++
-			start/end position on scene shift (handled in Indicator class)
-			trigger parameters on triggerHook value change (handled in Indicator class)
-			bounds position on container scroll or resize (to keep alignment to bottom/right)
-			trigger position on container resize, window resize (if container isn't document) and window scroll (if container isn't document)
-		*/
-
-		// event handler for when associated bounds markers need to be repositioned
-		var handleBoundsPositionChange = function () {
-			_indicators.updateBoundsPositions();
-		};
-
-		// event handler for when associated trigger groups need to be repositioned
-		var handleTriggerPositionChange = function () {
-			_indicators.updateTriggerGroupPositions();
-		};
-
-		_container.addEventListener("resize", handleTriggerPositionChange);
-		if (!_isDocument) {
-			window.addEventListener("resize", handleTriggerPositionChange);
-			window.addEventListener("scroll", handleTriggerPositionChange);
-		}
-		// update all related bounds containers
-		_container.addEventListener("resize", handleBoundsPositionChange);
-		_container.addEventListener("scroll", handleBoundsPositionChange);
-
-
-		// updates the position of the bounds container to aligned to the right for vertical containers and to the bottom for horizontal
-		this._indicators.updateBoundsPositions = function (specificIndicator) {
-			var // constant for all bounds
-			groups = specificIndicator ? [_util.extend({}, specificIndicator.triggerGroup, {
-				members: [specificIndicator]
-			})] : // create a group with only one element
-			_indicators.groups,
-				// use all
-				g = groups.length,
-				css = {},
-				paramPos = _vertical ? "left" : "top",
-				paramDimension = _vertical ? "width" : "height",
-				edge = _vertical ? _util.get.scrollLeft(_container) + _util.get.width(_container) - EDGE_OFFSET : _util.get.scrollTop(_container) + _util.get.height(_container) - EDGE_OFFSET,
-				b, triggerSize, group;
-			while (g--) { // group loop
-				group = groups[g];
-				b = group.members.length;
-				triggerSize = _util.get[paramDimension](group.element.firstChild);
-				while (b--) { // indicators loop
-					css[paramPos] = edge - triggerSize;
-					_util.css(group.members[b].bounds, css);
-				}
-			}
-		};
-
-		// updates the positions of all trigger groups attached to a controller or a specific one, if provided
-		this._indicators.updateTriggerGroupPositions = function (specificGroup) {
-			var // constant vars
-			groups = specificGroup ? [specificGroup] : _indicators.groups,
-				i = groups.length,
-				container = _isDocument ? document.body : _container,
-				containerOffset = _isDocument ? {
-					top: 0,
-					left: 0
-				} : _util.get.offset(container, true),
-				edge = _vertical ? _util.get.width(_container) - EDGE_OFFSET : _util.get.height(_container) - EDGE_OFFSET,
-				paramDimension = _vertical ? "width" : "height",
-				paramTransform = _vertical ? "Y" : "X";
-			var // changing vars
-			group, elem, pos, elemSize, transform;
-			while (i--) {
-				group = groups[i];
-				elem = group.element;
-				pos = group.triggerHook * Controller.info("size");
-				elemSize = _util.get[paramDimension](elem.firstChild.firstChild);
-				transform = pos > elemSize ? "translate" + paramTransform + "(-100%)" : "";
-
-				_util.css(elem, {
-					top: containerOffset.top + (_vertical ? pos : edge - group.members[0].options.indent),
-					left: containerOffset.left + (_vertical ? edge - group.members[0].options.indent : pos)
-				});
-				_util.css(elem.firstChild.firstChild, {
-					"-ms-transform": transform,
-					"-webkit-transform": transform,
-					"transform": transform
-				});
-			}
-		};
-
-		// updates the label for the group to contain the name, if it only has one member
-		this._indicators.updateTriggerGroupLabel = function (group) {
-			var
-			text = "trigger" + (group.members.length > 1 ? "" : " " + group.members[0].options.name),
-				elem = group.element.firstChild.firstChild,
-				doUpdate = elem.textContent !== text;
-			if (doUpdate) {
-				elem.textContent = text;
-				if (_vertical) { // bounds position is dependent on text length, so update
-					_indicators.updateBoundsPositions();
-				}
-			}
-		};
-
-		// add indicators if global option is set
-		this.addScene = function (newScene) {
-
-			if (this._options.addIndicators && newScene instanceof ScrollMagic.Scene && newScene.controller() === Controller) {
-				newScene.addIndicators();
-			}
-			// call original destroy method
-			this.$super.addScene.apply(this, arguments);
-		};
-
-		// remove all previously set listeners on destroy
-		this.destroy = function () {
-			_container.removeEventListener("resize", handleTriggerPositionChange);
-			if (!_isDocument) {
-				window.removeEventListener("resize", handleTriggerPositionChange);
-				window.removeEventListener("scroll", handleTriggerPositionChange);
-			}
-			_container.removeEventListener("resize", handleBoundsPositionChange);
-			_container.removeEventListener("scroll", handleBoundsPositionChange);
-			// call original destroy method
-			this.$super.destroy.apply(this, arguments);
-		};
-		return Controller;
-
-	});
-
-/*
-	 * ----------------------------------------------------------------
-	 * Internal class for the construction of Indicators
-	 * ----------------------------------------------------------------
-	 */
-	var Indicator = function (Scene, options) {
-		var
-		Indicator = this,
-			_elemBounds = TPL.bounds(),
-			_elemStart = TPL.start(options.colorStart),
-			_elemEnd = TPL.end(options.colorEnd),
-			_boundsContainer = options.parent && _util.get.elements(options.parent)[0],
-			_vertical, _ctrl;
-
-		var log = function () {
-			if (Scene._log) { // not available, when main source minified
-				Array.prototype.splice.call(arguments, 1, 0, "(" + NAMESPACE + ")", "->");
-				Scene._log.apply(this, arguments);
-			}
-		};
-
-		options.name = options.name || _autoindex;
-
-		// prepare bounds elements
-		_elemStart.firstChild.textContent += " " + options.name;
-		_elemEnd.textContent += " " + options.name;
-		_elemBounds.appendChild(_elemStart);
-		_elemBounds.appendChild(_elemEnd);
-
-		// set public variables
-		Indicator.options = options;
-		Indicator.bounds = _elemBounds;
-		// will be set later
-		Indicator.triggerGroup = undefined;
-
-		// add indicators to DOM
-		this.add = function () {
-			_ctrl = Scene.controller();
-			_vertical = _ctrl.info("vertical");
-
-			var isDocument = _ctrl.info("isDocument");
-
-			if (!_boundsContainer) {
-				// no parent supplied or doesnt exist
-				_boundsContainer = isDocument ? document.body : _ctrl.info("container"); // check if window/document (then use body)
-			}
-			if (!isDocument && _util.css(_boundsContainer, "position") === 'static') {
-				// position mode needed for correct positioning of indicators
-				_util.css(_boundsContainer, {
-					position: "relative"
-				});
-			}
-
-			// add listeners for updates
-			Scene.on("change.plugin_addIndicators", handleTriggerParamsChange);
-			Scene.on("shift.plugin_addIndicators", handleBoundsParamsChange);
-
-			// updates trigger & bounds (will add elements if needed)
-			updateTriggerGroup();
-			updateBounds();
-
-			setTimeout(function () { // do after all execution is finished otherwise sometimes size calculations are off
-				_ctrl._indicators.updateBoundsPositions(Indicator);
-			}, 0);
-
-			log(3, "added indicators");
-		};
-
-		// remove indicators from DOM
-		this.remove = function () {
-			if (Indicator.triggerGroup) { // if not set there's nothing to remove
-				Scene.off("change.plugin_addIndicators", handleTriggerParamsChange);
-				Scene.off("shift.plugin_addIndicators", handleBoundsParamsChange);
-
-				if (Indicator.triggerGroup.members.length > 1) {
-					// just remove from memberlist of old group
-					var group = Indicator.triggerGroup;
-					group.members.splice(group.members.indexOf(Indicator), 1);
-					_ctrl._indicators.updateTriggerGroupLabel(group);
-					_ctrl._indicators.updateTriggerGroupPositions(group);
-					Indicator.triggerGroup = undefined;
-				} else {
-					// remove complete group
-					removeTriggerGroup();
-				}
-				removeBounds();
-
-				log(3, "removed indicators");
-			}
-		};
-
-/*
-		 * ----------------------------------------------------------------
-		 * internal Event Handlers
-		 * ----------------------------------------------------------------
-		 */
-
-		// event handler for when bounds params change
-		var handleBoundsParamsChange = function () {
-			updateBounds();
-		};
-
-		// event handler for when trigger params change
-		var handleTriggerParamsChange = function (e) {
-			if (e.what === "triggerHook") {
-				updateTriggerGroup();
-			}
-		};
-
-/*
-		 * ----------------------------------------------------------------
-		 * Bounds (start / stop) management
-		 * ----------------------------------------------------------------
-		 */
-
-		// adds an new bounds elements to the array and to the DOM
-		var addBounds = function () {
-			var v = _ctrl.info("vertical");
-			// apply stuff we didn't know before...
-			_util.css(_elemStart.firstChild, {
-				"border-bottom-width": v ? 1 : 0,
-				"border-right-width": v ? 0 : 1,
-				"bottom": v ? -1 : options.indent,
-				"right": v ? options.indent : -1,
-				"padding": v ? "0 8px" : "2px 4px",
-			});
-			_util.css(_elemEnd, {
-				"border-top-width": v ? 1 : 0,
-				"border-left-width": v ? 0 : 1,
-				"top": v ? "100%" : "",
-				"right": v ? options.indent : "",
-				"bottom": v ? "" : options.indent,
-				"left": v ? "" : "100%",
-				"padding": v ? "0 8px" : "2px 4px"
-			});
-			// append
-			_boundsContainer.appendChild(_elemBounds);
-		};
-
-		// remove bounds from list and DOM
-		var removeBounds = function () {
-			_elemBounds.parentNode.removeChild(_elemBounds);
-		};
-
-		// update the start and end positions of the scene
-		var updateBounds = function () {
-			if (_elemBounds.parentNode !== _boundsContainer) {
-				addBounds(); // Add Bounds elements (start/end)
-			}
-			var css = {};
-			css[_vertical ? "top" : "left"] = Scene.triggerPosition();
-			css[_vertical ? "height" : "width"] = Scene.duration();
-			_util.css(_elemBounds, css);
-			_util.css(_elemEnd, {
-				display: Scene.duration() > 0 ? "" : "none"
-			});
-		};
-
-/*
-		 * ----------------------------------------------------------------
-		 * trigger and trigger group management
-		 * ----------------------------------------------------------------
-		 */
-
-		// adds an new trigger group to the array and to the DOM
-		var addTriggerGroup = function () {
-			var triggerElem = TPL.trigger(options.colorTrigger); // new trigger element
-			var css = {};
-			css[_vertical ? "right" : "bottom"] = 0;
-			css[_vertical ? "border-top-width" : "border-left-width"] = 1;
-			_util.css(triggerElem.firstChild, css);
-			_util.css(triggerElem.firstChild.firstChild, {
-				padding: _vertical ? "0 8px 3px 8px" : "3px 4px"
-			});
-			document.body.appendChild(triggerElem); // directly add to body
-			var newGroup = {
-				triggerHook: Scene.triggerHook(),
-				element: triggerElem,
-				members: [Indicator]
-			};
-			_ctrl._indicators.groups.push(newGroup);
-			Indicator.triggerGroup = newGroup;
-			// update right away
-			_ctrl._indicators.updateTriggerGroupLabel(newGroup);
-			_ctrl._indicators.updateTriggerGroupPositions(newGroup);
-		};
-
-		var removeTriggerGroup = function () {
-			_ctrl._indicators.groups.splice(_ctrl._indicators.groups.indexOf(Indicator.triggerGroup), 1);
-			Indicator.triggerGroup.element.parentNode.removeChild(Indicator.triggerGroup.element);
-			Indicator.triggerGroup = undefined;
-		};
-
-		// updates the trigger group -> either join existing or add new one
-/*	
-		 * Logic:
-		 * 1 if a trigger group exist, check if it's in sync with Scene settings – if so, nothing else needs to happen
-		 * 2 try to find an existing one that matches Scene parameters
-		 * 	 2.1 If a match is found check if already assigned to an existing group
-		 *			 If so:
-		 *       A: it was the last member of existing group -> kill whole group
-		 *       B: the existing group has other members -> just remove from member list
-		 *	 2.2 Assign to matching group
-		 * 3 if no new match could be found, check if assigned to existing group
-		 *   A: yes, and it's the only member -> just update parameters and positions and keep using this group
-		 *   B: yes but there are other members -> remove from member list and create a new one
-		 *   C: no, so create a new one
-		 */
-		var updateTriggerGroup = function () {
-			var
-			triggerHook = Scene.triggerHook(),
-				closeEnough = 0.0001;
-
-			// Have a group, check if it still matches
-			if (Indicator.triggerGroup) {
-				if (Math.abs(Indicator.triggerGroup.triggerHook - triggerHook) < closeEnough) {
-					// _util.log(0, "trigger", options.name, "->", "no need to change, still in sync");
-					return; // all good
-				}
-			}
-			// Don't have a group, check if a matching one exists
-			// _util.log(0, "trigger", options.name, "->", "out of sync!");
-			var
-			groups = _ctrl._indicators.groups,
-				group, i = groups.length;
-			while (i--) {
-				group = groups[i];
-				if (Math.abs(group.triggerHook - triggerHook) < closeEnough) {
-					// found a match!
-					// _util.log(0, "trigger", options.name, "->", "found match");
-					if (Indicator.triggerGroup) { // do I have an old group that is out of sync?
-						if (Indicator.triggerGroup.members.length === 1) { // is it the only remaining group?
-							// _util.log(0, "trigger", options.name, "->", "kill");
-							// was the last member, remove the whole group
-							removeTriggerGroup();
-						} else {
-							Indicator.triggerGroup.members.splice(Indicator.triggerGroup.members.indexOf(Indicator), 1); // just remove from memberlist of old group
-							_ctrl._indicators.updateTriggerGroupLabel(Indicator.triggerGroup);
-							_ctrl._indicators.updateTriggerGroupPositions(Indicator.triggerGroup);
-							// _util.log(0, "trigger", options.name, "->", "removing from previous member list");
-						}
-					}
-					// join new group
-					group.members.push(Indicator);
-					Indicator.triggerGroup = group;
-					_ctrl._indicators.updateTriggerGroupLabel(group);
-					return;
-				}
-			}
-
-			// at this point I am obviously out of sync and don't match any other group
-			if (Indicator.triggerGroup) {
-				if (Indicator.triggerGroup.members.length === 1) {
-					// _util.log(0, "trigger", options.name, "->", "updating existing");
-					// out of sync but i'm the only member => just change and update
-					Indicator.triggerGroup.triggerHook = triggerHook;
-					_ctrl._indicators.updateTriggerGroupPositions(Indicator.triggerGroup);
-					return;
-				} else {
-					// _util.log(0, "trigger", options.name, "->", "removing from previous member list");
-					Indicator.triggerGroup.members.splice(Indicator.triggerGroup.members.indexOf(Indicator), 1); // just remove from memberlist of old group
-					_ctrl._indicators.updateTriggerGroupLabel(Indicator.triggerGroup);
-					_ctrl._indicators.updateTriggerGroupPositions(Indicator.triggerGroup);
-					Indicator.triggerGroup = undefined; // need a brand new group...
-				}
-			}
-			// _util.log(0, "trigger", options.name, "->", "add a new one");
-			// did not find any match, make new trigger group
-			addTriggerGroup();
-		};
-	};
-
-/*
-	 * ----------------------------------------------------------------
-	 * Templates for the indicators
-	 * ----------------------------------------------------------------
-	 */
-	var TPL = {
-		start: function (color) {
-			// inner element (for bottom offset -1, while keeping top position 0)
-			var inner = document.createElement("div");
-			inner.textContent = "start";
-			_util.css(inner, {
-				position: "absolute",
-				overflow: "visible",
-				"border-width": 0,
-				"border-style": "solid",
-				color: color,
-				"border-color": color
-			});
-			var e = document.createElement('div');
-			// wrapper
-			_util.css(e, {
-				position: "absolute",
-				overflow: "visible",
-				width: 0,
-				height: 0
-			});
-			e.appendChild(inner);
-			return e;
-		},
-		end: function (color) {
-			var e = document.createElement('div');
-			e.textContent = "end";
-			_util.css(e, {
-				position: "absolute",
-				overflow: "visible",
-				"border-width": 0,
-				"border-style": "solid",
-				color: color,
-				"border-color": color
-			});
-			return e;
-		},
-		bounds: function () {
-			var e = document.createElement('div');
-			_util.css(e, {
-				position: "absolute",
-				overflow: "visible",
-				"white-space": "nowrap",
-				"pointer-events": "none",
-				"font-size": FONT_SIZE
-			});
-			e.style.zIndex = ZINDEX;
-			return e;
-		},
-		trigger: function (color) {
-			// inner to be above or below line but keep position
-			var inner = document.createElement('div');
-			inner.textContent = "trigger";
-			_util.css(inner, {
-				position: "relative",
-			});
-			// inner wrapper for right: 0 and main element has no size
-			var w = document.createElement('div');
-			_util.css(w, {
-				position: "absolute",
-				overflow: "visible",
-				"border-width": 0,
-				"border-style": "solid",
-				color: color,
-				"border-color": color
-			});
-			w.appendChild(inner);
-			// wrapper
-			var e = document.createElement('div');
-			_util.css(e, {
-				position: "fixed",
-				overflow: "visible",
-				"white-space": "nowrap",
-				"pointer-events": "none",
-				"font-size": FONT_SIZE
-			});
-			e.style.zIndex = ZINDEX;
-			e.appendChild(w);
-			return e;
-		},
-	};
-
-}));
-
-/***/ }),
-/* 102 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(103)
+  __webpack_require__(117)
 }
-var normalizeComponent = __webpack_require__(4)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(105)
+var __vue_script__ = __webpack_require__(119)
 /* template */
-var __vue_template__ = __webpack_require__(106)
+var __vue_template__ = __webpack_require__(120)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -79398,17 +79638,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 103 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(104);
+var content = __webpack_require__(118);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("71346337", content, false, {});
+var update = __webpack_require__(2)("71346337", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -79424,22 +79664,22 @@ if(false) {
 }
 
 /***/ }),
-/* 104 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // Module
-exports.push([module.i, "\n.mobile-nav {\n  position: fixed;\n  width: 100vw;\n  min-height: 100vh;\n  background-color: #fff;\n  z-index: 4;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  visibility: hidden;\n  /* hides all .Tile-flyout on load so GSAP autoAlpha can do its thing */\n  height: auto;\n  /* tell the browser that initial height is auto */\n  overflow: hidden;\n  -webkit-transform-origin: center top 0;\n          transform-origin: center top 0;\n}\n.mobile-nav ul {\n    text-align: center;\n}\n.mobile-nav ul li .mobile-nav-link {\n      font-size: 1.5rem;\n      font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.mobile-nav {\n  position: fixed;\n  width: 100vw;\n  min-height: 100vh;\n  background-color: #000;\n  z-index: 4;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  visibility: hidden;\n  /* hides all .Tile-flyout on load so GSAP autoAlpha can do its thing */\n  height: auto;\n  /* tell the browser that initial height is auto */\n  overflow: hidden;\n  -webkit-transform-origin: center top 0;\n          transform-origin: center top 0;\n}\n.mobile-nav ul {\n    text-align: center;\n}\n.mobile-nav ul li .nav-link {\n      color: #fff;\n}\n.mobile-nav ul li .mobile-nav-link {\n      font-size: 1.5rem;\n      font-weight: bold;\n}\n", ""]);
 
 
 
 /***/ }),
-/* 105 */
+/* 119 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(6);
 //
 //
 //
@@ -79533,7 +79773,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 106 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -79657,533 +79897,6 @@ if (false) {
 }
 
 /***/ }),
-/* 107 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(108)
-}
-var normalizeComponent = __webpack_require__(4)
-/* script */
-var __vue_script__ = __webpack_require__(110)
-/* template */
-var __vue_template__ = __webpack_require__(111)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/NavLogo.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-35d55bd3", Component.options)
-  } else {
-    hotAPI.reload("data-v-35d55bd3", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(109);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(3)("00fb7c82", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-35d55bd3\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./NavLogo.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-35d55bd3\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./NavLogo.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 109 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(false);
-// Module
-exports.push([module.i, "", ""]);
-
-
-
-/***/ }),
-/* 110 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'NavLogo',
-  props: {
-    width: {
-      type: String,
-      default: '32px'
-    }
-  }
-});
-
-/***/ }),
-/* 111 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "svg",
-    {
-      attrs: {
-        width: _vm.width,
-        viewBox: "0 0 337 388",
-        version: "1.1",
-        xmlns: "http://www.w3.org/2000/svg",
-        "xmlns:xlink": "http://www.w3.org/1999/xlink"
-      }
-    },
-    [
-      _c(
-        "g",
-        {
-          attrs: {
-            id: "logo",
-            stroke: "none",
-            "stroke-width": "1",
-            fill: "none",
-            "fill-rule": "evenodd"
-          }
-        },
-        [
-          _c("path", {
-            attrs: {
-              d:
-                "M76.1438949,198 L111.528234,198 L111.528234,233.415239 L76.1438949,233.415239 L76.1438949,198 Z M125.471766,198 L160.856105,198 L160.856105,233.415239 L125.471766,233.415239 L125.471766,198 Z M76.1438949,245.427366 L111.528234,245.427366 L111.528234,280.842605 L76.1438949,280.842605 L76.1438949,245.427366 Z M125.471766,245.427366 L160.856105,245.427366 L160.856105,280.842605 L125.471766,280.842605 L125.471766,245.427366 Z M17.9474173,308.603744 C21.6410018,308.603744 25.4246737,309.485368 28.077248,311.018191 L28.077248,313.973636 C25.4246737,312.300554 21.5809435,311.368837 18.1376019,311.368837 C13.4630654,311.368837 9.52924779,313.041919 9.52924779,317.279726 C9.52924779,326.927498 30.4895891,322.839968 30.4895891,335.252834 C30.4895891,341.754811 24.6339063,344.219351 18.2877476,344.169259 C13.9135026,344.169259 9.82953922,343.087266 6.52633357,341.263907 L6.52633357,338.358555 C10.0697724,340.422357 14.1036871,341.414184 18.0875533,341.414184 C23.1524686,341.414184 27.5367234,339.891379 27.5367234,335.453203 C27.5367234,325.264434 6.57638214,329.44213 6.57638214,317.37991 C6.58639186,311.358819 12.0917346,308.603744 17.9474173,308.603744 Z M57.585885,308.603744 C61.0292267,308.603744 64.4225197,309.395202 67.2252397,310.918007 L67.2252397,313.873451 C64.7128015,312.250461 61.369557,311.358819 58.0263125,311.358819 C50.4990075,311.358819 42.6313722,316.237806 42.6313722,326.71711 C42.5813236,336.665436 50.6491532,341.394147 58.1764582,341.394147 C61.8199941,341.394147 65.0631414,340.512523 67.5755797,338.879515 L67.5755797,341.784867 C64.7728597,343.307672 61.3295181,344.149222 57.585885,344.149222 C48.9775309,344.149222 39.628458,338.288426 39.6785066,326.71711 C39.6785066,314.704983 48.7773367,308.603744 57.585885,308.603744 Z M106.943785,309.14474 L106.943785,331.305563 C106.943785,340.903243 100.497529,344.159241 92.8701271,344.159241 C85.1926764,344.159241 78.7464206,340.913261 78.7464206,331.305563 L78.7464206,309.14474 L81.6492377,309.14474 L81.6492377,331.205378 C81.6492377,338.739257 86.4238713,341.394147 92.8701271,341.394147 C99.316383,341.394147 104.040968,338.739257 104.040968,331.205378 L104.040968,309.14474 L106.943785,309.14474 Z M136.742704,308.603744 C148.744351,308.603744 154.650082,317.610335 154.650082,326.376483 C154.650082,335.142631 148.744351,344.149222 136.742704,344.149222 C124.741057,344.149222 118.835325,335.142631 118.835325,326.376483 C118.835325,317.610335 124.741057,308.603744 136.742704,308.603744 Z M136.742704,311.358819 C126.652912,311.358819 121.788191,318.892697 121.788191,326.376483 C121.788191,333.860269 126.662922,341.394147 136.742704,341.394147 C146.822486,341.394147 151.697217,333.860269 151.697217,326.376483 C151.707226,318.892697 146.832496,311.358819 136.742704,311.358819 Z M170.405372,309.14474 L170.405372,340.803058 L190.324703,340.803058 L190.324703,343.608226 L167.502555,343.608226 L167.502555,309.14474 L170.405372,309.14474 Z M196.510707,343.608226 L211.855598,309.14474 L215.148794,309.14474 L230.453647,343.608226 L227.300587,343.608226 L223.216624,334.351173 L203.787769,334.351173 L199.653757,343.608226 L196.510707,343.608226 Z M204.928876,331.596098 L222.045487,331.596098 L213.927609,313.23227 C213.777463,312.84155 213.637327,312.490904 213.487182,312.150277 C213.337036,312.490904 213.1969,312.84155 213.046754,313.23227 L204.928876,331.596098 Z M34.7737467,352.995518 L34.7737467,387.459003 L31.8709296,387.459003 L31.8709296,358.605853 L18.2977573,378.692855 L16.4759894,378.692855 L2.90281708,358.605853 L2.90281708,387.459003 L2.84217094e-14,387.459003 L2.84217094e-14,352.995518 L2.46238966,352.995518 L17.4068928,375.09623 L32.311357,352.9855 L34.7737467,352.9855 L34.7737467,352.995518 Z M64.622714,352.454521 C76.6243612,352.454521 82.5300925,361.461113 82.5300925,370.227261 C82.5300925,378.993409 76.6243612,388 64.622714,388 C52.6210669,388 46.7153356,378.993409 46.7153356,370.227261 C46.7153356,361.461113 52.6110571,352.454521 64.622714,352.454521 Z M64.622714,355.209597 C54.5329222,355.209597 49.6682012,362.743475 49.6682012,370.227261 C49.6682012,377.711047 54.542932,385.244925 64.622714,385.244925 C74.7024961,385.244925 79.5772268,377.711047 79.5772268,370.227261 C79.5772268,362.743475 74.7024961,355.209597 64.622714,355.209597 Z M110.367107,352.454521 C113.810449,352.454521 117.203742,353.245979 120.006462,354.768785 L120.006462,357.724229 C117.494024,356.101239 114.150779,355.209597 110.807535,355.209597 C103.28023,355.209597 95.4125945,360.088584 95.4125945,370.567888 C95.3625459,380.516214 103.430375,385.244925 110.95768,385.244925 C114.601216,385.244925 117.844364,384.363301 120.356802,382.730293 L120.356802,385.635645 C117.554082,387.15845 114.11074,388 110.367107,388 C101.758753,388 92.4096803,382.139204 92.4597289,370.567888 C92.4597289,358.555761 101.558559,352.454521 110.367107,352.454521 Z M128.214428,387.459003 L143.559319,352.995518 L146.852515,352.995518 L162.157368,387.459003 L159.004308,387.459003 L154.920345,378.201951 L135.49149,378.201951 L131.357478,387.459003 L128.214428,387.459003 Z M136.622587,375.446876 L153.739198,375.446876 L145.62132,357.083048 C145.471175,356.692328 145.331039,356.341682 145.180893,356.001055 C145.030747,356.341682 144.890611,356.692328 144.740465,357.083048 L136.622587,375.446876 Z M188.112556,352.995518 L188.112556,378.0116 C188.112556,384.95439 183.337923,387.959926 177.191958,387.959926 C173.748617,387.959926 170.555518,387.218561 168.333361,385.846032 L168.333361,382.94068 C170.545508,384.413393 173.498374,385.154759 176.701482,385.154759 C181.616252,385.154759 185.209739,383.231215 185.209739,377.921434 L185.209739,355.810704 L174.579423,355.810704 L174.579423,353.005537 L188.112556,353.005537 L188.112556,352.995518 Z M219.092622,352.454521 C231.094269,352.454521 237,361.461113 237,370.227261 C237,378.993409 231.094269,388 219.092622,388 C207.090974,388 201.185243,378.993409 201.185243,370.227261 C201.185243,361.461113 207.090974,352.454521 219.092622,352.454521 Z M219.092622,355.209597 C209.00283,355.209597 204.138109,362.743475 204.138109,370.227261 C204.138109,377.711047 209.012839,385.244925 219.092622,385.244925 C229.172404,385.244925 234.047134,377.711047 234.047134,370.227261 C234.047134,362.743475 229.172404,355.209597 219.092622,355.209597 Z",
-              id: "Combined-Shape",
-              fill: "#E2452B"
-            }
-          }),
-          _vm._v(" "),
-          _c("path", {
-            attrs: {
-              d:
-                "M337,117.939063 L337,110.202404 L309.209909,111.801714 L332.725371,92.6899678 L332.725371,86.4526616 L328.721036,84.0536977 L295.845438,111.801714 L259.496079,113.401023 L292.101384,81.114967 L328.711025,80.0454289 L328.711025,72.3087703 L300.650641,73.3783084 L318.28974,56.3056819 L312.943952,50.1683326 L274.462284,83.79381 L277.135178,66.4513001 L306.266722,39.5029389 L301.461519,34.1652442 L283.021552,49.1087902 L288.897915,24.8292764 L282.480967,20.2912363 L277.135178,33.8953608 L277.135178,16.0130841 L271.258815,13.6141201 L271.258815,58.4447581 L259.496079,96.5982798 C259.496079,96.5982798 222.886438,126.755255 222.08557,126.755255 C221.284703,126.755255 263.510425,10.1456182 263.510425,10.1456182 L258.164637,8.00654203 L249.61538,28.0178992 L245.871326,2.3989639 L239.994963,3.19861854 L243.739017,40.8223691 L231.175413,72.5786537 L217.810942,49.0987945 L235.720334,0 L229.573679,0 L212.735446,40.8223691 L202.584455,21.6106665 L214.877766,2.84094396e-14 L207.389658,2.84094396e-14 L199.91156,15.2134294 L191.09201,2.84094396e-14 L186.817382,2.3989639 L196.167506,21.6106665 L183.073328,40.8223691 L183.073328,2.3989639 L177.457247,2.3989639 L172.381751,5.86746588 L172.381751,29.3473251 L158.486705,18.9418191 L157.956131,28.0178992 L173.452911,38.6932886 L173.182618,75.5173845 L154.212077,55.2361439 L156.614678,10.9452728 L148.325703,15.4833129 L146.453676,45.6402882 L130.956896,29.3673164 L125.8814,35.5046658 L171.310591,90.2110384 L148.325703,85.9428818 L121.066186,41.9118985 L116.521265,44.8506293 L137.634126,83.0141467 L125.070522,80.6151828 L111.445769,54.7363597 L107.701715,54.7363597 L106.630555,60.6038256 L115.720398,79.0158735 L104.257986,76.6968751 L93.1759867,65.6316541 L93.1759867,82.2844619 L109.944143,99.0272308 L23,185.839737 L23,301 L34.7927692,301 L34.7927692,190.687643 L118.273162,107.323648 L126.031563,115.070302 L201.763566,190.687643 L201.763566,300.970013 L213.556335,300.970013 L213.556335,185.80975 L213.556335,178.023113 L264.561563,158.281639 L289.418479,159.081294 L306.787286,175.094378 L312.403367,171.355992 L300.380348,158.81141 L321.222917,160.41072 L324.696678,152.943944 L284.342983,149.475442 L303.50373,140.109488 L315.336543,146.496729 L321.753491,143.028227 L311.262131,136.321124 L322.033795,131.053399 L330.583052,136.660977 L333.78652,131.053399 L327.10929,127.734832 L335.127973,124.91605 L337,118.508817 L303.924185,131.633148 L288.097048,121.537509 L337,117.939063 Z M183.864184,104.594826 L201.963782,131.14336 L201.953772,138.010394 L156.534592,128.854349 L139.916598,112.261515 L172.37174,101.586126 L183.864184,104.594826 Z M113.868393,86.252748 L160.44883,98.4574768 L132.688771,105.044632 L118.293184,90.6708398 L113.868393,86.252748 Z M167.055984,139.369807 L201.93375,149.285525 L201.903717,174.174775 L167.055984,139.369807 Z M210.773321,126.085544 L186.006504,88.5817421 L186.006504,52.8271843 L199.370975,29.6172085 L226.069885,82.9841597 L210.773321,126.085544 Z M294.644137,135.321555 L213.566346,167.497659 L213.566346,149.315512 L244.800166,125.415834 L275.263151,124.886062 L294.644137,135.321555 Z",
-              id: "Shape",
-              fill: "#354437",
-              "fill-rule": "nonzero"
-            }
-          })
-        ]
-      )
-    ]
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-35d55bd3", module.exports)
-  }
-}
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(113)
-}
-var normalizeComponent = __webpack_require__(4)
-/* script */
-var __vue_script__ = __webpack_require__(115)
-/* template */
-var __vue_template__ = __webpack_require__(116)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/CartIcon.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-4e1f2ca4", Component.options)
-  } else {
-    hotAPI.reload("data-v-4e1f2ca4", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(114);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(3)("a48249e2", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4e1f2ca4\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartIcon.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4e1f2ca4\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartIcon.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(false);
-// Module
-exports.push([module.i, "", ""]);
-
-
-
-/***/ }),
-/* 115 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(7);
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'CartIcon',
-  props: {
-    width: {
-      type: String,
-      default: '32px'
-    },
-    color: {
-      type: String,
-      default: '#000000'
-    }
-  },
-  methods: {
-    play: function play() {
-      var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
-        paused: true
-      });
-      master.set(this.$refs.item, {
-        trasformOrigin: 'center center',
-        autoAlpha: 1
-      });
-      master.to(this.$refs.item, .2, {
-        fill: '#d85840',
-        scale: 0.7,
-        ease: Power2.easeInOut
-      });
-      master.to(this.$refs.item, .3, {
-        scale: 1,
-        ease: Back.easeInOut
-      });
-      master.to(this.$refs.item, .6, {
-        fill: this.color,
-        ease: Power2.easeInOut
-      }, .6);
-      master.play();
-    },
-    hide: function hide() {
-      var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
-        paused: true
-      });
-      master.to(this.$refs.item, .5, {
-        autoAlpha: 0
-      });
-      master.play();
-    }
-  }
-});
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "svg",
-    {
-      attrs: {
-        width: _vm.width,
-        viewBox: "0 0 128 128",
-        version: "1.1",
-        xmlns: "http://www.w3.org/2000/svg",
-        "xmlns:xlink": "http://www.w3.org/1999/xlink"
-      }
-    },
-    [
-      _c(
-        "g",
-        {
-          attrs: {
-            id: "cart",
-            stroke: "none",
-            "stroke-width": "1",
-            fill: "none",
-            "fill-rule": "evenodd"
-          }
-        },
-        [
-          _c("path", {
-            ref: "item",
-            attrs: {
-              d:
-                "M49.4615385,107.923077 C49.4615385,113.223558 45.0697115,117.615385 39.7692308,117.615385 C34.46875,117.615385 30.0769231,113.223558 30.0769231,107.923077 C30.0769231,102.622596 34.46875,98.2307692 39.7692308,98.2307692 C45.0697115,98.2307692 49.4615385,102.622596 49.4615385,107.923077 Z M117.307692,107.923077 C117.307692,113.223558 112.915865,117.615385 107.615385,117.615385 C102.314904,117.615385 97.9230769,113.223558 97.9230769,107.923077 C97.9230769,102.622596 102.314904,98.2307692 107.615385,98.2307692 C112.915865,98.2307692 117.307692,102.622596 117.307692,107.923077 Z M127,25.5384615 L127,64.3076923 C127,66.7307692 125.106971,68.8509615 122.683894,69.1538462 L43.6310096,78.3918269 C44.0096154,80.1334135 44.6153846,81.875 44.6153846,83.6923077 C44.6153846,85.4338942 43.5552885,87.0240385 42.7980769,88.5384615 L112.461538,88.5384615 C115.111779,88.5384615 117.307692,90.734375 117.307692,93.3846154 C117.307692,96.0348558 115.111779,98.2307692 112.461538,98.2307692 L34.9230769,98.2307692 C32.2728365,98.2307692 30.0769231,96.0348558 30.0769231,93.3846154 C30.0769231,91.0372596 33.484375,85.3581731 34.6959135,83.0108173 L21.2932692,20.6923077 L5.84615385,20.6923077 C3.19591346,20.6923077 1,18.4963942 1,15.8461538 C1,13.1959135 3.19591346,11 5.84615385,11 L25.2307692,11 C30.3040865,11 30.4555288,17.0576923 31.2127404,20.6923077 L122.153846,20.6923077 C124.804087,20.6923077 127,22.8882212 127,25.5384615 Z",
-              fill: _vm.color
-            }
-          })
-        ]
-      )
-    ]
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-4e1f2ca4", module.exports)
-  }
-}
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(122)
-}
-var normalizeComponent = __webpack_require__(4)
-/* script */
-var __vue_script__ = __webpack_require__(120)
-/* template */
-var __vue_template__ = __webpack_require__(121)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/views/Cart.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-29106a82", Component.options)
-  } else {
-    hotAPI.reload("data-v-29106a82", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 118 */,
-/* 119 */,
-/* 120 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue__ = __webpack_require__(124);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'Cart',
-  components: {
-    CartRow: __WEBPACK_IMPORTED_MODULE_0__components_CartRow_vue___default.a
-  },
-  data: function data() {
-    return {
-      cartTotal: 0
-    };
-  },
-  watch: {
-    '$root.cart': function $rootCart(cart) {
-      this.updateTotal(cart);
-    }
-  },
-  methods: {
-    updateTotal: function updateTotal(cart) {
-      var total = 0;
-
-      for (var i = 0; i < cart.length; i++) {
-        total = total + cart[i].quantity * cart[i].price;
-      }
-
-      this.cartTotal = total.toFixed(2);
-    },
-    cartUpdate: function cartUpdate(product) {
-      this.$root.cartUpdate(product);
-    },
-    cartRemove: function cartRemove(idx) {
-      this.$root.cartRemove(idx);
-    }
-  },
-  mounted: function mounted() {
-    if (this.$root.cart) {
-      this.updateTotal(this.$root.cart);
-    }
-  }
-});
-
-/***/ }),
 /* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -80191,344 +79904,19 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row section" }, [
-      _c("div", { staticClass: "col" }, [
-        _c("h1", [_vm._v("Carrello")]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table my-4" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(this.$root.cart, function(product) {
-              return _c("cart-row", {
-                key: product.id,
-                attrs: {
-                  idx: product.id,
-                  title: product.title,
-                  price: product.price,
-                  quantity: product.quantity
-                },
-                on: {
-                  "cart-update": _vm.cartUpdate,
-                  "cart-remove": _vm.cartRemove
-                }
-              })
-            }),
-            1
-          ),
-          _vm._v(" "),
-          _c("tfoot", [
-            _c("tr", [
-              _c("td", { attrs: { colspan: "2" } }, [_vm._v("Totale")]),
-              _vm._v(" "),
-              _c("td", [_vm._v("€ " + _vm._s(this.cartTotal))])
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "btns" },
-          [
-            _c("a", { staticClass: "btn btn-primary", attrs: { href: "#" } }, [
-              _vm._v("Procedi con il pagamento")
-            ]),
-            _vm._v(" "),
-            _c(
-              "router-link",
-              {
-                staticClass: "btn btn-link",
-                attrs: {
-                  tag: "a",
-                  to: { path: "/vini" },
-                  "exact-active-class": "active"
-                }
-              },
-              [
-                _vm._v(
-                  "\n                    Continua con lo shopping\n                "
-                )
-              ]
-            )
-          ],
-          1
-        )
-      ])
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("td", [_vm._v("Prodotto")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Quantità")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Prezzo")])
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-29106a82", module.exports)
-  }
-}
-
-/***/ }),
-/* 122 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(123);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(3)("63d70d1a", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-29106a82\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Cart.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-29106a82\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Cart.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 123 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(false);
-// Module
-exports.push([module.i, "\n.section {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
-
-
-
-/***/ }),
-/* 124 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(125)
-}
-var normalizeComponent = __webpack_require__(4)
-/* script */
-var __vue_script__ = __webpack_require__(127)
-/* template */
-var __vue_template__ = __webpack_require__(128)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/CartRow.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-6bbc8202", Component.options)
-  } else {
-    hotAPI.reload("data-v-6bbc8202", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 125 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(126);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(3)("1cf38d8c", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6bbc8202\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartRow.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6bbc8202\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CartRow.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 126 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(false);
-// Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
-
-
-
-/***/ }),
-/* 127 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'CartRow',
-  props: {
-    title: {
-      type: String,
-      default: 'prodotto'
-    },
-    quantity: {
-      type: Number,
-      default: 0
-    },
-    price: {
-      type: Number,
-      default: 0
-    },
-    idx: {
-      type: Number,
-      default: 0
-    }
-  },
-  computed: {
-    total: function total() {
-      var total = this.price * this.quantity;
-      return total.toFixed(2);
-    }
-  },
-  data: function data() {
-    return {
-      hasTrash: 'invisible'
-    };
-  },
-  methods: {
-    showTrash: function showTrash() {
-      this.hasTrash = 'visible';
-    },
-    hideTrash: function hideTrash() {
-      this.hasTrash = 'invisible';
-    },
-    remove: function remove() {
-      this.$emit('cart-remove', this.idx);
-    },
-    addQuantity: function addQuantity() {
-      var item = {
-        id: this.idx,
-        quantity: this.quantity + 1
-      };
-      this.$emit('cart-update', item);
-    },
-    removeQuantity: function removeQuantity() {
-      if (this.quantity > 0) {
-        var item = {
-          id: this.idx,
-          quantity: this.quantity - 1
-        };
-        this.$emit('cart-update', item);
-      }
-    }
-  }
-});
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
   return _c(
-    "tr",
-    { on: { mouseenter: _vm.showTrash, mouseleave: _vm.hideTrash } },
+    "div",
     [
-      _c("td", [
-        _vm._v("\n        " + _vm._s(_vm.title) + "\n        "),
-        _c("span", { class: _vm.hasTrash }, [
-          _c(
-            "button",
-            { staticClass: "btn btn-link btn-sm", on: { click: _vm.remove } },
-            [_vm._v("Rimuovi dal carrello")]
-          )
-        ])
-      ]),
+      _c("main-nav", {
+        attrs: { navClass: _vm.navClass },
+        on: { "menu-open": _vm.menuOpen, "menu-close": _vm.menuClose }
+      }),
       _vm._v(" "),
-      _c("td", [
-        _c(
-          "button",
-          { staticClass: "btn btn-link", on: { click: _vm.removeQuantity } },
-          [_vm._v("-")]
-        ),
-        _vm._v("\n        " + _vm._s(_vm.quantity) + "\n        "),
-        _c(
-          "button",
-          { staticClass: "btn btn-link", on: { click: _vm.addQuantity } },
-          [_vm._v("+")]
-        )
-      ]),
+      _c("menu-overlay", { ref: "menu" }),
       _vm._v(" "),
-      _c("td", [_vm._v("€ " + _vm._s(_vm.total))])
-    ]
+      _c("main", { ref: "main" }, [_c("transition", [_c("router-view")], 1)], 1)
+    ],
+    1
   )
 }
 var staticRenderFns = []
@@ -80537,12 +79925,12 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-6bbc8202", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-2fa6537c", module.exports)
   }
 }
 
 /***/ }),
-/* 129 */
+/* 122 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -80580,6 +79968,585 @@ var Cookie = {
   }
 };
 /* harmony default export */ __webpack_exports__["a"] = (Cookie);
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 124 */,
+/* 125 */,
+/* 126 */,
+/* 127 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export SplitText */
+/* unused harmony export default */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__ = __webpack_require__(4);
+/*!
+ * VERSION: 0.6.1
+ * DATE: 2018-08-27
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * @license Copyright (c) 2008-2018, GreenSock. All rights reserved.
+ * SplitText is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * This work is subject to the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ */
+
+
+
+(function(window) {
+	
+	"use strict";
+	var _globals = window.GreenSockGlobals || window,
+		_namespace = function(ns) {
+			var a = ns.split("."),
+				p = _globals, i;
+			for (i = 0; i < a.length; i++) {
+				p[a[i]] = p = p[a[i]] || {};
+			}
+			return p;
+		},
+		pkg = _namespace("com.greensock.utils"),
+		_getText = function(e) {
+			var type = e.nodeType,
+				result = "";
+			if (type === 1 || type === 9 || type === 11) {
+				if (typeof(e.textContent) === "string") {
+					return e.textContent;
+				} else {
+					for ( e = e.firstChild; e; e = e.nextSibling ) {
+						result += _getText(e);
+					}
+				}
+			} else if (type === 3 || type === 4) {
+				return e.nodeValue;
+			}
+			return result;
+		},
+		_doc = document,
+		_getComputedStyle = _doc.defaultView ? _doc.defaultView.getComputedStyle : function() {},
+		_capsExp = /([A-Z])/g,
+		_getStyle = function(t, p, cs, str) {
+			var result;
+			if ((cs = cs || _getComputedStyle(t, null))) {
+				t = cs.getPropertyValue(p.replace(_capsExp, "-$1").toLowerCase());
+				result = (t || cs.length) ? t : cs[p]; //Opera behaves VERY strangely - length is usually 0 and cs[p] is the only way to get accurate results EXCEPT when checking for -o-transform which only works with cs.getPropertyValue()!
+			} else if (t.currentStyle) {
+				cs = t.currentStyle;
+				result = cs[p];
+			}
+			return str ? result : parseInt(result, 10) || 0;
+		},
+		_isArrayLike = function(e) {
+			return (e.length && e[0] && ((e[0].nodeType && e[0].style && !e.nodeType) || (e[0].length && e[0][0]))) ? true : false; //could be an array of jQuery objects too, so accommodate that.
+		},
+		_flattenArray = function(a) {
+			var result = [],
+				l = a.length,
+				i, e, j;
+			for (i = 0; i < l; i++) {
+				e = a[i];
+				if (_isArrayLike(e)) {
+					j = e.length;
+					for (j = 0; j < e.length; j++) {
+						result.push(e[j]);
+					}
+				} else {
+					result.push(e);
+				}
+			}
+			return result;
+		},
+		//some characters are combining marks (think diacritics/accents in European languages) which involve 2 or 4 characters that combine in the browser to form a single character. Pass in the remaining text and an array of the special characters to search for and if the text starts with one of those special characters, it'll spit back the number of characters to retain (often 2 or 4). Used in the specialChars features that was introduced in 0.6.0.
+		_findSpecialChars = function(text, chars) {
+			var i = chars.length,
+				s;
+			while (--i > -1) {
+				s = chars[i];
+				if (text.substr(0, s.length) === s) {
+					return s.length;
+				}
+			}
+		},
+		_stripExp = /(?:\r|\n|\t\t)/g, //find carriage returns, new line feeds and double-tabs.
+		_multipleSpacesExp = /(?:\s\s+)/g,
+		_emojiStart = 0xD800,
+		_emojiEnd = 0xDBFF,
+		_emojiLowStart = 0xDC00,
+		_emojiRegionStart = 0x1F1E6,
+		_emojiRegionEnd = 0x1F1FF,
+		_emojiModStart = 0x1f3fb,
+		_emojiModEnd = 0x1f3ff,
+		_emojiPairCode = function(s) {
+			return ((s.charCodeAt(0) - _emojiStart) << 10) + (s.charCodeAt(1) - _emojiLowStart) + 0x10000;
+		},
+		_isOldIE = (_doc.all && !_doc.addEventListener),
+		_divStart = " style='position:relative;display:inline-block;" + (_isOldIE ? "*display:inline;*zoom:1;'" : "'"), //note: we must use both display:inline-block and *display:inline for IE8 and earlier, otherwise it won't flow correctly (and if we only use display:inline, IE won't render most of the property tweens - very odd).
+		_cssClassFunc = function(cssClass, tag) {
+			cssClass = cssClass || "";
+			var iterate = (cssClass.indexOf("++") !== -1),
+				num = 1;
+			if (iterate) {
+				cssClass = cssClass.split("++").join("");
+			}
+			return function() {
+				return "<" + tag + _divStart + (cssClass ? " class='" + cssClass + (iterate ? num++ : "") + "'>" : ">");
+			};
+		},
+		SplitText = pkg.SplitText = _globals.SplitText = function(element, vars) {
+			if (typeof(element) === "string") {
+				element = SplitText.selector(element);
+			}
+			if (!element) {
+				throw("cannot split a null element.");
+			}
+			this.elements = _isArrayLike(element) ? _flattenArray(element) : [element];
+			this.chars = [];
+			this.words = [];
+			this.lines = [];
+			this._originals = [];
+			this.vars = vars || {};
+			this.split(vars);
+		},
+		_swapText = function(element, oldText, newText) {
+			var type = element.nodeType;
+			if (type === 1 || type === 9 || type === 11) {
+				for (element = element.firstChild; element; element = element.nextSibling) {
+					_swapText(element, oldText, newText);
+				}
+			} else if (type === 3 || type === 4) {
+				element.nodeValue = element.nodeValue.split(oldText).join(newText);
+			}
+		},
+		_pushReversed = function(a, merge) {
+			var i = merge.length;
+			while (--i > -1) {
+				a.push(merge[i]);
+			}
+		},
+		_slice = function(a) { //don't use Array.prototype.slice.call(target, 0) because that doesn't work in IE8 with a NodeList that's returned by querySelectorAll()
+			var b = [],
+				l = a.length,
+				i;
+			for (i = 0; i !== l; b.push(a[i++])) {}
+			return b;
+		},
+		_isBeforeWordDelimiter = function(e, root, wordDelimiter) {
+			var next;
+			while (e && e !== root) {
+				next = e._next || e.nextSibling;
+				if (next) {
+					return next.textContent.charAt(0) === wordDelimiter;
+				}
+				e = e.parentNode || e._parent;
+			}
+			return false;
+		},
+		_deWordify = function(e) {
+			var children = _slice(e.childNodes),
+				l = children.length,
+				i, child;
+			for (i = 0; i < l; i++) {
+				child = children[i];
+				if (child._isSplit) {
+					_deWordify(child);
+				} else {
+					if (i && child.previousSibling.nodeType === 3) {
+						child.previousSibling.nodeValue += (child.nodeType === 3) ? child.nodeValue : child.firstChild.nodeValue;
+					} else if (child.nodeType !== 3) {
+						e.insertBefore(child.firstChild, child);
+					}
+					e.removeChild(child);
+				}
+			}
+		},
+		_setPositionsAfterSplit = function(element, vars, allChars, allWords, allLines, origWidth, origHeight) {
+			var cs = _getComputedStyle(element),
+				paddingLeft = _getStyle(element, "paddingLeft", cs),
+				lineOffsetY = -999,
+				borderTopAndBottom = _getStyle(element, "borderBottomWidth", cs) + _getStyle(element, "borderTopWidth", cs),
+				borderLeftAndRight = _getStyle(element, "borderLeftWidth", cs) + _getStyle(element, "borderRightWidth", cs),
+				padTopAndBottom = _getStyle(element, "paddingTop", cs) + _getStyle(element, "paddingBottom", cs),
+				padLeftAndRight = _getStyle(element, "paddingLeft", cs) + _getStyle(element, "paddingRight", cs),
+				lineThreshold = _getStyle(element, "fontSize") * 0.2,
+				textAlign = _getStyle(element, "textAlign", cs, true),
+				charArray = [],
+				wordArray = [],
+				lineArray = [],
+				wordDelimiter = vars.wordDelimiter || " ",
+				tag = vars.span ? "span" : "div",
+				types = vars.type || vars.split || "chars,words,lines",
+				lines = (allLines && types.indexOf("lines") !== -1) ? [] : null,
+				words = (types.indexOf("words") !== -1),
+				chars = (types.indexOf("chars") !== -1),
+				absolute = (vars.position === "absolute" || vars.absolute === true),
+				linesClass = vars.linesClass,
+				iterateLine = ((linesClass || "").indexOf("++") !== -1),
+				spaceNodesToRemove = [],
+				i, j, l, node, nodes, isChild, curLine, addWordSpaces, style, lineNode, lineWidth, offset;
+			if (iterateLine) {
+				linesClass = linesClass.split("++").join("");
+			}
+
+			//copy all the descendant nodes into an array (we can't use a regular nodeList because it's live and we may need to renest things)
+			j = element.getElementsByTagName("*");
+			l = j.length;
+			nodes = [];
+			for (i = 0; i < l; i++) {
+				nodes[i] = j[i];
+			}
+
+			//for absolute positioning, we need to record the x/y offsets and width/height for every <div>. And even if we're not positioning things absolutely, in order to accommodate lines, we must figure out where the y offset changes so that we can sense where the lines break, and we populate the lines array.
+			if (lines || absolute) {
+				for (i = 0; i < l; i++) {
+					node = nodes[i];
+					isChild = (node.parentNode === element);
+					if (isChild || absolute || (chars && !words)) {
+						offset = node.offsetTop;
+						if (lines && isChild && Math.abs(offset - lineOffsetY) > lineThreshold && (node.nodeName !== "BR" || i === 0)) { //we found some rare occasions where a certain character like &#8209; could cause the offsetTop to be off by 1 pixel, so we build in a threshold.
+							curLine = [];
+							lines.push(curLine);
+							lineOffsetY = offset;
+						}
+						if (absolute) { //record offset x and y, as well as width and height so that we can access them later for positioning. Grabbing them at once ensures we don't trigger a browser paint & we maximize performance.
+							node._x = node.offsetLeft;
+							node._y = offset;
+							node._w = node.offsetWidth;
+							node._h = node.offsetHeight;
+						}
+						if (lines) {
+							if ((node._isSplit && isChild) || (!chars && isChild) || (words && isChild) || (!words && node.parentNode.parentNode === element && !node.parentNode._isSplit)) {
+								curLine.push(node);
+								node._x -= paddingLeft;
+								if (_isBeforeWordDelimiter(node, element, wordDelimiter)) {
+									node._wordEnd = true;
+								}
+							}
+							if (node.nodeName === "BR" && ((node.nextSibling && node.nextSibling.nodeName === "BR") || i === 0)) { //two consecutive <br> tags signify a new [empty] line. Also, if the entire block of content STARTS with a <br>, add a line.
+								lines.push([]);
+							}
+						}
+					}
+				}
+			}
+
+			for (i = 0; i < l; i++) {
+				node = nodes[i];
+				isChild = (node.parentNode === element);
+				if (node.nodeName === "BR") {
+					if (lines || absolute) {
+						if (node.parentNode) {
+							node.parentNode.removeChild(node);
+						}
+						nodes.splice(i--, 1);
+						l--;
+					} else if (!words) {
+						element.appendChild(node);
+					}
+					continue;
+				}
+
+				if (absolute) {
+					style = node.style;
+					if (!words && !isChild) {
+						node._x += node.parentNode._x;
+						node._y += node.parentNode._y;
+					}
+					style.left = node._x + "px";
+					style.top = node._y + "px";
+					style.position = "absolute";
+					style.display = "block";
+					//if we don't set the width/height, things collapse in older versions of IE and the origin for transforms is thrown off in all browsers.
+					style.width = (node._w + 1) + "px"; //IE is 1px short sometimes. Avoid wrapping
+					style.height = node._h + "px";
+				}
+
+				if (!words && chars) {
+					//we always start out wrapping words in their own <div> so that line breaks happen correctly, but here we'll remove those <div> tags if necessary and renest the characters directly into the element rather than inside the word <div>
+					if (node._isSplit) {
+						node._next = node.nextSibling;
+						node.parentNode.appendChild(node); //put it at the end to keep the order correct.
+
+					} else if (node.parentNode._isSplit) {
+						node._parent = node.parentNode;
+						if (!node.previousSibling && node.firstChild) {
+							node.firstChild._isFirst = true;
+						}
+						if (node.nextSibling && node.nextSibling.textContent === " " && !node.nextSibling.nextSibling) { //if the last node inside a nested element is just a space (like T<span>nested </span>), remove it otherwise it'll get placed in the wrong order. Don't remove it right away, though, because we need to sense when words/characters are before a space like _isBeforeWordDelimiter(). Removing it now would make that a false negative.
+							spaceNodesToRemove.push(node.nextSibling);
+						}
+						node._next = (node.nextSibling && node.nextSibling._isFirst) ? null : node.nextSibling;
+						node.parentNode.removeChild(node);
+						nodes.splice(i--, 1);
+						l--;
+					} else if (!isChild) {
+						offset = (!node.nextSibling && _isBeforeWordDelimiter(node.parentNode, element, wordDelimiter)); //if this is the last letter in the word (and we're not breaking by lines and not positioning things absolutely), we need to add a space afterwards so that the characters don't just mash together
+						if (node.parentNode._parent) {
+							node.parentNode._parent.appendChild(node);
+						}
+						if (offset) {
+							node.parentNode.appendChild(_doc.createTextNode(" "));
+						}
+						if (vars.span) {
+							node.style.display = "inline"; //so that word breaks are honored properly.
+						}
+						charArray.push(node);
+					}
+				} else if (node.parentNode._isSplit && !node._isSplit && node.innerHTML !== "") {
+					wordArray.push(node);
+				} else if (chars && !node._isSplit) {
+					if (vars.span) {
+						node.style.display = "inline";
+					}
+					charArray.push(node);
+				}
+			}
+
+			i = spaceNodesToRemove.length;
+			while (--i > -1) {
+				spaceNodesToRemove[i].parentNode.removeChild(spaceNodesToRemove[i]);
+			}
+
+			if (lines) {
+				//the next 7 lines just give us the line width in the most reliable way and figure out the left offset (if position isn't relative or absolute). We must set the width along with text-align to ensure everything works properly for various alignments.
+				if (absolute) {
+					lineNode = _doc.createElement(tag);
+					element.appendChild(lineNode);
+					lineWidth = lineNode.offsetWidth + "px";
+					offset = (lineNode.offsetParent === element) ? 0 : element.offsetLeft;
+					element.removeChild(lineNode);
+				}
+				style = element.style.cssText;
+				element.style.cssText = "display:none;"; //to improve performance, set display:none on the element so that the browser doesn't have to worry about reflowing or rendering while we're renesting things. We'll revert the cssText later.
+				//we can't use element.innerHTML = "" because that causes IE to literally delete all the nodes and their content even though we've stored them in an array! So we must loop through the children and remove them.
+				while (element.firstChild) {
+					element.removeChild(element.firstChild);
+				}
+				addWordSpaces = (wordDelimiter === " " && (!absolute || (!words && !chars)));
+				for (i = 0; i < lines.length; i++) {
+					curLine = lines[i];
+					lineNode = _doc.createElement(tag);
+					lineNode.style.cssText = "display:block;text-align:" + textAlign + ";position:" + (absolute ? "absolute;" : "relative;");
+					if (linesClass) {
+						lineNode.className = linesClass + (iterateLine ? i+1 : "");
+					}
+					lineArray.push(lineNode);
+					l = curLine.length;
+					for (j = 0; j < l; j++) {
+						if (curLine[j].nodeName !== "BR") {
+							node = curLine[j];
+							lineNode.appendChild(node);
+							if (addWordSpaces && node._wordEnd) {
+								lineNode.appendChild(_doc.createTextNode(" "));
+							}
+							if (absolute) {
+								if (j === 0) {
+									lineNode.style.top = (node._y) + "px";
+									lineNode.style.left = (paddingLeft + offset) + "px";
+								}
+								node.style.top = "0px";
+								if (offset) {
+									node.style.left = (node._x - offset) + "px";
+								}
+							}
+						}
+					}
+					if (l === 0) { //if there are no nodes in the line (typically meaning there were two consecutive <br> tags, just add a non-breaking space so that things display properly.
+						lineNode.innerHTML = "&nbsp;";
+					} else if (!words && !chars) {
+						_deWordify(lineNode);
+						_swapText(lineNode, String.fromCharCode(160), " ");
+					}
+					if (absolute) {
+						lineNode.style.width = lineWidth;
+						lineNode.style.height = node._h + "px";
+					}
+					element.appendChild(lineNode);
+				}
+				element.style.cssText = style;
+			}
+
+			//if everything shifts to being position:absolute, the container can collapse in terms of height or width, so fix that here.
+			if (absolute) {
+				if (origHeight > element.clientHeight) {
+					element.style.height = (origHeight - padTopAndBottom) + "px";
+					if (element.clientHeight < origHeight) { //IE8 and earlier use a different box model - we must include padding and borders
+						element.style.height = (origHeight + borderTopAndBottom)+ "px";
+					}
+				}
+				if (origWidth > element.clientWidth) {
+					element.style.width = (origWidth - padLeftAndRight) + "px";
+					if (element.clientWidth < origWidth) { //IE8 and earlier use a different box model - we must include padding and borders
+						element.style.width = (origWidth + borderLeftAndRight)+ "px";
+					}
+				}
+			}
+			_pushReversed(allChars, charArray);
+			_pushReversed(allWords, wordArray);
+			_pushReversed(allLines, lineArray);
+		},
+		_splitRawText = function(element, vars, wordStart, charStart) {
+			var tag = vars.span ? "span" : "div",
+				types = vars.type || vars.split || "chars,words,lines",
+				//words = (types.indexOf("words") !== -1),
+				chars = (types.indexOf("chars") !== -1),
+				absolute = (vars.position === "absolute" || vars.absolute === true),
+				wordDelimiter = vars.wordDelimiter || " ",
+				space = wordDelimiter !== " " ? "" : (absolute ? "&#173; " : " "),
+				wordEnd = vars.span ? "</span>" : "</div>",
+				wordIsOpen = true,
+				specialChars = vars.specialChars ? (typeof(vars.specialChars) === "function" ? vars.specialChars : _findSpecialChars) : null, //specialChars can be an array or a function. For performance reasons, we always set this local "specialChars" to a function to which we pass the remaining text and whatever the original vars.specialChars was so that if it's an array, it works with the _findSpecialChars() function.
+				text, splitText, i, j, l, character, hasTagStart, emojiPair1, emojiPair2, testResult,
+				container = _doc.createElement("div"),
+				parent = element.parentNode;
+
+			parent.insertBefore(container, element);
+			container.textContent = element.nodeValue;
+			parent.removeChild(element);
+			element = container;
+			text = _getText(element);
+			hasTagStart = text.indexOf("<") !== -1;
+
+			if (vars.reduceWhiteSpace !== false) {
+				text = text.replace(_multipleSpacesExp, " ").replace(_stripExp, "");
+			}
+			if (hasTagStart) {
+				text = text.split("<").join("{{LT}}"); //we can't leave "<" in the string, or when we set the innerHTML, it can be interpreted as a node
+			}
+			l = text.length;
+			splitText = ((text.charAt(0) === " ") ? space : "") + wordStart();
+			for (i = 0; i < l; i++) {
+				character = text.charAt(i);
+				if (specialChars && (testResult = specialChars(text.substr(i), vars.specialChars))) { // look for any specialChars that were declared. Remember, they can be passed in like {specialChars:["मी", "पा", "है"]} or a function could be defined instead. Either way, the function should return the number of characters that should be grouped together for this "character".
+					character = text.substr(i, testResult || 1);
+					splitText += (chars && character !== " ") ? charStart() + character + "</" + tag + ">" : character;
+					i += testResult - 1;
+
+				} else if (character === wordDelimiter && text.charAt(i-1) !== wordDelimiter && i) {
+					splitText += wordIsOpen ? wordEnd : "";
+					wordIsOpen = false;
+					while (text.charAt(i + 1) === wordDelimiter) { //skip over empty spaces (to avoid making them words)
+						splitText += space;
+						i++;
+					}
+					if (i === l-1) {
+						splitText += space;
+					} else if (text.charAt(i + 1) !== ")") {
+						splitText += space + wordStart();
+						wordIsOpen = true;
+					}
+
+				} else if (character === "{" && text.substr(i, 6) === "{{LT}}") {
+					splitText += chars ? charStart() + "{{LT}}" + "</" + tag + ">" : "{{LT}}";
+					i += 5;
+
+				} else if ((character.charCodeAt(0) >= _emojiStart && character.charCodeAt(0) <= _emojiEnd) || (text.charCodeAt(i+1) >= 0xFE00 && text.charCodeAt(i+1) <= 0xFE0F)) { //special emoji characters use 2 or 4 unicode characters that we must keep together.
+					emojiPair1 = _emojiPairCode(text.substr(i, 2));
+					emojiPair2 = _emojiPairCode(text.substr(i + 2, 2));
+					j = ((emojiPair1 >= _emojiRegionStart && emojiPair1 <= _emojiRegionEnd && emojiPair2 >= _emojiRegionStart && emojiPair2 <= _emojiRegionEnd) || (emojiPair2 >= _emojiModStart && emojiPair2 <= _emojiModEnd)) ? 4 : 2;
+					splitText += (chars && character !== " ") ? charStart() + text.substr(i, j) + "</" + tag + ">" : text.substr(i, j);
+					i += j - 1;
+				} else {
+					splitText += (chars && character !== " ") ? charStart() + character + "</" + tag + ">" : character;
+				}
+			}
+			element.outerHTML = splitText + (wordIsOpen ? wordEnd : "");
+			if (hasTagStart) {
+				_swapText(parent, "{{LT}}", "<"); //note: don't perform this on "element" because that gets replaced with all new elements when we set element.outerHTML.
+			}
+		},
+		_split = function(element, vars, wordStart, charStart) {
+			var children = _slice(element.childNodes),
+				l = children.length,
+				absolute = (vars.position === "absolute" || vars.absolute === true),
+				i, child;
+
+			if (element.nodeType !== 3 || l > 1) {
+				vars.absolute = false;
+				for (i = 0; i < l; i++) {
+					child = children[i];
+					if (child.nodeType !== 3 || /\S+/.test(child.nodeValue)) {
+						if (absolute && child.nodeType !== 3 && _getStyle(child, "display", null, true) === "inline") { //if there's a child node that's display:inline, switch it to inline-block so that absolute positioning works properly (most browsers don't report offsetTop/offsetLeft properly inside a <span> for example)
+							child.style.display = "inline-block";
+							child.style.position = "relative";
+						}
+						child._isSplit = true;
+						_split(child, vars, wordStart, charStart); //don't split lines on child elements
+					}
+				}
+				vars.absolute = absolute;
+				element._isSplit = true;
+				return;
+			}
+
+			_splitRawText(element, vars, wordStart, charStart);
+
+		},
+		p = SplitText.prototype;
+
+	p.split = function(vars) {
+		if (this.isSplit) {
+			this.revert();
+		}
+		this.vars = vars = vars || this.vars;
+		this._originals.length = this.chars.length = this.words.length = this.lines.length = 0;
+		var i = this.elements.length,
+			tag = vars.span ? "span" : "div",
+			wordStart = _cssClassFunc(vars.wordsClass, tag),
+			charStart = _cssClassFunc(vars.charsClass, tag),
+			origHeight, origWidth, e;
+		//we split in reversed order so that if/when we position:absolute elements, they don't affect the position of the ones after them in the document flow (shifting them up as they're taken out of the document flow).
+		while (--i > -1) {
+			e = this.elements[i];
+			this._originals[i] = e.innerHTML;
+			origHeight = e.clientHeight;
+			origWidth = e.clientWidth;
+			_split(e, vars, wordStart, charStart);
+			_setPositionsAfterSplit(e, vars, this.chars, this.words, this.lines, origWidth, origHeight);
+		}
+		this.chars.reverse();
+		this.words.reverse();
+		this.lines.reverse();
+		this.isSplit = true;
+		return this;
+	};
+
+	p.revert = function() {
+		if (!this._originals) {
+			throw("revert() call wasn't scoped properly.");
+		}
+		var i = this._originals.length;
+		while (--i > -1) {
+			this.elements[i].innerHTML = this._originals[i];
+		}
+		this.chars = [];
+		this.words = [];
+		this.lines = [];
+		this.isSplit = false;
+		return this;
+	};
+
+	SplitText.selector = window.$ || window.jQuery || function(e) {
+		var selector = window.$ || window.jQuery;
+		if (selector) {
+			SplitText.selector = selector;
+			return selector(e);
+		}
+		return (typeof(document) === "undefined") ? e : (document.querySelectorAll ? document.querySelectorAll(e) : document.getElementById((e.charAt(0) === "#") ? e.substr(1) : e));
+	};
+	SplitText.version = "0.6.1";
+	
+})(__WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__["e" /* _gsScope */]);
+
+var SplitText = __WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__["g" /* globals */].SplitText;
+
 
 /***/ })
 /******/ ]);

@@ -15,6 +15,12 @@ export default {
     name: 'Home',
     components: {
         VideoBg
+    },
+    mounted: function() {
+        this.$root.navLogo = false
+    },
+    beforeDestroy: function() {
+        this.$root.navLogo = true
     }
 }
 </script>
@@ -34,8 +40,13 @@ export default {
 
     .home-img {
         max-width: 80%;
-        max-width: 240px;
+        max-width: 260px;
         height: auto;
+
+        @include media-breakpoint-up('xl') {
+            max-width: 80%;
+            max-width: 330px;
+        };
     }
 }
 </style>

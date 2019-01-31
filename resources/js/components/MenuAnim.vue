@@ -29,6 +29,7 @@ export default {
             split: 0,
             opened: false,
             data: null,
+            hovering: false,
         }
     },
     watch: {
@@ -38,8 +39,18 @@ export default {
         }
     },
     methods: {
+        hoverAnim: function() {
+            if (!this.hovering) {
+                this.hovering = true
+                this.anim.playSegments([0, 76], true)
+                this.anim.addEventListener('complete', () => {
+                    this.hovering = false
+                })
+            }
+        },
         open: function() {
-            this.anim.playSegments([0, this.split], true)
+            // this.anim.playSegments([0, this.split], true)
+            this.anim.playSegments([0, ])
             this.anim.addEventListener('complete', () => {
                 this.opened = true
             })
