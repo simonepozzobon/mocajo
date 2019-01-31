@@ -61282,7 +61282,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(1)(false);
 // Module
-exports.push([module.i, "\n#home {\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  position: relative;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n#home .home-img {\n    max-width: 80%;\n    max-width: 260px;\n    height: auto;\n}\n@media (min-width: 1200px) {\n#home .home-img {\n        max-width: 80%;\n        max-width: 330px;\n}\n}\n", ""]);
+exports.push([module.i, "\n#home {\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  position: relative;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n#home .home-overlay {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    -ms-flex-pack: distribute;\n        justify-content: space-around;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    height: 100%;\n}\n#home .home-overlay .home-img {\n      max-width: 80%;\n      max-width: 260px;\n      height: auto;\n}\n@media (min-width: 1200px) {\n#home .home-overlay .home-img {\n          max-width: 80%;\n          max-width: 330px;\n}\n}\n", ""]);
 
 
 
@@ -61325,8 +61325,17 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_HomeMenu_vue__ = __webpack_require__(128);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_HomeMenu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_HomeMenu_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_VideoBg_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_VideoBg_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_VideoBg_vue__);
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -61338,10 +61347,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Home',
   components: {
-    VideoBg: __WEBPACK_IMPORTED_MODULE_0__components_VideoBg_vue___default.a
+    HomeMenu: __WEBPACK_IMPORTED_MODULE_0__components_HomeMenu_vue___default.a,
+    VideoBg: __WEBPACK_IMPORTED_MODULE_1__components_VideoBg_vue___default.a
   },
   mounted: function mounted() {
     this.$root.navLogo = false;
@@ -61434,7 +61445,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(1)(false);
 // Module
-exports.push([module.i, "\n.bg-video[data-v-103ff8f6]::after {\n  content: '';\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: -99;\n  top: 0;\n  left: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  -webkit-box-shadow: inset 0 0 80vw 0 black;\n          box-shadow: inset 0 0 80vw 0 black;\n}\n.background-vid[data-v-103ff8f6] {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  min-width: 100%;\n  min-height: 100%;\n  width: auto;\n  height: auto;\n  z-index: -100;\n  -webkit-transform: translateX(-50%) translateY(-50%);\n          transform: translateX(-50%) translateY(-50%);\n  background-size: cover;\n}\n.text-overlay[data-v-103ff8f6] {\n  font-weight: 100;\n  background: rgba(0, 0, 0, 0.3);\n  color: white;\n  padding: 2rem;\n  width: 33%;\n  margin: 2rem;\n  float: right;\n  font-size: 1.2rem;\n  min-height: 410px;\n}\n.text-overlay h1[data-v-103ff8f6] {\n  color: #fff;\n  font-size: 38px;\n}\n.text-overlay h2[data-v-103ff8f6] {\n  font-size: 28px;\n  color: #fff;\n}\n.text-overlay p[data-v-103ff8f6] {\n  font-size: 14px;\n}\n", ""]);
+exports.push([module.i, "\n.bg-video[data-v-103ff8f6] {\n  height: 100%;\n}\n.bg-video[data-v-103ff8f6]::after {\n    content: '';\n    position: absolute;\n    width: 100vw;\n    height: 100vh;\n    z-index: -99;\n    top: 0;\n    left: 0;\n    background-color: rgba(0, 0, 0, 0.5);\n    -webkit-box-shadow: inset 0 0 80vw 0 black;\n            box-shadow: inset 0 0 80vw 0 black;\n}\n.background-vid[data-v-103ff8f6] {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  min-width: 100vw;\n  min-height: 100vh;\n  width: auto;\n  height: auto;\n  z-index: -100;\n  -webkit-transform: translateX(-50%) translateY(-50%);\n          transform: translateX(-50%) translateY(-50%);\n  background-size: cover;\n}\n", ""]);
 
 
 
@@ -61550,11 +61561,22 @@ var render = function() {
     { attrs: { id: "home" } },
     [
       _c("video-bg", { attrs: { videoSrcMp4: "/video/home.mp4" } }, [
-        _c("div", { staticClass: "logo-overlay" }, [
-          _c("img", {
-            staticClass: "home-img",
-            attrs: { src: "/svg/logo.svg", alt: "La Scuola di Mocajo" }
-          })
+        _c("div", { staticClass: "home-overlay" }, [
+          _c("div", { staticClass: "top-overlay text-white" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "logo-overlay" }, [
+            _c("img", {
+              staticClass: "home-img",
+              attrs: { src: "/svg/logo.svg", alt: "La Scuola di Mocajo" }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "bottom-overlay text-white" },
+            [_c("home-menu")],
+            1
+          )
         ])
       ])
     ],
@@ -80546,6 +80568,257 @@ var Cookie = {
 
 var SplitText = __WEBPACK_IMPORTED_MODULE_0_gsap_TweenLite_js__["g" /* globals */].SplitText;
 
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(133)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(131)
+/* template */
+var __vue_template__ = __webpack_require__(135)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/HomeMenu.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2ba66d49", Component.options)
+  } else {
+    hotAPI.reload("data-v-2ba66d49", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 129 */,
+/* 130 */,
+/* 131 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'HomeMenu'
+});
+
+/***/ }),
+/* 132 */,
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(134);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("79994246", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2ba66d49\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./HomeMenu.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2ba66d49\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./HomeMenu.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// Module
+exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block;\n}\n.home-menu-container ul li .nav-link {\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n    color: #fff;\n    font-weight: 100;\n    letter-spacing: 1px;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { ref: "container", staticClass: "home-menu-container" }, [
+    _c("ul", { staticClass: "list-unstyled" }, [
+      _c(
+        "li",
+        { staticClass: "nav-item" },
+        [
+          _c(
+            "router-link",
+            {
+              staticClass: "nav-link",
+              attrs: {
+                tag: "a",
+                to: { path: "/" },
+                "exact-active-class": "active"
+              },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.toggleMobile($event)
+                }
+              }
+            },
+            [_vm._v("\n                Home\n            ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        { staticClass: "nav-item" },
+        [
+          _c(
+            "router-link",
+            {
+              ref: "odontoiatria",
+              staticClass: "nav-link",
+              attrs: {
+                tag: "a",
+                to: { path: "/about" },
+                "exact-active-class": "active"
+              },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.toggleMobile($event)
+                }
+              }
+            },
+            [_vm._v("\n                La Scuola di Mocajo\n            ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        { staticClass: "nav-item" },
+        [
+          _c(
+            "router-link",
+            {
+              ref: "estetica",
+              staticClass: "nav-link",
+              attrs: {
+                tag: "a",
+                to: { path: "/vini" },
+                "exact-active-class": "active"
+              },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.toggleMobile($event)
+                }
+              }
+            },
+            [_vm._v("\n                Vini\n            ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        { staticClass: "nav-item" },
+        [
+          _c(
+            "router-link",
+            {
+              staticClass: "nav-link",
+              attrs: {
+                tag: "a",
+                to: { path: "/partner" },
+                "exact-active-class": "active"
+              },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.toggleMobile($event)
+                }
+              }
+            },
+            [_vm._v("\n                I Nostri Partner\n            ")]
+          )
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-2ba66d49", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

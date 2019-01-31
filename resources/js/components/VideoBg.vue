@@ -47,6 +47,8 @@ export default {
 @import '~styles/shared';
 
 .bg-video {
+    height: 100%;
+
     &::after {
         content: '';
         position: absolute;
@@ -64,34 +66,12 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
-    min-width: 100%;
-    min-height: 100%;
+    min-width: 100vw;
+    min-height: 100vh;
     width: auto;
     height: auto;
     z-index: -100;
     transform: translateX(-50%) translateY(-50%);
     background-size: cover;
-}
-.text-overlay {
-    font-weight:100;
-    background: rgba(0,0,0,0.3);
-    color: white;
-    padding: 2rem;
-    width: 33%;
-    margin:2rem;
-    float: right;
-    font-size: 1.2rem;
-    min-height: 410px;
-}
-.text-overlay h1 {
-    color: #fff;
-    font-size: 38px;
-}
-.text-overlay h2 {
-    font-size: 28px;
-    color: #fff;
-}
-.text-overlay p {
-    font-size: 14px;
 }
 </style>

@@ -1,19 +1,28 @@
 <template lang="html">
     <div id="home">
         <video-bg videoSrcMp4="/video/home.mp4">
-            <div class="logo-overlay">
-                <img src="/svg/logo.svg" alt="La Scuola di Mocajo" class="home-img">
+            <div class="home-overlay">
+                <div class="top-overlay text-white">
+                </div>
+                <div class="logo-overlay">
+                    <img src="/svg/logo.svg" alt="La Scuola di Mocajo" class="home-img">
+                </div>
+                <div class="bottom-overlay text-white">
+                    <home-menu />
+                </div>
             </div>
         </video-bg>
     </div>
 </template>
 
 <script>
+import HomeMenu from '../components/HomeMenu.vue'
 import VideoBg from '../components/VideoBg.vue'
 
 export default {
     name: 'Home',
     components: {
+        HomeMenu,
         VideoBg
     },
     mounted: function() {
@@ -38,15 +47,23 @@ export default {
     justify-content: center;
     align-items: center;
 
-    .home-img {
-        max-width: 80%;
-        max-width: 260px;
-        height: auto;
+    .home-overlay {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
 
-        @include media-breakpoint-up('xl') {
+        .home-img {
             max-width: 80%;
-            max-width: 330px;
-        };
+            max-width: 260px;
+            height: auto;
+
+            @include media-breakpoint-up('xl') {
+                max-width: 80%;
+                max-width: 330px;
+            };
+        }
     }
 }
 </style>
