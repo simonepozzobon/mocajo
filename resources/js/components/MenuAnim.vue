@@ -40,7 +40,7 @@ export default {
     },
     methods: {
         hoverAnim: function() {
-            if (!this.hovering) {
+            if (!this.hovering && !this.opened) {
                 this.hovering = true
                 this.anim.playSegments([0, 76], true)
                 this.anim.addEventListener('complete', () => {
@@ -49,14 +49,13 @@ export default {
             }
         },
         open: function() {
-            // this.anim.playSegments([0, this.split], true)
-            this.anim.playSegments([0, ])
+            this.anim.playSegments([76, 101], true)
             this.anim.addEventListener('complete', () => {
                 this.opened = true
             })
         },
         close: function() {
-            this.anim.playSegments([this.split, this.duration], true)
+            this.anim.playSegments([101, 126], true)
             this.anim.addEventListener('complete', () => {
                 this.opened = false
             })
