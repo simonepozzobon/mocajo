@@ -52,17 +52,16 @@ export default {
                     paused: true,
                 })
 
-                master.set(container, {
+                master.fromTo(container, .3, {
                     height: 0,
                     minHeight: 0,
-                    autoAlpha: 1,
-                    display: 'flex',
-                })
-
-                master.to(container, .4, {
+                    autoAlpha: 0,
+                },{
                     height: height,
                     scaleY: 1,
                     minHeight: '100vh',
+                    autoAlpha: 1,
+                    display: 'flex',
                     ease: Cubic.easeInOut,
                 })
 
@@ -75,10 +74,16 @@ export default {
                     paused: true,
                 })
 
-                master.to(container, .3, {
+                master.fromTo(container, .2, {
+                    height: height,
+                    scaleY: 1,
+                    minHeight: '100vh',
+                    autoAlpha: 1,
+                    display: 'flex',
+                },{
                     height: 0,
                     minHeight: 0,
-                    autoAlpha: 1,
+                    autoAlpha: 0,
                     display: 'flex',
                 })
 
@@ -124,7 +129,15 @@ export default {
 
         li {
             .nav-link {
+                font-weight: 200;
                 color: $white;
+                font-size: 1.875rem;
+                line-height: 3;
+
+                @include media-breakpoint-down('md') {
+                    font-size: 1.25rem;
+                    line-height: 2;
+                }
             }
 
             .mobile-nav-link {

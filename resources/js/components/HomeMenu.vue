@@ -3,12 +3,17 @@
         <ul class="list-unstyled">
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/about' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
+                    Scuola Mocajo
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link tag="a" class="nav-link" :to="{ path: '/about' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
                     Storia
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/vini' }" exact-active-class="active" @click.native="toggleMobile" ref="estetica">
-                    Vini
+                    I Nostri Vini
                 </router-link>
             </li>
             <li class="nav-item">
@@ -35,11 +40,14 @@ export default {
             display: inline-block;
 
             .nav-link {
-                font-family: $font-family-sans-serif;
-                font-weight: 100;
+                font-weight: 300;
                 text-transform: uppercase;
                 letter-spacing: 1px;
                 color: $white;
+
+                &:hover {
+                    color: $primary;
+                }
             }
         }
     }

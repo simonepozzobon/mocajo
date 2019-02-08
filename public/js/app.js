@@ -61445,7 +61445,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block;\n}\n.home-menu-container ul li .nav-link {\n    font-family: \"Muller\", sans-serif;\n    font-weight: 100;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    color: #fff;\n}\n", ""]);
+exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block;\n}\n.home-menu-container ul li .nav-link {\n    font-weight: 300;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    color: #fff;\n}\n.home-menu-container ul li .nav-link:hover {\n      color: #fac823;\n}\n", ""]);
 
 
 
@@ -61455,6 +61455,11 @@ exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
 //
 //
 //
@@ -61511,6 +61516,32 @@ var render = function() {
                 }
               }
             },
+            [_vm._v("\n                Scuola Mocajo\n            ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        { staticClass: "nav-item" },
+        [
+          _c(
+            "router-link",
+            {
+              ref: "odontoiatria",
+              staticClass: "nav-link",
+              attrs: {
+                tag: "a",
+                to: { path: "/about" },
+                "exact-active-class": "active"
+              },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.toggleMobile($event)
+                }
+              }
+            },
             [_vm._v("\n                Storia\n            ")]
           )
         ],
@@ -61537,7 +61568,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n                Vini\n            ")]
+            [_vm._v("\n                I Nostri Vini\n            ")]
           )
         ],
         1
@@ -80524,7 +80555,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.mobile-nav {\n  position: fixed;\n  width: 100vw;\n  min-height: 100vh;\n  background-color: #000;\n  z-index: 4;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  visibility: hidden;\n  /* hides all .Tile-flyout on load so GSAP autoAlpha can do its thing */\n  height: auto;\n  /* tell the browser that initial height is auto */\n  overflow: hidden;\n  -webkit-transform-origin: center top 0;\n          transform-origin: center top 0;\n}\n.mobile-nav ul {\n    text-align: center;\n}\n.mobile-nav ul li .nav-link {\n      color: #fff;\n}\n.mobile-nav ul li .mobile-nav-link {\n      font-size: 1.5rem;\n      font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.mobile-nav {\n  position: fixed;\n  width: 100vw;\n  min-height: 100vh;\n  background-color: #000;\n  z-index: 4;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  visibility: hidden;\n  /* hides all .Tile-flyout on load so GSAP autoAlpha can do its thing */\n  height: auto;\n  /* tell the browser that initial height is auto */\n  overflow: hidden;\n  -webkit-transform-origin: center top 0;\n          transform-origin: center top 0;\n}\n.mobile-nav ul {\n    text-align: center;\n}\n.mobile-nav ul li .nav-link {\n      font-weight: 200;\n      color: #fff;\n      font-size: 1.875rem;\n      line-height: 3;\n}\n@media (max-width: 991.98px) {\n.mobile-nav ul li .nav-link {\n          font-size: 1.25rem;\n          line-height: 2;\n}\n}\n.mobile-nav ul li .mobile-nav-link {\n      font-size: 1.5rem;\n      font-weight: bold;\n}\n", ""]);
 
 
 
@@ -80585,16 +80616,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var master = new TimelineMax({
           paused: true
         });
-        master.set(container, {
+        master.fromTo(container, .3, {
           height: 0,
           minHeight: 0,
-          autoAlpha: 1,
-          display: 'flex'
-        });
-        master.to(container, .4, {
+          autoAlpha: 0
+        }, {
           height: height,
           scaleY: 1,
           minHeight: '100vh',
+          autoAlpha: 1,
+          display: 'flex',
           ease: Cubic.easeInOut
         });
         master.progress(1).progress(0);
@@ -80605,10 +80636,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           paused: true
         });
 
-        _master.to(container, .3, {
+        _master.fromTo(container, .2, {
+          height: height,
+          scaleY: 1,
+          minHeight: '100vh',
+          autoAlpha: 1,
+          display: 'flex'
+        }, {
           height: 0,
           minHeight: 0,
-          autoAlpha: 1,
+          autoAlpha: 0,
           display: 'flex'
         });
 
