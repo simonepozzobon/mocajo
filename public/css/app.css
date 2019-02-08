@@ -1,9 +1,72 @@
-@import url(https://fonts.googleapis.com/css?family=Prata);/*!
+/*!
  * Bootstrap v4.2.1 (https://getbootstrap.com/)
  * Copyright 2011-2018 The Bootstrap Authors
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerhairline-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerhairline-webfont.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerthin-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerthin-webfont.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerlight-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerlight-webfont.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerregular-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerregular-webfont.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullermedium-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullermedium-webfont.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerbold-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerbold-webfont.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerextrabold-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerextrabold-webfont.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerheavy-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerheavy-webfont.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'muller';
+  src: url("/fonts/fontfabric_-_mullerblack-webfont.woff2") format("woff2"), url("/fonts/fontfabric_-_mullerblack-webfont.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+}
 
 :root {
   --blue: #007bff;
@@ -32,7 +95,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-sans-serif: "Muller", sans-serif;
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -65,7 +128,7 @@ section {
 
 body {
   margin: 0;
-  font-family: "Prata", serif;
+  font-family: "Muller", sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -6606,7 +6669,7 @@ a.close.disabled {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: "Prata", serif;
+  font-family: "Muller", sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -6731,7 +6794,7 @@ a.close.disabled {
   z-index: 1060;
   display: block;
   max-width: 276px;
-  font-family: "Prata", serif;
+  font-family: "Muller", sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;

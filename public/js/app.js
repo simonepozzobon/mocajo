@@ -61445,7 +61445,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block;\n}\n.home-menu-container ul li .nav-link {\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n    font-weight: 100;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    color: #fff;\n}\n", ""]);
+exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block;\n}\n.home-menu-container ul li .nav-link {\n    font-family: \"Muller\", sans-serif;\n    font-weight: 100;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    color: #fff;\n}\n", ""]);
 
 
 
@@ -80557,6 +80557,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'MobileNav',
@@ -80652,6 +80657,32 @@ var render = function() {
                 }
               }
             },
+            [_vm._v("\n                Scuola Mocajo\n            ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        { staticClass: "nav-item" },
+        [
+          _c(
+            "router-link",
+            {
+              ref: "odontoiatria",
+              staticClass: "nav-link",
+              attrs: {
+                tag: "a",
+                to: { path: "/about" },
+                "exact-active-class": "active"
+              },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.toggleMobile($event)
+                }
+              }
+            },
             [_vm._v("\n                Storia\n            ")]
           )
         ],
@@ -80678,7 +80709,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n                Vini\n            ")]
+            [_vm._v("\n                I Nostri Vini\n            ")]
           )
         ],
         1
