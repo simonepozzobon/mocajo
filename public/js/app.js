@@ -80889,26 +80889,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   methods: {
-    init: function init() {
+    showPanel: function showPanel() {
       var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
         paused: true
       });
       master.fromTo(this.$refs.panel, 1, {
+        autoAlpha: 0,
         yPercent: 100
       }, {
+        autoAlpha: 1,
         yPercent: 0,
         ease: Cubic.easeInOut
       }, .0);
       master.play();
     },
-    cookieAccepted: function cookieAccepted() {
-      var _this = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/cookies/accepted').then(function (response) {
-        _this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data));
-
-        $(_this.$refs.modal).modal('hide');
+    hidePanel: function hidePanel() {
+      var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
+        paused: true
       });
+      master.fromTo(this.$refs.panel, .4, {
+        autoAlpha: 1,
+        yPercent: 0
+      }, {
+        autoAlpha: 0,
+        yPercent: 100,
+        ease: Cubic.easeInOut
+      }, .0);
+      master.play();
+    },
+    cookieAccepted: function cookieAccepted() {
+      this.hidePanel(); // axios.post('/api/cookies/accepted').then(response => {
+      //     this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data))
+      //     $(this.$refs.modal).modal('hide')
+      // })
     }
   },
   mounted: function mounted() {
@@ -80918,7 +80931,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (cookie) {
         this.cookie = JSON.parse(cookie);
       } else {
-        this.init();
+        this.showPanel();
       }
     }
   }

@@ -28,25 +28,44 @@ export default {
         }
     },
     methods: {
-        init: function() {
+        showPanel: function() {
             let master = new TimelineMax({
                 paused: true
             })
 
             master.fromTo(this.$refs.panel, 1, {
+                autoAlpha: 0,
                 yPercent: 100,
             }, {
+                autoAlpha: 1,
                 yPercent: 0,
                 ease: Cubic.easeInOut
             }, .0)
 
             master.play()
         },
-        cookieAccepted: function() {
-            axios.post('/api/cookies/accepted').then(response => {
-                this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data))
-                $(this.$refs.modal).modal('hide')
+        hidePanel: function() {
+            let master = new TimelineMax({
+                paused: true
             })
+
+            master.fromTo(this.$refs.panel, .4, {
+                autoAlpha: 1,
+                yPercent: 0,
+            }, {
+                autoAlpha: 0,
+                yPercent: 100,
+                ease: Cubic.easeInOut
+            }, .0)
+
+            master.play()
+        },
+        cookieAccepted: function() {
+            this.hidePanel()
+            // axios.post('/api/cookies/accepted').then(response => {
+            //     this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data))
+            //     $(this.$refs.modal).modal('hide')
+            // })
         }
     },
     mounted: function() {
@@ -55,7 +74,7 @@ export default {
             if (cookie) {
                 this.cookie = JSON.parse(cookie)
             } else {
-                this.init()
+                this.showPanel()
             }
         }
     }
