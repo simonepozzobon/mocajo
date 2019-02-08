@@ -3,12 +3,11 @@ require('./bootstrap')
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
-import MainTemplate from './containers/MainTemplate.vue'
 import Cookie from './Cookies'
-
-Vue.prototype.$cookie = Cookie
+import MainTemplate from './containers/MainTemplate.vue'
 
 Vue.use(VueRouter)
+Vue.prototype.$cookie = Cookie
 
 const router = new VueRouter({
     mode: 'history',

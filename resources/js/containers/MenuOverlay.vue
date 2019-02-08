@@ -2,13 +2,8 @@
     <div class="mobile-nav" ref="container">
         <ul class="list-unstyled">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active" @click.native="toggleMobile">
-                    Home
-                </router-link>
-            </li>
-            <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/about' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
-                    La Scuola di Mocajo
+                    Storia
                 </router-link>
             </li>
             <li class="nav-item">
@@ -18,7 +13,7 @@
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/partner' }" exact-active-class="active" @click.native="toggleMobile">
-                    I Nostri Partner
+                    Contatti
                 </router-link>
             </li>
         </ul>

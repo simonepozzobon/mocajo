@@ -35,10 +35,7 @@ export default {
         NavLogo
     },
     props: {
-        hasLogo: {
-            type: Boolean,
-            default: true,
-        },
+
         navClass: {
             type: String,
             default: null

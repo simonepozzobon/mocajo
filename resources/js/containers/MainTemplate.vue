@@ -7,15 +7,19 @@
                 <router-view />
             </transition>
         </main>
+        <cookies-panel />
     </div>
 </template>
 
 <script>
+import CookiesPanel from '../components/CookiesPanel.vue'
 import MainNav from './MainNav.vue'
 import MenuOverlay from './MenuOverlay.vue'
+
 export default {
     name: 'MainTemplate',
     components: {
+        CookiesPanel,
         MainNav,
         MenuOverlay
     },
