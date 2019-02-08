@@ -19,5 +19,7 @@ export default {
 
 .ui-title {
     margin-bottom: $spacer * 2;
+    text-transform: capitalize;
+    letter-spacing: 2px;
 }
 </style>

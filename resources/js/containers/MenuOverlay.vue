@@ -17,7 +17,7 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/partner' }" exact-active-class="active" @click.native="toggleMobile">
+                <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active" @click.native="toggleMobile">
                     Contatti
                 </router-link>
             </li>
