@@ -64614,7 +64614,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -64626,10 +64626,12 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CookiesPanel_vue__ = __webpack_require__(133);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CookiesPanel_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_CookiesPanel_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__MainNav_vue__ = __webpack_require__(100);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__MainNav_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__MainNav_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MenuOverlay_vue__ = __webpack_require__(123);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MenuOverlay_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__MenuOverlay_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_LanguageMenu_vue__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_LanguageMenu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_LanguageMenu_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MainNav_vue__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MainNav_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__MainNav_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue__);
 //
 //
 //
@@ -64643,6 +64645,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+
 
 
 
@@ -64650,8 +64654,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'MainTemplate',
   components: {
     CookiesPanel: __WEBPACK_IMPORTED_MODULE_0__components_CookiesPanel_vue___default.a,
-    MainNav: __WEBPACK_IMPORTED_MODULE_1__MainNav_vue___default.a,
-    MenuOverlay: __WEBPACK_IMPORTED_MODULE_2__MenuOverlay_vue___default.a
+    LanguageMenu: __WEBPACK_IMPORTED_MODULE_1__components_LanguageMenu_vue___default.a,
+    MainNav: __WEBPACK_IMPORTED_MODULE_2__MainNav_vue___default.a,
+    MenuOverlay: __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue___default.a
   },
   watch: {
     '$root.navbar': function $rootNavbar(color) {
@@ -80741,6 +80746,8 @@ var render = function() {
         1
       ),
       _vm._v(" "),
+      _c("language-menu"),
+      _vm._v(" "),
       _c("cookies-panel")
     ],
     1
@@ -80895,10 +80902,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
       master.fromTo(this.$refs.panel, 1, {
         autoAlpha: 0,
-        yPercent: 100
+        yPercent: 100,
+        display: 'none'
       }, {
         autoAlpha: 1,
         yPercent: 0,
+        display: 'block',
         ease: Cubic.easeInOut
       }, .0);
       master.play();
@@ -80913,6 +80922,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }, {
         autoAlpha: 0,
         yPercent: 100,
+        display: 'none',
         ease: Cubic.easeInOut
       }, .0);
       master.play();
@@ -80925,15 +80935,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   mounted: function mounted() {
-    if (!this.accepted) {
-      var cookie = this.$cookie.get('mocajo-cookie-policy');
-
-      if (cookie) {
-        this.cookie = JSON.parse(cookie);
-      } else {
-        this.showPanel();
-      }
-    }
+    this.hidePanel(); // if (!this.accepted) {
+    //     let cookie = this.$cookie.get('mocajo-cookie-policy')
+    //     if (cookie) {
+    //         this.cookie = JSON.parse(cookie)
+    //     } else {
+    //         this.showPanel()
+    //     }
+    // }
   }
 });
 
@@ -80989,6 +80998,161 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-031fabc0", module.exports)
+  }
+}
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(139)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(141)
+/* template */
+var __vue_template__ = __webpack_require__(142)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/LanguageMenu.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3bbee142", Component.options)
+  } else {
+    hotAPI.reload("data-v-3bbee142", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(140);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("25259961", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3bbee142\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./LanguageMenu.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3bbee142\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./LanguageMenu.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.language-menu {\n  position: absolute;\n  bottom: 1rem;\n  right: 1rem;\n}\n.language-menu nav ul {\n    text-align: right;\n}\n.language-menu nav ul li .nav-link {\n      color: #fff;\n      text-transform: uppercase;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 141 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'LanguageMenu'
+});
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "language-menu" }, [
+      _c("nav", { staticClass: "language-menu-navbar" }, [
+        _c("ul", { staticClass: "list-unstyled" }, [
+          _c("li", { staticClass: "nav-item" }, [
+            _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+              _vm._v("Ita")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "nav-item" }, [
+            _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+              _vm._v("Eng")
+            ])
+          ])
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3bbee142", module.exports)
   }
 }
 

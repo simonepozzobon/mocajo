@@ -36,9 +36,11 @@ export default {
             master.fromTo(this.$refs.panel, 1, {
                 autoAlpha: 0,
                 yPercent: 100,
+                display: 'none',
             }, {
                 autoAlpha: 1,
                 yPercent: 0,
+                display: 'block',
                 ease: Cubic.easeInOut
             }, .0)
 
@@ -55,6 +57,7 @@ export default {
             }, {
                 autoAlpha: 0,
                 yPercent: 100,
+                display: 'none',
                 ease: Cubic.easeInOut
             }, .0)
 
@@ -69,14 +72,15 @@ export default {
         }
     },
     mounted: function() {
-        if (!this.accepted) {
-            let cookie = this.$cookie.get('mocajo-cookie-policy')
-            if (cookie) {
-                this.cookie = JSON.parse(cookie)
-            } else {
-                this.showPanel()
-            }
-        }
+        this.hidePanel()
+        // if (!this.accepted) {
+        //     let cookie = this.$cookie.get('mocajo-cookie-policy')
+        //     if (cookie) {
+        //         this.cookie = JSON.parse(cookie)
+        //     } else {
+        //         this.showPanel()
+        //     }
+        // }
     }
 }
 </script>
