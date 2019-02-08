@@ -1,7 +1,9 @@
 <template lang="html">
     <div class="container-fluid scuola-mocajo">
         <div class="row">
-            <div class="col bg-dark" style="min-height: 40vh">Banner</div>
+            <ui-hero-banner
+                color="bg-dark"
+                imgSrc="/images/tenuta.jpg"/>
         </div>
         <div class="row">
             <ui-block
@@ -59,7 +61,7 @@
 </template>
 
 <script>
-import { UiAction, UiBlock, UiTitle } from '../components/ui'
+import { UiAction, UiBlock, UiHeroBanner, UiTitle } from '../components/ui'
 import {TimelineMax} from 'gsap'
 import ScrollMagic from 'scrollmagic'
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
@@ -69,6 +71,7 @@ export default {
     components: {
         UiAction,
         UiBlock,
+        UiHeroBanner,
         UiTitle,
     },
     data: function() {

@@ -20026,11 +20026,19 @@ module.exports = Cancel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UiAction_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__UiAction_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UiBlock_vue__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UiBlock_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__UiBlock_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UiTitle_vue__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UiTitle_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__UiTitle_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue__ = __webpack_require__(175);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__UiTitle_vue__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__UiTitle_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__UiTitle_vue__);
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__UiAction_vue___default.a; });
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__UiBlock_vue___default.a; });
-/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_2__UiTitle_vue___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_4__UiTitle_vue___default.a; });
+
+
 
 
 
@@ -62206,17 +62214,11 @@ var render = function() {
           _c(
             "router-link",
             {
-              ref: "odontoiatria",
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/about" },
+                to: { path: "/scuola-mocajo" },
                 "exact-active-class": "active"
-              },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.toggleMobile($event)
-                }
               }
             },
             [_vm._v("\n                Scuola Mocajo\n            ")]
@@ -62232,17 +62234,11 @@ var render = function() {
           _c(
             "router-link",
             {
-              ref: "odontoiatria",
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/about" },
+                to: { path: "/la-nostra-storia" },
                 "exact-active-class": "active"
-              },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.toggleMobile($event)
-                }
               }
             },
             [_vm._v("\n                Storia\n            ")]
@@ -62258,17 +62254,11 @@ var render = function() {
           _c(
             "router-link",
             {
-              ref: "estetica",
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/vini" },
+                to: { path: "/i-nostri-vini" },
                 "exact-active-class": "active"
-              },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.toggleMobile($event)
-                }
               }
             },
             [_vm._v("\n                I Nostri Vini\n            ")]
@@ -62287,13 +62277,8 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/partner" },
+                to: { path: "/contatti" },
                 "exact-active-class": "active"
-              },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.toggleMobile($event)
-                }
               }
             },
             [_vm._v("\n                Contatti\n            ")]
@@ -62704,6 +62689,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -62713,7 +62700,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     UiAction: __WEBPACK_IMPORTED_MODULE_0__components_ui__["a" /* UiAction */],
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["c" /* UiTitle */]
+    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_0__components_ui__["c" /* UiHeroBanner */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiTitle */]
   },
   data: function data() {
     return {
@@ -63875,7 +63863,16 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid scuola-mocajo" }, [
-    _vm._m(0),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c("ui-hero-banner", {
+          attrs: { color: "bg-dark", imgSrc: "/images/tenuta.jpg" }
+        })
+      ],
+      1
+    ),
     _vm._v(" "),
     _c(
       "div",
@@ -63973,20 +63970,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c(
-        "div",
-        { staticClass: "col bg-dark", staticStyle: { "min-height": "40vh" } },
-        [_vm._v("Banner")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -64118,6 +64102,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -64126,7 +64111,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'LaScuola',
   components: {
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["c" /* UiTitle */]
+    UiHeroBannerVideo: __WEBPACK_IMPORTED_MODULE_0__components_ui__["d" /* UiHeroBannerVideo */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiTitle */]
   },
   data: function data() {
     return {
@@ -64253,7 +64239,16 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid storia-mocajo" }, [
-    _vm._m(0),
+    _c(
+      "div",
+      { staticClass: "row " },
+      [
+        _c("ui-hero-banner-video", {
+          attrs: { videoSrc: "/video/home.mp4", imgSrc: "/images/tenuta.jpg" }
+        })
+      ],
+      1
+    ),
     _vm._v(" "),
     _c(
       "div",
@@ -64282,18 +64277,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row bg-dark" }, [
-      _c("div", { staticClass: "col", staticStyle: { "min-height": "40vh" } }, [
-        _vm._v("\n            Video Hero\n        ")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -82280,6 +82264,533 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-2a523faa", module.exports)
+  }
+}
+
+/***/ }),
+/* 167 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(172)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(170)
+/* template */
+var __vue_template__ = __webpack_require__(174)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ui/UiHeroBanner.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-68bd033a", Component.options)
+  } else {
+    hotAPI.reload("data-v-68bd033a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 168 */,
+/* 169 */,
+/* 170 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'UiHeroBanner',
+  props: {
+    color: {
+      type: String,
+      default: null
+    },
+    imgSrc: {
+      type: String,
+      default: null
+    }
+  },
+  methods: {
+    setBackground: function setBackground() {
+      if (this.imgSrc) {
+        this.$refs.block.style.backgroundImage = 'url(' + this.imgSrc + ')';
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.setBackground();
+  }
+});
+
+/***/ }),
+/* 171 */,
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(173);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("219c1925", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-68bd033a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiHeroBanner.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-68bd033a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiHeroBanner.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.ui-hero-banner {\n  min-height: 40vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { ref: "block", staticClass: "col-12 ui-hero-banner", class: _vm.color },
+    [_vm._t("default")],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-68bd033a", module.exports)
+  }
+}
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(176)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(178)
+/* template */
+var __vue_template__ = __webpack_require__(184)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ui/UiHeroBannerVideo.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6e10f611", Component.options)
+  } else {
+    hotAPI.reload("data-v-6e10f611", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(177);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("624cc720", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6e10f611\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiHeroBannerVideo.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6e10f611\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiHeroBannerVideo.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.ui-hero-banner {\n  min-height: 50vh;\n  max-height: 50vh;\n  padding: 0;\n  overflow: hidden;\n}\n.ui-hero-banner > .VideoBg {\n    top: -50%;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 178 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_videobg__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_videobg___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_videobg__);
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'UiHeroBannerVideo',
+  components: {
+    VideoBg: __WEBPACK_IMPORTED_MODULE_0_vue_videobg___default.a
+  },
+  props: {
+    color: {
+      type: String,
+      default: null
+    },
+    videoSrc: {
+      type: String,
+      default: null
+    },
+    imgSrc: {
+      type: String,
+      default: null
+    }
+  },
+  methods: {},
+  mounted: function mounted() {
+    console.log(this.$refs.player);
+  }
+});
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(180)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(182)
+/* template */
+var __vue_template__ = __webpack_require__(183)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "node_modules/vue-videobg/src/VideoBackground.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-445ba8b1", Component.options)
+  } else {
+    hotAPI.reload("data-v-445ba8b1", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(181);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("1f436449", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../css-loader/dist/cjs.js!../../vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-445ba8b1\",\"scoped\":false,\"hasInlineConfig\":true}!../../vue-loader/lib/selector.js?type=styles&index=0!./VideoBackground.vue", function() {
+     var newContent = require("!!../../css-loader/dist/cjs.js!../../vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-445ba8b1\",\"scoped\":false,\"hasInlineConfig\":true}!../../vue-loader/lib/selector.js?type=styles&index=0!./VideoBackground.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.VideoBg {\n  position: relative;\n  background-size: cover;\n  background-position: center;\n  overflow: hidden;\n}\n.VideoBg video {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  visibility: hidden;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n}\n.VideoBg__content {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 182 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    sources: {
+      type: Array,
+      required: true
+    },
+    img: {
+      type: String
+    }
+  },
+  data: function data() {
+    return {
+      videoRatio: null
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    this.setImageUrl();
+    this.setContainerHeight();
+
+    if (this.videoCanPlay()) {
+      this.$refs.video.oncanplay = function () {
+        if (!_this.$refs.video) return;
+        _this.videoRatio = _this.$refs.video.videoWidth / _this.$refs.video.videoHeight;
+
+        _this.setVideoSize();
+
+        _this.$refs.video.style.visibility = 'visible';
+      };
+    }
+
+    window.addEventListener('resize', this.resize);
+  },
+  beforeDestroy: function beforeDestroy() {
+    window.removeEventListener('resize', this.resize);
+  },
+  methods: {
+    resize: function resize() {
+      this.setContainerHeight();
+
+      if (this.videoCanPlay()) {
+        this.setVideoSize();
+      }
+    },
+    videoCanPlay: function videoCanPlay() {
+      return !!this.$refs.video.canPlayType;
+    },
+    setImageUrl: function setImageUrl() {
+      if (this.img) {
+        this.$el.style.backgroundImage = "url(".concat(this.img, ")");
+      }
+    },
+    setContainerHeight: function setContainerHeight() {
+      this.$el.style.height = "".concat(window.innerHeight, "px");
+    },
+    setVideoSize: function setVideoSize() {
+      var width,
+          height,
+          containerRatio = this.$el.offsetWidth / this.$el.offsetHeight;
+
+      if (containerRatio > this.videoRatio) {
+        width = this.$el.offsetWidth;
+      } else {
+        height = this.$el.offsetHeight;
+      }
+
+      this.$refs.video.style.width = width ? "".concat(width, "px") : 'auto';
+      this.$refs.video.style.height = height ? "".concat(height, "px") : 'auto';
+    },
+    getMediaType: function getMediaType(src) {
+      return 'video/' + src.split('.').pop();
+    }
+  }
+});
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("section", { staticClass: "VideoBg" }, [
+    _c(
+      "video",
+      {
+        ref: "video",
+        attrs: { autoplay: "", loop: "", muted: "" },
+        domProps: { muted: true }
+      },
+      _vm._l(_vm.sources, function(source) {
+        return _c("source", {
+          attrs: { src: source, type: _vm.getMediaType(source) }
+        })
+      }),
+      0
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "VideoBg__content" }, [_vm._t("default")], 2)
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-445ba8b1", module.exports)
+  }
+}
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { ref: "block", staticClass: "col-12 ui-hero-banner", class: _vm.color },
+    [
+      _c("video-bg", {
+        ref: "player",
+        attrs: { sources: [this.videoSrc], img: this.imgSrc }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-6e10f611", module.exports)
   }
 }
 

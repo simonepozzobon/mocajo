@@ -2,22 +2,22 @@
     <div class="home-menu-container" ref="container">
         <ul class="list-unstyled">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/about' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
+                <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
                     Scuola Mocajo
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/about' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
+                <router-link tag="a" class="nav-link" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
                     Storia
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/vini' }" exact-active-class="active" @click.native="toggleMobile" ref="estetica">
+                <router-link tag="a" class="nav-link" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
                     I Nostri Vini
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/partner' }" exact-active-class="active" @click.native="toggleMobile">
+                <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active">
                     Contatti
                 </router-link>
             </li>
