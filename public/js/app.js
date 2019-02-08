@@ -81152,7 +81152,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.language-menu {\n  position: absolute;\n  bottom: 1rem;\n  right: 1rem;\n}\n.language-menu nav ul {\n    text-align: right;\n}\n.language-menu nav ul li .nav-link {\n      color: #fff;\n      text-transform: uppercase;\n}\n", ""]);
+exports.push([module.i, "\n.language-menu {\n  position: absolute;\n  bottom: 1rem;\n  right: 1rem;\n}\n.language-menu nav ul {\n    text-align: right;\n    font-size: 0.75rem;\n    line-height: 1;\n}\n.language-menu nav ul li .nav-link {\n      color: #fff;\n      text-transform: uppercase;\n}\n", ""]);
 
 
 
