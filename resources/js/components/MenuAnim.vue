@@ -49,13 +49,13 @@ export default {
             }
         },
         open: function() {
-            this.anim.playSegments([76, 101], true)
+            this.anim.playSegments([76, 124], true)
             this.anim.addEventListener('complete', () => {
                 this.opened = true
             })
         },
         close: function() {
-            this.anim.playSegments([101, 126], true)
+            this.anim.playSegments([125, 175], true)
             this.anim.addEventListener('complete', () => {
                 this.opened = false
             })
