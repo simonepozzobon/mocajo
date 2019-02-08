@@ -66091,7 +66091,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         autoAlpha: 1
       });
       master.to(this.$refs.item, .2, {
-        fill: '#d85840',
+        fill: 'rgb(250, 200, 35)',
         scale: 0.7,
         ease: Power2.easeInOut
       });
@@ -82991,9 +82991,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   watch: {
     '$root.cart': function $rootCart(cart) {
+      var _this = this;
+
       if (cart && cart.length > 0) {
         this.hasCart = true;
-        this.$refs.icon.play();
+        this.$nextTick(function () {
+          _this.$refs.icon.play();
+        });
       } else {
         this.hasCart = false;
         this.$refs.icon.hide();

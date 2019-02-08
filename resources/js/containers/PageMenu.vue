@@ -68,7 +68,10 @@ export default {
         '$root.cart': function(cart) {
             if (cart && cart.length > 0) {
                 this.hasCart = true
-                this.$refs.icon.play()
+                this.$nextTick(() => {
+                    this.$refs.icon.play()
+
+                })
             } else {
                 this.hasCart = false
                 this.$refs.icon.hide()

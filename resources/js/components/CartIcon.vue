@@ -32,7 +32,7 @@ export default {
             })
 
             master.to(this.$refs.item, .2, {
-                fill: '#d85840',
+                fill: 'rgb(250, 200, 35)',
                 scale: 0.7,
                 ease: Power2.easeInOut,
             })
