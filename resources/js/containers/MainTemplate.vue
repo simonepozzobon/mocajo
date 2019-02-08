@@ -1,6 +1,7 @@
 <template lang="html">
     <div>
-        <main-nav :navClass="navClass" @menu-open="menuOpen" @menu-close="menuClose"/>
+        <main-nav :navClass="navClass" @menu-open="menuOpen" @menu-close="menuClose" v-if="this.bigMenu == true"/>
+        <page-menu :navClass="navClass" @menu-open="menuOpen" @menu-close="menuClose" v-else-if="this.bigMenu == false"/>
         <menu-overlay ref="menu"/>
         <main ref="main">
             <transition>
@@ -17,6 +18,7 @@ import CookiesPanel from '../components/CookiesPanel.vue'
 import LanguageMenu from '../components/LanguageMenu.vue'
 import MainNav from './MainNav.vue'
 import MenuOverlay from './MenuOverlay.vue'
+import PageMenu from './PageMenu.vue'
 
 export default {
     name: 'MainTemplate',
@@ -24,7 +26,8 @@ export default {
         CookiesPanel,
         LanguageMenu,
         MainNav,
-        MenuOverlay
+        MenuOverlay,
+        PageMenu
     },
     watch: {
         '$root.navbar': function(color) {
@@ -39,16 +42,27 @@ export default {
         },
         '$root.window': function(value) {
             this.setPadding()
+        },
+        '$route.path': function(route) {
+            this.hasBigMenu()
         }
     },
     data: function() {
         return {
+            bigMenu: null,
             navClass: null
         }
     },
     methods: {
         init: function() {
             this.setPadding()
+        },
+        hasBigMenu: function() {
+            if (this.$route.name === 'home') {
+                this.bigMenu = true
+            } else {
+                this.bigMenu = false
+            }
         },
         setPadding: function() {
             // let main = this.$refs.main
@@ -67,6 +81,7 @@ export default {
     },
     mounted: function() {
         this.init()
+        this.hasBigMenu()
     }
 }
 </script>

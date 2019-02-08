@@ -1,6 +1,6 @@
 <template lang="html">
-    <div class="container-fluid storia-mocajo">
-        <div class="row ">
+    <div class="container-fluid storia-mocajo" ref="section">
+        <div class="row">
             <ui-hero-banner-video
                 videoSrc="/video/home.mp4"
                 imgSrc="/images/tenuta.jpg"
@@ -145,6 +145,7 @@ export default {
         }
     },
     mounted: function() {
+        this.$refs.section.style.paddingTop = '130px';
         // this.$root.navbar = 1
         // this.init()
         // this.animate()

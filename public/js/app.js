@@ -64221,7 +64221,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       master.play();
     }
   },
-  mounted: function mounted() {// this.$root.navbar = 1
+  mounted: function mounted() {
+    this.$refs.section.style.paddingTop = '130px'; // this.$root.navbar = 1
     // this.init()
     // this.animate()
     // TweenMax.set(['#about-tenuta','#about-tenuta-description','#about-tenuta-image', '#about-storia', '#about-storia-description', '#about-storia-image'], {
@@ -64238,44 +64239,50 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid storia-mocajo" }, [
-    _c(
-      "div",
-      { staticClass: "row " },
-      [
-        _c("ui-hero-banner-video", {
-          attrs: { videoSrc: "/video/home.mp4", imgSrc: "/images/tenuta.jpg" }
-        })
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row" },
-      [
-        _c(
-          "ui-block",
-          { attrs: { color: "bg-light" } },
-          [
-            _c("ui-title", { attrs: { title: "La Vecchia Scuola Di Mocajo" } }),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v(
-                "\n                Adagiata su morbide colline toscane, a ridosso della costa degli Etruschi, nasceva nel 1942 Scuola Mocajo, intitolata a Riccardo Perucchetti e fondata per accudire i figli dei mezzadri che lavoravano nella Tenuta. Abbandonata a sé stessa per molti anni e ormai diroccata, oggi, grazie a un progetto di profondo restauro, riprende vita ed è pronta a scrivere una nuova storia.\n            "
-              )
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("ui-block", {
-          attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
-        })
-      ],
-      1
-    )
-  ])
+  return _c(
+    "div",
+    { ref: "section", staticClass: "container-fluid storia-mocajo" },
+    [
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c("ui-hero-banner-video", {
+            attrs: { videoSrc: "/video/home.mp4", imgSrc: "/images/tenuta.jpg" }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [
+              _c("ui-title", {
+                attrs: { title: "La Vecchia Scuola Di Mocajo" }
+              }),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "\n                Adagiata su morbide colline toscane, a ridosso della costa degli Etruschi, nasceva nel 1942 Scuola Mocajo, intitolata a Riccardo Perucchetti e fondata per accudire i figli dei mezzadri che lavoravano nella Tenuta. Abbandonata a sé stessa per molti anni e ormai diroccata, oggi, grazie a un progetto di profondo restauro, riprende vita ed è pronta a scrivere una nuova storia.\n            "
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("ui-block", {
+            attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
+          })
+        ],
+        1
+      )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -65282,7 +65289,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -65300,6 +65307,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MainNav_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__MainNav_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue__ = __webpack_require__(149);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__PageMenu_vue__ = __webpack_require__(185);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__PageMenu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__PageMenu_vue__);
 //
 //
 //
@@ -65314,6 +65323,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+
 
 
 
@@ -65324,7 +65335,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     CookiesPanel: __WEBPACK_IMPORTED_MODULE_0__components_CookiesPanel_vue___default.a,
     LanguageMenu: __WEBPACK_IMPORTED_MODULE_1__components_LanguageMenu_vue___default.a,
     MainNav: __WEBPACK_IMPORTED_MODULE_2__MainNav_vue___default.a,
-    MenuOverlay: __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue___default.a
+    MenuOverlay: __WEBPACK_IMPORTED_MODULE_3__MenuOverlay_vue___default.a,
+    PageMenu: __WEBPACK_IMPORTED_MODULE_4__PageMenu_vue___default.a
   },
   watch: {
     '$root.navbar': function $rootNavbar(color) {
@@ -65340,16 +65352,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     '$root.window': function $rootWindow(value) {
       this.setPadding();
+    },
+    '$route.path': function $routePath(route) {
+      this.hasBigMenu();
     }
   },
   data: function data() {
     return {
+      bigMenu: null,
       navClass: null
     };
   },
   methods: {
     init: function init() {
       this.setPadding();
+    },
+    hasBigMenu: function hasBigMenu() {
+      if (this.$route.name === 'home') {
+        this.bigMenu = true;
+      } else {
+        this.bigMenu = false;
+      }
     },
     setPadding: function setPadding() {// let main = this.$refs.main
       // if (main.offsetHeight > this.$root.window.h) {
@@ -65367,6 +65390,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   mounted: function mounted() {
     this.init();
+    this.hasBigMenu();
   }
 });
 
@@ -65855,10 +65879,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__ = __webpack_require__(147);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_gsap__ = __webpack_require__(5);
-//
-//
-//
-//
 //
 //
 //
@@ -80767,6 +80787,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     width: {
       type: String,
       default: '32px'
+    },
+    color: {
+      type: String,
+      default: null
+    }
+  },
+  computed: {
+    colorClass: function colorClass() {
+      if (this.color) {
+        this.color_1 = this.color_2 = '#fff';
+      }
+    }
+  },
+  data: function data() {
+    return {
+      color_1: '#E2452B',
+      color_2: '#354437'
+    };
+  },
+  mounted: function mounted() {
+    if (this.color) {
+      this.color_1 = this.color_2 = '#fff';
     }
   }
 });
@@ -80808,7 +80850,7 @@ var render = function() {
               d:
                 "M76.1438949,198 L111.528234,198 L111.528234,233.415239 L76.1438949,233.415239 L76.1438949,198 Z M125.471766,198 L160.856105,198 L160.856105,233.415239 L125.471766,233.415239 L125.471766,198 Z M76.1438949,245.427366 L111.528234,245.427366 L111.528234,280.842605 L76.1438949,280.842605 L76.1438949,245.427366 Z M125.471766,245.427366 L160.856105,245.427366 L160.856105,280.842605 L125.471766,280.842605 L125.471766,245.427366 Z M17.9474173,308.603744 C21.6410018,308.603744 25.4246737,309.485368 28.077248,311.018191 L28.077248,313.973636 C25.4246737,312.300554 21.5809435,311.368837 18.1376019,311.368837 C13.4630654,311.368837 9.52924779,313.041919 9.52924779,317.279726 C9.52924779,326.927498 30.4895891,322.839968 30.4895891,335.252834 C30.4895891,341.754811 24.6339063,344.219351 18.2877476,344.169259 C13.9135026,344.169259 9.82953922,343.087266 6.52633357,341.263907 L6.52633357,338.358555 C10.0697724,340.422357 14.1036871,341.414184 18.0875533,341.414184 C23.1524686,341.414184 27.5367234,339.891379 27.5367234,335.453203 C27.5367234,325.264434 6.57638214,329.44213 6.57638214,317.37991 C6.58639186,311.358819 12.0917346,308.603744 17.9474173,308.603744 Z M57.585885,308.603744 C61.0292267,308.603744 64.4225197,309.395202 67.2252397,310.918007 L67.2252397,313.873451 C64.7128015,312.250461 61.369557,311.358819 58.0263125,311.358819 C50.4990075,311.358819 42.6313722,316.237806 42.6313722,326.71711 C42.5813236,336.665436 50.6491532,341.394147 58.1764582,341.394147 C61.8199941,341.394147 65.0631414,340.512523 67.5755797,338.879515 L67.5755797,341.784867 C64.7728597,343.307672 61.3295181,344.149222 57.585885,344.149222 C48.9775309,344.149222 39.628458,338.288426 39.6785066,326.71711 C39.6785066,314.704983 48.7773367,308.603744 57.585885,308.603744 Z M106.943785,309.14474 L106.943785,331.305563 C106.943785,340.903243 100.497529,344.159241 92.8701271,344.159241 C85.1926764,344.159241 78.7464206,340.913261 78.7464206,331.305563 L78.7464206,309.14474 L81.6492377,309.14474 L81.6492377,331.205378 C81.6492377,338.739257 86.4238713,341.394147 92.8701271,341.394147 C99.316383,341.394147 104.040968,338.739257 104.040968,331.205378 L104.040968,309.14474 L106.943785,309.14474 Z M136.742704,308.603744 C148.744351,308.603744 154.650082,317.610335 154.650082,326.376483 C154.650082,335.142631 148.744351,344.149222 136.742704,344.149222 C124.741057,344.149222 118.835325,335.142631 118.835325,326.376483 C118.835325,317.610335 124.741057,308.603744 136.742704,308.603744 Z M136.742704,311.358819 C126.652912,311.358819 121.788191,318.892697 121.788191,326.376483 C121.788191,333.860269 126.662922,341.394147 136.742704,341.394147 C146.822486,341.394147 151.697217,333.860269 151.697217,326.376483 C151.707226,318.892697 146.832496,311.358819 136.742704,311.358819 Z M170.405372,309.14474 L170.405372,340.803058 L190.324703,340.803058 L190.324703,343.608226 L167.502555,343.608226 L167.502555,309.14474 L170.405372,309.14474 Z M196.510707,343.608226 L211.855598,309.14474 L215.148794,309.14474 L230.453647,343.608226 L227.300587,343.608226 L223.216624,334.351173 L203.787769,334.351173 L199.653757,343.608226 L196.510707,343.608226 Z M204.928876,331.596098 L222.045487,331.596098 L213.927609,313.23227 C213.777463,312.84155 213.637327,312.490904 213.487182,312.150277 C213.337036,312.490904 213.1969,312.84155 213.046754,313.23227 L204.928876,331.596098 Z M34.7737467,352.995518 L34.7737467,387.459003 L31.8709296,387.459003 L31.8709296,358.605853 L18.2977573,378.692855 L16.4759894,378.692855 L2.90281708,358.605853 L2.90281708,387.459003 L2.84217094e-14,387.459003 L2.84217094e-14,352.995518 L2.46238966,352.995518 L17.4068928,375.09623 L32.311357,352.9855 L34.7737467,352.9855 L34.7737467,352.995518 Z M64.622714,352.454521 C76.6243612,352.454521 82.5300925,361.461113 82.5300925,370.227261 C82.5300925,378.993409 76.6243612,388 64.622714,388 C52.6210669,388 46.7153356,378.993409 46.7153356,370.227261 C46.7153356,361.461113 52.6110571,352.454521 64.622714,352.454521 Z M64.622714,355.209597 C54.5329222,355.209597 49.6682012,362.743475 49.6682012,370.227261 C49.6682012,377.711047 54.542932,385.244925 64.622714,385.244925 C74.7024961,385.244925 79.5772268,377.711047 79.5772268,370.227261 C79.5772268,362.743475 74.7024961,355.209597 64.622714,355.209597 Z M110.367107,352.454521 C113.810449,352.454521 117.203742,353.245979 120.006462,354.768785 L120.006462,357.724229 C117.494024,356.101239 114.150779,355.209597 110.807535,355.209597 C103.28023,355.209597 95.4125945,360.088584 95.4125945,370.567888 C95.3625459,380.516214 103.430375,385.244925 110.95768,385.244925 C114.601216,385.244925 117.844364,384.363301 120.356802,382.730293 L120.356802,385.635645 C117.554082,387.15845 114.11074,388 110.367107,388 C101.758753,388 92.4096803,382.139204 92.4597289,370.567888 C92.4597289,358.555761 101.558559,352.454521 110.367107,352.454521 Z M128.214428,387.459003 L143.559319,352.995518 L146.852515,352.995518 L162.157368,387.459003 L159.004308,387.459003 L154.920345,378.201951 L135.49149,378.201951 L131.357478,387.459003 L128.214428,387.459003 Z M136.622587,375.446876 L153.739198,375.446876 L145.62132,357.083048 C145.471175,356.692328 145.331039,356.341682 145.180893,356.001055 C145.030747,356.341682 144.890611,356.692328 144.740465,357.083048 L136.622587,375.446876 Z M188.112556,352.995518 L188.112556,378.0116 C188.112556,384.95439 183.337923,387.959926 177.191958,387.959926 C173.748617,387.959926 170.555518,387.218561 168.333361,385.846032 L168.333361,382.94068 C170.545508,384.413393 173.498374,385.154759 176.701482,385.154759 C181.616252,385.154759 185.209739,383.231215 185.209739,377.921434 L185.209739,355.810704 L174.579423,355.810704 L174.579423,353.005537 L188.112556,353.005537 L188.112556,352.995518 Z M219.092622,352.454521 C231.094269,352.454521 237,361.461113 237,370.227261 C237,378.993409 231.094269,388 219.092622,388 C207.090974,388 201.185243,378.993409 201.185243,370.227261 C201.185243,361.461113 207.090974,352.454521 219.092622,352.454521 Z M219.092622,355.209597 C209.00283,355.209597 204.138109,362.743475 204.138109,370.227261 C204.138109,377.711047 209.012839,385.244925 219.092622,385.244925 C229.172404,385.244925 234.047134,377.711047 234.047134,370.227261 C234.047134,362.743475 229.172404,355.209597 219.092622,355.209597 Z",
               id: "Combined-Shape",
-              fill: "#E2452B"
+              fill: _vm.color_1
             }
           }),
           _vm._v(" "),
@@ -80817,7 +80859,7 @@ var render = function() {
               d:
                 "M337,117.939063 L337,110.202404 L309.209909,111.801714 L332.725371,92.6899678 L332.725371,86.4526616 L328.721036,84.0536977 L295.845438,111.801714 L259.496079,113.401023 L292.101384,81.114967 L328.711025,80.0454289 L328.711025,72.3087703 L300.650641,73.3783084 L318.28974,56.3056819 L312.943952,50.1683326 L274.462284,83.79381 L277.135178,66.4513001 L306.266722,39.5029389 L301.461519,34.1652442 L283.021552,49.1087902 L288.897915,24.8292764 L282.480967,20.2912363 L277.135178,33.8953608 L277.135178,16.0130841 L271.258815,13.6141201 L271.258815,58.4447581 L259.496079,96.5982798 C259.496079,96.5982798 222.886438,126.755255 222.08557,126.755255 C221.284703,126.755255 263.510425,10.1456182 263.510425,10.1456182 L258.164637,8.00654203 L249.61538,28.0178992 L245.871326,2.3989639 L239.994963,3.19861854 L243.739017,40.8223691 L231.175413,72.5786537 L217.810942,49.0987945 L235.720334,0 L229.573679,0 L212.735446,40.8223691 L202.584455,21.6106665 L214.877766,2.84094396e-14 L207.389658,2.84094396e-14 L199.91156,15.2134294 L191.09201,2.84094396e-14 L186.817382,2.3989639 L196.167506,21.6106665 L183.073328,40.8223691 L183.073328,2.3989639 L177.457247,2.3989639 L172.381751,5.86746588 L172.381751,29.3473251 L158.486705,18.9418191 L157.956131,28.0178992 L173.452911,38.6932886 L173.182618,75.5173845 L154.212077,55.2361439 L156.614678,10.9452728 L148.325703,15.4833129 L146.453676,45.6402882 L130.956896,29.3673164 L125.8814,35.5046658 L171.310591,90.2110384 L148.325703,85.9428818 L121.066186,41.9118985 L116.521265,44.8506293 L137.634126,83.0141467 L125.070522,80.6151828 L111.445769,54.7363597 L107.701715,54.7363597 L106.630555,60.6038256 L115.720398,79.0158735 L104.257986,76.6968751 L93.1759867,65.6316541 L93.1759867,82.2844619 L109.944143,99.0272308 L23,185.839737 L23,301 L34.7927692,301 L34.7927692,190.687643 L118.273162,107.323648 L126.031563,115.070302 L201.763566,190.687643 L201.763566,300.970013 L213.556335,300.970013 L213.556335,185.80975 L213.556335,178.023113 L264.561563,158.281639 L289.418479,159.081294 L306.787286,175.094378 L312.403367,171.355992 L300.380348,158.81141 L321.222917,160.41072 L324.696678,152.943944 L284.342983,149.475442 L303.50373,140.109488 L315.336543,146.496729 L321.753491,143.028227 L311.262131,136.321124 L322.033795,131.053399 L330.583052,136.660977 L333.78652,131.053399 L327.10929,127.734832 L335.127973,124.91605 L337,118.508817 L303.924185,131.633148 L288.097048,121.537509 L337,117.939063 Z M183.864184,104.594826 L201.963782,131.14336 L201.953772,138.010394 L156.534592,128.854349 L139.916598,112.261515 L172.37174,101.586126 L183.864184,104.594826 Z M113.868393,86.252748 L160.44883,98.4574768 L132.688771,105.044632 L118.293184,90.6708398 L113.868393,86.252748 Z M167.055984,139.369807 L201.93375,149.285525 L201.903717,174.174775 L167.055984,139.369807 Z M210.773321,126.085544 L186.006504,88.5817421 L186.006504,52.8271843 L199.370975,29.6172085 L226.069885,82.9841597 L210.773321,126.085544 Z M294.644137,135.321555 L213.566346,167.497659 L213.566346,149.315512 L244.800166,125.415834 L275.263151,124.886062 L294.644137,135.321555 Z",
               id: "Shape",
-              fill: "#354437",
+              fill: _vm.color_2,
               "fill-rule": "nonzero"
             }
           })
@@ -81422,22 +81464,6 @@ var render = function() {
       class: this.navClass
     },
     [
-      _vm.hasLogo
-        ? _c(
-            "router-link",
-            {
-              staticClass: "navbar-brand",
-              attrs: {
-                tag: "a",
-                to: { path: "/" },
-                "exact-active-class": "active"
-              }
-            },
-            [_c("nav-logo", { ref: "logo", attrs: { width: "56px" } })],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
       _c(
         "div",
         { staticClass: "d-flex", class: _vm.menuClass },
@@ -81479,8 +81505,7 @@ var render = function() {
         ],
         1
       )
-    ],
-    1
+    ]
   )
 }
 var staticRenderFns = []
@@ -82078,10 +82103,17 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("main-nav", {
-        attrs: { navClass: _vm.navClass },
-        on: { "menu-open": _vm.menuOpen, "menu-close": _vm.menuClose }
-      }),
+      this.bigMenu == true
+        ? _c("main-nav", {
+            attrs: { navClass: _vm.navClass },
+            on: { "menu-open": _vm.menuOpen, "menu-close": _vm.menuClose }
+          })
+        : this.bigMenu == false
+        ? _c("page-menu", {
+            attrs: { navClass: _vm.navClass },
+            on: { "menu-open": _vm.menuOpen, "menu-close": _vm.menuClose }
+          })
+        : _vm._e(),
       _vm._v(" "),
       _c("menu-overlay", { ref: "menu" }),
       _vm._v(" "),
@@ -82541,9 +82573,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {},
-  mounted: function mounted() {
-    console.log(this.$refs.player);
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -82791,6 +82821,368 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-6e10f611", module.exports)
+  }
+}
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(186)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(188)
+/* template */
+var __vue_template__ = __webpack_require__(189)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/containers/PageMenu.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-540fe37d", Component.options)
+  } else {
+    hotAPI.reload("data-v-540fe37d", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(187);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("797c43ce", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-540fe37d\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PageMenu.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-540fe37d\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PageMenu.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.navbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  min-height: 60px;\n  height: 130px;\n  background-color: black;\n  z-index: 9999;\n  padding-left: 2rem;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n.navbar .navbar-nav {\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -ms-flex-pack: distribute;\n        justify-content: space-around;\n    min-width: 80%;\n}\n.navbar .navbar-nav .nav-item {\n      text-transform: uppercase;\n}\n.navbar .navbar-nav .nav-item .nav-link {\n        font-size: 0.75rem;\n        font-weight: normal;\n        letter-spacing: 2px;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 188 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue__ = __webpack_require__(130);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_gsap_SplitText__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_gsap__ = __webpack_require__(5);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'PageMenu',
+  components: {
+    CartIcon: __WEBPACK_IMPORTED_MODULE_0__components_CartIcon_vue___default.a,
+    MenuAnim: __WEBPACK_IMPORTED_MODULE_1__components_MenuAnim_vue___default.a,
+    NavLogo: __WEBPACK_IMPORTED_MODULE_2__components_NavLogo_vue___default.a
+  },
+  props: {
+    navClass: {
+      type: String,
+      default: null
+    }
+  },
+  data: function data() {
+    return {
+      hasCart: false,
+      hasLogo: true,
+      menuClass: 'ml-auto',
+      opened: false,
+      text: {}
+    };
+  },
+  watch: {
+    '$root.cart': function $rootCart(cart) {
+      if (cart && cart.length > 0) {
+        this.hasCart = true;
+        this.$refs.icon.play();
+      } else {
+        this.hasCart = false;
+        this.$refs.icon.hide();
+      }
+    },
+    '$root.navLogo': function $rootNavLogo(logo) {
+      if (!logo) {
+        this.hasLogo = false;
+        this.menuClass = 'mr-auto';
+        return true;
+      }
+
+      this.hasLogo = true;
+      this.menuClass = 'ml-auto';
+    }
+  },
+  methods: {
+    hoverAnim: function hoverAnim() {
+      this.$refs.menu.hoverAnim();
+    },
+    changeStatus: function changeStatus(value) {
+      this.opened = value;
+    },
+    menuToggle: function menuToggle($event) {
+      $event.preventDefault();
+
+      if (this.opened) {
+        this.$emit('menu-close');
+        this.$refs.menu.close();
+      } else {
+        this.$emit('menu-open');
+        this.$refs.menu.open();
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "nav",
+    { staticClass: "navbar navbar-expand-lg navbar-dark bg-black" },
+    [
+      _c("ul", { staticClass: "navbar-nav m-auto" }, [
+        _c(
+          "li",
+          { staticClass: "nav-item" },
+          [
+            _c(
+              "router-link",
+              {
+                staticClass: "nav-link",
+                attrs: {
+                  tag: "a",
+                  to: { path: "/scuola-mocajo" },
+                  "exact-active-class": "active"
+                }
+              },
+              [_vm._v("\n                    Scuola Mocajo\n                ")]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "li",
+          { staticClass: "nav-item" },
+          [
+            _c(
+              "router-link",
+              {
+                staticClass: "nav-link",
+                attrs: {
+                  tag: "a",
+                  to: { path: "/la-nostra-storia" },
+                  "exact-active-class": "active"
+                }
+              },
+              [_vm._v("\n                    Storia\n                ")]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "li",
+          { staticClass: "nav-item" },
+          [
+            _c(
+              "router-link",
+              {
+                staticClass: "nav-link",
+                attrs: {
+                  tag: "a",
+                  to: { path: "/" },
+                  "exact-active-class": "active"
+                }
+              },
+              [
+                _c("nav-logo", {
+                  ref: "logo",
+                  attrs: { width: "56px", color: "light" }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "li",
+          { staticClass: "nav-item" },
+          [
+            _c(
+              "router-link",
+              {
+                staticClass: "nav-link",
+                attrs: {
+                  tag: "a",
+                  to: { path: "/i-nostri-vini" },
+                  "exact-active-class": "active"
+                }
+              },
+              [_vm._v("\n                    I Nostri Vini\n                ")]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "li",
+          { staticClass: "nav-item" },
+          [
+            _c(
+              "router-link",
+              {
+                staticClass: "nav-link",
+                attrs: {
+                  tag: "a",
+                  to: { path: "/contatti" },
+                  "exact-active-class": "active"
+                }
+              },
+              [_vm._v("\n                    Contatti\n                ")]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "li",
+          [
+            _vm.hasCart
+              ? _c(
+                  "router-link",
+                  {
+                    staticClass: "nav-link-item mr-4",
+                    attrs: { tag: "a", to: { path: "/carrello" } }
+                  },
+                  [
+                    _c("cart-icon", {
+                      ref: "icon",
+                      attrs: { width: "24px", color: "#333" }
+                    })
+                  ],
+                  1
+                )
+              : _vm._e()
+          ],
+          1
+        )
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-540fe37d", module.exports)
   }
 }
 

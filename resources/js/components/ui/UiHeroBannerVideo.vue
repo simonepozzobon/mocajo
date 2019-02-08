@@ -30,7 +30,6 @@ export default {
     methods: {
     },
     mounted: function() {
-        console.log(this.$refs.player)
     }
 }
 </script>

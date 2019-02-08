@@ -1,9 +1,5 @@
 <template lang="html">
     <nav class="navbar navbar-dark navbar-expand-lg" ref="navbar" :class="this.navClass">
-        <router-link tag="a" class="navbar-brand" :to="{ path: '/' }" exact-active-class="active" v-if="hasLogo">
-            <nav-logo width="56px" ref="logo"/>
-        </router-link>
-
         <div class="d-flex" :class="menuClass">
             <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" v-if="hasCart">
                 <cart-icon width="24px" color="#333" ref="icon"/>
