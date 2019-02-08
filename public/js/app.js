@@ -61185,11 +61185,15 @@ var routes = [{
   name: 'home',
   component: __webpack_require__(55)
 }, {
-  path: '/about',
-  name: 'about',
-  component: __webpack_require__(71)
+  path: '/scuola-mocajo',
+  name: 'scuola',
+  component: __webpack_require__(143)
 }, {
-  path: '/vini',
+  path: '/la-nostra-storia',
+  name: 'storia',
+  component: __webpack_require__(148)
+}, {
+  path: '/i-nostri-vini',
   name: 'vini',
   component: __webpack_require__(80)
 }, {
@@ -61843,267 +61847,10 @@ if (false) {
 }
 
 /***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(72)
-}
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(74)
-/* template */
-var __vue_template__ = __webpack_require__(79)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/views/About.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-2995bb7e", Component.options)
-  } else {
-    hotAPI.reload("data-v-2995bb7e", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(73);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(1)("2c5504ce", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2995bb7e\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./About.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2995bb7e\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./About.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(false);
-// Module
-exports.push([module.i, "\n.section {\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
-
-
-
-/***/ }),
-/* 74 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scrollmagic__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scrollmagic__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'LaScuola',
-  data: function data() {
-    return {
-      controller: null,
-      about: false,
-      tenuta: false,
-      scuola: false
-    };
-  },
-  methods: {
-    init: function init() {
-      var _this = this;
-
-      this.controller = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Controller();
-      var scuola = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Scene({
-        triggerElement: '#section-one',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'about'})
-      // .setTween(master)
-      .addTo(this.controller);
-      var tenuta = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Scene({
-        triggerElement: '#section-two',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'tenuta'})
-      .on('enter', function () {
-        if (!_this.tenuta) {
-          var objs = {
-            title: '#about-tenuta',
-            description: '#about-tenuta-description',
-            image: '#about-tenuta-image'
-          };
-
-          _this.animate(objs);
-
-          _this.tenuta = true;
-        }
-      }).addTo(this.controller);
-      var storia = new __WEBPACK_IMPORTED_MODULE_1_scrollmagic___default.a.Scene({
-        triggerElement: '#section-three',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'storia'})
-      .on('enter', function () {
-        if (!_this.storia) {
-          var objs = {
-            title: '#about-storia',
-            description: '#about-storia-description',
-            image: '#about-storia-image'
-          };
-
-          _this.animate(objs);
-
-          _this.storia = true;
-        }
-      }).addTo(this.controller);
-    },
-    animate: function animate() {
-      var objs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var title, description, image;
-
-      if (objs) {
-        title = objs.title;
-        description = objs.description;
-        image = objs.image;
-      } else {
-        title = this.$refs.title;
-        description = this.$refs.description;
-        image = this.$refs.image;
-      }
-
-      var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
-        paused: true
-      });
-      master.fromTo(title, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, {
-        autoAlpha: 1,
-        y: 0,
-        ease: Power2.easeInOut
-      }, .1);
-      master.fromTo(description, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, {
-        autoAlpha: 1,
-        y: 0,
-        ease: Power2.easeInOut
-      }, .2);
-      master.fromTo(image, .8, {
-        autoAlpha: 0,
-        x: 60,
-        ease: Power2.easeOut
-      }, {
-        autoAlpha: 1,
-        x: 0,
-        ease: Power2.easeOut
-      }, .4);
-      master.play();
-    }
-  },
-  mounted: function mounted() {
-    // this.$root.navbar = 1
-    this.init();
-    this.animate();
-    TweenMax.set(['#about-tenuta', '#about-tenuta-description', '#about-tenuta-image', '#about-storia', '#about-storia-description', '#about-storia-image'], {
-      autoAlpha: 0
-    });
-  }
-});
-
-/***/ }),
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
 /* 75 */
 /***/ (function(module, exports) {
 
@@ -63544,113 +63291,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 }));
 
 /***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "trigger", attrs: { id: "section-one" } }),
-    _vm._v(" "),
-    _c("div", { staticClass: "row section" }, [
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h1", { ref: "title" }, [_vm._v("La Scuola di Mocajo")]),
-        _vm._v(" "),
-        _c("p", { ref: "description" }, [
-          _vm._v(
-            "\n                Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.\n            "
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("img", {
-          ref: "image",
-          staticClass: "img-fluid",
-          attrs: { src: "/images/about.jpg", alt: "" }
-        })
-      ])
-    ]),
-    _vm._v(" "),
-    _vm._m(0),
-    _vm._v(" "),
-    _vm._m(1)
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row section" }, [
-      _c("div", { staticClass: "trigger", attrs: { id: "section-two" } }),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6 order-md-2" }, [
-        _c("h1", { attrs: { id: "about-tenuta" } }, [_vm._v("La Tenuta")]),
-        _vm._v(" "),
-        _c("p", { attrs: { id: "about-tenuta-description" } }, [
-          _vm._v(
-            "\n                Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.\n            "
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6 order-md-1" }, [
-        _c("img", {
-          staticClass: "img-fluid",
-          attrs: {
-            src: "/images/tenuta.jpg",
-            alt: "",
-            id: "about-tenuta-image"
-          }
-        })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row section" }, [
-      _c("div", { staticClass: "trigger", attrs: { id: "section-three" } }),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h1", { attrs: { id: "about-storia" } }, [
-          _vm._v("La Nostra Storia")
-        ]),
-        _vm._v(" "),
-        _c("p", { attrs: { id: "about-storia-description" } }, [
-          _vm._v(
-            "\n                Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.\n            "
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("img", {
-          staticClass: "img-fluid",
-          attrs: {
-            src: "/images/storia.jpg",
-            alt: "",
-            id: "about-storia-image"
-          }
-        })
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-2995bb7e", module.exports)
-  }
-}
-
-/***/ }),
+/* 79 */,
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -80685,7 +80326,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/about" },
+                to: { path: "/scuola-mocajo" },
                 "exact-active-class": "active"
               },
               nativeOn: {
@@ -80711,7 +80352,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/about" },
+                to: { path: "/la-nostra-storia" },
                 "exact-active-class": "active"
               },
               nativeOn: {
@@ -80737,7 +80378,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
-                to: { path: "/vini" },
+                to: { path: "/i-nostri-vini" },
                 "exact-active-class": "active"
               },
               nativeOn: {
@@ -81221,6 +80862,1005 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-3bbee142", module.exports)
+  }
+}
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(144)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(146)
+/* template */
+var __vue_template__ = __webpack_require__(147)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/views/Scuola.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1d0e1384", Component.options)
+  } else {
+    hotAPI.reload("data-v-1d0e1384", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(145);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("4a7c565d", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1d0e1384\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Scuola.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1d0e1384\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Scuola.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.section {\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 146 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_ui__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gsap__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_scrollmagic__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'LaScuola',
+  components: {
+    UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["a" /* UiBlock */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiTitle */]
+  },
+  data: function data() {
+    return {
+      controller: null,
+      about: false,
+      tenuta: false,
+      scuola: false
+    };
+  },
+  methods: {
+    init: function init() {
+      var _this = this;
+
+      this.controller = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Controller();
+      var scuola = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
+        triggerElement: '#section-one',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'about'})
+      // .setTween(master)
+      .addTo(this.controller);
+      var tenuta = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
+        triggerElement: '#section-two',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'tenuta'})
+      .on('enter', function () {
+        if (!_this.tenuta) {
+          var objs = {
+            title: '#about-tenuta',
+            description: '#about-tenuta-description',
+            image: '#about-tenuta-image'
+          };
+
+          _this.animate(objs);
+
+          _this.tenuta = true;
+        }
+      }).addTo(this.controller);
+      var storia = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
+        triggerElement: '#section-three',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'storia'})
+      .on('enter', function () {
+        if (!_this.storia) {
+          var objs = {
+            title: '#about-storia',
+            description: '#about-storia-description',
+            image: '#about-storia-image'
+          };
+
+          _this.animate(objs);
+
+          _this.storia = true;
+        }
+      }).addTo(this.controller);
+    },
+    animate: function animate() {
+      var objs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var title, description, image;
+
+      if (objs) {
+        title = objs.title;
+        description = objs.description;
+        image = objs.image;
+      } else {
+        title = this.$refs.title;
+        description = this.$refs.description;
+        image = this.$refs.image;
+      }
+
+      var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.fromTo(title, .6, {
+        autoAlpha: 0,
+        y: 20,
+        ease: Power2.easeInOut
+      }, {
+        autoAlpha: 1,
+        y: 0,
+        ease: Power2.easeInOut
+      }, .1);
+      master.fromTo(description, .6, {
+        autoAlpha: 0,
+        y: 20,
+        ease: Power2.easeInOut
+      }, {
+        autoAlpha: 1,
+        y: 0,
+        ease: Power2.easeInOut
+      }, .2);
+      master.fromTo(image, .8, {
+        autoAlpha: 0,
+        x: 60,
+        ease: Power2.easeOut
+      }, {
+        autoAlpha: 1,
+        x: 0,
+        ease: Power2.easeOut
+      }, .4);
+      master.play();
+    }
+  },
+  mounted: function mounted() {
+    // this.$root.navbar = 1
+    this.init();
+    this.animate();
+    TweenMax.set(['#about-tenuta', '#about-tenuta-description', '#about-tenuta-image', '#about-storia', '#about-storia-description', '#about-storia-image'], {
+      autoAlpha: 0
+    });
+  }
+});
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container-fluid scuola-mocajo" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c(
+          "ui-block",
+          { attrs: { color: "bg-light" } },
+          [
+            _c("ui-title", { attrs: { title: "Il Nostro Progetto" } }),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "\n                Questo avventuroso progetto è iniziato nel 2014, con un solo obiettivo, quello di produrre un ottimo vino biologico. Abbiamo impiantato tre vitigni a bacca bianca in una terra di rosso: Vermentino, Viognier e Petit Manseng. Produrre vino bianco in una zona famosa specialmente per quello rosso, potrebbe sembrare una scelta contro corrente, in realtà la nostra decisione è frutto di un'attenta valutazione legata alle specifiche del terreno e del clima della zona, con la precisa volontà di proseguire l'eredità lasciata degli etruschi prima e dai romani dopo."
+              ),
+              _c("br"),
+              _c("br"),
+              _vm._v(
+                "\n                Mentre le piccole barbatelle crescevano, ci siamo dedicati alla ristrutturazione della vecchia Scuola della Tenuta, ridonandole il suo antico splendore e mantenendo gli elementi storici dell'edificio, quali la struttura originaria, la vecchia scala di pietra che portava gli alunni in classe, le finestre e l'albero che vi sorge accanto.\n            "
+              )
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("ui-block", {
+          attrs: { isImage: true, imgSrc: "/images/storia.jpg" }
+        })
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c("ui-block", {
+          attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
+        }),
+        _vm._v(" "),
+        _c(
+          "ui-block",
+          { attrs: { color: "bg-light" } },
+          [
+            _c("ui-title", { attrs: { title: "La Nostra Famiglia" } }),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "\n                La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n            "
+              )
+            ])
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c(
+          "ui-block",
+          { attrs: { color: "bg-light" } },
+          [
+            _c("ui-title", { attrs: { title: "L'agriturismo" } }),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "\n                Tra morbide colline, vitigni e uliveti, sorge Scuola Mocajo, un elegante agriturismo accarezzato dal vento e immerso nel verde. Un luogo di pace dove si possono trascorrere piacevoli pomeriggi in piscina, visitare le città limitrofe o recarsi al mare che rimane a pochi km di distanza. Se siete interessati a trascorre del tempo nel nostro agriturismo, contattateci.\n            "
+              )
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("ui-block", {
+          attrs: { isImage: true, imgSrc: "/images/about.jpg" }
+        })
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col bg-dark", staticStyle: { "min-height": "40vh" } },
+        [_vm._v("Banner")]
+      )
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1d0e1384", module.exports)
+  }
+}
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(149)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(151)
+/* template */
+var __vue_template__ = __webpack_require__(152)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/views/Storia.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-175d200a", Component.options)
+  } else {
+    hotAPI.reload("data-v-175d200a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(150);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("df72fdce", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-175d200a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Storia.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-175d200a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Storia.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.section {\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 151 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_ui__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gsap__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_scrollmagic__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_scrollmagic_scrollmagic_uncompressed_plugins_debug_addIndicators__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'LaScuola',
+  components: {
+    UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["a" /* UiBlock */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiTitle */]
+  },
+  data: function data() {
+    return {
+      controller: null,
+      about: false,
+      tenuta: false,
+      scuola: false
+    };
+  },
+  methods: {
+    init: function init() {
+      var _this = this;
+
+      this.controller = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Controller();
+      var scuola = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
+        triggerElement: '#section-one',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'about'})
+      // .setTween(master)
+      .addTo(this.controller);
+      var tenuta = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
+        triggerElement: '#section-two',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'tenuta'})
+      .on('enter', function () {
+        if (!_this.tenuta) {
+          var objs = {
+            title: '#about-tenuta',
+            description: '#about-tenuta-description',
+            image: '#about-tenuta-image'
+          };
+
+          _this.animate(objs);
+
+          _this.tenuta = true;
+        }
+      }).addTo(this.controller);
+      var storia = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
+        triggerElement: '#section-three',
+        offset: 0,
+        duration: 200,
+        triggerHook: 'onEnter'
+      }) // .addIndicators({ name: 'storia'})
+      .on('enter', function () {
+        if (!_this.storia) {
+          var objs = {
+            title: '#about-storia',
+            description: '#about-storia-description',
+            image: '#about-storia-image'
+          };
+
+          _this.animate(objs);
+
+          _this.storia = true;
+        }
+      }).addTo(this.controller);
+    },
+    animate: function animate() {
+      var objs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var title, description, image;
+
+      if (objs) {
+        title = objs.title;
+        description = objs.description;
+        image = objs.image;
+      } else {
+        title = this.$refs.title;
+        description = this.$refs.description;
+        image = this.$refs.image;
+      }
+
+      var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.fromTo(title, .6, {
+        autoAlpha: 0,
+        y: 20,
+        ease: Power2.easeInOut
+      }, {
+        autoAlpha: 1,
+        y: 0,
+        ease: Power2.easeInOut
+      }, .1);
+      master.fromTo(description, .6, {
+        autoAlpha: 0,
+        y: 20,
+        ease: Power2.easeInOut
+      }, {
+        autoAlpha: 1,
+        y: 0,
+        ease: Power2.easeInOut
+      }, .2);
+      master.fromTo(image, .8, {
+        autoAlpha: 0,
+        x: 60,
+        ease: Power2.easeOut
+      }, {
+        autoAlpha: 1,
+        x: 0,
+        ease: Power2.easeOut
+      }, .4);
+      master.play();
+    }
+  },
+  mounted: function mounted() {// this.$root.navbar = 1
+    // this.init()
+    // this.animate()
+    // TweenMax.set(['#about-tenuta','#about-tenuta-description','#about-tenuta-image', '#about-storia', '#about-storia-description', '#about-storia-image'], {
+    //     autoAlpha: 0,
+    // })
+  }
+});
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container-fluid storia-mocajo" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c(
+          "ui-block",
+          { attrs: { color: "bg-light" } },
+          [
+            _c("ui-title", { attrs: { title: "La Vecchia Scuola Di Mocajo" } }),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "\n                Adagiata su morbide colline toscane, a ridosso della costa degli Etruschi, nasceva nel 1942 Scuola Mocajo, intitolata a Riccardo Perucchetti e fondata per accudire i figli dei mezzadri che lavoravano nella Tenuta. Abbandonata a sé stessa per molti anni e ormai diroccata, oggi, grazie a un progetto di profondo restauro, riprende vita ed è pronta a scrivere una nuova storia.\n            "
+              )
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("ui-block", {
+          attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
+        })
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row bg-dark" }, [
+      _c("div", { staticClass: "col", staticStyle: { "min-height": "40vh" } }, [
+        _vm._v("\n            Video Hero\n        ")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-175d200a", module.exports)
+  }
+}
+
+/***/ }),
+/* 153 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UiBlock_vue__ = __webpack_require__(154);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UiBlock_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__UiBlock_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UiTitle_vue__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UiTitle_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__UiTitle_vue__);
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__UiBlock_vue___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__UiTitle_vue___default.a; });
+
+
+
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(161)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(157)
+/* template */
+var __vue_template__ = __webpack_require__(163)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ui/UiBlock.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-e6d6b96e", Component.options)
+  } else {
+    hotAPI.reload("data-v-e6d6b96e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 155 */,
+/* 156 */,
+/* 157 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'UIBlock',
+  props: {
+    color: {
+      type: String,
+      default: null
+    },
+    imgSrc: {
+      type: String,
+      default: null
+    }
+  },
+  methods: {
+    setBackground: function setBackground() {
+      if (this.imgSrc) {
+        this.$refs.block.style.backgroundImage = 'url(' + this.imgSrc + ')';
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.setBackground();
+  }
+});
+
+/***/ }),
+/* 158 */,
+/* 159 */,
+/* 160 */,
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(162);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("bb154a96", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-e6d6b96e\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiBlock.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-e6d6b96e\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiBlock.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { ref: "block", staticClass: "col-md-6 ui-block", class: _vm.color },
+    [_vm._t("default")],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-e6d6b96e", module.exports)
+  }
+}
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(171)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(167)
+/* template */
+var __vue_template__ = __webpack_require__(173)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ui/UiTitle.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4d71b8d8", Component.options)
+  } else {
+    hotAPI.reload("data-v-4d71b8d8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 165 */,
+/* 166 */,
+/* 167 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'UiTitle',
+  props: {
+    title: {
+      type: String,
+      default: null
+    }
+  }
+});
+
+/***/ }),
+/* 168 */,
+/* 169 */,
+/* 170 */,
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(172);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("4bac1cec", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4d71b8d8\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiTitle.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4d71b8d8\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiTitle.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.ui-title {\n  margin-bottom: 2rem;\n}\n", ""]);
+
+
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("h2", { staticClass: "ui-title" }, [_vm._v(_vm._s(_vm.title))])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4d71b8d8", module.exports)
   }
 }
 

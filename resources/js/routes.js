@@ -5,12 +5,17 @@ const routes = [
         component: require('./views/Home.vue')
     },
     {
-        path: '/about',
-        name: 'about',
-        component: require('./views/About.vue')
+        path: '/scuola-mocajo',
+        name: 'scuola',
+        component: require('./views/Scuola.vue')
     },
     {
-        path: '/vini',
+        path: '/la-nostra-storia',
+        name: 'storia',
+        component: require('./views/Storia.vue')
+    },
+    {
+        path: '/i-nostri-vini',
         name: 'vini',
         component: require('./views/Vini.vue')
     },

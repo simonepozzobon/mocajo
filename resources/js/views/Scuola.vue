@@ -1,51 +1,63 @@
 <template lang="html">
-    <div class="container">
-        <div id="section-one" class="trigger"></div>
-        <div class="row section">
-            <div class="col-md-6">
-                <h1 ref="title">La Scuola di Mocajo</h1>
-                <p ref="description">
-                    Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.
-                </p>
-            </div>
-            <div class="col-md-6">
-                <img src="/images/about.jpg" alt="" class="img-fluid" ref="image">
-            </div>
+    <div class="container-fluid scuola-mocajo">
+        <div class="row">
+            <div class="col bg-dark" style="min-height: 40vh">Banner</div>
         </div>
-        <div class="row section">
-            <div id="section-two" class="trigger"></div>
-            <div class="col-md-6 order-md-2">
-                <h1 id="about-tenuta">La Tenuta</h1>
-                <p id="about-tenuta-description">
-                    Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.
+        <div class="row">
+            <ui-block
+                color="bg-light">
+                <ui-title
+                    title="Il Nostro Progetto" />
+                <p>
+                    Questo avventuroso progetto è iniziato nel 2014, con un solo obiettivo, quello di produrre un ottimo vino biologico. Abbiamo impiantato tre vitigni a bacca bianca in una terra di rosso: Vermentino, Viognier e Petit Manseng. Produrre vino bianco in una zona famosa specialmente per quello rosso, potrebbe sembrare una scelta contro corrente, in realtà la nostra decisione è frutto di un'attenta valutazione legata alle specifiche del terreno e del clima della zona, con la precisa volontà di proseguire l'eredità lasciata degli etruschi prima e dai romani dopo.<br><br>
+                    Mentre le piccole barbatelle crescevano, ci siamo dedicati alla ristrutturazione della vecchia Scuola della Tenuta, ridonandole il suo antico splendore e mantenendo gli elementi storici dell'edificio, quali la struttura originaria, la vecchia scala di pietra che portava gli alunni in classe, le finestre e l'albero che vi sorge accanto.
                 </p>
-            </div>
-            <div class="col-md-6 order-md-1">
-                <img src="/images/tenuta.jpg" alt="" class="img-fluid" id="about-tenuta-image">
-            </div>
+            </ui-block>
+            <ui-block
+                :isImage="true"
+                imgSrc="/images/storia.jpg" />
         </div>
-        <div class="row section">
-            <div id="section-three" class="trigger"></div>
-            <div class="col-md-6">
-                <h1 id="about-storia">La Nostra Storia</h1>
-                <p id="about-storia-description">
-                    Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.
+        <div class="row">
+            <ui-block
+                :isImage="true"
+                imgSrc="/images/tenuta.jpg" />
+            <ui-block
+                color="bg-light">
+                <ui-title
+                    title="La Nostra Famiglia" />
+                <p>
+                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.
                 </p>
-            </div>
-            <div class="col-md-6">
-                <img src="/images/storia.jpg" alt="" class="img-fluid" id="about-storia-image">
-            </div>
+            </ui-block>
+        </div>
+        <div class="row">
+            <ui-block
+                color="bg-light">
+                <ui-title
+                    title="L'agriturismo" />
+                <p>
+                    Tra morbide colline, vitigni e uliveti, sorge Scuola Mocajo, un elegante agriturismo accarezzato dal vento e immerso nel verde. Un luogo di pace dove si possono trascorrere piacevoli pomeriggi in piscina, visitare le città limitrofe o recarsi al mare che rimane a pochi km di distanza. Se siete interessati a trascorre del tempo nel nostro agriturismo, contattateci.
+                </p>
+            </ui-block>
+            <ui-block
+                :isImage="true"
+                imgSrc="/images/about.jpg" />
         </div>
     </div>
 </template>
 
 <script>
+import { UiBlock, UiTitle } from '../components/ui'
 import {TimelineMax} from 'gsap'
 import ScrollMagic from 'scrollmagic'
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
 
 export default {
     name: 'LaScuola',
+    components: {
+        UiBlock,
+        UiTitle,
+    },
     data: function() {
         return {
             controller: null,
