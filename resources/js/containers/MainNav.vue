@@ -35,7 +35,6 @@ export default {
         NavLogo
     },
     props: {
-
         navClass: {
             type: String,
             default: null
@@ -99,9 +98,10 @@ export default {
     left: 0;
     width: 100%;
     min-height: 60px;
-    height: 70px;
+    height: 130px;
     background-color: rgba($white, 0);
     z-index: 9999;
+    padding-left: $spacer * 2;
 
     transition: $transition-base;
 

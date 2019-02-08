@@ -64785,7 +64785,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.navbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  min-height: 60px;\n  height: 70px;\n  background-color: rgba(255, 255, 255, 0);\n  z-index: 9999;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n.navbar .nav-link {\n    font-weight: normal;\n    letter-spacing: 1px;\n}\n.navbar .navbar-brand {\n    padding-top: 1rem;\n}\n", ""]);
+exports.push([module.i, "\n.navbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  min-height: 60px;\n  height: 130px;\n  background-color: rgba(255, 255, 255, 0);\n  z-index: 9999;\n  padding-left: 2rem;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n.navbar .nav-link {\n    font-weight: normal;\n    letter-spacing: 1px;\n}\n.navbar .navbar-brand {\n    padding-top: 1rem;\n}\n", ""]);
 
 
 
