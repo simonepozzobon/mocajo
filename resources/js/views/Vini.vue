@@ -1,62 +1,96 @@
 <template lang="html">
-    <div class="container">
-        <div class="row section">
-            <div class="col-md-6">
-                <h1 ref="title">Vini</h1>
-                <p ref="description">
-                    Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.
-                </p>
+    <div class="wrapper">
+        <nav id="sidebar">
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="#">Vino 1</a>
+                </li>
+                <li>
+                    <a href="#">Vino 2</a>
+                </li>
+                <li>
+                    <a href="#">Vino 3</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="container-fluid section vini-mocajo">
+            <div class="row">
+                <ui-hero-banner
+                    color="bg-dark"
+                    imgSrc="/images/vini.jpg"/>
             </div>
-            <div class="col-md-6">
-                <img src="/images/vini.jpg" alt="" class="img-fluid" ref="image">
+            <div class="row">
+                <ui-block
+                    color="bg-light">
+                    <ui-title
+                        title="Sette" />
+                    <p>
+                        La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.
+                    </p>
+                    <ui-action
+                        url="/i-nostri-vini">
+                        Scopri i nostri vini
+                    </ui-action>
+                </ui-block>
+                <ui-block
+                    color="bg-light">
+                    <ui-title
+                        title="prodotto" />
+                </ui-block>
+            </div>
+            <div class="row">
+                <ui-block
+                    color="bg-light">
+                    <ui-title
+                        title="Soffio" />
+                    <p>
+                        La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.
+                    </p>
+                    <ui-action
+                        url="/i-nostri-vini">
+                        Scopri i nostri vini
+                    </ui-action>
+                </ui-block>
+                <ui-block
+                    color="bg-light">
+                    <ui-title
+                        title="prodotto" />
+                </ui-block>
+            </div>
+            <div class="row">
+                <ui-block
+                    color="bg-light">
+                    <ui-title
+                        title="Saputo" />
+                    <p>
+                        La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.
+                    </p>
+                    <ui-action
+                        url="/i-nostri-vini">
+                        Scopri i nostri vini
+                    </ui-action>
+                </ui-block>
+                <ui-block
+                    color="bg-light">
+                    <ui-title
+                        title="prodotto" />
+                </ui-block>
             </div>
         </div>
-        <div class="row mt-5 product-container">
-            <div class="col-md-6">
-                <h2>Mocajo</h2>
-                <p>
-                    Il Mocajo, antico borgo incastonato nelle colline toscane, dà vita a questo vino di gran classe, corposo dal sapore intenso è vellutato. Il suo complesso bouquet lo rende il vino perfetto da accostare a grandi brasati, selvaggina e formaggi stagionati.
-                </p>
-                <h6>€ 19,00</h6>
-                <button class="btn btn-primary" @click="addToCart(19.00)">Acquista</button>
-            </div>
-            <div class="col-md-6 product-image">
-                <img src="/images/wine-placeholder.jpeg" alt="" class="image">
-            </div>
-        </div>
-        <div class="row mt-5 product-container">
-            <div class="col-md-6 product-image">
-                <img src="/images/wine-placeholder.jpeg" alt="" class="image">
-            </div>
-            <div class="col-md-6">
-                <h2>Ligia</h2>
-                <p>
-                    Dalla splendida unione dei nobili vitigni San Giovese, Cabernet Franc e Syrah, nasce il Ligia vino delicato ma dal carattere forte e intraprendente. I suoi tannini equilibrati accompagnano a tavola ragù di lepre, bistecca alla fiorentina e secondi di selvaggina.
-                </p>
-                <h6>€ 12,00</h6>
-                <button class="btn btn-primary" @click="addToCart(12.00)">Acquista</button>
-            </div>
-        </div>
-        <div class="row mt-5 product-container">
-            <div class="col-md-6">
-                <h2>Ignis</h2>
-                <p>
-                    Ignis è vino robusto, intenso nei profumi di frutti rossi e spezie, con una morbida nota di vaniglia e dal sapore pieno e rotondo. La sua complessità lo rende armonico sia con la selvaggina che con formaggi stagionati, caprini ed erborinati.
-                </p>
-                <h6>€ 14,00</h6>
-                <button class="btn btn-primary" @click="addToCart(14.00)">Acquista</button>
-            </div>
-            <div class="col-md-6 product-image">
-                <img src="/images/wine-placeholder.jpeg" alt="" class="image">
-            </div>
-        </div>
-      </div>
+    </div>
 </template>
 
 <script>
 import {TimelineMax} from 'gsap'
+import { UiAction, UiBlock, UiHeroBanner, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
+    components: {
+        UiAction,
+        UiBlock,
+        UiHeroBanner,
+        UiTitle,
+    },
     methods: {
         animate: function() {
             let title = this.$refs.title,
@@ -116,19 +150,38 @@ export default {
         }
     },
     mounted: function() {
-        this.animate()
+        // this.animate()
     }
 }
 </script>
 
 <style lang="scss">
 @import '~styles/shared';
-.section {
-    max-width: 100%;
-    min-height: 100vh;
+
+.wrapper {
+    padding-top: 130px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    #sidebar {
+        position: fixed;
+        left: 0;
+        min-width: $spacer * 4;
+        max-width: $spacer * 4;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: $blue;
+        z-index: 2;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+.section {
+    // display: flex;
 }
 .product-container {
     max-width: 100%;

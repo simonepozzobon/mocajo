@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="container-fluid scuola-mocajo">
+    <div class="container-fluid scuola-mocajo section">
         <div class="row">
             <ui-hero-banner
                 color="bg-dark"
@@ -197,9 +197,6 @@ export default {
 <style lang="scss">
 @import '~styles/shared';
 .section {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: 130px;
 }
 </style>

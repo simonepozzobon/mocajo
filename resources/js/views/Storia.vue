@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="container-fluid storia-mocajo" ref="section">
+    <div class="container-fluid storia-mocajo section" ref="section">
         <div class="row">
             <ui-hero-banner-video
                 videoSrc="/video/home.mp4"
@@ -159,9 +159,6 @@ export default {
 <style lang="scss">
 @import '~styles/shared';
 .section {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: 130px;
 }
 </style>

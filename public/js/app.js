@@ -62613,7 +62613,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.section {\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
+exports.push([module.i, "\n.section {\n  padding-top: 130px;\n}\n", ""]);
 
 
 
@@ -63862,7 +63862,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid scuola-mocajo" }, [
+  return _c("div", { staticClass: "container-fluid scuola-mocajo section" }, [
     _c(
       "div",
       { staticClass: "row" },
@@ -64063,7 +64063,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.section {\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n", ""]);
+exports.push([module.i, "\n.section {\n  padding-top: 130px;\n}\n", ""]);
 
 
 
@@ -64241,7 +64241,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { ref: "section", staticClass: "container-fluid storia-mocajo" },
+    { ref: "section", staticClass: "container-fluid storia-mocajo section" },
     [
       _c(
         "div",
@@ -64377,7 +64377,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.section {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.product-container {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.product-container .product-image {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.product-container .product-image .image {\n      max-width: 240px;\n      height: auto;\n      max-height: 80vh;\n}\n", ""]);
+exports.push([module.i, "\n.wrapper {\n  padding-top: 130px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 100%;\n  -webkit-box-pack: start;\n      -ms-flex-pack: start;\n          justify-content: flex-start;\n  -webkit-box-align: stretch;\n      -ms-flex-align: stretch;\n          align-items: stretch;\n}\n.wrapper #sidebar {\n    position: fixed;\n    left: 0;\n    min-width: 4rem;\n    max-width: 4rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    background-color: #007bff;\n    z-index: 2;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n            transform: translateY(-50%);\n}\n.product-container {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.product-container .product-image {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.product-container .product-image .image {\n      max-width: 240px;\n      height: auto;\n      max-height: 80vh;\n}\n", ""]);
 
 
 
@@ -64388,6 +64388,34 @@ exports.push([module.i, "\n.section {\n  max-width: 100%;\n  min-height: 100vh;\
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_ui__ = __webpack_require__(19);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -64444,8 +64472,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Vini',
+  components: {
+    UiAction: __WEBPACK_IMPORTED_MODULE_1__components_ui__["a" /* UiAction */],
+    UiBlock: __WEBPACK_IMPORTED_MODULE_1__components_ui__["b" /* UiBlock */],
+    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_1__components_ui__["c" /* UiHeroBanner */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_1__components_ui__["e" /* UiTitle */]
+  },
   methods: {
     animate: function animate() {
       var title = this.$refs.title,
@@ -64501,8 +64536,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$root.addToCart(product);
     }
   },
-  mounted: function mounted() {
-    this.animate();
+  mounted: function mounted() {// this.animate()
   }
 });
 
@@ -64514,112 +64548,125 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row section" }, [
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h1", { ref: "title" }, [_vm._v("Vini")]),
-        _vm._v(" "),
-        _c("p", { ref: "description" }, [
-          _vm._v(
-            "\n                Mauris tempus, augue gravida lacinia hendrerit, orci sem pretium augue, nec tempor mi turpis in tortor. Sed porta lectus in quam sodales, venenatis fermentum magna convallis. Morbi vel laoreet est, vitae euismod magna. Nulla facilisi. Nunc ornare, erat ut iaculis sagittis, lectus tellus tincidunt dolor, tristique pulvinar felis nisl finibus neque. Nunc maximus risus at felis ultrices bibendum sit amet nec velit. Fusce sit amet purus velit. Pellentesque blandit turpis eu lacus ullamcorper pharetra. Phasellus tincidunt leo in lectus congue facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed a risus accumsan, ullamcorper urna et, scelerisque nulla.\n            "
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("img", {
-          ref: "image",
-          staticClass: "img-fluid",
-          attrs: { src: "/images/vini.jpg", alt: "" }
-        })
-      ])
-    ]),
+  return _c("div", { staticClass: "wrapper" }, [
+    _vm._m(0),
     _vm._v(" "),
-    _c("div", { staticClass: "row mt-5 product-container" }, [
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h2", [_vm._v("Mocajo")]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n                Il Mocajo, antico borgo incastonato nelle colline toscane, dà vita a questo vino di gran classe, corposo dal sapore intenso è vellutato. Il suo complesso bouquet lo rende il vino perfetto da accostare a grandi brasati, selvaggina e formaggi stagionati.\n            "
-          )
-        ]),
-        _vm._v(" "),
-        _c("h6", [_vm._v("€ 19,00")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary",
-            on: {
-              click: function($event) {
-                _vm.addToCart(19.0)
-              }
-            }
-          },
-          [_vm._v("Acquista")]
-        )
-      ]),
+    _c("div", { staticClass: "container-fluid section vini-mocajo" }, [
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c("ui-hero-banner", {
+            attrs: { color: "bg-dark", imgSrc: "/images/vini.jpg" }
+          })
+        ],
+        1
+      ),
       _vm._v(" "),
-      _vm._m(0)
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "row mt-5 product-container" }, [
-      _vm._m(1),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h2", [_vm._v("Ligia")]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n                Dalla splendida unione dei nobili vitigni San Giovese, Cabernet Franc e Syrah, nasce il Ligia vino delicato ma dal carattere forte e intraprendente. I suoi tannini equilibrati accompagnano a tavola ragù di lepre, bistecca alla fiorentina e secondi di selvaggina.\n            "
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [
+              _c("ui-title", { attrs: { title: "Sette" } }),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "\n                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                "
+                )
+              ]),
+              _vm._v(" "),
+              _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
+                _vm._v(
+                  "\n                    Scopri i nostri vini\n                "
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [_c("ui-title", { attrs: { title: "prodotto" } })],
+            1
           )
-        ]),
-        _vm._v(" "),
-        _c("h6", [_vm._v("€ 12,00")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary",
-            on: {
-              click: function($event) {
-                _vm.addToCart(12.0)
-              }
-            }
-          },
-          [_vm._v("Acquista")]
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "row mt-5 product-container" }, [
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h2", [_vm._v("Ignis")]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n                Ignis è vino robusto, intenso nei profumi di frutti rossi e spezie, con una morbida nota di vaniglia e dal sapore pieno e rotondo. La sua complessità lo rende armonico sia con la selvaggina che con formaggi stagionati, caprini ed erborinati.\n            "
-          )
-        ]),
-        _vm._v(" "),
-        _c("h6", [_vm._v("€ 14,00")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary",
-            on: {
-              click: function($event) {
-                _vm.addToCart(14.0)
-              }
-            }
-          },
-          [_vm._v("Acquista")]
-        )
-      ]),
+        ],
+        1
+      ),
       _vm._v(" "),
-      _vm._m(2)
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [
+              _c("ui-title", { attrs: { title: "Soffio" } }),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "\n                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                "
+                )
+              ]),
+              _vm._v(" "),
+              _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
+                _vm._v(
+                  "\n                    Scopri i nostri vini\n                "
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [_c("ui-title", { attrs: { title: "prodotto" } })],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [
+              _c("ui-title", { attrs: { title: "Saputo" } }),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "\n                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                "
+                )
+              ]),
+              _vm._v(" "),
+              _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
+                _vm._v(
+                  "\n                    Scopri i nostri vini\n                "
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "ui-block",
+            { attrs: { color: "bg-light" } },
+            [_c("ui-title", { attrs: { title: "prodotto" } })],
+            1
+          )
+        ],
+        1
+      )
     ])
   ])
 }
@@ -64628,33 +64675,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 product-image" }, [
-      _c("img", {
-        staticClass: "image",
-        attrs: { src: "/images/wine-placeholder.jpeg", alt: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 product-image" }, [
-      _c("img", {
-        staticClass: "image",
-        attrs: { src: "/images/wine-placeholder.jpeg", alt: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 product-image" }, [
-      _c("img", {
-        staticClass: "image",
-        attrs: { src: "/images/wine-placeholder.jpeg", alt: "" }
-      })
+    return _c("nav", { attrs: { id: "sidebar" } }, [
+      _c("ul", { staticClass: "list-unstyled components" }, [
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 1")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 2")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 3")])])
+      ])
     ])
   }
 ]

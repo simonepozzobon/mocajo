@@ -47,7 +47,7 @@ export default {
     components: {
         CartIcon,
         MenuAnim,
-        NavLogo
+        NavLogo,
     },
     props: {
         navClass: {
