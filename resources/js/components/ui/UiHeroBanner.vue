@@ -34,7 +34,7 @@ export default {
 @import '~styles/shared';
 
 .ui-hero-banner {
-    min-height: 40vh;
+    min-height: 30vh;
     background-size: cover;
     background-position: center;
     padding: $spacer * 4;

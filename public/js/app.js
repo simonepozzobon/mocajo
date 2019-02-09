@@ -82809,7 +82809,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-hero-banner {\n  min-height: 40vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n", ""]);
+exports.push([module.i, "\n.ui-hero-banner {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n", ""]);
 
 
 
