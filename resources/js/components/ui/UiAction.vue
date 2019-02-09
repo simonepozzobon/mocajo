@@ -25,6 +25,8 @@ export default {
     letter-spacing: 1px;
     font-size: 0.75rem;
     position: relative;
+    padding-top: $spacer / 1.618;
+
 
     &::before {
         content: '';
@@ -32,6 +34,7 @@ export default {
         width: $spacer * 2;
         border-bottom: 1px solid $black;
         left: 0;
+        top: 0;
     }
 }
 </style>

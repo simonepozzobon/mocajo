@@ -64295,7 +64295,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#sidebar {\n  max-width: 6rem;\n  background-color: #fff;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n#sidebar .product-menu {\n    width: 6rem;\n    height: 6rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    font-size: 1.25rem;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    cursor: pointer;\n}\n#sidebar .product-menu.active {\n      background-color: #fff !important;\n}\n#sidebar .product-menu.active.bg-blue {\n        color: #68A2C9;\n}\n#sidebar .product-menu.active.bg-yellow {\n        color: #FAC823;\n}\n#sidebar .product-menu.active.bg-red {\n        color: #d85840;\n}\n#sidebar:hover {\n    max-width: 6.5rem;\n    cursor: pointer;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n}\n#sidebar:hover .product-menu {\n      width: 6.5rem;\n      height: 6.5rem;\n}\n#sidebar:hover .product-menu span {\n        display: inline-block;\n        visibility: visible;\n        width: auto;\n        opacity: 0.6;\n        -webkit-transition: opacity .55s ease-in-out;\n        transition: opacity .55s ease-in-out;\n}\n#content .row {\n  border-left: 1px solid #000;\n  margin-left: 0;\n}\n#content .row .ui-block {\n    min-height: calc(100vh - 130px);\n}\n#content .row .ui-block.custom-block {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n#content .row .ui-block.custom-block img {\n        max-height: calc(100vh - 130px);\n}\n", ""]);
+exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#sidebar {\n  max-width: 6rem;\n  background-color: #fff;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n#sidebar .product-menu {\n    width: 6rem;\n    height: 6rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    font-size: 1.25rem;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    cursor: pointer;\n}\n#sidebar .product-menu.active {\n      background-color: #fff !important;\n}\n#sidebar .product-menu.active.bg-blue {\n        color: #68A2C9;\n}\n#sidebar .product-menu.active.bg-yellow {\n        color: #FAC823;\n}\n#sidebar .product-menu.active.bg-red {\n        color: #d85840;\n}\n#sidebar:hover {\n    max-width: 6.5rem;\n    cursor: pointer;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n}\n#sidebar:hover .product-menu {\n      width: 6.5rem;\n      height: 6.5rem;\n}\n#sidebar:hover .product-menu span {\n        display: inline-block;\n        visibility: visible;\n        width: auto;\n        opacity: 0.6;\n        -webkit-transition: opacity .55s ease-in-out;\n        transition: opacity .55s ease-in-out;\n}\n#content .row {\n  border-left: 1px solid #000;\n  margin-left: 0;\n}\n#content .row .ui-block {\n    min-height: calc(100vh - 130px);\n}\n#content .row .ui-block.custom-block {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n#content .row .ui-block.custom-block img {\n        max-height: calc(100vh - 130px);\n}\n#content .add-to-cart {\n  margin-top: 1.618rem;\n  display: block;\n}\n", ""]);
 
 
 
@@ -64663,7 +64663,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-outline-black add-to-cart",
                     on: {
                       click: function($event) {
                         _vm.addToCart(19.0)
@@ -64720,7 +64720,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-outline-black add-to-cart",
                     on: {
                       click: function($event) {
                         _vm.addToCart(14.0)
@@ -64777,7 +64777,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-outline-black add-to-cart",
                     on: {
                       click: function($event) {
                         _vm.addToCart(12.0)
@@ -82407,7 +82407,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.block-action {\n  color: #000;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  font-size: 0.75rem;\n  position: relative;\n}\n.block-action::before {\n    content: '';\n    position: absolute;\n    width: 2rem;\n    border-bottom: 1px solid #000;\n    left: 0;\n}\n", ""]);
+exports.push([module.i, "\n.block-action {\n  color: #000;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  font-size: 0.75rem;\n  position: relative;\n  padding-top: 0.61805rem;\n}\n.block-action::before {\n    content: '';\n    position: absolute;\n    width: 2rem;\n    border-bottom: 1px solid #000;\n    left: 0;\n    top: 0;\n}\n", ""]);
 
 
 
@@ -83903,7 +83903,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-collapse {\n  margin-bottom: 2rem;\n}\n.ui-collapse .collapse-header {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: justify;\n        -ms-flex-pack: justify;\n            justify-content: space-between;\n    cursor: pointer;\n    border-bottom: 1px solid #000;\n    padding: 0.809rem;\n}\n", ""]);
+exports.push([module.i, "\n.ui-collapse {\n  margin-bottom: 3.236rem;\n}\n.ui-collapse .collapse-header {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: justify;\n        -ms-flex-pack: justify;\n            justify-content: space-between;\n    cursor: pointer;\n    border-bottom: 1px solid #000;\n    padding: 0.809rem;\n}\n", ""]);
 
 
 

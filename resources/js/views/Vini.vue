@@ -31,7 +31,7 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
-                        <button class="btn btn-primary" @click="addToCart(19.00)">Acquista</button>
+                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(19.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block">
@@ -49,7 +49,7 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
-                        <button class="btn btn-primary" @click="addToCart(14.00)">Acquista</button>
+                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(14.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block">
@@ -67,7 +67,7 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
-                        <button class="btn btn-primary" @click="addToCart(12.00)">Acquista</button>
+                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(12.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block">
@@ -324,6 +324,11 @@ export default {
                 }
             }
         }
+    }
+
+    .add-to-cart {
+        margin-top: $spacer * 1.618;
+        display: block;
     }
 }
 

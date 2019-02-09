@@ -39,7 +39,7 @@ export default {
 @import '~styles/shared';
 
 .ui-collapse {
-    margin-bottom: $spacer * 2;
+    margin-bottom: $spacer * 2 * 1.618;
 
     .collapse-header {
         display: flex;
