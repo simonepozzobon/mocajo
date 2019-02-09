@@ -73,7 +73,7 @@ export default {
         	top: 50%;
         	height: 1px;
         	margin-top: -1px;
-        	background: rgba($white, 0.5);
+        	background: rgba($white, 0);
         	content: '';
         	z-index: -1;
         	-webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
@@ -103,11 +103,13 @@ export default {
 
         .nav-link:hover::before,
         .nav-link:focus::before {
+            background: rgba($white, 0.5);
         	transform: rotate(45deg);
         }
 
         .nav-link:hover::after,
         .nav-link:focus::after {
+            background: rgba($white, 0.5);
         	transform: rotate(-45deg);
         }
 
