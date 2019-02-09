@@ -62721,6 +62721,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -63851,7 +63852,11 @@ var render = function() {
       { staticClass: "row" },
       [
         _c("ui-hero-banner", {
-          attrs: { color: "bg-dark", imgSrc: "/images/la-scuola-mocajo.jpg" }
+          attrs: {
+            title: "Scuola Mocajo",
+            color: "bg-dark",
+            imgSrc: "/images/la-scuola-mocajo.jpg"
+          }
         })
       ],
       1
@@ -82603,10 +82608,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UiHeroBanner',
   props: {
     color: {
+      type: String,
+      default: null
+    },
+    title: {
       type: String,
       default: null
     },
@@ -82629,15 +82639,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var master = new TimelineMax({
         paused: true
       });
-      master.fromTo(this.$refs.overlay, 1.7, {
-        width: '30%',
-        autoAlpha: 1
+      var overlay = this.$refs.overlay;
+      var title = this.$refs.title;
+      master.fromTo(overlay, 1.7, {
+        autoAlpha: 1,
+        xPercent: 0
       }, {
-        width: 0,
+        xPercent: 100,
         autoAlpha: 0,
         ease: Sine.easeInOut
-      });
-      master.progress(1).progress(0);
+      }, 0);
+      master.fromTo(title, 2.7, {
+        opacity: 0
+      }, {
+        opacity: 1,
+        ease: Sine.easeInOut
+      }, 0); // master.progress(1).progress(0)
+
       master.play();
     }
   },
@@ -82680,7 +82698,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-hero-banner {\n  width: 100%;\n  height: 100%;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n.ui-hero-banner .overlay {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    left: 0;\n    top: 0;\n    background-color: #000;\n}\n@media (min-width: 64.0625em) {\n.ui-hero-banner {\n      height: 36vw;\n}\n}\n@media (min-width: 48em) {\n.ui-hero-banner {\n      height: 31.5vw;\n}\n}\n", ""]);
+exports.push([module.i, "\n.ui-hero-banner {\n  width: 100%;\n  height: 100%;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n}\n.ui-hero-banner .ui-hero-banner-overlay {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    left: 0;\n    top: 0;\n    background-color: #000;\n}\n.ui-hero-banner .ui-hero-banner-title {\n    letter-spacing: 2px;\n    opacity: 0;\n    z-index: 1;\n    font-weight: 400;\n}\n.ui-hero-banner .ui-hero-banner-title::after {\n      content: '';\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      z-index: -1;\n      top: 0;\n      left: 0;\n      background-color: rgba(0, 0, 0, 0.2);\n      -webkit-box-shadow: inset 0 0 80vw 0 rgba(0, 0, 0, 0.5);\n              box-shadow: inset 0 0 80vw 0 rgba(0, 0, 0, 0.5);\n}\n@media (min-width: 64.0625em) {\n.ui-hero-banner {\n      height: 36vw;\n}\n}\n@media (min-width: 48em) {\n.ui-hero-banner {\n      height: 31.5vw;\n}\n}\n", ""]);
 
 
 
@@ -82696,7 +82714,13 @@ var render = function() {
     "div",
     { ref: "block", staticClass: "col-12 ui-hero-banner", class: _vm.color },
     [
-      _c("div", { ref: "overlay", staticClass: "overlay" }),
+      _c("div", { ref: "overlay", staticClass: "ui-hero-banner-overlay" }),
+      _vm._v(" "),
+      _c(
+        "h1",
+        { ref: "title", staticClass: "ui-hero-banner-title text-white" },
+        [_vm._v(_vm._s(_vm.title))]
+      ),
       _vm._v(" "),
       _vm._t("default")
     ],

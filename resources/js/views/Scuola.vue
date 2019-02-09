@@ -2,8 +2,9 @@
     <div class="container-fluid scuola-mocajo section">
         <div class="row">
             <ui-hero-banner
+                title="Scuola Mocajo"
                 color="bg-dark"
-                imgSrc="/images/la-scuola-mocajo.jpg"/>
+                imgSrc="/images/la-scuola-mocajo.jpg" />
         </div>
         <div class="row">
             <ui-block
