@@ -7,36 +7,65 @@
         </div>
         <div class="row no-gutters">
             <div id="sidebar" class="col">
-                <nav class="sidebar">
-                    <ul class="list-unstyled components">
-                        <li>
-                            <a href="#">Vino 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Vino 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Vino 3</a>
-                        </li>
-                    </ul>
-                </nav>
+                <div class="sidebar-container" ref="sidebar">
+                    <div class="product-menu bg-blue active">
+                        S
+                    </div>
+                    <div class="product-menu bg-red">
+                        S
+                    </div>
+                    <div class="product-menu bg-yellow">
+                        S
+                    </div>
+                </div>
             </div>
             <div id="content" class="col">
                 <div class="row">
-                    <ui-block>
+                    <ui-block
+                        color="bg-light">
                         <ui-title
                             title="Sette" />
-                        <p>
-                            La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.
-                        </p>
+                        <ui-collapse />
                         <ui-action
                             url="/i-nostri-vini">
-                            Scopri i nostri vini
+                            Download Scheda Tecnica
                         </ui-action>
                     </ui-block>
-                    <ui-block>
+                    <ui-block
+                        class="custom-block">
+                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
+                    </ui-block>
+                </div>
+                <div class="row">
+                    <ui-block
+                        color="bg-light">
                         <ui-title
-                            title="prodotto" />
+                            title="Soffio" />
+                        <ui-collapse />
+                        <ui-action
+                            url="/i-nostri-vini">
+                            Download Scheda Tecnica
+                        </ui-action>
+                    </ui-block>
+                    <ui-block
+                        class="custom-block">
+                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
+                    </ui-block>
+                </div>
+                <div class="row">
+                    <ui-block
+                        color="bg-light">
+                        <ui-title
+                            title="Saputo" />
+                        <ui-collapse />
+                        <ui-action
+                            url="/i-nostri-vini">
+                            Download Scheda Tecnica
+                        </ui-action>
+                    </ui-block>
+                    <ui-block
+                        class="custom-block">
+                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
             </div>
@@ -47,15 +76,32 @@
 </template>
 
 <script>
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+
 import {TimelineMax} from 'gsap'
-import { UiAction, UiBlock, UiHeroBanner, UiTitle } from '../components/ui'
+import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
     components: {
+        swiper,
+        swiperSlide,
         UiAction,
         UiBlock,
+        UiCollapse,
         UiHeroBanner,
         UiTitle,
+    },
+    data: function() {
+        return {
+            swiperOption: {
+                direction: 'vertical',
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                }
+            }
+        }
     },
     methods: {
         addToCart: function(price) {
@@ -84,10 +130,18 @@ export default {
                 }
             }
             this.$root.addToCart(product)
+        },
+        setMenuOnCenter: function(e) {
+            let position = document.documentElement.scrollTop
+            TweenMax.to(this.$refs.sidebar, .2, {
+                y: position
+            })
         }
     },
     mounted: function() {
-        // this.animate()
+        window.addEventListener('scroll', (e) => {
+            this.setMenuOnCenter(e)
+        })
     }
 }
 </script>
@@ -102,13 +156,86 @@ export default {
 }
 
 #sidebar {
-    min-width: $spacer * 4;
-    max-width: $spacer * 4;
-    background-color: $blue;
+    max-width: $spacer * 6;
+    background-color: $white;
+
+    .product-menu {
+        width: $spacer * 6;
+        height: $spacer * 6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: $h5-font-size;
+        transition: $transition-base;
+        cursor: pointer;
+
+
+        span {
+            display: inline-block;
+            opacity: 0;
+            width: 0;
+            visibility: hidden;
+            transition: opacity .55s ease-in-out;
+        }
+
+        // &.active {
+        //     z-index: 2;
+        //     position: relative;
+        //
+        //     // &::after {
+        //     //     content: '';
+        //     //     position: absolute;
+        //     //     background-color: $blue;
+        //     //     right: - $spacer * 2.1213;
+        //     //     width: $spacer * 4.2426;
+        //     //     height: $spacer * 4.2426;
+        //     //     z-index: -1;
+        //     //     transform: rotate(45deg);
+        //     // }
+        // }
+    }
+
+    &:hover {
+        max-width: $spacer * 8;
+        cursor: pointer;
+
+        .product-menu {
+            width: $spacer * 8;
+            height: $spacer * 8;
+
+            span {
+                display: inline-block;
+                visibility: visible;
+                width: auto;
+                opacity: 0.6;
+                transition: opacity .55s ease-in-out;
+            }
+        }
+
+        transition: $transition-base;
+    }
+    transition: $transition-base;
 }
 
 #content {
-    background-color: $primary;
+    .row {
+        border-left: 1px solid $black;
+        margin-left: 0;
+
+        .ui-block {
+            min-height: 60vh;
+
+            &.custom-block {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                img {
+                    max-height: 60vh;
+                }
+            }
+        }
+    }
 }
 
 </style>
