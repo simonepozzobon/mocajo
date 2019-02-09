@@ -3,6 +3,7 @@
         <div class="row">
             <ui-hero-banner
                 color="bg-dark"
+                title="Vini Scuola Mocajo"
                 imgSrc="/images/vini.jpg"/>
         </div>
         <div class="row">

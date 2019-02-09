@@ -64443,6 +64443,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -64629,7 +64630,11 @@ var render = function() {
       { staticClass: "row" },
       [
         _c("ui-hero-banner", {
-          attrs: { color: "bg-dark", imgSrc: "/images/vini.jpg" }
+          attrs: {
+            color: "bg-dark",
+            title: "Vini Scuola Mocajo",
+            imgSrc: "/images/vini.jpg"
+          }
         })
       ],
       1
