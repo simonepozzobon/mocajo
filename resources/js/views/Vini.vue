@@ -8,19 +8,20 @@
         <div class="row no-gutters">
             <div id="sidebar" class="col">
                 <div class="sidebar-container" ref="sidebar">
-                    <div id="sette-menu" class="product-menu bg-blue active" :class="setteMenu" @click="goTo(1)">
+                    <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
                         S
                     </div>
-                    <div id="soffio-menu" class="product-menu bg-red" :class="soffioMenu" @click="goTo(2)">
+                    <div id="soffio-menu" class="product-menu bg-red" @click="goTo(2)">
                         S
                     </div>
-                    <div id="saputo-menu" class="product-menu bg-yellow" :class="saputoMenu" @click="goTo(3)">
+                    <div id="saputo-menu" class="product-menu bg-yellow" @click="goTo(3)">
                         S
                     </div>
                 </div>
             </div>
             <div id="content" class="col">
-                <div id="sette" class="row">
+                <div id="sette" class="row" v-view="handler">
+                    <div id="sette-trigger"></div>
                     <ui-block
                         color="bg-light">
                         <ui-title
@@ -30,13 +31,15 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
+                        <button class="btn btn-primary" @click="addToCart(19.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block">
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
-                <div id="soffio" class="row">
+                <div id="soffio" class="row" v-view="handler">
+                    <div id="soffio-trigger"></div>
                     <ui-block
                         color="bg-light">
                         <ui-title
@@ -46,13 +49,15 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
+                        <button class="btn btn-primary" @click="addToCart(14.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block">
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
-                <div id="saputo" class="row">
+                <div id="saputo" class="row" v-view="handler">
+                    <div id="saputo-trigger"></div>
                     <ui-block
                         color="bg-light">
                         <ui-title
@@ -62,6 +67,7 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
+                        <button class="btn btn-primary" @click="addToCart(12.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block">
@@ -76,18 +82,13 @@
 </template>
 
 <script>
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
-import 'swiper/dist/css/swiper.css'
 
 import {TimelineMax} from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
-
 import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
     components: {
-        swiper,
-        swiperSlide,
         UiAction,
         UiBlock,
         UiCollapse,
@@ -96,19 +97,34 @@ export default {
     },
     data: function() {
         return {
-            swiperOption: {
-                direction: 'vertical',
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                }
-            },
-            setteMenu: null,
-            soffioMenu: null,
-            saputoMenu: null,
+            cache: {
+                sette: true,
+                soffio: null,
+                saputo: null,
+            }
         }
     },
     methods: {
+        handler: function(e) {
+            let name = e.target.element.id
+            if (e.percentCenter > 0.5 && e.percentCenter < 0.7) {
+                if (!this.cache[name]) {
+                    TweenMax.to('#'+name+'-menu', .6, {
+                        className: '+=active',
+                        onComplete: () => {
+                            this.cache[name] = true
+                        }
+                    })
+                }
+            } else if (e.type == 'exit') {
+                TweenMax.to('#'+name+'-menu', .2, {
+                    className: '-=active',
+                    onComplete: () => {
+                        this.cache[name] = false
+                    }
+                })
+            }
+        },
         addToCart: function(price) {
             price = price.toFixed(2)
             let product = null
