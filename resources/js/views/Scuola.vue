@@ -19,12 +19,13 @@
                     Scopri la storia
                 </ui-action>
             </ui-block>
-            <ui-block
+            <ui-image-block
                 :isImage="true"
+                :direction="false"
                 imgSrc="/images/storia.jpg" />
         </div>
         <div class="row">
-            <ui-block
+            <ui-image-block
                 :isImage="true"
                 imgSrc="/images/tenuta.jpg" />
             <ui-block
@@ -53,15 +54,16 @@
                     Vai a contatti
                 </ui-action>
             </ui-block>
-            <ui-block
+            <ui-image-block
                 :isImage="true"
-                imgSrc="/images/about.jpg" />
+                imgSrc="/images/about.jpg"
+                :direction="false"/>
         </div>
     </div>
 </template>
 
 <script>
-import { UiAction, UiBlock, UiHeroBanner, UiTitle } from '../components/ui'
+import { UiAction, UiBlock, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
 import {TimelineMax} from 'gsap'
 import ScrollMagic from 'scrollmagic'
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
@@ -72,6 +74,7 @@ export default {
         UiAction,
         UiBlock,
         UiHeroBanner,
+        UiImageBlock,
         UiTitle,
     },
     data: function() {

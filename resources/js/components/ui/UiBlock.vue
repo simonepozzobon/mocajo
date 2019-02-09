@@ -15,6 +15,10 @@ export default {
         imgSrc: {
             type: String,
             default: null,
+        },
+        direction: {
+            type: Boolean,
+            default: null, // true -> anima da sinistra verso destra
         }
     },
     methods: {

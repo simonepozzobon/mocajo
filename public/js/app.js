@@ -20030,13 +20030,17 @@ module.exports = Cancel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue__ = __webpack_require__(175);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__UiTitle_vue__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__UiTitle_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__UiTitle_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__UiImageBlock_vue__ = __webpack_require__(190);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__UiImageBlock_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__UiImageBlock_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UiTitle_vue__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UiTitle_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__UiTitle_vue__);
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__UiAction_vue___default.a; });
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__UiBlock_vue___default.a; });
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_2__UiHeroBanner_vue___default.a; });
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_3__UiHeroBannerVideo_vue___default.a; });
-/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_4__UiTitle_vue___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_4__UiImageBlock_vue___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_5__UiTitle_vue___default.a; });
+
 
 
 
@@ -62691,6 +62695,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -62701,7 +62707,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     UiAction: __WEBPACK_IMPORTED_MODULE_0__components_ui__["a" /* UiAction */],
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
     UiHeroBanner: __WEBPACK_IMPORTED_MODULE_0__components_ui__["c" /* UiHeroBanner */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiTitle */]
+    UiImageBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiImageBlock */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["f" /* UiTitle */]
   },
   data: function data() {
     return {
@@ -62928,6 +62935,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     imgSrc: {
       type: String,
       default: null
+    },
+    direction: {
+      type: Boolean,
+      default: null // true -> anima da sinistra verso destra
+
     }
   },
   methods: {
@@ -63902,8 +63914,12 @@ var render = function() {
           1
         ),
         _vm._v(" "),
-        _c("ui-block", {
-          attrs: { isImage: true, imgSrc: "/images/storia.jpg" }
+        _c("ui-image-block", {
+          attrs: {
+            isImage: true,
+            direction: false,
+            imgSrc: "/images/storia.jpg"
+          }
         })
       ],
       1
@@ -63913,7 +63929,7 @@ var render = function() {
       "div",
       { staticClass: "row" },
       [
-        _c("ui-block", {
+        _c("ui-image-block", {
           attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
         }),
         _vm._v(" "),
@@ -63962,8 +63978,12 @@ var render = function() {
           1
         ),
         _vm._v(" "),
-        _c("ui-block", {
-          attrs: { isImage: true, imgSrc: "/images/about.jpg" }
+        _c("ui-image-block", {
+          attrs: {
+            isImage: true,
+            imgSrc: "/images/about.jpg",
+            direction: false
+          }
         })
       ],
       1
@@ -64112,7 +64132,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
     UiHeroBannerVideo: __WEBPACK_IMPORTED_MODULE_0__components_ui__["d" /* UiHeroBannerVideo */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiTitle */]
+    UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["f" /* UiTitle */]
   },
   data: function data() {
     return {
@@ -64479,7 +64499,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     UiAction: __WEBPACK_IMPORTED_MODULE_1__components_ui__["a" /* UiAction */],
     UiBlock: __WEBPACK_IMPORTED_MODULE_1__components_ui__["b" /* UiBlock */],
     UiHeroBanner: __WEBPACK_IMPORTED_MODULE_1__components_ui__["c" /* UiHeroBanner */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_1__components_ui__["e" /* UiTitle */]
+    UiTitle: __WEBPACK_IMPORTED_MODULE_1__components_ui__["f" /* UiTitle */]
   },
   methods: {
     animate: function animate() {
@@ -83215,6 +83235,165 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-540fe37d", module.exports)
+  }
+}
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(191)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(193)
+/* template */
+var __vue_template__ = __webpack_require__(194)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ui/UiImageBlock.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-67da0166", Component.options)
+  } else {
+    hotAPI.reload("data-v-67da0166", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(192);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("2245b693", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-67da0166\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiImageBlock.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-67da0166\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UiImageBlock.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// Module
+exports.push([module.i, "\n.ui-image-block {\n  min-height: 30vh;\n  position: relative;\n  list-style: none;\n  text-align: center;\n  padding: 0;\n  -o-object-fit: fill;\n     object-fit: fill;\n}\n.ui-image-block figure {\n    position: relative;\n    float: left;\n    overflow: hidden;\n    text-align: center;\n    cursor: pointer;\n    margin: 0;\n}\n.ui-image-block figure img {\n      position: relative;\n      display: block;\n      opacity: 0.8;\n      width: 100%;\n      height: auto;\n}\n.ui-image-block figure.effect-roxy img {\n      max-width: none;\n      width: 120%;\n      -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;\n      transition: opacity 0.35s, -webkit-transform 0.35s;\n      transition: opacity 0.35s, transform 0.35s;\n      transition: opacity 0.35s, transform 0.35s, -webkit-transform 0.35s;\n}\n.ui-image-block figure.effect-roxy.from-left-to-right-animation img {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n}\n.ui-image-block figure.effect-roxy.from-right-to-left-animation img {\n      -webkit-transform: translate3d(0, 0, 0);\n              transform: translate3d(0, 0, 0);\n}\n.ui-image-block figure.effect-roxy:hover img {\n      opacity: 0.7;\n      -webkit-transform: translate3d(0, 0, 0);\n              transform: translate3d(0, 0, 0);\n}\n.ui-image-block figure.effect-roxy:hover.from-right-to-left-animation img {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n}\n", ""]);
+
+
+
+/***/ }),
+/* 193 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'UiImageBlock',
+  props: {
+    color: {
+      type: String,
+      default: null
+    },
+    imgSrc: {
+      type: String,
+      default: null
+    },
+    direction: {
+      type: Boolean,
+      default: true // true -> anima da sinistra verso destra
+
+    }
+  },
+  computed: {
+    animateDirection: function animateDirection() {
+      if (this.direction) {
+        return 'from-left-to-right-animation';
+      }
+
+      return 'from-right-to-left-animation';
+    }
+  }
+});
+
+/***/ }),
+/* 194 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { ref: "block", staticClass: "col-md-6 ui-image-block", class: _vm.color },
+    [
+      _c(
+        "figure",
+        { staticClass: "effect-roxy", class: _vm.animateDirection },
+        [_c("img", { attrs: { src: _vm.imgSrc, alt: "img01" } })]
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-67da0166", module.exports)
   }
 }
 

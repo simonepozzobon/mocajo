@@ -2,6 +2,7 @@ import UiAction from './UiAction.vue'
 import UiBlock from './UiBlock.vue'
 import UiHeroBanner from './UiHeroBanner.vue'
 import UiHeroBannerVideo from './UiHeroBannerVideo.vue'
+import UiImageBlock from './UiImageBlock.vue'
 import UiTitle from './UiTitle.vue'
 
 export {
@@ -9,5 +10,6 @@ export {
     UiBlock,
     UiHeroBanner,
     UiHeroBannerVideo,
+    UiImageBlock,
     UiTitle,
 }
