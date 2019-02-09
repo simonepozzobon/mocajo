@@ -250,6 +250,8 @@ export default {
         padding-top: 130px;
         padding-left: 0;
         padding-right: 0;
+        max-width: 100vw;
+        overflow-x: hidden;
     }
 }
 

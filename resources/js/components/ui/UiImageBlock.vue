@@ -137,11 +137,11 @@ export default {
 
         &.from-left-to-right-animation {
             transform: translate3d(-50px,0,0);
-            transition: $transition-base;
+            transition: all 2s ease-in-out;
 
             &:hover {
                 transform: translate3d(0px,0,0);
-            	transition: $transition-base;
+            	transition:  all 2s ease-in-out;
                 opacity: 0.7;
             }
 
@@ -149,11 +149,11 @@ export default {
 
         &.from-right-to-left-animation {
             transform: translate3d(0px,0,0);
-            transition: $transition-base;
+            transition:  all 2s ease-in-out;
 
             &:hover {
                 transform: translate3d(-50px,0,0);
-                transition: $transition-base;
+                transition:  all 2s ease-in-out;
                 opacity: 0.7;
             }
         }

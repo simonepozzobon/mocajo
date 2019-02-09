@@ -88,5 +88,7 @@ export default {
 @import '~styles/shared';
 .section {
     padding-top: 130px;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 </style>
