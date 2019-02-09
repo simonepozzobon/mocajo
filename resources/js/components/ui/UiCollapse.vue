@@ -1,17 +1,10 @@
 <template lang="html">
     <div class="ui-collapse">
         <collapse-heading
-            title="descrizione" />
-        <collapse-heading
-            title="vitigno" />
-        <collapse-heading
-            title="zona" />
-        <collapse-heading
-            title="vitigno" />
-        <collapse-heading
-            title="vinificazione" />
-        <collapse-heading
-            title="valori analitici" />
+            v-for="(item, i) in this.elements"
+            :key="i"
+            :title="item.title"/>
+
     </div>
 </template>
 
@@ -31,6 +24,15 @@ export default {
             type: String,
             default: 'titolo'
         }
+    },
+    data: function() {
+        return {
+        }
+    },
+    methods: {
+        openPanel: function(idx) {
+            console.log(idx)
+        }
     }
 }
 </script>
@@ -40,15 +42,6 @@ export default {
 
 .ui-collapse {
     margin-bottom: $spacer * 2 * 1.618;
-
-    .collapse-header {
-        display: flex;
-        justify-content: space-between;
-        cursor: pointer;
-        border-bottom: 1px solid $black;
-        padding: ($spacer / 2) * 1.618;
-    }
-
 }
 
 </style>

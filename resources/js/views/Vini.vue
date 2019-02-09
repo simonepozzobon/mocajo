@@ -26,7 +26,7 @@
                         color="bg-light">
                         <ui-title
                             title="Sette" />
-                        <ui-collapse />
+                        <ui-collapse :elements="this.wines"/>
                         <ui-action
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
@@ -44,7 +44,7 @@
                         color="bg-light">
                         <ui-title
                             title="Soffio" />
-                        <ui-collapse />
+                        <ui-collapse :elements="this.wines"/>
                         <ui-action
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
@@ -62,7 +62,7 @@
                         color="bg-light">
                         <ui-title
                             title="Saputo" />
-                        <ui-collapse />
+                        <ui-collapse :elements="this.wines"/>
                         <ui-action
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-
+import Wines from '../dummies/wines'
 import {TimelineMax} from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
 import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
@@ -101,7 +101,8 @@ export default {
                 sette: true,
                 soffio: null,
                 saputo: null,
-            }
+            },
+            wines: Wines,
         }
     },
     methods: {

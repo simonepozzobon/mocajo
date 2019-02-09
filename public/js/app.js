@@ -64353,9 +64353,10 @@ exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#si
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gsap_ScrollToPlugin__ = __webpack_require__(222);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ui__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dummies_wines__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gsap__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_gsap_ScrollToPlugin__ = __webpack_require__(222);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_ui__ = __webpack_require__(19);
 //
 //
 //
@@ -64439,17 +64440,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Vini',
   components: {
-    UiAction: __WEBPACK_IMPORTED_MODULE_2__components_ui__["a" /* UiAction */],
-    UiBlock: __WEBPACK_IMPORTED_MODULE_2__components_ui__["b" /* UiBlock */],
-    UiCollapse: __WEBPACK_IMPORTED_MODULE_2__components_ui__["c" /* UiCollapse */],
-    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_2__components_ui__["d" /* UiHeroBanner */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_2__components_ui__["g" /* UiTitle */]
+    UiAction: __WEBPACK_IMPORTED_MODULE_3__components_ui__["a" /* UiAction */],
+    UiBlock: __WEBPACK_IMPORTED_MODULE_3__components_ui__["b" /* UiBlock */],
+    UiCollapse: __WEBPACK_IMPORTED_MODULE_3__components_ui__["c" /* UiCollapse */],
+    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_3__components_ui__["d" /* UiHeroBanner */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_3__components_ui__["g" /* UiTitle */]
   },
   data: function data() {
     return {
@@ -64457,7 +64459,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         sette: true,
         soffio: null,
         saputo: null
-      }
+      },
+      wines: __WEBPACK_IMPORTED_MODULE_0__dummies_wines__["a" /* default */]
     };
   },
   methods: {
@@ -64582,7 +64585,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             break;
         }
 
-        var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
+        var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
           paused: true
         });
         master.to('#' + name + '-menu', .6, {
@@ -64700,7 +64703,7 @@ var render = function() {
               [
                 _c("ui-title", { attrs: { title: "Sette" } }),
                 _vm._v(" "),
-                _c("ui-collapse"),
+                _c("ui-collapse", { attrs: { elements: this.wines } }),
                 _vm._v(" "),
                 _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
                   _vm._v(
@@ -64757,7 +64760,7 @@ var render = function() {
               [
                 _c("ui-title", { attrs: { title: "Soffio" } }),
                 _vm._v(" "),
-                _c("ui-collapse"),
+                _c("ui-collapse", { attrs: { elements: this.wines } }),
                 _vm._v(" "),
                 _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
                   _vm._v(
@@ -64814,7 +64817,7 @@ var render = function() {
               [
                 _c("ui-title", { attrs: { title: "Saputo" } }),
                 _vm._v(" "),
-                _c("ui-collapse"),
+                _c("ui-collapse", { attrs: { elements: this.wines } }),
                 _vm._v(" "),
                 _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
                   _vm._v(
@@ -83902,13 +83905,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UiCollapse',
@@ -83923,6 +83919,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     title: {
       type: String,
       default: 'titolo'
+    }
+  },
+  data: function data() {
+    return {};
+  },
+  methods: {
+    openPanel: function openPanel(idx) {
+      console.log(idx);
     }
   }
 });
@@ -83962,7 +83966,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-collapse {\n  margin-bottom: 3.236rem;\n}\n.ui-collapse .collapse-header {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: justify;\n        -ms-flex-pack: justify;\n            justify-content: space-between;\n    cursor: pointer;\n    border-bottom: 1px solid #000;\n    padding: 0.809rem;\n}\n", ""]);
+exports.push([module.i, "\n.ui-collapse {\n  margin-bottom: 3.236rem;\n}\n", ""]);
 
 
 
@@ -83977,19 +83981,9 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "ui-collapse" },
-    [
-      _c("collapse-heading", { attrs: { title: "descrizione" } }),
-      _vm._v(" "),
-      _c("collapse-heading", { attrs: { title: "vitigno" } }),
-      _vm._v(" "),
-      _c("collapse-heading", { attrs: { title: "zona" } }),
-      _vm._v(" "),
-      _c("collapse-heading", { attrs: { title: "vitigno" } }),
-      _vm._v(" "),
-      _c("collapse-heading", { attrs: { title: "vinificazione" } }),
-      _vm._v(" "),
-      _c("collapse-heading", { attrs: { title: "valori analitici" } })
-    ],
+    _vm._l(this.elements, function(item, i) {
+      return _c("collapse-heading", { key: i, attrs: { title: item.title } })
+    }),
     1
   )
 }
@@ -84073,12 +84067,81 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     title: {
       type: String,
       default: 'titolo'
     }
+  },
+  data: function data() {
+    return {
+      master: null,
+      isOpen: false,
+      panelHeight: 0
+    };
+  },
+  methods: {
+    openPanel: function openPanel() {
+      if (this.isOpen) {
+        this.master.reverse();
+        this.isOpen = false;
+      } else {
+        if (!this.master) {
+          var panel = this.$refs.panel;
+          var close = this.$refs.close;
+          var title = this.$refs.title;
+          this.master = new TimelineMax({
+            paused: true,
+            reversed: true
+          });
+          this.master.fromTo(panel, .6, {
+            height: 0,
+            autoAlpha: 0,
+            transformOrigin: "left top 0"
+          }, {
+            height: this.panelHeight,
+            scaleY: 1,
+            autoAlpha: 1,
+            transformOrigin: "left top 0",
+            ease: Sine.easeInOut
+          }, 0);
+          this.master.fromTo(close, .3, {
+            rotation: 0,
+            scale: 1
+          }, {
+            rotation: 45,
+            scale: 1.5
+          }, 0);
+          this.master.fromTo(title, .3, {
+            fontSize: 16,
+            fontWeight: 400
+          }, {
+            fontSize: 18,
+            fontWeight: 600
+          }, 0);
+          this.master.progress(1).progress(0);
+          this.master.play();
+          this.isOpen = true;
+        } else {
+          this.master.play();
+          this.isOpen = true;
+        }
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.panelHeight = this.$refs.panel.offsetHeight;
+    TweenLite.set(this.$refs.panel, {
+      height: 0,
+      autoAlpha: 0,
+      transformOrigin: "left top 0"
+    });
   }
 });
 
@@ -84115,7 +84178,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "\n.collapse-container {\n  border-bottom: 1px solid #000;\n}\n.collapse-container .collapse-header {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: justify;\n        -ms-flex-pack: justify;\n            justify-content: space-between;\n    cursor: pointer;\n    padding: 0.809rem;\n}\n.collapse-container .collapse-body {\n    position: relative;\n    height: 0;\n    visibility: hidden;\n    /* hides all .Tile-flyout on load so GSAP autoAlpha can do its thing */\n    height: auto;\n    /* tell the browser that initial height is auto */\n    overflow: hidden;\n}\n.collapse-container .collapse-body .collapse-content {\n      padding-top: 1.618rem;\n      padding-bottom: 3.236rem;\n}\n", ""]);
 
 
 
@@ -84127,11 +84190,27 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "collapse-header" }, [
-    _c("div", { staticClass: "button" }, [_vm._v("\n        +\n    ")]),
+  return _c("div", { staticClass: "collapse-container" }, [
+    _c(
+      "div",
+      { staticClass: "collapse-header", on: { click: _vm.openPanel } },
+      [
+        _c("div", { ref: "close", staticClass: "button" }, [
+          _vm._v("\n            +\n        ")
+        ]),
+        _vm._v(" "),
+        _c("div", { ref: "title", staticClass: "title" }, [
+          _vm._v("\n            " + _vm._s(_vm.title) + "\n        ")
+        ])
+      ]
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: "title" }, [
-      _vm._v("\n        " + _vm._s(_vm.title) + "\n    ")
+    _c("div", { ref: "panel", staticClass: "collapse-body" }, [
+      _c("p", { staticClass: "collapse-content" }, [
+        _vm._v(
+          "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        )
+      ])
     ])
   ])
 }
@@ -84339,6 +84418,26 @@ var _doc = (__WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["e" /* _gsScope */].docu
 
 
 
+
+/***/ }),
+/* 223 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var Wines = [{
+  title: "descrizione"
+}, {
+  title: "vitigno"
+}, {
+  title: "zona"
+}, {
+  title: "vitigno"
+}, {
+  title: "vinificazione"
+}, {
+  title: "valori analitici"
+}];
+/* harmony default export */ __webpack_exports__["a"] = (Wines);
 
 /***/ })
 /******/ ]);
