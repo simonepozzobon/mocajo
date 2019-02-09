@@ -7,6 +7,11 @@
                 />
         </div>
         <div class="row">
+            <ui-image-block
+                :isImage="true"
+                :animated="true"
+                imgSrc="/images/tenuta.jpg"
+                @animate-parent="animateStoria"/>
             <ui-block
                 ref="storia"
                 :animated="true"
@@ -17,18 +22,30 @@
                     Adagiata su morbide colline toscane, a ridosso della costa degli Etruschi, nasceva nel 1942 Scuola Mocajo, intitolata a Riccardo Perucchetti e fondata per accudire i figli dei mezzadri che lavoravano nella Tenuta. Abbandonata a sé stessa per molti anni e ormai diroccata, oggi, grazie a un progetto di profondo restauro, riprende vita ed è pronta a scrivere una nuova storia.
                 </p>
             </ui-block>
+        </div>
+        <div class="row">
             <ui-image-block
                 :isImage="true"
-                :animated="true"
+                :animated="false"
                 :direction="false"
-                imgSrc="/images/tenuta.jpg"
-                @animate-parent="animateStoria"/>
+                imgSrc="/images/storia-agriturismo-mocajo.jpg"
+                />
+            <ui-image-block
+                :isImage="true"
+                :animated="false"
+                imgSrc="/images/storia-agriturismo-mocajo-2.jpg"
+                />
+        </div>
+        <div class="row">
+            <ui-hero-banner
+                imgSrc="/images/storia-big.jpg"
+                />
         </div>
     </div>
 </template>
 
 <script>
-import { UiBlock, UiHeroBannerVideo, UiImageBlock, UiTitle } from '../components/ui'
+import { UiBlock, UiHeroBannerVideo, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
 import { TimelineMax } from 'gsap'
 import ScrollMagic from 'scrollmagic'
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
@@ -37,6 +54,7 @@ export default {
     name: 'LaStoria',
     components: {
         UiBlock,
+        UiHeroBanner,
         UiHeroBannerVideo,
         UiImageBlock,
         UiTitle,

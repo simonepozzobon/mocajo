@@ -64108,6 +64108,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -64116,6 +64133,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'LaStoria',
   components: {
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
+    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_0__components_ui__["d" /* UiHeroBanner */],
     UiHeroBannerVideo: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiHeroBannerVideo */],
     UiImageBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["f" /* UiImageBlock */],
     UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["g" /* UiTitle */]
@@ -64170,6 +64188,15 @@ var render = function() {
         "div",
         { staticClass: "row" },
         [
+          _c("ui-image-block", {
+            attrs: {
+              isImage: true,
+              animated: true,
+              imgSrc: "/images/tenuta.jpg"
+            },
+            on: { "animate-parent": _vm.animateStoria }
+          }),
+          _vm._v(" "),
           _c(
             "ui-block",
             { ref: "storia", attrs: { animated: true, color: "bg-light" } },
@@ -64185,18 +64212,39 @@ var render = function() {
               ])
             ],
             1
-          ),
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row" },
+        [
+          _c("ui-image-block", {
+            attrs: {
+              isImage: true,
+              animated: false,
+              direction: false,
+              imgSrc: "/images/storia-agriturismo-mocajo.jpg"
+            }
+          }),
           _vm._v(" "),
           _c("ui-image-block", {
             attrs: {
               isImage: true,
-              animated: true,
-              direction: false,
-              imgSrc: "/images/tenuta.jpg"
-            },
-            on: { "animate-parent": _vm.animateStoria }
+              animated: false,
+              imgSrc: "/images/storia-agriturismo-mocajo-2.jpg"
+            }
           })
         ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row" },
+        [_c("ui-hero-banner", { attrs: { imgSrc: "/images/storia-big.jpg" } })],
         1
       )
     ]

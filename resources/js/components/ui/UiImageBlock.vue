@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         handler: function(e) {
-            if (e.percentInView > 0 ) {
+            if (e.percentInView > 0) {
                 this.animateIn()
             }
         },
