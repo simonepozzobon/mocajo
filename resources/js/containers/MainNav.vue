@@ -1,6 +1,6 @@
 <template lang="html">
     <nav class="navbar navbar-dark navbar-expand-lg" ref="navbar" :class="this.navClass">
-        <div class="d-flex" :class="menuClass">
+        <div class="d-flex mr-auto">
             <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" v-if="hasCart">
                 <cart-icon width="24px" color="#333" ref="icon"/>
             </router-link>
@@ -9,7 +9,6 @@
                     ref="menu"
                     size="48px"
                     :speed="1.6"
-                    class="mr-2"
                     @changeStatus="changeStatus"/>
             </a>
         </div>
@@ -40,7 +39,7 @@ export default {
         return {
             hasCart: false,
             hasLogo: true,
-            menuClass: 'ml-auto',
+            menuClass: 'mr-auto',
             opened: false,
             text: {}
         }
@@ -55,15 +54,6 @@ export default {
                 this.$refs.icon.hide()
             }
         },
-        '$root.navLogo': function(logo) {
-            if (!logo) {
-                this.hasLogo = false
-                this.menuClass = 'mr-auto'
-                return true
-            }
-            this.hasLogo = true
-            this.menuClass = 'ml-auto'
-        }
     },
     methods: {
         hoverAnim: function() {

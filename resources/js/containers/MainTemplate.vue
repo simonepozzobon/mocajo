@@ -4,8 +4,8 @@
         <page-menu :navClass="navClass" @menu-open="menuOpen" @menu-close="menuClose" v-else-if="this.bigMenu == false"/>
         <menu-overlay ref="menu"/>
         <main ref="main">
-            <transition>
-                <router-view />
+            <transition mode="out-in" name="fade" @enter="enter" @leave="leave" @after-leave="afterLeave">
+                <router-view></router-view>
             </transition>
         </main>
         <language-menu />
@@ -50,6 +50,7 @@ export default {
     data: function() {
         return {
             bigMenu: null,
+            cache: null,
             navClass: null
         }
     },
@@ -81,6 +82,38 @@ export default {
         menuClose: function() {
             this.$refs.menu.toggleMobile()
         },
+        enter: function(el, done) {
+            // console.log('entrato', el, document.body.contains(el))
+            if (document.body.contains(el)) {
+                let master = new TimelineMax()
+                master.fromTo(el, .4, {
+                    autoAlpha: 0,
+                }, {
+                    autoAlpha: 1,
+                })
+
+                master.eventCallback('onComplete', () => {
+                    done()
+                })
+            }
+        },
+        afterLeave: function(el) {
+
+        },
+        leave: function(el, done) {
+            // console.log('leave', el,document.body.contains(el))
+            let master = new TimelineMax()
+            master.fromTo(el, .4, {
+                autoAlpha: 1,
+            }, {
+                autoAlpha: 0,
+            })
+
+            master.eventCallback('onComplete', () => {
+                done()
+            })
+
+        }
     },
     mounted: function() {
         this.init()

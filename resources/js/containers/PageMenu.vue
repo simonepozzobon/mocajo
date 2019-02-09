@@ -88,6 +88,20 @@ export default {
         }
     },
     methods: {
+        init: function() {
+            let master = new TimelineMax({
+                paused: true,
+            })
+
+            master.staggerFrom('.nav-item', 1.2, {
+                delay: .5,
+                y: -100,
+                autoAlpha: 0,
+                ease: Power3.easeInOut,
+            }, .3)
+
+            master.play()
+        },
         hoverAnim: function() {
             this.$refs.menu.hoverAnim()
         },
@@ -104,6 +118,9 @@ export default {
                 this.$refs.menu.open()
             }
         },
+    },
+    mounted: function() {
+        this.init()
     }
 }
 </script>

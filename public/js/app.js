@@ -64343,7 +64343,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#sidebar {\n  max-width: 6rem;\n  background-color: #fff;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n#sidebar .product-menu {\n    width: 6rem;\n    height: 6rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    font-size: 1.25rem;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    cursor: pointer;\n}\n#sidebar .product-menu.active {\n      background-color: #fff !important;\n}\n#sidebar .product-menu.active.bg-blue {\n        color: #68A2C9;\n}\n#sidebar .product-menu.active.bg-yellow {\n        color: #FAC823;\n}\n#sidebar .product-menu.active.bg-red {\n        color: #d85840;\n}\n#sidebar:hover {\n    max-width: 6.5rem;\n    cursor: pointer;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n}\n#sidebar:hover .product-menu {\n      width: 6.5rem;\n      height: 6.5rem;\n}\n#sidebar:hover .product-menu span {\n        display: inline-block;\n        visibility: visible;\n        width: auto;\n        opacity: 0.6;\n        -webkit-transition: opacity .55s ease-in-out;\n        transition: opacity .55s ease-in-out;\n}\n#content .row {\n  border-left: 1px solid #000;\n  margin-left: 0;\n}\n#content .row .ui-block {\n    min-height: calc(100vh - 130px);\n}\n#content .row .ui-block.custom-block {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n#content .row .ui-block.custom-block img {\n        max-height: calc(100vh - 130px);\n}\n#content .add-to-cart {\n  margin-top: 1.618rem;\n  display: block;\n}\n", ""]);
+exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding-top: 130px;\n  padding-left: 0;\n  padding-right: 0;\n}\n#sidebar {\n  max-width: 6rem;\n  background-color: #fff;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n#sidebar .product-menu {\n    width: 6rem;\n    height: 6rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    font-size: 1.25rem;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    cursor: pointer;\n}\n#sidebar .product-menu.active {\n      background-color: #fff !important;\n}\n#sidebar .product-menu.active.bg-blue {\n        color: #68A2C9;\n}\n#sidebar .product-menu.active.bg-yellow {\n        color: #FAC823;\n}\n#sidebar .product-menu.active.bg-red {\n        color: #d85840;\n}\n#sidebar:hover {\n    max-width: 6.5rem;\n    cursor: pointer;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n}\n#sidebar:hover .product-menu {\n      width: 6.5rem;\n      height: 6.5rem;\n}\n#sidebar:hover .product-menu span {\n        display: inline-block;\n        visibility: visible;\n        width: auto;\n        opacity: 0.6;\n        -webkit-transition: opacity .55s ease-in-out;\n        transition: opacity .55s ease-in-out;\n}\n#content .row {\n  border-left: 1px solid #000;\n  margin-left: 0;\n}\n#content .row .ui-block {\n    min-height: calc(100vh - 130px);\n}\n#content .row .ui-block.custom-block {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n#content .row .ui-block.custom-block img {\n        max-height: calc(100vh - 130px);\n}\n#content .add-to-cart {\n  margin-top: 1.618rem;\n  display: block;\n}\n", ""]);
 
 
 
@@ -64357,8 +64357,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gsap__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_gsap_ScrollToPlugin__ = __webpack_require__(222);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_ui__ = __webpack_require__(19);
-//
-//
 //
 //
 //
@@ -64632,7 +64630,7 @@ var render = function() {
       1
     ),
     _vm._v(" "),
-    _c("div", { staticClass: "row no-gutters" }, [
+    _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col", attrs: { id: "sidebar" } }, [
         _c("div", { ref: "sidebar", staticClass: "sidebar-container" }, [
           _c(
@@ -65486,7 +65484,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -65557,6 +65555,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       bigMenu: null,
+      cache: null,
       navClass: null
     };
   },
@@ -65586,6 +65585,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     menuClose: function menuClose() {
       this.$refs.menu.toggleMobile();
+    },
+    enter: function enter(el, done) {
+      // console.log('entrato', el, document.body.contains(el))
+      if (document.body.contains(el)) {
+        var master = new TimelineMax();
+        master.fromTo(el, .4, {
+          autoAlpha: 0
+        }, {
+          autoAlpha: 1
+        });
+        master.eventCallback('onComplete', function () {
+          done();
+        });
+      }
+    },
+    afterLeave: function afterLeave(el) {},
+    leave: function leave(el, done) {
+      // console.log('leave', el,document.body.contains(el))
+      var master = new TimelineMax();
+      master.fromTo(el, .4, {
+        autoAlpha: 1
+      }, {
+        autoAlpha: 0
+      });
+      master.eventCallback('onComplete', function () {
+        done();
+      });
     }
   },
   mounted: function mounted() {
@@ -66106,7 +66132,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -66129,7 +66154,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
       hasCart: false,
       hasLogo: true,
-      menuClass: 'ml-auto',
+      menuClass: 'mr-auto',
       opened: false,
       text: {}
     };
@@ -66143,16 +66168,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.hasCart = false;
         this.$refs.icon.hide();
       }
-    },
-    '$root.navLogo': function $rootNavLogo(logo) {
-      if (!logo) {
-        this.hasLogo = false;
-        this.menuClass = 'mr-auto';
-        return true;
-      }
-
-      this.hasLogo = true;
-      this.menuClass = 'ml-auto';
     }
   },
   methods: {
@@ -81676,7 +81691,7 @@ var render = function() {
     [
       _c(
         "div",
-        { staticClass: "d-flex", class: _vm.menuClass },
+        { staticClass: "d-flex mr-auto" },
         [
           _vm.hasCart
             ? _c(
@@ -81705,7 +81720,6 @@ var render = function() {
             [
               _c("menu-anim", {
                 ref: "menu",
-                staticClass: "mr-2",
                 attrs: { size: "48px", speed: 1.6 },
                 on: { changeStatus: _vm.changeStatus }
               })
@@ -82330,7 +82344,21 @@ var render = function() {
       _c(
         "main",
         { ref: "main" },
-        [_c("transition", [_c("router-view")], 1)],
+        [
+          _c(
+            "transition",
+            {
+              attrs: { mode: "out-in", name: "fade" },
+              on: {
+                enter: _vm.enter,
+                leave: _vm.leave,
+                "after-leave": _vm.afterLeave
+              }
+            },
+            [_c("router-view")],
+            1
+          )
+        ],
         1
       ),
       _vm._v(" "),
@@ -82574,6 +82602,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UiHeroBanner',
   props: {
@@ -82584,6 +82613,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     imgSrc: {
       type: String,
       default: null
+    },
+    animated: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
@@ -82591,10 +82624,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (this.imgSrc) {
         this.$refs.block.style.backgroundImage = 'url(' + this.imgSrc + ')';
       }
+    },
+    animateIn: function animateIn() {
+      var master = new TimelineMax({
+        paused: true
+      });
+      master.fromTo(this.$refs.overlay, 1.7, {
+        width: '30%',
+        autoAlpha: 1
+      }, {
+        width: 0,
+        autoAlpha: 0,
+        ease: Sine.easeInOut
+      });
+      master.progress(1).progress(0);
+      master.play();
     }
   },
   mounted: function mounted() {
     this.setBackground();
+    this.animateIn();
   }
 });
 
@@ -82631,7 +82680,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-hero-banner {\n  width: 100%;\n  height: 100%;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n@media (min-width: 64.0625em) {\n.ui-hero-banner {\n      height: 36vw;\n}\n}\n@media (min-width: 48em) {\n.ui-hero-banner {\n      height: 31.5vw;\n}\n}\n", ""]);
+exports.push([module.i, "\n.ui-hero-banner {\n  width: 100%;\n  height: 100%;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n.ui-hero-banner .overlay {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    left: 0;\n    top: 0;\n    background-color: #000;\n}\n@media (min-width: 64.0625em) {\n.ui-hero-banner {\n      height: 36vw;\n}\n}\n@media (min-width: 48em) {\n.ui-hero-banner {\n      height: 31.5vw;\n}\n}\n", ""]);
 
 
 
@@ -82646,7 +82695,11 @@ var render = function() {
   return _c(
     "div",
     { ref: "block", staticClass: "col-12 ui-hero-banner", class: _vm.color },
-    [_vm._t("default")],
+    [
+      _c("div", { ref: "overlay", staticClass: "overlay" }),
+      _vm._v(" "),
+      _vm._t("default")
+    ],
     2
   )
 }
@@ -82743,7 +82796,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-hero-banner {\n  min-height: 50vh;\n  max-height: 50vh;\n  padding: 0;\n  overflow: hidden;\n}\n.ui-hero-banner > .VideoBg {\n    top: -50%;\n}\n", ""]);
+exports.push([module.i, "\n.ui-hero-banner-video {\n  min-height: 50vh;\n  max-height: 50vh;\n  padding: 0;\n  overflow: hidden;\n}\n.ui-hero-banner-video > .VideoBg {\n    top: -50%;\n}\n", ""]);
 
 
 
@@ -83014,7 +83067,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { ref: "block", staticClass: "col-12 ui-hero-banner", class: _vm.color },
+    {
+      ref: "block",
+      staticClass: "col-12 ui-hero-banner-video",
+      class: _vm.color
+    },
     [
       _c("video-bg", {
         ref: "player",
@@ -83225,6 +83282,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
+    init: function init() {
+      var master = new __WEBPACK_IMPORTED_MODULE_4_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.staggerFrom('.nav-item', 1.2, {
+        delay: .5,
+        y: -100,
+        autoAlpha: 0,
+        ease: Power3.easeInOut
+      }, .3);
+      master.play();
+    },
     hoverAnim: function hoverAnim() {
       this.$refs.menu.hoverAnim();
     },
@@ -83242,6 +83311,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.$refs.menu.open();
       }
     }
+  },
+  mounted: function mounted() {
+    this.init();
   }
 });
 
@@ -84056,6 +84128,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap_CSSPlugin__ = __webpack_require__(21);
 //
 //
 //
@@ -84072,6 +84145,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     title: {
@@ -84096,6 +84170,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           var panel = this.$refs.panel;
           var close = this.$refs.close;
           var title = this.$refs.title;
+          var content = this.$refs.content;
           this.master = new TimelineMax({
             paused: true,
             reversed: true
@@ -84103,27 +84178,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           this.master.fromTo(panel, .6, {
             height: 0,
             autoAlpha: 0,
-            transformOrigin: "left top 0"
+            transformOrigin: "left top 0",
+            ease: Power3.easeInOut
           }, {
             height: this.panelHeight,
             scaleY: 1,
             autoAlpha: 1,
             transformOrigin: "left top 0",
-            ease: Sine.easeInOut
+            ease: Power3.easeInOut
           }, 0);
           this.master.fromTo(close, .3, {
             rotation: 0,
             scale: 1
           }, {
             rotation: 45,
-            scale: 1.5
+            scale: 1.5,
+            ease: Sine.easeInOut
           }, 0);
-          this.master.fromTo(title, .3, {
-            fontSize: 16,
-            fontWeight: 400
+          this.master.fromTo(content, .9, {
+            autoAlpha: 0
           }, {
-            fontSize: 18,
-            fontWeight: 600
+            autoAlpha: 1,
+            ease: Sine.easeInOut
+          }, 0);
+          this.master.fromTo(title, .5, {
+            css: {
+              fontWeight: 400
+            }
+          }, {
+            css: {
+              fontWeight: 600
+            }
           }, 0);
           this.master.progress(1).progress(0);
           this.master.play();
@@ -84206,7 +84291,7 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { ref: "panel", staticClass: "collapse-body" }, [
-      _c("p", { staticClass: "collapse-content" }, [
+      _c("p", { ref: "content", staticClass: "collapse-content" }, [
         _vm._v(
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         )

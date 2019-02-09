@@ -9,12 +9,14 @@
             </div>
         </div>
         <div class="collapse-body" ref="panel">
-            <p class="collapse-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p class="collapse-content" ref="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </div>
     </div>
 </template>
 
 <script>
+import CSSPlugin from 'gsap/CSSPlugin'
+
 export default {
     props: {
         title: {
@@ -39,6 +41,7 @@ export default {
                     let panel = this.$refs.panel
                     let close = this.$refs.close
                     let title = this.$refs.title
+                    let content = this.$refs.content
 
                     this.master = new TimelineMax({
                         paused: true,
@@ -49,12 +52,13 @@ export default {
                         height: 0,
                         autoAlpha: 0,
                         transformOrigin: "left top 0",
+                        ease: Power3.easeInOut
                     },{
                         height: this.panelHeight,
                         scaleY: 1,
                         autoAlpha: 1,
                         transformOrigin: "left top 0",
-                        ease: Sine.easeInOut
+                        ease: Power3.easeInOut
                     }, 0)
 
                     this.master.fromTo(close, .3, {
@@ -63,14 +67,24 @@ export default {
                     }, {
                         rotation: 45,
                         scale: 1.5,
+                        ease: Sine.easeInOut
                     }, 0)
 
-                    this.master.fromTo(title, .3, {
-                        fontSize: 16,
-                        fontWeight: 400,
+                    this.master.fromTo(content, .9, {
+                        autoAlpha: 0,
                     }, {
-                        fontSize: 18,
-                        fontWeight: 600,
+                        autoAlpha: 1,
+                        ease: Sine.easeInOut
+                    }, 0)
+
+                    this.master.fromTo(title, .5, {
+                        css: {
+                            fontWeight: 400,
+                        }
+                    }, {
+                        css: {
+                            fontWeight: 600,
+                        }
                     }, 0)
 
                     this.master.progress(1).progress(0);

@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="col-12 ui-hero-banner" :class="color" ref="block">
+    <div class="col-12 ui-hero-banner-video" :class="color" ref="block">
         <video-bg :sources="[this.videoSrc]" :img="this.imgSrc" ref="player">
         </video-bg>
     </div>
@@ -37,7 +37,7 @@ export default {
 <style lang="scss">
 @import '~styles/shared';
 
-.ui-hero-banner {
+.ui-hero-banner-video {
     min-height: 50vh;
     max-height: 50vh;
     padding: 0;

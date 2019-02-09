@@ -5,7 +5,7 @@
                 color="bg-dark"
                 imgSrc="/images/vini.jpg"/>
         </div>
-        <div class="row no-gutters">
+        <div class="row">
             <div id="sidebar" class="col">
                 <div class="sidebar-container" ref="sidebar">
                     <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
@@ -76,8 +76,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </template>
 
@@ -248,7 +246,9 @@ export default {
 
 .container-fluid {
     &.vini-mocajo {
-        padding: 0;
+        padding-top: 130px;
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 
