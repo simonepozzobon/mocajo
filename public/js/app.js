@@ -65626,7 +65626,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.cookies-policy {\n  position: absolute;\n  bottom: 0;\n  background-color: #000;\n  color: rgba(255, 255, 255, 0.8);\n}\n.cookies-policy .cookies-policy-content {\n    padding: 2rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.cookies-policy .cookies-policy-content p {\n      font-size: 0.65rem;\n      text-align: center;\n}\n", ""]);
+exports.push([module.i, "\n.cookies-policy {\n  position: fixed;\n  bottom: 0;\n  z-index: 1090;\n  background-color: #000;\n  color: rgba(255, 255, 255, 0.8);\n  display: none;\n}\n.cookies-policy .cookies-policy-content {\n    padding: 2rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.cookies-policy .cookies-policy-content p {\n      font-size: 0.65rem;\n      text-align: center;\n}\n", ""]);
 
 
 
@@ -65699,21 +65699,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       master.play();
     },
     cookieAccepted: function cookieAccepted() {
-      this.hidePanel(); // axios.post('/api/cookies/accepted').then(response => {
-      //     this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data))
-      //     $(this.$refs.modal).modal('hide')
-      // })
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/cookies/accepted').then(function (response) {
+        _this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data));
+
+        _this.hidePanel();
+
+        _this.accepted = true;
+      });
     }
   },
   mounted: function mounted() {
-    this.hidePanel(); // if (!this.accepted) {
-    //     let cookie = this.$cookie.get('mocajo-cookie-policy')
-    //     if (cookie) {
-    //         this.cookie = JSON.parse(cookie)
-    //     } else {
-    //         this.showPanel()
-    //     }
-    // }
+    // this.hidePanel()
+    if (!this.accepted) {
+      var cookie = this.$cookie.get('mocajo-cookie-policy');
+
+      if (cookie) {
+        this.cookie = JSON.parse(cookie);
+      } else {
+        this.showPanel();
+      }
+    }
   }
 });
 
@@ -65734,7 +65741,10 @@ var render = function() {
         _vm._v(" "),
         _c(
           "button",
-          { staticClass: "btn btn-primary", on: { click: _vm.cookieAccepted } },
+          {
+            staticClass: "btn btn-outline-primary",
+            on: { click: _vm.cookieAccepted }
+          },
           [_vm._v("\n            Accetto\n        ")]
         )
       ])

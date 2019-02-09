@@ -8,7 +8,7 @@
                 <br>
                 Se invece prosegui con la navigazione sul presente sito, è implicito che esprimi il consenso all'uso dei suddetti cookies.
             </p>
-            <button class="btn btn-primary" @click="cookieAccepted">
+            <button class="btn btn-outline-primary" @click="cookieAccepted">
                 Accetto
             </button>
         </div>
@@ -64,23 +64,23 @@ export default {
             master.play()
         },
         cookieAccepted: function() {
-            this.hidePanel()
-            // axios.post('/api/cookies/accepted').then(response => {
-            //     this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data))
-            //     $(this.$refs.modal).modal('hide')
-            // })
+            axios.post('/api/cookies/accepted').then(response => {
+                this.$cookie.set('mocajo-cookie-policy', JSON.stringify(response.data))
+                this.hidePanel()
+                this.accepted = true
+            })
         }
     },
     mounted: function() {
-        this.hidePanel()
-        // if (!this.accepted) {
-        //     let cookie = this.$cookie.get('mocajo-cookie-policy')
-        //     if (cookie) {
-        //         this.cookie = JSON.parse(cookie)
-        //     } else {
-        //         this.showPanel()
-        //     }
-        // }
+        // this.hidePanel()
+        if (!this.accepted) {
+            let cookie = this.$cookie.get('mocajo-cookie-policy')
+            if (cookie) {
+                this.cookie = JSON.parse(cookie)
+            } else {
+                this.showPanel()
+            }
+        }
     }
 }
 </script>
@@ -89,10 +89,12 @@ export default {
 @import '~styles/shared';
 
 .cookies-policy {
-    position: absolute;
+    position: fixed;
     bottom: 0;
+    z-index: 1090;
     background-color: $black;
     color: rgba($white, .8);
+    display: none;
 
     .cookies-policy-content {
         padding: $spacer * 2;
