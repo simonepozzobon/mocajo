@@ -62728,9 +62728,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         offset: 0,
         duration: 200,
         triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'about'})
-      // .setTween(master)
-      .addTo(this.controller);
+      }).addTo(this.controller);
       var tenuta = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
         triggerElement: '#section-two',
         offset: 0,
@@ -64123,6 +64121,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -64132,6 +64131,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
     UiHeroBannerVideo: __WEBPACK_IMPORTED_MODULE_0__components_ui__["d" /* UiHeroBannerVideo */],
+    UiImageBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["e" /* UiImageBlock */],
     UiTitle: __WEBPACK_IMPORTED_MODULE_0__components_ui__["f" /* UiTitle */]
   },
   data: function data() {
@@ -64295,8 +64295,12 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("ui-block", {
-            attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
+          _c("ui-image-block", {
+            attrs: {
+              isImage: true,
+              direction: false,
+              imgSrc: "/images/tenuta.jpg"
+            }
           })
         ],
         1
@@ -83321,7 +83325,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-image-block {\n  min-height: 30vh;\n  position: relative;\n  list-style: none;\n  text-align: center;\n  padding: 0;\n  -o-object-fit: fill;\n     object-fit: fill;\n}\n.ui-image-block figure {\n    position: relative;\n    float: left;\n    overflow: hidden;\n    text-align: center;\n    cursor: pointer;\n    margin: 0;\n}\n.ui-image-block figure img {\n      position: relative;\n      display: block;\n      opacity: 0.8;\n      width: 100%;\n      height: auto;\n}\n.ui-image-block figure.effect-roxy img {\n      max-width: none;\n      width: 120%;\n      -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;\n      transition: opacity 0.35s, -webkit-transform 0.35s;\n      transition: opacity 0.35s, transform 0.35s;\n      transition: opacity 0.35s, transform 0.35s, -webkit-transform 0.35s;\n}\n.ui-image-block figure.effect-roxy.from-left-to-right-animation img {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n}\n.ui-image-block figure.effect-roxy.from-right-to-left-animation img {\n      -webkit-transform: translate3d(0, 0, 0);\n              transform: translate3d(0, 0, 0);\n}\n.ui-image-block figure.effect-roxy:hover img {\n      opacity: 0.7;\n      -webkit-transform: translate3d(0, 0, 0);\n              transform: translate3d(0, 0, 0);\n}\n.ui-image-block figure.effect-roxy:hover.from-right-to-left-animation img {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n}\n", ""]);
+exports.push([module.i, "\n.ui-image-block {\n  min-height: 30vh;\n  position: relative;\n  padding: 0;\n  overflow: hidden;\n}\n.ui-image-block .image-container {\n    width: calc(100% + 60px);\n    height: 100%;\n    background-size: cover;\n    background-position: center;\n}\n.ui-image-block .image-container.from-left-to-right-animation {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n.ui-image-block .image-container.from-left-to-right-animation:hover {\n        -webkit-transform: translate3d(0px, 0, 0);\n                transform: translate3d(0px, 0, 0);\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n        opacity: 0.7;\n}\n.ui-image-block .image-container.from-right-to-left-animation {\n      -webkit-transform: translate3d(0px, 0, 0);\n              transform: translate3d(0px, 0, 0);\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n.ui-image-block .image-container.from-right-to-left-animation:hover {\n        -webkit-transform: translate3d(-50px, 0, 0);\n                transform: translate3d(-50px, 0, 0);\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n        opacity: 0.7;\n}\n", ""]);
 
 
 
@@ -83331,7 +83335,6 @@ exports.push([module.i, "\n.ui-image-block {\n  min-height: 30vh;\n  position: r
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -83354,7 +83357,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       type: Boolean,
       default: true // true -> anima da sinistra verso destra
 
+    },
+    viewportTracking: {
+      type: Boolean,
+      default: true // true -> anima da sinistra verso destra
+
     }
+  },
+  data: function data() {
+    return {
+      initialized: false
+    };
   },
   computed: {
     animateDirection: function animateDirection() {
@@ -83363,6 +83376,60 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
 
       return 'from-right-to-left-animation';
+    }
+  },
+  methods: {
+    isAnyPartOfElementInViewport: function isAnyPartOfElementInViewport() {
+      var rect = this.$refs.block.getBoundingClientRect(); // DOMRect { x: 8, y: 8, width: 100, height: 100, top: 8, right: 108, bottom: 108, left: 8 }
+
+      var windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      var windowWidth = window.innerWidth || document.documentElement.clientWidth; // http://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+
+      var vertInView = rect.top <= windowHeight && rect.top + rect.height >= 0;
+      var horInView = rect.left <= windowWidth && rect.left + rect.width >= 0;
+      return vertInView && horInView;
+    },
+    isOnViewPort: function isOnViewPort() {
+      var rect = this.$refs.block.getBoundingClientRect();
+      return rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+    },
+    setBackground: function setBackground() {
+      this.$refs.img.style.backgroundImage = 'url(' + this.imgSrc + ')';
+    },
+    animateIn: function animateIn() {
+      if (!this.initialized) {
+        var master = new TimelineMax({
+          paused: true
+        });
+        master.fromTo(this.$refs.img, 3, {
+          scale: 1.1
+        }, {
+          scale: 1,
+          clearProps: 'scale'
+        });
+        this.initialized = true;
+        master.play();
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    this.setBackground();
+    var isOnViewPort = this.isAnyPartOfElementInViewport();
+
+    if (isOnViewPort) {
+      this.animateIn();
+    }
+
+    if (this.viewportTracking) {
+      window.addEventListener('scroll', function () {
+        var isOnViewPort = _this.isAnyPartOfElementInViewport();
+
+        if (isOnViewPort) {
+          _this.animateIn();
+        }
+      });
     }
   }
 });
@@ -83375,17 +83442,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { ref: "block", staticClass: "col-md-6 ui-image-block", class: _vm.color },
-    [
-      _c(
-        "figure",
-        { staticClass: "effect-roxy", class: _vm.animateDirection },
-        [_c("img", { attrs: { src: _vm.imgSrc, alt: "img01" } })]
-      )
-    ]
-  )
+  return _c("div", { ref: "block", staticClass: "col-md-6 ui-image-block" }, [
+    _c("div", {
+      ref: "img",
+      staticClass: "image-container",
+      class: _vm.animateDirection
+    })
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

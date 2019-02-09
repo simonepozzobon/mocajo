@@ -94,8 +94,6 @@ export default {
                 duration: 200,
                 triggerHook: 'onEnter'
             })
-                // .addIndicators({ name: 'about'})
-                // .setTween(master)
                 .addTo(this.controller)
             let tenuta = new ScrollMagic.Scene({
                 triggerElement: '#section-two',

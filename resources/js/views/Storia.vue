@@ -15,15 +15,16 @@
                     Adagiata su morbide colline toscane, a ridosso della costa degli Etruschi, nasceva nel 1942 Scuola Mocajo, intitolata a Riccardo Perucchetti e fondata per accudire i figli dei mezzadri che lavoravano nella Tenuta. Abbandonata a sé stessa per molti anni e ormai diroccata, oggi, grazie a un progetto di profondo restauro, riprende vita ed è pronta a scrivere una nuova storia.
                 </p>
             </ui-block>
-            <ui-block
+            <ui-image-block
                 :isImage="true"
+                :direction="false"
                 imgSrc="/images/tenuta.jpg" />
         </div>
     </div>
 </template>
 
 <script>
-import { UiBlock, UiHeroBannerVideo, UiTitle } from '../components/ui'
+import { UiBlock, UiHeroBannerVideo, UiImageBlock, UiTitle } from '../components/ui'
 import { TimelineMax } from 'gsap'
 import ScrollMagic from 'scrollmagic'
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
@@ -33,6 +34,7 @@ export default {
     components: {
         UiBlock,
         UiHeroBannerVideo,
+        UiImageBlock,
         UiTitle,
     },
     data: function() {
