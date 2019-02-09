@@ -62168,7 +62168,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.home-menu-container ul li {\n  display: inline-block;\n}\n.home-menu-container ul li .nav-link {\n    font-weight: 300;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    color: #fff;\n}\n.home-menu-container ul li .nav-link:hover {\n      color: #FAC823;\n}\n", ""]);
+exports.push([module.i, "\n.home-menu-container .nav-link {\n  position: relative;\n  display: inline-block;\n  margin: 15px 25px;\n  outline: none;\n  text-decoration: none;\n  letter-spacing: 1px;\n  text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);\n  font-weight: 300;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  color: #fff;\n}\n.home-menu-container .nav-link:hover,\n.home-menu-container .nav-link:focus {\n  outline: none;\n}\n.home-menu-container ul {\n  position: relative;\n  z-index: 1;\n}\n.home-menu-container ul .nav-link {\n    padding: 0 5px;\n    -webkit-transition: color 0.3s;\n    transition: color 0.3s;\n}\n.home-menu-container ul .nav-link::before,\n  .home-menu-container ul .nav-link::after {\n    position: absolute;\n    width: 100%;\n    left: 0;\n    top: 50%;\n    height: 1px;\n    margin-top: -1px;\n    background: rgba(255, 255, 255, 0.5);\n    content: '';\n    z-index: -1;\n    -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;\n    -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;\n    transition: opacity 0.3s, -webkit-transform 0.3s;\n    transition: transform 0.3s, opacity 0.3s;\n    transition: transform 0.3s, opacity 0.3s, -webkit-transform 0.3s;\n    pointer-events: none;\n}\n.home-menu-container ul .nav-link::before {\n    -webkit-transform: translateY(-20px);\n            transform: translateY(-20px);\n}\n.home-menu-container ul .nav-link::after {\n    -webkit-transform: translateY(20px);\n            transform: translateY(20px);\n}\n.home-menu-container ul .nav-link:hover,\n  .home-menu-container ul .nav-link:focus {\n    color: #fff;\n}\n.home-menu-container ul .nav-link:hover::before,\n  .home-menu-container ul .nav-link:hover::after,\n  .home-menu-container ul .nav-link:focus::before,\n  .home-menu-container ul .nav-link:focus::after {\n    opacity: 0.7;\n}\n.home-menu-container ul .nav-link:hover::before,\n  .home-menu-container ul .nav-link:focus::before {\n    -webkit-transform: rotate(45deg);\n            transform: rotate(45deg);\n}\n.home-menu-container ul .nav-link:hover::after,\n  .home-menu-container ul .nav-link:focus::after {\n    -webkit-transform: rotate(-45deg);\n            transform: rotate(-45deg);\n}\n.home-menu-container ul li {\n    display: inline-block;\n}\n.home-menu-container ul li .nav-link:hover {\n      color: #FAC823;\n}\n", ""]);
 
 
 
@@ -62229,6 +62229,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
+                "data-hover": "Scuola Mocajo",
                 to: { path: "/scuola-mocajo" },
                 "exact-active-class": "active"
               }
@@ -62249,6 +62250,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
+                "data-hover": "Storia",
                 to: { path: "/la-nostra-storia" },
                 "exact-active-class": "active"
               }
@@ -62269,6 +62271,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
+                "data-hover": "I Nostri Vini",
                 to: { path: "/i-nostri-vini" },
                 "exact-active-class": "active"
               }
@@ -62289,6 +62292,7 @@ var render = function() {
               staticClass: "nav-link",
               attrs: {
                 tag: "a",
+                "data-hover": "Contatti",
                 to: { path: "/contatti" },
                 "exact-active-class": "active"
               }
@@ -64291,7 +64295,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#sidebar {\n  max-width: 6rem;\n  background-color: #fff;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n#sidebar .product-menu {\n    width: 6rem;\n    height: 6rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    font-size: 1.25rem;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    cursor: pointer;\n}\n#sidebar .product-menu span {\n      display: inline-block;\n      opacity: 0;\n      width: 0;\n      visibility: hidden;\n      -webkit-transition: opacity .55s ease-in-out;\n      transition: opacity .55s ease-in-out;\n}\n#sidebar:hover {\n    max-width: 8rem;\n    cursor: pointer;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n}\n#sidebar:hover .product-menu {\n      width: 8rem;\n      height: 8rem;\n}\n#sidebar:hover .product-menu span {\n        display: inline-block;\n        visibility: visible;\n        width: auto;\n        opacity: 0.6;\n        -webkit-transition: opacity .55s ease-in-out;\n        transition: opacity .55s ease-in-out;\n}\n#content .row {\n  border-left: 1px solid #000;\n  margin-left: 0;\n}\n#content .row .ui-block {\n    min-height: 60vh;\n}\n#content .row .ui-block.custom-block {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n#content .row .ui-block.custom-block img {\n        max-height: 60vh;\n}\n", ""]);
+exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#sidebar {\n  max-width: 6rem;\n  background-color: #fff;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\n#sidebar .product-menu {\n    width: 6rem;\n    height: 6rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    font-size: 1.25rem;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    cursor: pointer;\n}\n#sidebar .product-menu.active {\n      background-color: #fff !important;\n}\n#sidebar .product-menu.active.bg-blue {\n        color: #68A2C9;\n}\n#sidebar .product-menu.active.bg-yellow {\n        color: #FAC823;\n}\n#sidebar .product-menu.active.bg-red {\n        color: #d85840;\n}\n#sidebar:hover {\n    max-width: 6.5rem;\n    cursor: pointer;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n}\n#sidebar:hover .product-menu {\n      width: 6.5rem;\n      height: 6.5rem;\n}\n#sidebar:hover .product-menu span {\n        display: inline-block;\n        visibility: visible;\n        width: auto;\n        opacity: 0.6;\n        -webkit-transition: opacity .55s ease-in-out;\n        transition: opacity .55s ease-in-out;\n}\n#content .row {\n  border-left: 1px solid #000;\n  margin-left: 0;\n}\n#content .row .ui-block {\n    min-height: calc(100vh - 130px);\n}\n#content .row .ui-block.custom-block {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n}\n#content .row .ui-block.custom-block img {\n        max-height: calc(100vh - 130px);\n}\n", ""]);
 
 
 
@@ -64306,7 +64310,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_swiper_dist_css_swiper_css__ = __webpack_require__(218);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_swiper_dist_css_swiper_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_swiper_dist_css_swiper_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_gsap__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_ui__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_gsap_ScrollToPlugin__ = __webpack_require__(222);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ui__ = __webpack_require__(19);
 //
 //
 //
@@ -64384,6 +64389,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 
 
 
@@ -64393,11 +64399,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     swiper: __WEBPACK_IMPORTED_MODULE_0_vue_awesome_swiper__["swiper"],
     swiperSlide: __WEBPACK_IMPORTED_MODULE_0_vue_awesome_swiper__["swiperSlide"],
-    UiAction: __WEBPACK_IMPORTED_MODULE_3__components_ui__["a" /* UiAction */],
-    UiBlock: __WEBPACK_IMPORTED_MODULE_3__components_ui__["b" /* UiBlock */],
-    UiCollapse: __WEBPACK_IMPORTED_MODULE_3__components_ui__["c" /* UiCollapse */],
-    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_3__components_ui__["d" /* UiHeroBanner */],
-    UiTitle: __WEBPACK_IMPORTED_MODULE_3__components_ui__["g" /* UiTitle */]
+    UiAction: __WEBPACK_IMPORTED_MODULE_4__components_ui__["a" /* UiAction */],
+    UiBlock: __WEBPACK_IMPORTED_MODULE_4__components_ui__["b" /* UiBlock */],
+    UiCollapse: __WEBPACK_IMPORTED_MODULE_4__components_ui__["c" /* UiCollapse */],
+    UiHeroBanner: __WEBPACK_IMPORTED_MODULE_4__components_ui__["d" /* UiHeroBanner */],
+    UiTitle: __WEBPACK_IMPORTED_MODULE_4__components_ui__["g" /* UiTitle */]
   },
   data: function data() {
     return {
@@ -64407,7 +64413,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           el: '.swiper-pagination',
           clickable: true
         }
-      }
+      },
+      setteMenu: null,
+      soffioMenu: null,
+      saputoMenu: null
     };
   },
   methods: {
@@ -64442,8 +64451,88 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     setMenuOnCenter: function setMenuOnCenter(e) {
       var position = document.documentElement.scrollTop;
-      TweenMax.to(this.$refs.sidebar, .2, {
-        y: position
+
+      if (this.$refs.sidebar) {
+        TweenMax.to(this.$refs.sidebar, .2, {
+          y: position
+        });
+      }
+    },
+    getScrollX: function getScrollX() {
+      return window.pageXOffset != null ? window.pageXOffset : document.documentElement.scrollLeft != null ? document.documentElement.scrollLeft : document.body.scrollLeft;
+    },
+    getScrollY: function getScrollY() {
+      var w = window; // This works for all browsers except IE versions 8 and before
+
+      if (w.pageXOffset != null) return {
+        x: w.pageXOffset,
+        y: w.pageYOffset // For IE (or any browser) in Standards mode
+
+      };
+      var d = w.document;
+      if (document.compatMode == "CSS1Compat") return {
+        x: d.documentElement.scrollLeft,
+        y: d.documentElement.scrollTop // For browsers in Quirks mode
+
+      };
+      return {
+        x: d.body.scrollLeft,
+        y: d.body.scrollTop
+      };
+    },
+    resetClass: function resetClass() {
+      return new Promise(function (resolve) {
+        TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu'], .2, {
+          className: '-=active',
+          onComplete: function onComplete() {
+            resolve();
+          }
+        });
+      });
+    },
+    goTo: function goTo(id) {
+      var name = '',
+          el,
+          scrollYPos = 0,
+          topPosition = 0,
+          scrollOffset = this.getScrollY();
+      this.resetClass().then(function () {
+        switch (id) {
+          case 1:
+            name = 'sette';
+            el = document.getElementById('sette');
+            break;
+
+          case 2:
+            name = 'soffio';
+            el = document.getElementById('soffio');
+            topPosition = el.getBoundingClientRect().top;
+            scrollYPos = topPosition + scrollOffset.y;
+            break;
+
+          case 3:
+            name = 'saputo';
+            el = document.getElementById('saputo');
+            topPosition = el.getBoundingClientRect().top;
+            scrollYPos = topPosition + scrollOffset.y;
+            break;
+        }
+
+        var master = new __WEBPACK_IMPORTED_MODULE_2_gsap__["a" /* TimelineMax */]({
+          paused: true
+        });
+        master.to('#' + name + '-menu', .6, {
+          className: '+=active'
+        }, 0);
+        master.to(window, .6, {
+          scrollTo: {
+            offsetY: 130,
+            y: scrollYPos,
+            x: 0
+          },
+          ease: Sine.easeOut
+        }, 0);
+        master.play();
       });
     }
   },
@@ -64479,24 +64568,57 @@ var render = function() {
     _c("div", { staticClass: "row no-gutters" }, [
       _c("div", { staticClass: "col", attrs: { id: "sidebar" } }, [
         _c("div", { ref: "sidebar", staticClass: "sidebar-container" }, [
-          _c("div", { staticClass: "product-menu bg-blue active" }, [
-            _vm._v("\n                    S\n                ")
-          ]),
+          _c(
+            "div",
+            {
+              staticClass: "product-menu bg-blue active",
+              class: _vm.setteMenu,
+              attrs: { id: "sette-menu" },
+              on: {
+                click: function($event) {
+                  _vm.goTo(1)
+                }
+              }
+            },
+            [_vm._v("\n                    S\n                ")]
+          ),
           _vm._v(" "),
-          _c("div", { staticClass: "product-menu bg-red" }, [
-            _vm._v("\n                    S\n                ")
-          ]),
+          _c(
+            "div",
+            {
+              staticClass: "product-menu bg-red",
+              class: _vm.soffioMenu,
+              attrs: { id: "soffio-menu" },
+              on: {
+                click: function($event) {
+                  _vm.goTo(2)
+                }
+              }
+            },
+            [_vm._v("\n                    S\n                ")]
+          ),
           _vm._v(" "),
-          _c("div", { staticClass: "product-menu bg-yellow" }, [
-            _vm._v("\n                    S\n                ")
-          ])
+          _c(
+            "div",
+            {
+              staticClass: "product-menu bg-yellow",
+              class: _vm.saputoMenu,
+              attrs: { id: "saputo-menu" },
+              on: {
+                click: function($event) {
+                  _vm.goTo(3)
+                }
+              }
+            },
+            [_vm._v("\n                    S\n                ")]
+          )
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col", attrs: { id: "content" } }, [
         _c(
           "div",
-          { staticClass: "row" },
+          { staticClass: "row", attrs: { id: "sette" } },
           [
             _c(
               "ui-block",
@@ -64527,7 +64649,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "row" },
+          { staticClass: "row", attrs: { id: "soffio" } },
           [
             _c(
               "ui-block",
@@ -64558,7 +64680,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "row" },
+          { staticClass: "row", attrs: { id: "saputo" } },
           [
             _c(
               "ui-block",
@@ -84081,6 +84203,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UiCollapse',
@@ -84150,13 +84280,17 @@ var render = function() {
     "div",
     { staticClass: "ui-collapse" },
     [
-      _c("collapse-heading"),
+      _c("collapse-heading", { attrs: { title: "descrizione" } }),
       _vm._v(" "),
-      _c("collapse-heading"),
+      _c("collapse-heading", { attrs: { title: "vitigno" } }),
       _vm._v(" "),
-      _c("collapse-heading"),
+      _c("collapse-heading", { attrs: { title: "zona" } }),
       _vm._v(" "),
-      _c("collapse-heading")
+      _c("collapse-heading", { attrs: { title: "vitigno" } }),
+      _vm._v(" "),
+      _c("collapse-heading", { attrs: { title: "vinificazione" } }),
+      _vm._v(" "),
+      _c("collapse-heading", { attrs: { title: "valori analitici" } })
     ],
     1
   )
@@ -92352,6 +92486,195 @@ exports.push([module.i, "/**\n * Swiper 4.4.6\n * Most modern mobile touch slide
   return Swiper;
 
 })));
+
+
+/***/ }),
+/* 222 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export ScrollToPlugin */
+/* unused harmony export default */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__ = __webpack_require__(4);
+/*!
+ * VERSION: 1.9.1
+ * DATE: 2018-05-30
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * @license Copyright (c) 2008-2018, GreenSock. All rights reserved.
+ * This work is subject to the terms at http://greensock.com/standard-license or for
+ * Club GreenSock members, the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ **/
+
+
+
+var _doc = (__WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["e" /* _gsScope */].document || {}).documentElement,
+		_window = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["e" /* _gsScope */],
+		_max = function(element, axis) {
+			var dim = (axis === "x") ? "Width" : "Height",
+				scroll = "scroll" + dim,
+				client = "client" + dim,
+				body = document.body;
+			return (element === _window || element === _doc || element === body) ? Math.max(_doc[scroll], body[scroll]) - (_window["inner" + dim] || _doc[client] || body[client]) : element[scroll] - element["offset" + dim];
+		},
+		_unwrapElement = function(value) {
+			if (typeof(value) === "string") {
+				value = TweenLite.selector(value);
+			}
+			if (value.length && value !== _window && value[0] && value[0].style && !value.nodeType) {
+				value = value[0];
+			}
+			return (value === _window || (value.nodeType && value.style)) ? value : null;
+		},
+		_buildGetter = function(e, axis) { //pass in an element and an axis ("x" or "y") and it'll return a getter function for the scroll position of that element (like scrollTop or scrollLeft, although if the element is the window, it'll use the pageXOffset/pageYOffset or the documentElement's scrollTop/scrollLeft or document.body's. Basically this streamlines things and makes a very fast getter across browsers.
+			var p = "scroll" + ((axis === "x") ? "Left" : "Top");
+			if (e === _window) {
+				if (e.pageXOffset != null) {
+					p = "page" + axis.toUpperCase() + "Offset";
+				} else if (_doc[p] != null) {
+					e = _doc;
+				} else {
+					e = document.body;
+				}
+			}
+			return function() {
+				return e[p];
+			};
+		},
+		_getOffset = function(element, container) {
+			var rect = _unwrapElement(element).getBoundingClientRect(),
+				b = document.body,
+				isRoot = (!container || container === _window || container === b),
+				cRect = isRoot ? {top:_doc.clientTop - (window.pageYOffset || _doc.scrollTop || b.scrollTop || 0), left:_doc.clientLeft - (window.pageXOffset || _doc.scrollLeft || b.scrollLeft || 0)} : container.getBoundingClientRect(),
+				offsets = {x: rect.left - cRect.left, y: rect.top - cRect.top};
+			if (!isRoot && container) { //only add the current scroll position if it's not the window/body.
+				offsets.x += _buildGetter(container, "x")();
+				offsets.y += _buildGetter(container, "y")();
+			}
+			return offsets;
+			/*	PREVIOUS
+			var rect = _unwrapElement(element).getBoundingClientRect(),
+				isRoot = (!container || container === _window || container === document.body),
+				cRect = (isRoot ? _doc : container).getBoundingClientRect(),
+				offsets = {x: rect.left - cRect.left, y: rect.top - cRect.top};
+			if (!isRoot && container) { //only add the current scroll position if it's not the window/body.
+				offsets.x += _buildGetter(container, "x")();
+				offsets.y += _buildGetter(container, "y")();
+			}
+			return offsets;
+			*/
+		},
+		_parseVal = function(value, target, axis) {
+			var type = typeof(value);
+			return !isNaN(value) ? parseFloat(value) : (type === "number" || (type === "string" && value.charAt(1) === "=")) ? value : (value === "max") ? _max(target, axis) : Math.min(_max(target, axis), _getOffset(value, target)[axis]);
+		},
+
+		ScrollToPlugin = __WEBPACK_IMPORTED_MODULE_0__TweenLite_js__["e" /* _gsScope */]._gsDefine.plugin({
+			propName: "scrollTo",
+			API: 2,
+			global: true,
+			version:"1.9.1",
+
+			//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
+			init: function(target, value, tween) {
+				this._wdw = (target === _window);
+				this._target = target;
+				this._tween = tween;
+				if (typeof(value) !== "object") {
+					value = {y:value}; //if we don't receive an object as the parameter, assume the user intends "y".
+					if (typeof(value.y) === "string" && value.y !== "max" && value.y.charAt(1) !== "=") {
+						value.x = value.y;
+					}
+				} else if (value.nodeType) {
+					value = {y:value, x:value};
+				}
+				this.vars = value;
+				this._autoKill = (value.autoKill !== false);
+				this.getX = _buildGetter(target, "x");
+				this.getY = _buildGetter(target, "y");
+				this.x = this.xPrev = this.getX();
+				this.y = this.yPrev = this.getY();
+				if (value.x != null) {
+					this._addTween(this, "x", this.x, _parseVal(value.x, target, "x") - (value.offsetX || 0), "scrollTo_x", true);
+					this._overwriteProps.push("scrollTo_x");
+				} else {
+					this.skipX = true;
+				}
+				if (value.y != null) {
+					this._addTween(this, "y", this.y, _parseVal(value.y, target, "y") - (value.offsetY || 0), "scrollTo_y", true);
+					this._overwriteProps.push("scrollTo_y");
+				} else {
+					this.skipY = true;
+				}
+				return true;
+			},
+
+			//called each time the values should be updated, and the ratio gets passed as the only parameter (typically it's a value between 0 and 1, but it can exceed those when using an ease like Elastic.easeOut or Back.easeOut, etc.)
+			set: function(v) {
+				this._super.setRatio.call(this, v);
+
+				var x = (this._wdw || !this.skipX) ? this.getX() : this.xPrev,
+					y = (this._wdw || !this.skipY) ? this.getY() : this.yPrev,
+					yDif = y - this.yPrev,
+					xDif = x - this.xPrev,
+					threshold = ScrollToPlugin.autoKillThreshold;
+
+				if (this.x < 0) { //can't scroll to a position less than 0! Might happen if someone uses a Back.easeOut or Elastic.easeOut when scrolling back to the top of the page (for example)
+					this.x = 0;
+				}
+				if (this.y < 0) {
+					this.y = 0;
+				}
+				if (this._autoKill) {
+					//note: iOS has a bug that throws off the scroll by several pixels, so we need to check if it's within 7 pixels of the previous one that we set instead of just looking for an exact match.
+					if (!this.skipX && (xDif > threshold || xDif < -threshold) && x < _max(this._target, "x")) {
+						this.skipX = true; //if the user scrolls separately, we should stop tweening!
+					}
+					if (!this.skipY && (yDif > threshold || yDif < -threshold) && y < _max(this._target, "y")) {
+						this.skipY = true; //if the user scrolls separately, we should stop tweening!
+					}
+					if (this.skipX && this.skipY) {
+						this._tween.kill();
+						if (this.vars.onAutoKill) {
+							this.vars.onAutoKill.apply(this.vars.onAutoKillScope || this._tween, this.vars.onAutoKillParams || []);
+						}
+					}
+				}
+				if (this._wdw) {
+					_window.scrollTo((!this.skipX) ? this.x : x, (!this.skipY) ? this.y : y);
+				} else {
+					if (!this.skipY) {
+						this._target.scrollTop = this.y;
+					}
+					if (!this.skipX) {
+						this._target.scrollLeft = this.x;
+					}
+				}
+				this.xPrev = this.x;
+				this.yPrev = this.y;
+			}
+
+		}),
+		p = ScrollToPlugin.prototype;
+
+	ScrollToPlugin.max = _max;
+	ScrollToPlugin.getOffset = _getOffset;
+	ScrollToPlugin.buildGetter = _buildGetter;
+	ScrollToPlugin.autoKillThreshold = 7;
+
+	p._kill = function(lookup) {
+		if (lookup.scrollTo_x) {
+			this.skipX = true;
+		}
+		if (lookup.scrollTo_y) {
+			this.skipY = true;
+		}
+		return this._super._kill.call(this, lookup);
+	};
+
+
 
 
 /***/ })

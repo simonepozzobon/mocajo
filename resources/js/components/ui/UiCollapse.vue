@@ -1,9 +1,17 @@
 <template lang="html">
     <div class="ui-collapse">
-        <collapse-heading />
-        <collapse-heading />
-        <collapse-heading />
-        <collapse-heading />
+        <collapse-heading
+            title="descrizione" />
+        <collapse-heading
+            title="vitigno" />
+        <collapse-heading
+            title="zona" />
+        <collapse-heading
+            title="vitigno" />
+        <collapse-heading
+            title="vinificazione" />
+        <collapse-heading
+            title="valori analitici" />
     </div>
 </template>
 

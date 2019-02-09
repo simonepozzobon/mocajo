@@ -8,19 +8,19 @@
         <div class="row no-gutters">
             <div id="sidebar" class="col">
                 <div class="sidebar-container" ref="sidebar">
-                    <div class="product-menu bg-blue active">
+                    <div id="sette-menu" class="product-menu bg-blue active" :class="setteMenu" @click="goTo(1)">
                         S
                     </div>
-                    <div class="product-menu bg-red">
+                    <div id="soffio-menu" class="product-menu bg-red" :class="soffioMenu" @click="goTo(2)">
                         S
                     </div>
-                    <div class="product-menu bg-yellow">
+                    <div id="saputo-menu" class="product-menu bg-yellow" :class="saputoMenu" @click="goTo(3)">
                         S
                     </div>
                 </div>
             </div>
             <div id="content" class="col">
-                <div class="row">
+                <div id="sette" class="row">
                     <ui-block
                         color="bg-light">
                         <ui-title
@@ -36,7 +36,7 @@
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
-                <div class="row">
+                <div id="soffio" class="row">
                     <ui-block
                         color="bg-light">
                         <ui-title
@@ -52,7 +52,7 @@
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
-                <div class="row">
+                <div id="saputo" class="row">
                     <ui-block
                         color="bg-light">
                         <ui-title
@@ -80,6 +80,8 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 
 import {TimelineMax} from 'gsap'
+import ScrollToPlugin from 'gsap/ScrollToPlugin'
+
 import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
@@ -100,7 +102,10 @@ export default {
                     el: '.swiper-pagination',
                     clickable: true
                 }
-            }
+            },
+            setteMenu: null,
+            soffioMenu: null,
+            saputoMenu: null,
         }
     },
     methods: {
@@ -133,9 +138,84 @@ export default {
         },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop
-            TweenMax.to(this.$refs.sidebar, .2, {
-                y: position
+            if (this.$refs.sidebar) {
+                TweenMax.to(this.$refs.sidebar, .2, {
+                    y: position
+                })
+            }
+        },
+        getScrollX: function() {
+            return (window.pageXOffset != null) ? window.pageXOffset : (document.documentElement.scrollLeft != null) ? document.documentElement.scrollLeft : document.body.scrollLeft;
+        },
+        getScrollY: function() {
+            const w = window
+
+            // This works for all browsers except IE versions 8 and before
+            if (w.pageXOffset != null) return {x: w.pageXOffset, y:w.pageYOffset}
+            // For IE (or any browser) in Standards mode
+            var d = w.document
+            if (document.compatMode == "CSS1Compat")
+            return {x:d.documentElement.scrollLeft, y:d.documentElement.scrollTop}
+            // For browsers in Quirks mode
+            return { x: d.body.scrollLeft, y: d.body.scrollTop }
+        },
+        resetClass: function() {
+            return new Promise(resolve => {
+                TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu'], .2, {
+                    className: '-=active',
+                    onComplete: () => {
+                        resolve()
+                    }
+                })
             })
+        },
+        goTo: function(id) {
+            let name = '',
+            el,
+            scrollYPos = 0,
+            topPosition = 0,
+            scrollOffset = this.getScrollY()
+
+            this.resetClass().then( () => {
+                switch (id) {
+                    case 1:
+                        name = 'sette'
+                        el = document.getElementById('sette')
+                        break;
+                    case 2:
+                        name = 'soffio'
+                        el = document.getElementById('soffio')
+                        topPosition = el.getBoundingClientRect().top
+                        scrollYPos = topPosition + scrollOffset.y﻿
+                        break;
+                    case 3:
+                        name = 'saputo'
+                        el = document.getElementById('saputo')
+                        topPosition = el.getBoundingClientRect().top
+                        scrollYPos = topPosition + scrollOffset.y﻿
+                        break;
+                }
+
+                let master = new TimelineMax({
+                    paused: true,
+                })
+
+                master.to('#'+name+'-menu', .6, {
+                    className: '+=active'
+                }, 0)
+
+                master.to(window﻿, .6, {
+                    scrollTo:{
+                        offsetY: 130,
+                        y: scrollYPos,
+                        x: 0,
+                    },
+                    ease: Sine.easeOut
+                }, 0)
+
+                master.play()
+            })
+
         }
     },
     mounted: function() {
@@ -170,38 +250,31 @@ export default {
         cursor: pointer;
 
 
-        span {
-            display: inline-block;
-            opacity: 0;
-            width: 0;
-            visibility: hidden;
-            transition: opacity .55s ease-in-out;
-        }
 
-        // &.active {
-        //     z-index: 2;
-        //     position: relative;
-        //
-        //     // &::after {
-        //     //     content: '';
-        //     //     position: absolute;
-        //     //     background-color: $blue;
-        //     //     right: - $spacer * 2.1213;
-        //     //     width: $spacer * 4.2426;
-        //     //     height: $spacer * 4.2426;
-        //     //     z-index: -1;
-        //     //     transform: rotate(45deg);
-        //     // }
-        // }
+        &.active {
+            background-color: $white !important;
+
+            &.bg-blue {
+                color: $blue;
+            }
+
+            &.bg-yellow {
+                color: $yellow;
+            }
+
+            &.bg-red {
+                color: $red;
+            }
+        }
     }
 
     &:hover {
-        max-width: $spacer * 8;
+        max-width: $spacer * 6.5;
         cursor: pointer;
 
         .product-menu {
-            width: $spacer * 8;
-            height: $spacer * 8;
+            width: $spacer * 6.5;
+            height: $spacer * 6.5;
 
             span {
                 display: inline-block;
@@ -223,7 +296,7 @@ export default {
         margin-left: 0;
 
         .ui-block {
-            min-height: 60vh;
+            min-height: calc(100vh - 130px);
 
             &.custom-block {
                 display: flex;
@@ -231,7 +304,7 @@ export default {
                 align-items: center;
 
                 img {
-                    max-height: 60vh;
+                    max-height: calc(100vh - 130px);
                 }
             }
         }
