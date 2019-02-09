@@ -8,6 +8,8 @@
         </div>
         <div class="row">
             <ui-block
+                ref="storia"
+                :animated="true"
                 color="bg-light">
                 <ui-title
                     title="La Vecchia Scuola Di Mocajo" />
@@ -17,8 +19,10 @@
             </ui-block>
             <ui-image-block
                 :isImage="true"
+                :animated="true"
                 :direction="false"
-                imgSrc="/images/tenuta.jpg" />
+                imgSrc="/images/tenuta.jpg"
+                @animate-parent="animateStoria"/>
         </div>
     </div>
 </template>
@@ -30,7 +34,7 @@ import ScrollMagic from 'scrollmagic'
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators'
 
 export default {
-    name: 'LaScuola',
+    name: 'LaStoria',
     components: {
         UiBlock,
         UiHeroBannerVideo,
@@ -46,104 +50,8 @@ export default {
         }
     },
     methods: {
-        init: function() {
-            this.controller = new ScrollMagic.Controller()
-            let scuola = new ScrollMagic.Scene({
-                triggerElement: '#section-one',
-                offset: 0,
-                duration: 200,
-                triggerHook: 'onEnter'
-            })
-                // .addIndicators({ name: 'about'})
-                // .setTween(master)
-                .addTo(this.controller)
-            let tenuta = new ScrollMagic.Scene({
-                triggerElement: '#section-two',
-                offset: 0,
-                duration: 200,
-                triggerHook: 'onEnter'
-            })
-                // .addIndicators({ name: 'tenuta'})
-                .on('enter', () => {
-                    if (!this.tenuta) {
-                        let objs = {
-                            title: '#about-tenuta',
-                            description: '#about-tenuta-description',
-                            image: '#about-tenuta-image'
-                        }
-                        this.animate(objs)
-                        this.tenuta = true
-                    }
-                })
-                .addTo(this.controller)
-            let storia = new ScrollMagic.Scene({
-                triggerElement: '#section-three',
-                offset: 0,
-                duration: 200,
-                triggerHook: 'onEnter'
-            })
-                // .addIndicators({ name: 'storia'})
-                .on('enter', () => {
-                    if (!this.storia) {
-                        let objs = {
-                            title: '#about-storia',
-                            description: '#about-storia-description',
-                            image: '#about-storia-image'
-                        }
-                        this.animate(objs)
-                        this.storia = true
-                    }
-                })
-                .addTo(this.controller)
-        },
-        animate: function(objs = null) {
-            let title, description, image
-            if (objs) {
-                title = objs.title
-                description = objs.description
-                image = objs.image
-            } else {
-                title = this.$refs.title
-                description = this.$refs.description
-                image = this.$refs.image
-            }
-
-
-            let master = new TimelineMax({
-                paused: true
-            })
-
-            master.fromTo(title, .6, {
-                autoAlpha: 0,
-                y: 20,
-                ease: Power2.easeInOut
-            }, {
-                autoAlpha: 1,
-                y: 0,
-                ease: Power2.easeInOut
-            }, .1)
-
-            master.fromTo(description, .6, {
-                autoAlpha: 0,
-                y: 20,
-                ease: Power2.easeInOut
-            }, {
-                autoAlpha: 1,
-                y: 0,
-                ease: Power2.easeInOut
-            }, .2)
-
-            master.fromTo(image, .8, {
-                autoAlpha: 0,
-                x: 60,
-                ease: Power2.easeOut
-            }, {
-                autoAlpha: 1,
-                x: 0,
-                ease: Power2.easeOut
-            }, .4)
-
-            master.play()
+        animateStoria: function() {
+            this.$refs.storia.animateIn()
         }
     },
     mounted: function() {

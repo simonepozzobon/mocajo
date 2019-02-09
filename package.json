@@ -30,6 +30,7 @@
     "dependencies": {
         "lottie-web": "^5.4.3",
         "scrollmagic": "^2.0.6",
+        "vue-check-view": "^0.2.3",
         "vue-videobg": "^2.0.0"
     }
 }

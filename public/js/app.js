@@ -25466,6 +25466,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Cookies__ = __webpack_require__(111);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__containers_MainTemplate_vue__ = __webpack_require__(112);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__containers_MainTemplate_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__containers_MainTemplate_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_check_view__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_check_view___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_check_view__);
 __webpack_require__(30);
 
 
@@ -25473,7 +25475,9 @@ __webpack_require__(30);
 
 
 
+
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_vue_check_view___default.a);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$cookie = __WEBPACK_IMPORTED_MODULE_3__Cookies__["a" /* default */];
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
   mode: 'history',
@@ -62697,6 +62701,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -62719,100 +62735,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   methods: {
-    init: function init() {
-      var _this = this;
-
-      this.controller = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Controller();
-      var scuola = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
-        triggerElement: '#section-one',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }).addTo(this.controller);
-      var tenuta = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
-        triggerElement: '#section-two',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'tenuta'})
-      .on('enter', function () {
-        if (!_this.tenuta) {
-          var objs = {
-            title: '#about-tenuta',
-            description: '#about-tenuta-description',
-            image: '#about-tenuta-image'
-          };
-
-          _this.animate(objs);
-
-          _this.tenuta = true;
-        }
-      }).addTo(this.controller);
-      var storia = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
-        triggerElement: '#section-three',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'storia'})
-      .on('enter', function () {
-        if (!_this.storia) {
-          var objs = {
-            title: '#about-storia',
-            description: '#about-storia-description',
-            image: '#about-storia-image'
-          };
-
-          _this.animate(objs);
-
-          _this.storia = true;
-        }
-      }).addTo(this.controller);
+    animateFamiglia: function animateFamiglia() {
+      this.$refs.famiglia.animateIn();
     },
-    animate: function animate() {
-      var objs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var title, description, image;
-
-      if (objs) {
-        title = objs.title;
-        description = objs.description;
-        image = objs.image;
-      } else {
-        title = this.$refs.title;
-        description = this.$refs.description;
-        image = this.$refs.image;
-      }
-
-      var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
-        paused: true
-      });
-      master.fromTo(title, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, {
-        autoAlpha: 1,
-        y: 0,
-        ease: Power2.easeInOut
-      }, .1);
-      master.fromTo(description, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, {
-        autoAlpha: 1,
-        y: 0,
-        ease: Power2.easeInOut
-      }, .2);
-      master.fromTo(image, .8, {
-        autoAlpha: 0,
-        x: 60,
-        ease: Power2.easeOut
-      }, {
-        autoAlpha: 1,
-        x: 0,
-        ease: Power2.easeOut
-      }, .4);
-      master.play();
+    animateProgetto: function animateProgetto() {
+      this.$refs.progetto.animateIn();
+    },
+    animateAgriturismo: function animateAgriturismo() {
+      this.$refs.agriturismo.animateIn();
     }
   },
   mounted: function mounted() {// this.$root.navbar = 1
@@ -62907,7 +62837,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n", ""]);
+exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n.ui-block .ui-block-container {\n    opacity: 0;\n}\n", ""]);
 
 
 
@@ -62917,6 +62847,8 @@ exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: 
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -62934,6 +62866,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       type: String,
       default: null
     },
+    animated: {
+      type: Boolean,
+      default: false // true -> anima da sinistra verso destra
+
+    },
     direction: {
       type: Boolean,
       default: null // true -> anima da sinistra verso destra
@@ -62945,10 +62882,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (this.imgSrc) {
         this.$refs.block.style.backgroundImage = 'url(' + this.imgSrc + ')';
       }
+    },
+    animateIn: function animateIn() {
+      if (this.animated) {
+        var master = new TimelineMax({
+          paused: true
+        });
+        master.fromTo(this.$refs.container, 3, {
+          autoAlpha: 0
+        }, {
+          autoAlpha: 1,
+          ease: Circ.easeInOut
+        }, 0);
+        master.play();
+      } else {
+        TweenMax.set(this.$refs.container, {
+          autoAlpha: 1
+        });
+      }
     }
   },
   mounted: function mounted() {
     this.setBackground();
+
+    if (!this.animated) {
+      this.animateIn();
+    }
   }
 });
 
@@ -62963,8 +62922,14 @@ var render = function() {
   return _c(
     "div",
     { ref: "block", staticClass: "col-md-6 ui-block", class: _vm.color },
-    [_vm._t("default")],
-    2
+    [
+      _c(
+        "div",
+        { ref: "container", staticClass: "ui-block-container" },
+        [_vm._t("default")],
+        2
+      )
+    ]
   )
 }
 var staticRenderFns = []
@@ -63890,7 +63855,7 @@ var render = function() {
       [
         _c(
           "ui-block",
-          { attrs: { color: "bg-light" } },
+          { ref: "progetto", attrs: { color: "bg-light", animated: true } },
           [
             _c("ui-title", { attrs: { title: "Il Nostro Progetto" } }),
             _vm._v(" "),
@@ -63915,9 +63880,11 @@ var render = function() {
         _c("ui-image-block", {
           attrs: {
             isImage: true,
+            animated: true,
             direction: false,
             imgSrc: "/images/storia.jpg"
-          }
+          },
+          on: { "animate-parent": _vm.animateProgetto }
         })
       ],
       1
@@ -63928,12 +63895,17 @@ var render = function() {
       { staticClass: "row" },
       [
         _c("ui-image-block", {
-          attrs: { isImage: true, imgSrc: "/images/tenuta.jpg" }
+          attrs: {
+            isImage: true,
+            animated: true,
+            imgSrc: "/images/tenuta.jpg"
+          },
+          on: { "animate-parent": _vm.animateFamiglia }
         }),
         _vm._v(" "),
         _c(
           "ui-block",
-          { attrs: { color: "bg-light" } },
+          { ref: "famiglia", attrs: { animated: true, color: "bg-light" } },
           [
             _c("ui-title", { attrs: { title: "La Nostra Famiglia" } }),
             _vm._v(" "),
@@ -63959,7 +63931,7 @@ var render = function() {
       [
         _c(
           "ui-block",
-          { attrs: { color: "bg-light" } },
+          { ref: "agriturismo", attrs: { animated: true, color: "bg-light" } },
           [
             _c("ui-title", { attrs: { title: "L'Agriturismo" } }),
             _vm._v(" "),
@@ -63979,9 +63951,11 @@ var render = function() {
         _c("ui-image-block", {
           attrs: {
             isImage: true,
+            animated: true,
             imgSrc: "/images/about.jpg",
             direction: false
-          }
+          },
+          on: { "animate-parent": _vm.animateAgriturismo }
         })
       ],
       1
@@ -64122,12 +64096,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'LaScuola',
+  name: 'LaStoria',
   components: {
     UiBlock: __WEBPACK_IMPORTED_MODULE_0__components_ui__["b" /* UiBlock */],
     UiHeroBannerVideo: __WEBPACK_IMPORTED_MODULE_0__components_ui__["d" /* UiHeroBannerVideo */],
@@ -64143,102 +64121,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   methods: {
-    init: function init() {
-      var _this = this;
-
-      this.controller = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Controller();
-      var scuola = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
-        triggerElement: '#section-one',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'about'})
-      // .setTween(master)
-      .addTo(this.controller);
-      var tenuta = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
-        triggerElement: '#section-two',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'tenuta'})
-      .on('enter', function () {
-        if (!_this.tenuta) {
-          var objs = {
-            title: '#about-tenuta',
-            description: '#about-tenuta-description',
-            image: '#about-tenuta-image'
-          };
-
-          _this.animate(objs);
-
-          _this.tenuta = true;
-        }
-      }).addTo(this.controller);
-      var storia = new __WEBPACK_IMPORTED_MODULE_2_scrollmagic___default.a.Scene({
-        triggerElement: '#section-three',
-        offset: 0,
-        duration: 200,
-        triggerHook: 'onEnter'
-      }) // .addIndicators({ name: 'storia'})
-      .on('enter', function () {
-        if (!_this.storia) {
-          var objs = {
-            title: '#about-storia',
-            description: '#about-storia-description',
-            image: '#about-storia-image'
-          };
-
-          _this.animate(objs);
-
-          _this.storia = true;
-        }
-      }).addTo(this.controller);
-    },
-    animate: function animate() {
-      var objs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var title, description, image;
-
-      if (objs) {
-        title = objs.title;
-        description = objs.description;
-        image = objs.image;
-      } else {
-        title = this.$refs.title;
-        description = this.$refs.description;
-        image = this.$refs.image;
-      }
-
-      var master = new __WEBPACK_IMPORTED_MODULE_1_gsap__["a" /* TimelineMax */]({
-        paused: true
-      });
-      master.fromTo(title, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, {
-        autoAlpha: 1,
-        y: 0,
-        ease: Power2.easeInOut
-      }, .1);
-      master.fromTo(description, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, {
-        autoAlpha: 1,
-        y: 0,
-        ease: Power2.easeInOut
-      }, .2);
-      master.fromTo(image, .8, {
-        autoAlpha: 0,
-        x: 60,
-        ease: Power2.easeOut
-      }, {
-        autoAlpha: 1,
-        x: 0,
-        ease: Power2.easeOut
-      }, .4);
-      master.play();
+    animateStoria: function animateStoria() {
+      this.$refs.storia.animateIn();
     }
   },
   mounted: function mounted() {
@@ -64280,7 +64164,7 @@ var render = function() {
         [
           _c(
             "ui-block",
-            { attrs: { color: "bg-light" } },
+            { ref: "storia", attrs: { animated: true, color: "bg-light" } },
             [
               _c("ui-title", {
                 attrs: { title: "La Vecchia Scuola Di Mocajo" }
@@ -64298,9 +64182,11 @@ var render = function() {
           _c("ui-image-block", {
             attrs: {
               isImage: true,
+              animated: true,
               direction: false,
               imgSrc: "/images/tenuta.jpg"
-            }
+            },
+            on: { "animate-parent": _vm.animateStoria }
           })
         ],
         1
@@ -64401,7 +64287,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.wrapper {\n  padding-top: 130px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  width: 100%;\n  -webkit-box-pack: start;\n      -ms-flex-pack: start;\n          justify-content: flex-start;\n  -webkit-box-align: stretch;\n      -ms-flex-align: stretch;\n          align-items: stretch;\n}\n.wrapper #sidebar {\n    position: fixed;\n    left: 0;\n    min-width: 4rem;\n    max-width: 4rem;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    background-color: #007bff;\n    z-index: 2;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n            transform: translateY(-50%);\n}\n.product-container {\n  max-width: 100%;\n  min-height: 100vh;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.product-container .product-image {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.product-container .product-image .image {\n      max-width: 240px;\n      height: auto;\n      max-height: 80vh;\n}\n", ""]);
+exports.push([module.i, "\n.container-fluid.vini-mocajo {\n  padding: 0;\n}\n#sidebar {\n  min-width: 4rem;\n  max-width: 4rem;\n  background-color: #007bff;\n}\n#content {\n  background-color: #fac823;\n}\n", ""]);
 
 
 
@@ -64461,40 +64347,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -64506,30 +64358,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     UiTitle: __WEBPACK_IMPORTED_MODULE_1__components_ui__["f" /* UiTitle */]
   },
   methods: {
-    animate: function animate() {
-      var title = this.$refs.title,
-          description = this.$refs.description,
-          image = this.$refs.image;
-      var master = new __WEBPACK_IMPORTED_MODULE_0_gsap__["a" /* TimelineMax */]({
-        paused: true
-      });
-      master.from(title, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, .1);
-      master.from(description, .6, {
-        autoAlpha: 0,
-        y: 20,
-        ease: Power2.easeInOut
-      }, .2);
-      master.from(image, .8, {
-        autoAlpha: 0,
-        x: 60,
-        ease: Power2.easeOut
-      }, .4);
-      master.play();
-    },
     addToCart: function addToCart(price) {
       price = price.toFixed(2);
       var product = null;
@@ -64572,125 +64400,55 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "wrapper" }, [
-    _vm._m(0),
+  return _c("div", { staticClass: "container-fluid vini-mocajo" }, [
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c("ui-hero-banner", {
+          attrs: { color: "bg-dark", imgSrc: "/images/vini.jpg" }
+        })
+      ],
+      1
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: "container-fluid section vini-mocajo" }, [
-      _c(
-        "div",
-        { staticClass: "row" },
-        [
-          _c("ui-hero-banner", {
-            attrs: { color: "bg-dark", imgSrc: "/images/vini.jpg" }
-          })
-        ],
-        1
-      ),
+    _c("div", { staticClass: "row no-gutters" }, [
+      _vm._m(0),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "row" },
-        [
-          _c(
-            "ui-block",
-            { attrs: { color: "bg-light" } },
-            [
-              _c("ui-title", { attrs: { title: "Sette" } }),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "\n                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
-                _vm._v(
-                  "\n                    Scopri i nostri vini\n                "
-                )
-              ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "ui-block",
-            { attrs: { color: "bg-light" } },
-            [_c("ui-title", { attrs: { title: "prodotto" } })],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "row" },
-        [
-          _c(
-            "ui-block",
-            { attrs: { color: "bg-light" } },
-            [
-              _c("ui-title", { attrs: { title: "Soffio" } }),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "\n                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
-                _vm._v(
-                  "\n                    Scopri i nostri vini\n                "
-                )
-              ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "ui-block",
-            { attrs: { color: "bg-light" } },
-            [_c("ui-title", { attrs: { title: "prodotto" } })],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "row" },
-        [
-          _c(
-            "ui-block",
-            { attrs: { color: "bg-light" } },
-            [
-              _c("ui-title", { attrs: { title: "Saputo" } }),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "\n                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
-                _vm._v(
-                  "\n                    Scopri i nostri vini\n                "
-                )
-              ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "ui-block",
-            { attrs: { color: "bg-light" } },
-            [_c("ui-title", { attrs: { title: "prodotto" } })],
-            1
-          )
-        ],
-        1
-      )
+      _c("div", { staticClass: "col", attrs: { id: "content" } }, [
+        _c(
+          "div",
+          { staticClass: "row" },
+          [
+            _c(
+              "ui-block",
+              [
+                _c("ui-title", { attrs: { title: "Sette" } }),
+                _vm._v(" "),
+                _c("p", [
+                  _vm._v(
+                    "\n                        La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.\n                    "
+                  )
+                ]),
+                _vm._v(" "),
+                _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
+                  _vm._v(
+                    "\n                        Scopri i nostri vini\n                    "
+                  )
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "ui-block",
+              [_c("ui-title", { attrs: { title: "prodotto" } })],
+              1
+            )
+          ],
+          1
+        )
+      ])
     ])
   ])
 }
@@ -64699,13 +64457,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { id: "sidebar" } }, [
-      _c("ul", { staticClass: "list-unstyled components" }, [
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 1")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 2")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 3")])])
+    return _c("div", { staticClass: "col", attrs: { id: "sidebar" } }, [
+      _c("nav", { staticClass: "sidebar" }, [
+        _c("ul", { staticClass: "list-unstyled components" }, [
+          _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 1")])]),
+          _vm._v(" "),
+          _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 2")])]),
+          _vm._v(" "),
+          _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Vino 3")])])
+        ])
       ])
     ])
   }
@@ -65341,7 +65101,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 
 
@@ -65416,6 +65176,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   methods: {
+    afterEnter: function afterEnter() {
+      this.$root.$emit('page-loaded');
+    },
     init: function init() {
       this.setPadding();
     },
@@ -83325,7 +83088,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-image-block {\n  min-height: 30vh;\n  position: relative;\n  padding: 0;\n  overflow: hidden;\n}\n.ui-image-block .image-container {\n    width: calc(100% + 60px);\n    height: 100%;\n    background-size: cover;\n    background-position: center;\n}\n.ui-image-block .image-container.from-left-to-right-animation {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n.ui-image-block .image-container.from-left-to-right-animation:hover {\n        -webkit-transform: translate3d(0px, 0, 0);\n                transform: translate3d(0px, 0, 0);\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n        opacity: 0.7;\n}\n.ui-image-block .image-container.from-right-to-left-animation {\n      -webkit-transform: translate3d(0px, 0, 0);\n              transform: translate3d(0px, 0, 0);\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n.ui-image-block .image-container.from-right-to-left-animation:hover {\n        -webkit-transform: translate3d(-50px, 0, 0);\n                transform: translate3d(-50px, 0, 0);\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n        opacity: 0.7;\n}\n", ""]);
+exports.push([module.i, "\n.ui-image-block {\n  min-height: 30vh;\n  position: relative;\n  padding: 0;\n  overflow: hidden;\n}\n.ui-image-block .overlay {\n    position: absolute;\n    content: '';\n    background-color: #F7F7F7;\n    width: 100%;\n    height: 100%;\n    z-index: 2;\n}\n.ui-image-block .image-container {\n    width: calc(100% + 60px);\n    height: 100%;\n    background-size: cover;\n    background-position: center;\n}\n.ui-image-block .image-container.from-left-to-right-animation {\n      -webkit-transform: translate3d(-50px, 0, 0);\n              transform: translate3d(-50px, 0, 0);\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n.ui-image-block .image-container.from-left-to-right-animation:hover {\n        -webkit-transform: translate3d(0px, 0, 0);\n                transform: translate3d(0px, 0, 0);\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n        opacity: 0.7;\n}\n.ui-image-block .image-container.from-right-to-left-animation {\n      -webkit-transform: translate3d(0px, 0, 0);\n              transform: translate3d(0px, 0, 0);\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n.ui-image-block .image-container.from-right-to-left-animation:hover {\n        -webkit-transform: translate3d(-50px, 0, 0);\n                transform: translate3d(-50px, 0, 0);\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n        opacity: 0.7;\n}\n", ""]);
 
 
 
@@ -83358,6 +83121,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       default: true // true -> anima da sinistra verso destra
 
     },
+    animated: {
+      type: Boolean,
+      default: false // true -> anima da sinistra verso destra
+
+    },
     viewportTracking: {
       type: Boolean,
       default: true // true -> anima da sinistra verso destra
@@ -83379,58 +83147,65 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
-    isAnyPartOfElementInViewport: function isAnyPartOfElementInViewport() {
-      var rect = this.$refs.block.getBoundingClientRect(); // DOMRect { x: 8, y: 8, width: 100, height: 100, top: 8, right: 108, bottom: 108, left: 8 }
-
-      var windowHeight = window.innerHeight || document.documentElement.clientHeight;
-      var windowWidth = window.innerWidth || document.documentElement.clientWidth; // http://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
-
-      var vertInView = rect.top <= windowHeight && rect.top + rect.height >= 0;
-      var horInView = rect.left <= windowWidth && rect.left + rect.width >= 0;
-      return vertInView && horInView;
-    },
-    isOnViewPort: function isOnViewPort() {
-      var rect = this.$refs.block.getBoundingClientRect();
-      return rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+    handler: function handler(e) {
+      if (e.percentInView > 0 && this.animated) {
+        this.animateIn();
+      }
     },
     setBackground: function setBackground() {
       this.$refs.img.style.backgroundImage = 'url(' + this.imgSrc + ')';
     },
     animateIn: function animateIn() {
+      var _this = this;
+
       if (!this.initialized) {
         var master = new TimelineMax({
-          paused: true
+          paused: true,
+          id: "reveal"
         });
+        master.fromTo(this.$refs.img, 1.25, {
+          autoAlpha: 0
+        }, {
+          autoAlpha: 1,
+          clearProps: 'opacity',
+          ease: Cubic.easeInOut
+        }, 0.1);
+
+        if (!this.direction) {
+          master.fromTo(this.$refs.overlay, 1.7, {
+            width: '100%'
+          }, {
+            onStart: function onStart() {
+              _this.$emit('animate-parent');
+            },
+            width: 0,
+            ease: Circ.easeInOut
+          }, 0);
+        } else {
+          master.fromTo(this.$refs.overlay, 1.7, {
+            xPercent: 0
+          }, {
+            onStart: function onStart() {
+              _this.$emit('animate-parent');
+            },
+            xPercent: 100,
+            ease: Circ.easeInOut
+          }, 0);
+        }
+
         master.fromTo(this.$refs.img, 3, {
           scale: 1.1
         }, {
           scale: 1,
           clearProps: 'scale'
-        });
+        }, 2.1);
         this.initialized = true;
         master.play();
       }
     }
   },
   mounted: function mounted() {
-    var _this = this;
-
     this.setBackground();
-    var isOnViewPort = this.isAnyPartOfElementInViewport();
-
-    if (isOnViewPort) {
-      this.animateIn();
-    }
-
-    if (this.viewportTracking) {
-      window.addEventListener('scroll', function () {
-        var isOnViewPort = _this.isAnyPartOfElementInViewport();
-
-        if (isOnViewPort) {
-          _this.animateIn();
-        }
-      });
-    }
   }
 });
 
@@ -83442,13 +83217,30 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { ref: "block", staticClass: "col-md-6 ui-image-block" }, [
-    _c("div", {
-      ref: "img",
-      staticClass: "image-container",
-      class: _vm.animateDirection
-    })
-  ])
+  return _c(
+    "div",
+    {
+      directives: [
+        {
+          name: "view",
+          rawName: "v-view",
+          value: _vm.handler,
+          expression: "handler"
+        }
+      ],
+      ref: "block",
+      staticClass: "col-md-6 ui-image-block"
+    },
+    [
+      _c("div", { ref: "overlay", staticClass: "overlay" }),
+      _vm._v(" "),
+      _c("div", {
+        ref: "img",
+        staticClass: "image-container",
+        class: _vm.animateDirection
+      })
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -83459,6 +83251,192 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-67da0166", module.exports)
   }
 }
+
+/***/ }),
+/* 195 */,
+/* 196 */,
+/* 197 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function getPlugin () {
+  const ClassNames = {
+      Full: 'view-in--full',
+      In: 'view-in',
+      GtHalf: 'view-in--gt-half',
+      GtThird: 'view-in--gt-third',
+      Out: 'view-out',
+      Above: 'view-out--above',
+      Below: 'view-out--below'
+    },
+    EventTypes = {
+      Enter: 'enter',
+      Exit: 'exit',
+      Progress: 'progress'
+    }
+
+  function throttle(handler, timeout = 0) {
+    if (!handler || typeof handler !== 'function') throw new Error('Throttle handler argument is not incorrect. Must be a function.')
+    let timeoutTime = 0
+    return function (e) {
+      if (timeoutTime) return
+      timeoutTime = setTimeout(() => {
+        timeoutTime = 0
+        handler(e)
+      }, timeout)
+    }
+  }
+
+  function roundPercent(v) {
+    return (v * 1000 | 0) / 1000
+  }
+
+  function createInstance(Vue, options) {
+    const items = {},
+      scrollThrottledHandler = throttle(scrollHandler, 40)
+
+    let scrollValue = window.pageYOffset,
+      itemIndex = 0
+
+    window.addEventListener('scroll', scrollThrottledHandler)
+    window.addEventListener('resize', scrollThrottledHandler)
+
+    function scrollHandler(e) {
+      let viewportTop = window.pageYOffset,
+        viewportBottom = window.pageYOffset + window.document.documentElement.clientHeight,
+        viewportHeight = window.document.documentElement.clientHeight,
+        documentHeight = window.document.documentElement.scrollHeight,
+        scrollPercent = roundPercent(window.pageYOffset / (documentHeight - viewportHeight))
+
+      scrollValue = viewportTop - scrollValue
+
+      function getInType(i) {
+        const rect = i.element.getBoundingClientRect(),
+          elementTop = rect.top + viewportTop,
+          elementBottom = elementTop + rect.height,
+          topIn = elementTop > viewportTop && elementTop < viewportBottom,
+          bottomIn = elementBottom > viewportTop && elementBottom < viewportBottom,
+          percentInView = topIn || bottomIn ? ((bottomIn ? elementBottom : viewportBottom) - (topIn ? elementTop : viewportTop)) / rect.height : 0,
+          centerPercent = (elementTop - viewportTop + rect.height / 2) / viewportHeight,
+          zeroPoint = viewportTop - rect.height,
+          topPercent = (elementTop - zeroPoint) / (viewportBottom - zeroPoint),
+          isAbove = percentInView === 0 && elementTop < viewportTop,
+          isBelow = percentInView === 0 && elementTop > viewportTop
+
+        return [(topIn ? 1 : 0) | (bottomIn ? 2 : 0) | (isAbove ? 4 : 0) | (isBelow ? 8 : 0), roundPercent(percentInView), roundPercent(centerPercent), roundPercent(topPercent), rect]
+      }
+
+      for (let id in items) {
+        const i = items[id],
+          [type, percentInView, percentCenter, percentTop, rect] = getInType(i),
+          classes = i.classes,
+          classList = i.element.classList,
+          inViewChange = i.percent <= 0 && percentInView,
+          outViewChange = i.percent && percentInView === 0
+
+        if (percentInView === 0 && i.percent === 0) continue
+        i.rect = rect
+
+        let eventType = (inViewChange && EventTypes.Enter) || (outViewChange && EventTypes.Exit) || EventTypes.Progress
+
+        Object.keys(classes).forEach(v => (classes[v] = false))
+
+        if (percentInView >= 0.5) {
+          classes[ClassNames.GtHalf] = true
+        }
+        else if (percentInView >= 0.3) {
+          classes[ClassNames.GtThird] = true
+        }
+
+        if (type === 8) {
+          classes[ClassNames.Below] = true
+          classes[ClassNames.Out] = true
+        }
+        else if (type === 4) {
+          classes[ClassNames.Above] = true
+          classes[ClassNames.Out] = true
+        }
+        else if (type === 3) {
+          classes[ClassNames.Full] = true
+          classes[ClassNames.In] = true
+        }
+        else if (type === 1) {
+          classes[ClassNames.In] = true
+        }
+        else if (type === 2) {
+          classes[ClassNames.In] = true
+        }
+
+        Object.keys(classes).forEach(n => {
+          classList.toggle(n, classes[n])
+          if (!classes[n]) delete classes[n]
+        })
+
+        if (typeof i.handler === 'function') {
+          i.handler({type: eventType, percentInView, percentTop, percentCenter, scrollPercent, scrollValue, target: i})
+        }
+
+        if (typeof i.onceenter === 'function' && eventType === EventTypes.Enter) {
+          i.onceenter({
+            type: eventType,
+            percentInView,
+            percentTop,
+            percentCenter,
+            scrollPercent,
+            scrollValue,
+            target: i
+          })
+          delete i.onceenter
+          if (!i.persist) delete items[id]
+        }
+
+        i.percent = percentInView
+      }
+
+      scrollValue = viewportTop
+    }
+
+    Vue.directive('view', {
+      unbind: function (element, bind) {
+        delete items[element.$scrollId]
+      },
+      inserted: function (element, bind) {
+        let id = element.$scrollId || ('scrollId-' + itemIndex++),
+          item = items[id] || {element: element, classes: {}, percent: -1, rect: {}}
+
+        if (bind.modifiers && bind.modifiers.once) {
+          item.onceenter = bind.value || function () {}
+        }
+        else {
+          item.persist = true
+          item.handler = bind.value
+        }
+
+        element.$scrollId = id
+        items[id] = item
+        scrollThrottledHandler()
+      }
+    })
+  }
+
+  return {
+    install: function (Vue, options) {
+      Vue.directive('view', Vue.prototype.$isServer ? {} : createInstance(Vue, options))
+    }
+  }
+}
+
+if (true) {
+  module.exports = getPlugin()
+}
+else {
+  if (typeof window !== 'undefined' && window.Vue) {
+    window.Vue.use(getPlugin(), {option: 'custom option of client'})
+  }
+}
+
 
 /***/ })
 /******/ ]);

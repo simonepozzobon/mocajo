@@ -1,6 +1,8 @@
 <template lang="html">
     <div class="col-md-6 ui-block" :class="color" ref="block">
-        <slot></slot>
+        <div class="ui-block-container" ref="container">
+            <slot></slot>
+        </div>
     </div>
 </template>
 
@@ -16,6 +18,10 @@ export default {
             type: String,
             default: null,
         },
+        animated: {
+            type: Boolean,
+            default: false, // true -> anima da sinistra verso destra
+        },
         direction: {
             type: Boolean,
             default: null, // true -> anima da sinistra verso destra
@@ -26,10 +32,33 @@ export default {
             if (this.imgSrc) {
                 this.$refs.block.style.backgroundImage = 'url('+this.imgSrc+')'
             }
+        },
+        animateIn: function() {
+            if (this.animated) {
+                let master = new TimelineMax({
+                    paused: true
+                })
+
+                master.fromTo(this.$refs.container, 3, {
+                    autoAlpha: 0,
+                }, {
+                    autoAlpha: 1,
+                    ease: Circ.easeInOut
+                }, 0)
+
+                master.play()
+            } else {
+                TweenMax.set(this.$refs.container, {
+                    autoAlpha: 1,
+                })
+            }
         }
     },
     mounted: function() {
         this.setBackground()
+        if (!this.animated) {
+            this.animateIn()
+        }
     }
 }
 </script>
@@ -43,5 +72,9 @@ export default {
     background-size: cover;
     background-position: center;
     padding: $spacer * 4;
+
+    .ui-block-container {
+        opacity: 0;
+    }
 }
 </style>

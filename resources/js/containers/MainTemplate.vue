@@ -54,6 +54,9 @@ export default {
         }
     },
     methods: {
+        afterEnter: function() {
+            this.$root.$emit('page-loaded')
+        },
         init: function() {
             this.setPadding()
         },
