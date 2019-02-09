@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="col-md-6 ui-image-block" ref="block" v-view="handler">
+    <div class="col-md-6 ui-image-block" ref="block" v-view.once="handler">
         <div class="overlay" ref="overlay"></div>
         <div class="image-container" :class="animateDirection" ref="img">
         </div>
@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         handler: function(e) {
-            if (e.percentInView > 0 && this.animated) {
+            if (e.percentInView > 0 ) {
                 this.animateIn()
             }
         },

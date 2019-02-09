@@ -62845,7 +62845,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n.ui-block .ui-block-container {\n    opacity: 0;\n}\n", ""]);
+exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n@media (min-width: 64.0625em) {\n.ui-block {\n      padding: 13.5vh 7.7vw 11.7vh;\n}\n}\n@media (min-width: 48em) {\n.ui-block {\n      padding: 8.5vh 6.8vw;\n}\n}\n.ui-block .ui-block-container {\n    opacity: 0;\n    padding-right: 9.4%;\n}\n", ""]);
 
 
 
@@ -63851,7 +63851,7 @@ var render = function() {
       { staticClass: "row" },
       [
         _c("ui-hero-banner", {
-          attrs: { color: "bg-dark", imgSrc: "/images/tenuta.jpg" }
+          attrs: { color: "bg-dark", imgSrc: "/images/la-scuola-mocajo.jpg" }
         })
       ],
       1
@@ -63890,7 +63890,7 @@ var render = function() {
             isImage: true,
             animated: true,
             direction: false,
-            imgSrc: "/images/storia.jpg"
+            imgSrc: "/images/il-nostro-progetto.jpg"
           },
           on: { "animate-parent": _vm.animateProgetto }
         })
@@ -63906,7 +63906,7 @@ var render = function() {
           attrs: {
             isImage: true,
             animated: true,
-            imgSrc: "/images/tenuta.jpg"
+            imgSrc: "/images/storia.jpg"
           },
           on: { "animate-parent": _vm.animateFamiglia }
         }),
@@ -63960,7 +63960,7 @@ var render = function() {
           attrs: {
             isImage: true,
             animated: true,
-            imgSrc: "/images/about.jpg",
+            imgSrc: "/images/agriturismo-mocajo.jpg",
             direction: false
           },
           on: { "animate-parent": _vm.animateAgriturismo }
@@ -82580,7 +82580,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-hero-banner {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n", ""]);
+exports.push([module.i, "\n.ui-hero-banner {\n  width: 100%;\n  height: 100%;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n@media (min-width: 64.0625em) {\n.ui-hero-banner {\n      height: 36vw;\n}\n}\n@media (min-width: 48em) {\n.ui-hero-banner {\n      height: 31.5vw;\n}\n}\n", ""]);
 
 
 
@@ -83492,7 +83492,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   methods: {
     handler: function handler(e) {
-      if (e.percentInView > 0 && this.animated) {
+      if (e.percentInView > 0) {
         this.animateIn();
       }
     },
@@ -83567,9 +83567,10 @@ var render = function() {
       directives: [
         {
           name: "view",
-          rawName: "v-view",
+          rawName: "v-view.once",
           value: _vm.handler,
-          expression: "handler"
+          expression: "handler",
+          modifiers: { once: true }
         }
       ],
       ref: "block",

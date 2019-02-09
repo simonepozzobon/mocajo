@@ -72,9 +72,19 @@ export default {
     background-size: cover;
     background-position: center;
     padding: $spacer * 4;
+    
+    @media (min-width: 64.0625em) {
+        padding: 13.5vh 7.7vw 11.7vh;
+    }
+    @media (min-width: 48em) {
+        padding: 8.5vh 6.8vw;
+    }
 
     .ui-block-container {
         opacity: 0;
+        padding-right: 9.4%;
     }
+
+
 }
 </style>

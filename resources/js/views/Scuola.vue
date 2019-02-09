@@ -3,7 +3,7 @@
         <div class="row">
             <ui-hero-banner
                 color="bg-dark"
-                imgSrc="/images/tenuta.jpg"/>
+                imgSrc="/images/la-scuola-mocajo.jpg"/>
         </div>
         <div class="row">
             <ui-block
@@ -26,14 +26,14 @@
                 :animated="true"
                 :direction="false"
                 @animate-parent="animateProgetto"
-                imgSrc="/images/storia.jpg" />
+                imgSrc="/images/il-nostro-progetto.jpg" />
         </div>
         <div class="row">
             <ui-image-block
                 :isImage="true"
                 :animated="true"
                 @animate-parent="animateFamiglia"
-                imgSrc="/images/tenuta.jpg" />
+                imgSrc="/images/storia.jpg" />
             <ui-block
                 ref="famiglia"
                 :animated="true"
@@ -68,7 +68,7 @@
                 :isImage="true"
                 :animated="true"
                 @animate-parent="animateAgriturismo"
-                imgSrc="/images/about.jpg"
+                imgSrc="/images/agriturismo-mocajo.jpg"
                 :direction="false"/>
         </div>
     </div>
