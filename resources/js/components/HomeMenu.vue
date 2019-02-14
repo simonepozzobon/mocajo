@@ -35,6 +35,10 @@ export default {
 @import '~styles/shared';
 
 .home-menu-container {
+    @include media-breakpoint-down('xs') {
+        display: none;
+    }
+
     .nav-link {
     	position: relative;
     	display: inline-block;
@@ -60,57 +64,48 @@ export default {
 
         .nav-link {
         	padding: 0 5px;
-        	-webkit-transition: color 0.3s;
-        	-moz-transition: color 0.3s;
         	transition: color 0.3s;
-        }
 
-        .nav-link::before,
-        .nav-link::after {
-        	position: absolute;
-        	width: 100%;  // cambiare qui per dimensioni fissa
-        	left: 0;
-        	top: 50%;
-        	height: 1px;
-        	margin-top: -1px;
-        	background: rgba($white, 0);
-        	content: '';
-        	z-index: -1;
-        	-webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
-        	transition: transform 0.3s, opacity 0.3s;
-        	pointer-events: none;
-        }
+            &::before,
+            &::after {
+                position: absolute;
+            	width: 100px;  // cambiare qui per dimensioni fissa
+            	left: 50%;
+            	top: 50%;
+            	height: 1px;
+            	margin-top: -1px;
+            	background: rgba($white, 0);
+            	content: '';
+            	z-index: -1;
+            	transition: $transition-base;
+            	pointer-events: none;
+            }
 
-        .nav-link::before {
-        	transform: translateY(-20px);
-        }
+            &::before {
+                transform: translate(-50%, -20px);
+            }
 
-        .nav-link::after {
-        	transform: translateY(20px);
-        }
+            &::after {
+                transform: translate(-50%, 20px);
+            }
 
-        .nav-link:hover,
-        .nav-link:focus {
-        	color: #fff;
-        }
+            &:hover, &:focus {
+                color: $white;
+                transition: $transition-base;
 
-        .nav-link:hover::before,
-        .nav-link:hover::after,
-        .nav-link:focus::before,
-        .nav-link:focus::after {
-        	opacity: 0.7;
-        }
+                &::before,
+                &::after {
+                    background-color: rgba($white, 0.5);
+                }
 
-        .nav-link:hover::before,
-        .nav-link:focus::before {
-            background: rgba($white, 0.5);
-        	transform: rotate(45deg);
-        }
+                &::before {
+                    transform: translate(-50%, 0px) rotate(45deg);
+                }
 
-        .nav-link:hover::after,
-        .nav-link:focus::after {
-            background: rgba($white, 0.5);
-        	transform: rotate(-45deg);
+                &::after {
+                    transform: translate(-50%, 0px) rotate(-45deg);
+                }
+            }
         }
 
         li {
