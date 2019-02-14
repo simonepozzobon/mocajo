@@ -84138,7 +84138,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "nav",
-    { staticClass: "navbar navbar-expand-lg navbar-dark bg-black" },
+    { staticClass: "navbar navbar-expand-sm navbar-dark bg-black" },
     [
       _c("ul", { staticClass: "navbar-nav m-auto" }, [
         _c(

@@ -1,5 +1,5 @@
 <template lang="html">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-black">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-black">
             <ul class="navbar-nav m-auto">
                 <li class="nav-item">
                     <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
