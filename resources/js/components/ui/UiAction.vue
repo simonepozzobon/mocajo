@@ -1,5 +1,5 @@
 <template lang="html">
-    <router-link tag="a" class="block-action" :to="{ path: '/'+this.url }" exact-active-class="active" @click.native="toggleMobile">
+    <router-link tag="a" class="block-action" :to="{ path: '/'+this.url }" exact-active-class="active">
         <slot></slot>
     </router-link>
 </template>

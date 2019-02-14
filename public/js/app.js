@@ -63611,11 +63611,6 @@ var render = function() {
         tag: "a",
         to: { path: "/" + this.url },
         "exact-active-class": "active"
-      },
-      nativeOn: {
-        click: function($event) {
-          return _vm.toggleMobile($event)
-        }
       }
     },
     [_vm._t("default")],
