@@ -68,7 +68,7 @@ export default {
         .nav-link::before,
         .nav-link::after {
         	position: absolute;
-        	width: 100%;
+        	width: 100%;  // cambiare qui per dimensioni fissa
         	left: 0;
         	top: 50%;
         	height: 1px;
