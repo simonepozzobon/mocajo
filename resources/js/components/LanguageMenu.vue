@@ -18,7 +18,6 @@ export default {
     name: 'LanguageMenu',
     watch: {
         '$route': function(route) {
-            console.log(route)
             if (route.name != 'home') {
                 this.$refs.menu.style.display = 'none'
                 return false

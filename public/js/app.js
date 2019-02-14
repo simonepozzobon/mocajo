@@ -68272,8 +68272,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'LanguageMenu',
   watch: {
     '$route': function $route(route) {
-      console.log(route);
-
       if (route.name != 'home') {
         this.$refs.menu.style.display = 'none';
         return false;
