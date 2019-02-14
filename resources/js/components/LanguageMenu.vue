@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="language-menu">
+    <div class="language-menu" ref="menu">
         <nav class="language-menu-navbar">
             <ul class="list-unstyled">
                 <li class="nav-item">
@@ -15,7 +15,17 @@
 
 <script>
 export default {
-    name: 'LanguageMenu'
+    name: 'LanguageMenu',
+    watch: {
+        '$route': function(route) {
+            console.log(route)
+            if (route.name != 'home') {
+                this.$refs.menu.style.display = 'none'
+                return false
+            }
+            this.$refs.menu.style.display = 'block'
+        }
+    }
 }
 </script>
 
@@ -23,9 +33,10 @@ export default {
 @import '~styles/shared';
 
 .language-menu {
-    position: absolute;
-    bottom: $spacer;
+    position: fixed;
+    top: $spacer * 2.5;
     right: $spacer;
+    z-index: 9999;
 
     nav {
         ul {
@@ -37,6 +48,11 @@ export default {
                 .nav-link  {
                     color: $white;
                     text-transform: uppercase;
+                    cursor: pointer;
+
+                    &:hover, &:focus {
+                        color: $primary;
+                    }
                 }
             }
         }

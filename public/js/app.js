@@ -68243,7 +68243,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.language-menu {\n  position: absolute;\n  bottom: 1rem;\n  right: 1rem;\n}\n.language-menu nav ul {\n    text-align: right;\n    font-size: 0.75rem;\n    line-height: 1;\n}\n.language-menu nav ul li .nav-link {\n      color: #fff;\n      text-transform: uppercase;\n}\n", ""]);
+exports.push([module.i, "\n.language-menu {\n  position: fixed;\n  top: 2.5rem;\n  right: 1rem;\n  z-index: 9999;\n}\n.language-menu nav ul {\n    text-align: right;\n    font-size: 0.75rem;\n    line-height: 1;\n}\n.language-menu nav ul li .nav-link {\n      color: #fff;\n      text-transform: uppercase;\n      cursor: pointer;\n}\n.language-menu nav ul li .nav-link:hover, .language-menu nav ul li .nav-link:focus {\n        color: #FAC823;\n}\n", ""]);
 
 
 
@@ -68269,7 +68269,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'LanguageMenu'
+  name: 'LanguageMenu',
+  watch: {
+    '$route': function $route(route) {
+      console.log(route);
+
+      if (route.name != 'home') {
+        this.$refs.menu.style.display = 'none';
+        return false;
+      }
+
+      this.$refs.menu.style.display = 'block';
+    }
+  }
 });
 
 /***/ }),
@@ -68280,26 +68292,24 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { ref: "menu", staticClass: "language-menu" }, [_vm._m(0)])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "language-menu" }, [
-      _c("nav", { staticClass: "language-menu-navbar" }, [
-        _c("ul", { staticClass: "list-unstyled" }, [
-          _c("li", { staticClass: "nav-item" }, [
-            _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-              _vm._v("Ita")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "nav-item" }, [
-            _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-              _vm._v("Eng")
-            ])
+    return _c("nav", { staticClass: "language-menu-navbar" }, [
+      _c("ul", { staticClass: "list-unstyled" }, [
+        _c("li", { staticClass: "nav-item" }, [
+          _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+            _vm._v("Ita")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "nav-item" }, [
+          _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+            _vm._v("Eng")
           ])
         ])
       ])
