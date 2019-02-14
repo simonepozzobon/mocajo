@@ -68279,6 +68279,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       this.$refs.menu.style.display = 'block';
     }
+  },
+  mounted: function mounted() {
+    if (this.$route.name != 'home') {
+      this.$refs.menu.style.display = 'none';
+    }
   }
 });
 

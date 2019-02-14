@@ -24,6 +24,11 @@ export default {
             }
             this.$refs.menu.style.display = 'block'
         }
+    },
+    mounted: function() {
+        if (this.$route.name != 'home') {
+            this.$refs.menu.style.display = 'none'
+        }
     }
 }
 </script>
