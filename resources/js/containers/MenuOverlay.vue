@@ -186,10 +186,12 @@ export default {
         max-width: 80%;
         max-width: 120px;
         height: auto;
+        margin-top: -$spacer;
+        margin-bottom: $spacer * 2;
 
-        @include media-breakpoint-down('xs') {
-            display: none;
-        };
+        // @include media-breakpoint-down('xs') {
+        //     display: none;
+        // };
     }
 
     .social-links {
@@ -208,8 +210,16 @@ export default {
             .nav-link {
                 font-weight: 200;
                 color: $white;
-                font-size: 1.875rem;
+                font-size: 1.75rem;
                 line-height: 3;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                transition: $transition-base;
+
+                &:hover, &:focus {
+                    color: $primary;
+                    transition: $transition-base;
+                }
 
                 @include media-breakpoint-down('md') {
                     font-size: 1.25rem;
