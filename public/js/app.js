@@ -63920,7 +63920,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-collapse {\n  margin-bottom: 3.236rem;\n}\n", ""]);
+exports.push([module.i, "\n.ui-collapse {\n  position: relative;\n  margin-bottom: 3.236rem;\n}\n.ui-collapse .collapse-overlay {\n    position: absolute;\n    width: 110%;\n    height: 110%;\n    border-radius: 2%;\n    padding: 1rem;\n    left: 50%;\n    top: 50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n    background-color: rgba(243, 243, 243, 0.8);\n}\n", ""]);
 
 
 
@@ -63932,6 +63932,7 @@ exports.push([module.i, "\n.ui-collapse {\n  margin-bottom: 3.236rem;\n}\n", ""]
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__subcomponents_CollapseHeading_vue__ = __webpack_require__(95);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__subcomponents_CollapseHeading_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__subcomponents_CollapseHeading_vue__);
+//
 //
 //
 //
@@ -63956,6 +63957,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     title: {
       type: String,
       default: 'titolo'
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   data: function data() {
@@ -64084,6 +64089,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     title: {
       type: String,
       default: 'titolo'
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   data: function data() {
@@ -64246,10 +64255,19 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "ui-collapse" },
-    _vm._l(this.elements, function(item, i) {
-      return _c("collapse-heading", { key: i, attrs: { title: item.title } })
-    }),
-    1
+    [
+      this.isDisabled
+        ? _c("div", { staticClass: "collapse-overlay" })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._l(this.elements, function(item, i) {
+        return _c("collapse-heading", {
+          key: i,
+          attrs: { title: item.title, "is-disabled": true }
+        })
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -65163,7 +65181,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-title {\n  margin-bottom: 2rem;\n  text-transform: capitalize;\n  letter-spacing: 2px;\n}\n", ""]);
+exports.push([module.i, "\n.ui-title {\n  margin-bottom: 2rem;\n  text-transform: capitalize;\n  letter-spacing: 2px;\n}\n.ui-title.ui-title-disabled {\n    color: #ced4da;\n}\n.ui-title.ui-title-disabled > span {\n      font-size: 0.65rem;\n      text-transform: uppercase;\n}\n", ""]);
 
 
 
@@ -65177,12 +65195,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UiTitle',
   props: {
     title: {
       type: String,
       default: null
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
     }
   }
 });
@@ -65195,7 +65220,14 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("h2", { staticClass: "ui-title" }, [_vm._v(_vm._s(_vm.title))])
+  return _c("div", [
+    !this.isDisabled
+      ? _c("h2", { staticClass: "ui-title" }, [_vm._v(_vm._s(_vm.title))])
+      : _c("h2", { staticClass: "ui-title ui-title-disabled" }, [
+          _vm._v(_vm._s(_vm.title) + " "),
+          _c("span", [_vm._v("- Coming soon")])
+        ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -66546,6 +66578,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -67081,9 +67119,13 @@ var render = function() {
               "ui-block",
               { attrs: { color: "bg-light" } },
               [
-                _c("ui-title", { attrs: { title: "Soffio" } }),
+                _c("ui-title", {
+                  attrs: { title: "Soffio", "is-disabled": true }
+                }),
                 _vm._v(" "),
-                _c("ui-collapse", { attrs: { elements: this.wines } }),
+                _c("ui-collapse", {
+                  attrs: { elements: this.wines, "is-disabled": true }
+                }),
                 _vm._v(" "),
                 _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
                   _vm._v(
@@ -67142,9 +67184,13 @@ var render = function() {
               "ui-block",
               { attrs: { color: "bg-light" } },
               [
-                _c("ui-title", { attrs: { title: "Saputo" } }),
+                _c("ui-title", {
+                  attrs: { title: "Saputo", "is-disabled": true }
+                }),
                 _vm._v(" "),
-                _c("ui-collapse", { attrs: { elements: this.wines } }),
+                _c("ui-collapse", {
+                  attrs: { elements: this.wines, "is-disabled": true }
+                }),
                 _vm._v(" "),
                 _c("ui-action", { attrs: { url: "/i-nostri-vini" } }, [
                   _vm._v(

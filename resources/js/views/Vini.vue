@@ -26,7 +26,7 @@
                     <ui-block
                         color="bg-light">
                         <ui-title
-                            title="Sette" />
+                            title="Sette"/>
                         <ui-collapse :elements="this.wines"/>
                         <ui-action
                             url="/i-nostri-vini">
@@ -45,8 +45,11 @@
                     <ui-block
                         color="bg-light">
                         <ui-title
-                            title="Soffio" />
-                        <ui-collapse :elements="this.wines"/>
+                            title="Soffio"
+                            :is-disabled="true"/>
+                        <ui-collapse
+                            :elements="this.wines"
+                            :is-disabled="true"/>
                         <ui-action
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
@@ -64,8 +67,11 @@
                     <ui-block
                         color="bg-light">
                         <ui-title
-                            title="Saputo" />
-                        <ui-collapse :elements="this.wines"/>
+                            title="Saputo"
+                            :is-disabled="true"/>
+                        <ui-collapse
+                            :elements="this.wines"
+                            :is-disabled="true"/>
                         <ui-action
                             url="/i-nostri-vini">
                             Download Scheda Tecnica

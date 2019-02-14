@@ -22,6 +22,10 @@ export default {
         title: {
             type: String,
             default: 'titolo'
+        },
+        isDisabled: {
+            type: Boolean,
+            default: false,
         }
     },
     data: function() {
