@@ -13,7 +13,7 @@
                 </li>
                 <li class="nav-item">
                     <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active">
-                        <nav-logo width="56px" color="light" ref="logo"/>
+                        <nav-logo width="80px" color="light" ref="logo"/>
                     </router-link>
                 </li>
                 <li class="nav-item">

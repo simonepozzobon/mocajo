@@ -84235,7 +84235,7 @@ var render = function() {
               [
                 _c("nav-logo", {
                   ref: "logo",
-                  attrs: { width: "56px", color: "light" }
+                  attrs: { width: "80px", color: "light" }
                 })
               ],
               1
