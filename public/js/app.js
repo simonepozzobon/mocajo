@@ -63715,7 +63715,7 @@ if(false) {
 
 exports = module.exports = __webpack_require__(0)(false);
 // Module
-exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n}\n@media (min-width: 64.0625em) {\n.ui-block {\n      padding: 13.5vh 7.7vw 11.7vh;\n}\n}\n@media (min-width: 48em) {\n.ui-block {\n      padding: 8.5vh 6.8vw;\n}\n}\n.ui-block .ui-block-container {\n    opacity: 0;\n    padding-right: 9.4%;\n}\n", ""]);
+exports.push([module.i, "\n.ui-block {\n  min-height: 30vh;\n  background-size: cover;\n  background-position: center;\n  padding: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n@media (min-width: 64.0625em) {\n.ui-block {\n      padding: 13.5vh 7.7vw 11.7vh;\n}\n}\n@media (min-width: 48em) {\n.ui-block {\n      padding: 8.5vh 6.8vw;\n}\n}\n.ui-block .ui-block-container {\n    opacity: 0;\n    padding-right: 9.4%;\n}\n.ui-block.ui-block-align-top {\n    -webkit-box-align: start !important;\n        -ms-flex-align: start !important;\n            align-items: flex-start !important;\n}\n", ""]);
 
 
 
@@ -63753,6 +63753,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       type: Boolean,
       default: null // true -> anima da sinistra verso destra
 
+    },
+    flexAlign: {
+      type: String,
+      default: null
+    }
+  },
+  computed: {
+    alignClass: function alignClass() {
+      if (this.flexAlign == 'top') {
+        return 'ui-block-align-top';
+      }
+
+      return null;
     }
   },
   methods: {
@@ -63799,7 +63812,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { ref: "block", staticClass: "col-md-6 ui-block", class: _vm.color },
+    {
+      ref: "block",
+      staticClass: "col-md-6 ui-block",
+      class: _vm.color + " " + _vm.alignClass
+    },
     [
       _c(
         "div",
@@ -66526,6 +66543,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -67026,12 +67046,16 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("ui-block", { staticClass: "custom-block" }, [
-              _c("img", {
-                staticClass: "img-fluid",
-                attrs: { src: "/images/wine-placeholder.jpeg" }
-              })
-            ])
+            _c(
+              "ui-block",
+              { staticClass: "custom-block", attrs: { "flex-align": "top" } },
+              [
+                _c("img", {
+                  staticClass: "img-fluid",
+                  attrs: { src: "/images/wine-placeholder.jpeg" }
+                })
+              ]
+            )
           ],
           1
         ),
@@ -67083,12 +67107,16 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("ui-block", { staticClass: "custom-block" }, [
-              _c("img", {
-                staticClass: "img-fluid",
-                attrs: { src: "/images/wine-placeholder.jpeg" }
-              })
-            ])
+            _c(
+              "ui-block",
+              { staticClass: "custom-block", attrs: { "flex-align": "top" } },
+              [
+                _c("img", {
+                  staticClass: "img-fluid",
+                  attrs: { src: "/images/wine-placeholder.jpeg" }
+                })
+              ]
+            )
           ],
           1
         ),
@@ -67140,12 +67168,16 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("ui-block", { staticClass: "custom-block" }, [
-              _c("img", {
-                staticClass: "img-fluid",
-                attrs: { src: "/images/wine-placeholder.jpeg" }
-              })
-            ])
+            _c(
+              "ui-block",
+              { staticClass: "custom-block", attrs: { "flex-align": "top" } },
+              [
+                _c("img", {
+                  staticClass: "img-fluid",
+                  attrs: { src: "/images/wine-placeholder.jpeg" }
+                })
+              ]
+            )
           ],
           1
         )

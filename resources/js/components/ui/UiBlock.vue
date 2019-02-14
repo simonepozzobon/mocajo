@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="col-md-6 ui-block" :class="color" ref="block">
+    <div class="col-md-6 ui-block" :class="color + ' ' + alignClass" ref="block">
         <div class="ui-block-container" ref="container">
             <slot></slot>
         </div>
@@ -25,6 +25,18 @@ export default {
         direction: {
             type: Boolean,
             default: null, // true -> anima da sinistra verso destra
+        },
+        flexAlign: {
+            type: String,
+            default: null,
+        }
+    },
+    computed: {
+        alignClass: function() {
+            if (this.flexAlign == 'top') {
+                return 'ui-block-align-top'
+            }
+            return null
         }
     },
     methods: {
@@ -68,11 +80,13 @@ export default {
 
 .ui-block {
     min-height: 30vh;
-
     background-size: cover;
     background-position: center;
     padding: $spacer * 4;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     @media (min-width: 64.0625em) {
         padding: 13.5vh 7.7vw 11.7vh;
     }
@@ -85,6 +99,8 @@ export default {
         padding-right: 9.4%;
     }
 
-
+    &.ui-block-align-top {
+        align-items: flex-start !important;
+    }
 }
 </style>

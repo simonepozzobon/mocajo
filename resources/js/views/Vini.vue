@@ -35,7 +35,8 @@
                         <button class="btn btn-outline-black add-to-cart" @click="addToCart(19.00)">Acquista</button>
                     </ui-block>
                     <ui-block
-                        class="custom-block">
+                        class="custom-block"
+                        flex-align="top">
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
@@ -53,7 +54,8 @@
                         <button class="btn btn-outline-black add-to-cart" @click="addToCart(14.00)">Acquista</button>
                     </ui-block>
                     <ui-block
-                        class="custom-block">
+                        class="custom-block"
+                        flex-align="top">
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
@@ -71,7 +73,8 @@
                         <button class="btn btn-outline-black add-to-cart" @click="addToCart(12.00)">Acquista</button>
                     </ui-block>
                     <ui-block
-                        class="custom-block">
+                        class="custom-block"
+                        flex-align="top">
                             <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
                     </ui-block>
                 </div>
