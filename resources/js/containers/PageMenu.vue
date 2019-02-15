@@ -1,5 +1,5 @@
 <template lang="html">
-    <nav class="navbar navbar-expand-sm navbar-dark bg-black">
+    <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" v-view="menuHandler" ref="menu">
             <ul class="navbar-nav m-auto">
                 <li class="nav-item">
                     <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
@@ -61,7 +61,13 @@ export default {
             hasLogo: true,
             menuClass: 'ml-auto',
             opened: false,
-            text: {}
+            menuHidden: false,
+            text: {},
+            initialized: false,
+            didScroll: null,
+            lastScrollTop: 0,
+            delta: 5,
+            navbarHeight: 0,
         }
     },
     watch: {
@@ -88,6 +94,75 @@ export default {
         }
     },
     methods: {
+        menuHandler: function(e) {
+            // if (this.initialized) {
+            //     if (e.scrollPercent > 0.1 && e.scrollValue > 10) {
+            //         console.log('nascondi menu');
+            //         if (!this.menuHidden) {
+            //             TweenMax.fromTo(this.$refs.menu, .2, {
+            //                 yPercent: 0,
+            //             }, {
+            //                 yPercent: -100,
+            //                 ease: Sine.easeInOut,
+            //                 onComplete: () => {
+            //                     this.menuHidden = true
+            //                 }
+            //             })
+            //         }
+            //     } else if (e.scrollValue < -10) {
+            //         console.log('mostra menu')
+            //         if (this.menuHidden) {
+            //             TweenMax.fromTo(this.$refs.menu, .3, {
+            //                 yPercent: -100,
+            //             }, {
+            //                 yPercent: 0,
+            //                 ease: Sine.easeInOut,
+            //                 onComplete: () => {
+            //                     this.menuHidden = false
+            //                 }
+            //             })
+            //         }
+            //     }
+            // }
+        },
+        showMenu: function() {
+            let master = new TimelineMax({
+                paused: true
+            })
+
+            master.fromTo(this.$refs.menu, .2, {
+                yPercent: -100,
+            }, {
+                yPercent: 0,
+                ease: Sine.easeInOut,
+            }, 0)
+
+            master.eventCallback('onStart', () => {
+                console.log('switch state to false')
+                this.menuHidden = false
+            })
+
+            master.play()
+        },
+        hideMenu: function() {
+            let master = new TimelineMax({
+                paused: true
+            })
+
+            master.fromTo(this.$refs.menu, .3, {
+                yPercent: 0,
+            }, {
+                yPercent: -100,
+                ease: Sine.easeInOut,
+            }, 0)
+
+            master.eventCallback('onStart', () => {
+                console.log('switch state to true')
+                this.menuHidden = true
+            })
+
+            master.play()
+        },
         init: function() {
             let master = new TimelineMax({
                 paused: true,
@@ -118,9 +193,48 @@ export default {
                 this.$refs.menu.open()
             }
         },
+        hasScrolled: function() {
+            let st = $(this).scrollTop();
+
+            // Make sure they scroll more than delta
+            if(Math.abs(this.lastScrollTop - st) <= this.delta)
+                return;
+
+            // If they scrolled down and are past the navbar, add class .nav-up.
+            // This is necessary so you never see what is "behind" the navbar.
+            if (st > this.lastScrollTop && st > this.navbarHeight){
+                // Scroll Down
+                $('#page-menu').removeClass('nav-down').addClass('nav-up');
+            } else {
+                // Scroll Up
+                if(st + $(window).height() < $(document).height()) {
+                    $('#page-menu').removeClass('nav-up').addClass('nav-down');
+                }
+            }
+
+            lastScrollTop = st;
+        }
     },
     mounted: function() {
         this.init()
+        //
+        // setTimeout(() => {
+        //     this.initialized = true
+        // }, 1000)
+
+        this.navbarHeight = $('#page-menu').outerHeight();
+
+        $(window).scroll(() => {
+            this.didScroll = true
+        })
+
+        setInterval(() => {
+            if (this.didScroll) {
+                console.log('ciao')
+                this.hasScrolled()
+                this.didScroll = false
+            }
+        }, 250)
     }
 }
 </script>

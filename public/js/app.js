@@ -84142,7 +84142,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       hasLogo: true,
       menuClass: 'ml-auto',
       opened: false,
-      text: {}
+      menuHidden: false,
+      text: {},
+      initialized: false,
+      didScroll: null,
+      lastScrollTop: 0,
+      delta: 5,
+      navbarHeight: 0
     };
   },
   watch: {
@@ -84171,6 +84177,72 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
+    menuHandler: function menuHandler(e) {// if (this.initialized) {
+      //     if (e.scrollPercent > 0.1 && e.scrollValue > 10) {
+      //         console.log('nascondi menu');
+      //         if (!this.menuHidden) {
+      //             TweenMax.fromTo(this.$refs.menu, .2, {
+      //                 yPercent: 0,
+      //             }, {
+      //                 yPercent: -100,
+      //                 ease: Sine.easeInOut,
+      //                 onComplete: () => {
+      //                     this.menuHidden = true
+      //                 }
+      //             })
+      //         }
+      //     } else if (e.scrollValue < -10) {
+      //         console.log('mostra menu')
+      //         if (this.menuHidden) {
+      //             TweenMax.fromTo(this.$refs.menu, .3, {
+      //                 yPercent: -100,
+      //             }, {
+      //                 yPercent: 0,
+      //                 ease: Sine.easeInOut,
+      //                 onComplete: () => {
+      //                     this.menuHidden = false
+      //                 }
+      //             })
+      //         }
+      //     }
+      // }
+    },
+    showMenu: function showMenu() {
+      var _this2 = this;
+
+      var master = new __WEBPACK_IMPORTED_MODULE_4_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.fromTo(this.$refs.menu, .2, {
+        yPercent: -100
+      }, {
+        yPercent: 0,
+        ease: Sine.easeInOut
+      }, 0);
+      master.eventCallback('onStart', function () {
+        console.log('switch state to false');
+        _this2.menuHidden = false;
+      });
+      master.play();
+    },
+    hideMenu: function hideMenu() {
+      var _this3 = this;
+
+      var master = new __WEBPACK_IMPORTED_MODULE_4_gsap__["a" /* TimelineMax */]({
+        paused: true
+      });
+      master.fromTo(this.$refs.menu, .3, {
+        yPercent: 0
+      }, {
+        yPercent: -100,
+        ease: Sine.easeInOut
+      }, 0);
+      master.eventCallback('onStart', function () {
+        console.log('switch state to true');
+        _this3.menuHidden = true;
+      });
+      master.play();
+    },
     init: function init() {
       var master = new __WEBPACK_IMPORTED_MODULE_4_gsap__["a" /* TimelineMax */]({
         paused: true
@@ -84199,10 +84271,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.$emit('menu-open');
         this.$refs.menu.open();
       }
+    },
+    hasScrolled: function hasScrolled() {
+      var st = $(this).scrollTop(); // Make sure they scroll more than delta
+
+      if (Math.abs(this.lastScrollTop - st) <= this.delta) return; // If they scrolled down and are past the navbar, add class .nav-up.
+      // This is necessary so you never see what is "behind" the navbar.
+
+      if (st > this.lastScrollTop && st > this.navbarHeight) {
+        // Scroll Down
+        $('#page-menu').removeClass('nav-down').addClass('nav-up');
+      } else {
+        // Scroll Up
+        if (st + $(window).height() < $(document).height()) {
+          $('#page-menu').removeClass('nav-up').addClass('nav-down');
+        }
+      }
+
+      lastScrollTop = st;
     }
   },
   mounted: function mounted() {
-    this.init();
+    var _this4 = this;
+
+    this.init(); //
+    // setTimeout(() => {
+    //     this.initialized = true
+    // }, 1000)
+
+    this.navbarHeight = $('#page-menu').outerHeight();
+    $(window).scroll(function () {
+      _this4.didScroll = true;
+    });
+    setInterval(function () {
+      if (_this4.didScroll) {
+        console.log('ciao');
+
+        _this4.hasScrolled();
+
+        _this4.didScroll = false;
+      }
+    }, 250);
   }
 });
 
@@ -84216,7 +84325,19 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "nav",
-    { staticClass: "navbar navbar-expand-sm navbar-dark bg-black" },
+    {
+      directives: [
+        {
+          name: "view",
+          rawName: "v-view",
+          value: _vm.menuHandler,
+          expression: "menuHandler"
+        }
+      ],
+      ref: "menu",
+      staticClass: "navbar navbar-expand-sm navbar-dark bg-black",
+      attrs: { id: "page-menu" }
+    },
     [
       _c("ul", { staticClass: "navbar-nav m-auto" }, [
         _c(
