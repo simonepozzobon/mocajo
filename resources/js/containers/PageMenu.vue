@@ -1,5 +1,5 @@
 <template lang="html">
-    <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" v-view="menuHandler" ref="menu">
+    <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" ref="menu">
             <ul class="navbar-nav m-auto">
                 <li class="nav-item">
                     <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
@@ -39,8 +39,9 @@
 import CartIcon from '../components/CartIcon.vue'
 import MenuAnim from '../components/MenuAnim.vue'
 import NavLogo from '../components/NavLogo.vue'
+import {TimelineMax, TweenLite} from 'gsap'
+import ScrollToPlugin from 'gsap/ScrollToPlugin'
 import SplitText from 'gsap/SplitText'
-import {TimelineMax} from 'gsap'
 
 export default {
     name: 'PageMenu',
@@ -94,75 +95,6 @@ export default {
         }
     },
     methods: {
-        menuHandler: function(e) {
-            // if (this.initialized) {
-            //     if (e.scrollPercent > 0.1 && e.scrollValue > 10) {
-            //         console.log('nascondi menu');
-            //         if (!this.menuHidden) {
-            //             TweenMax.fromTo(this.$refs.menu, .2, {
-            //                 yPercent: 0,
-            //             }, {
-            //                 yPercent: -100,
-            //                 ease: Sine.easeInOut,
-            //                 onComplete: () => {
-            //                     this.menuHidden = true
-            //                 }
-            //             })
-            //         }
-            //     } else if (e.scrollValue < -10) {
-            //         console.log('mostra menu')
-            //         if (this.menuHidden) {
-            //             TweenMax.fromTo(this.$refs.menu, .3, {
-            //                 yPercent: -100,
-            //             }, {
-            //                 yPercent: 0,
-            //                 ease: Sine.easeInOut,
-            //                 onComplete: () => {
-            //                     this.menuHidden = false
-            //                 }
-            //             })
-            //         }
-            //     }
-            // }
-        },
-        showMenu: function() {
-            let master = new TimelineMax({
-                paused: true
-            })
-
-            master.fromTo(this.$refs.menu, .2, {
-                yPercent: -100,
-            }, {
-                yPercent: 0,
-                ease: Sine.easeInOut,
-            }, 0)
-
-            master.eventCallback('onStart', () => {
-                console.log('switch state to false')
-                this.menuHidden = false
-            })
-
-            master.play()
-        },
-        hideMenu: function() {
-            let master = new TimelineMax({
-                paused: true
-            })
-
-            master.fromTo(this.$refs.menu, .3, {
-                yPercent: 0,
-            }, {
-                yPercent: -100,
-                ease: Sine.easeInOut,
-            }, 0)
-
-            master.eventCallback('onStart', () => {
-                console.log('switch state to true')
-                this.menuHidden = true
-            })
-
-            master.play()
-        },
         init: function() {
             let master = new TimelineMax({
                 paused: true,
@@ -194,7 +126,7 @@ export default {
             }
         },
         hasScrolled: function() {
-            let st = $(this).scrollTop();
+            let st = $(window).scrollTop();
 
             // Make sure they scroll more than delta
             if(Math.abs(this.lastScrollTop - st) <= this.delta)
@@ -212,30 +144,44 @@ export default {
                 }
             }
 
-            lastScrollTop = st;
+            this.lastScrollTop = st;
+        },
+        scrollTop: function() {
+            return new Promise(resolve => {
+                TweenLite.to(window, .2, {
+                    scrollTo: {
+                        y: 0,
+                    },
+                    onComplete: () => {
+                        resolve()
+                        console.log('completed')
+                    }
+                })
+            })
         }
     },
     mounted: function() {
         this.init()
-        //
-        // setTimeout(() => {
-        //     this.initialized = true
-        // }, 1000)
 
-        this.navbarHeight = $('#page-menu').outerHeight();
+        this.$nextTick(() => {
+            TweenLite.to(window, .2, {
+                scrollTo: 0
+            }).play()
 
-        $(window).scroll(() => {
-            this.didScroll = true
+            this.navbarHeight = $('#page-menu').outerHeight();
+
+            $(window).scroll(() => {
+                this.didScroll = true
+            })
+
+            setInterval(() => {
+                if (this.didScroll) {
+                    this.hasScrolled()
+                    this.didScroll = false
+                }
+            }, 250)
         })
-
-        setInterval(() => {
-            if (this.didScroll) {
-                console.log('ciao')
-                this.hasScrolled()
-                this.didScroll = false
-            }
-        }, 250)
-    }
+    },
 }
 </script>
 
@@ -267,6 +213,11 @@ export default {
                 letter-spacing: 2px;
             }
         }
+    }
+
+    &.nav-up {
+        top: -130px;
+        transition: $transition-base;
     }
 
 }
