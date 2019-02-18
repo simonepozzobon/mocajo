@@ -113,6 +113,7 @@ export default {
 
 .ui-image-block {
     min-height: 30vh;
+    min-height: 400px;
     position: relative;
     padding: 0;
     overflow: hidden;
@@ -141,7 +142,7 @@ export default {
 
             &:hover {
                 transform: translate3d(0px,0,0);
-            	transition:  all 2s ease-in-out;
+            	transition:  all 1.2s ease-in-out;
                 opacity: 0.7;
             }
 
@@ -153,7 +154,7 @@ export default {
 
             &:hover {
                 transform: translate3d(-50px,0,0);
-                transition:  all 2s ease-in-out;
+                transition:  all 1.2s ease-in-out;
                 opacity: 0.7;
             }
         }

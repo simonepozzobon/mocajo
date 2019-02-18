@@ -90,6 +90,7 @@ export default {
 
 .ui-block {
     min-height: 30vh;
+    min-height: 400px;
     background-size: cover;
     background-position: center;
     padding: $spacer * 4;
