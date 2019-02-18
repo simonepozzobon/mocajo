@@ -35,6 +35,12 @@
             </vl-feature>
 
         </vl-map>
+        <div class="contact-map-select">
+            <ul class="list-group d-inline-block">
+                <li class="list-group-item d-inline-block active">Mappa</li>
+                <li class="list-group-item d-inline-block">Lista</li>
+            </ul>
+        </div>
     </ui-block>
 </template>
 
