@@ -26,8 +26,8 @@
                         Contatti
                     </router-link>
                 </li>
-                <li>
-                    <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" v-if="hasCart">
+                <li class="nav-item" v-if="hasCart">
+                    <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }">
                         <cart-icon width="24px" color="#333" ref="icon"/>
                     </router-link>
                 </li>
