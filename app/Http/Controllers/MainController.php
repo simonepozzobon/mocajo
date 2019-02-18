@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class MainController extends Controller
 {
-    public function index($slug) {
+    public function index($slug = null) {
         $cities = City::with('shops')->get();
 
         return view('welcome', compact('cities'));
