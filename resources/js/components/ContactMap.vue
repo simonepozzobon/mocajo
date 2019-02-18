@@ -24,16 +24,16 @@
             <vl-layer-tile id="osm">
                 <vl-source-osm/>
             </vl-layer-tile>
-            <vl-layer-tile id="points">
-                <vl-feature
-                    v-for="(shop, i) in shops"
-                    :key="shop.id">
-                    <vl-geom-point :coordinates="[parseFloat(shop.lng), parseFloat(shop.lat)]"></vl-geom-point>
-                    <vl-style-box>
-                        <vl-style-icon src="/svg/pin.svg" :scale="0.2" :anchor="[1, 1]"></vl-style-icon>
-                    </vl-style-box>
-                </vl-feature>
-            </vl-layer-tile>
+
+            <vl-feature
+                v-for="(shop, i) in shops"
+                :key="shop.id">
+                <vl-geom-point :coordinates="[parseFloat(shop.lng), parseFloat(shop.lat)]"></vl-geom-point>
+                <vl-style-box @click.native="showShopDetail">
+                    <vl-style-icon src="/svg/pin.svg" :scale="0.2" :anchor="[1, 1]"></vl-style-icon>
+                </vl-style-box>
+            </vl-feature>
+
         </vl-map>
     </ui-block>
 </template>
@@ -93,6 +93,9 @@ export default {
         setMapHeight: function() {
             let map = this.$refs.mapContainer.$el.getBoundingClientRect()
             this.mapHeight = map.height
+        },
+        showShopDetail: function() {
+            alert('ciao')
         }
     },
     mounted: function() {
@@ -111,6 +114,14 @@ export default {
     min-height: $spacer;
     transform: translateX(-50%);
     background-color: $white;
+    z-index: 1;
+}
+
+.contact-map-select {
+    position: absolute;
+    bottom: $spacer;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1;
 }
 </style>
