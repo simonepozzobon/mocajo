@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="col-md-6 ui-block" :class="color + ' ' + alignClass" ref="block">
+    <div class="col-md-6 ui-block" :class="color + ' ' + alignClass + ' ' + noPaddingClass" ref="block">
         <div class="ui-block-container" ref="container">
             <slot></slot>
         </div>
@@ -29,12 +29,22 @@ export default {
         flexAlign: {
             type: String,
             default: null,
+        },
+        disablePadding: {
+            type: Boolean,
+            default: false,
         }
     },
     computed: {
         alignClass: function() {
             if (this.flexAlign == 'top') {
                 return 'ui-block-align-top'
+            }
+            return null
+        },
+        noPaddingClass: function() {
+            if (this.disablePadding) {
+                return 'ui-block-no-padding'
             }
             return null
         }
@@ -87,16 +97,35 @@ export default {
     justify-content: center;
     align-items: center;
 
+    &.ui-block-no-padding {
+        padding: 0;
+    }
+
     @media (min-width: 64.0625em) {
         padding: 13.5vh 7.7vw 11.7vh;
+
+        &.ui-block-no-padding {
+            padding: 0;
+        }
     }
     @media (min-width: 48em) {
         padding: 8.5vh 6.8vw;
+
+        &.ui-block-no-padding {
+            padding: 0;
+        }
     }
 
     .ui-block-container {
         opacity: 0;
         padding-right: 9.4%;
+        width: 100%;
+    }
+
+    &.ui-block-no-padding {
+        .ui-block-container {
+            padding-right: 0;
+        }
     }
 
     &.ui-block-align-top {

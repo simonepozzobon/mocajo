@@ -11,6 +11,4 @@
 |
 */
 
-Route::get('/{slug}', function () {
-    return view('welcome');
-})->where('slug', '.*');
+Route::get('/{slug}', 'MainController@index')->where('slug', '.*');

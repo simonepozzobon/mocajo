@@ -6,10 +6,13 @@ import routes from './routes'
 import Cookie from './Cookies'
 import MainTemplate from './containers/MainTemplate.vue'
 import checkView from 'vue-check-view'
+import VueLayers from 'vuelayers'
+import 'vuelayers/lib/style.css'
 
 Vue.use(VueRouter)
 Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
+Vue.use(VueLayers)
 
 const router = new VueRouter({
     mode: 'history',
@@ -31,6 +34,7 @@ const app = new Vue({
             },
             cart: null,
             navLogo: true,
+            cities: null,
         }
     },
     methods: {

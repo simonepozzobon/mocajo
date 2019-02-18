@@ -20,6 +20,11 @@ const routes = [
         component: require('./views/Vini.vue')
     },
     {
+        path: '/contatti',
+        name: 'contatti',
+        component: require('./views/Contact.vue')
+    },
+    {
         path: '/carrello',
         name: 'cart',
         component: require('./views/Cart.vue')

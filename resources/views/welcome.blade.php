@@ -9,7 +9,9 @@
     </head>
     <body>
         <div id="app">
-            <main-template></main-template>
+            <main-template
+                cities="{{ $cities }}">
+            </main-template>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>
     </body>

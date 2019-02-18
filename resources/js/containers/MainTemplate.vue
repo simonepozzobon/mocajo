@@ -29,6 +29,12 @@ export default {
         MenuOverlay,
         PageMenu
     },
+    props: {
+        cities: {
+            type: String,
+            default: null,
+        }
+    },
     watch: {
         '$root.navbar': function(color) {
             switch (color) {
@@ -45,6 +51,14 @@ export default {
         },
         '$route.path': function(route) {
             this.hasBigMenu()
+        }
+    },
+    computed: {
+        parsedCities: function() {
+            if (this.cities) {
+                return JSON.parse(this.cities)
+            }
+            return []
         }
     },
     data: function() {
@@ -118,6 +132,7 @@ export default {
     mounted: function() {
         this.init()
         this.hasBigMenu()
+        this.$root.cities = this.parsedCities
     }
 }
 </script>
