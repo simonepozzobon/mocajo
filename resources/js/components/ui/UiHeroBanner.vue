@@ -1,7 +1,7 @@
 <template lang="html">
     <div class="col-12 ui-hero-banner" :class="color" ref="block">
         <div class="ui-hero-banner-overlay" ref="overlay"></div>
-        <h1 class="ui-hero-banner-title text-white" ref="title">{{ title }}</h1>
+        <h1 class="ui-hero-banner-title text-white text-center" ref="title" v-html="title"></h1>
         <slot></slot>
     </div>
 </template>

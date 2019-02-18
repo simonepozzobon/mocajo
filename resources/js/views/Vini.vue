@@ -3,7 +3,7 @@
         <div class="row">
             <ui-hero-banner
                 color="bg-dark"
-                title="Vini Scuola Mocajo"
+                title="ll nostro progetto:<br>produrre un ottimo Vino biologico"
                 imgSrc="/images/vini.jpg"/>
         </div>
         <div class="row">
@@ -27,6 +27,8 @@
                         color="bg-light">
                         <ui-title
                             title="Sette"/>
+                        <ui-subtitle
+                            title="dedicato alla nostra famiglia, all’amore, alla forza del lavoro in team e alla passione per il vino."/>
                         <ui-collapse :elements="this.wines"/>
                         <ui-action
                             url="/i-nostri-vini">
@@ -46,6 +48,9 @@
                         color="bg-light">
                         <ui-title
                             title="Soffio"
+                            :is-disabled="true"/>
+                        <ui-subtitle
+                            title="Il vento è uno dei tanti elementi che caratterizzano l’area e che rendono questo vino fresco e perfetto per qualsiasi occasione."
                             :is-disabled="true"/>
                         <ui-collapse
                             :elements="this.wines"
@@ -68,6 +73,9 @@
                         color="bg-light">
                         <ui-title
                             title="Saputo"
+                            :is-disabled="true"/>
+                        <ui-subtitle
+                            title="Sofisticatezza, Sontuosità e Sapere raccolti tutti insieme."
                             :is-disabled="true"/>
                         <ui-collapse
                             :elements="this.wines"
@@ -93,7 +101,7 @@
 import Wines from '../dummies/wines'
 import {TimelineMax} from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
-import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiTitle } from '../components/ui'
+import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiSubtitle, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
     components: {
@@ -101,6 +109,7 @@ export default {
         UiBlock,
         UiCollapse,
         UiHeroBanner,
+        UiSubtitle,
         UiTitle,
     },
     data: function() {

@@ -14,8 +14,10 @@
                 <ui-title
                     title="Il Nostro Progetto" />
                 <p>
-                    Questo avventuroso progetto è iniziato nel 2014, con un solo obiettivo, quello di produrre un ottimo vino biologico. Abbiamo impiantato tre vitigni a bacca bianca in una terra di rosso: Vermentino, Viognier e Petit Manseng. Produrre vino bianco in una zona famosa specialmente per quello rosso, potrebbe sembrare una scelta contro corrente, in realtà la nostra decisione è frutto di un'attenta valutazione legata alle specifiche del terreno e del clima della zona, con la precisa volontà di proseguire l'eredità lasciata degli etruschi prima e dai romani dopo.<br><br>
-                    Mentre le piccole barbatelle crescevano, ci siamo dedicati alla ristrutturazione della vecchia Scuola della Tenuta, ridonandole il suo antico splendore e mantenendo gli elementi storici dell'edificio, quali la struttura originaria, la vecchia scala di pietra che portava gli alunni in classe, le finestre e l'albero che vi sorge accanto.
+                    Questo avventuroso progetto è iniziato nel 2014, con l’obiettivo di produrre un ottimo vino biologico toscano. Abbiamo selezionato e impiantato tre vitigni a bacca bianca: Vermentino, Viognier e Petit Manseng. Produrre vino bianco in una zona famosa specialmente per quello rosso, potrebbe sembrare una scelta contro corrente, in realtà, la nostra decisione è frutto di un’attenta valutazione legata alle specifiche del terreno e del clima della zona, con la precisa volontà di proseguire l’eredità lasciata degli etruschi prima, e dai romani poi.<br>
+                    Effettuiamo periodicamente esami chimico-fisici dell’uva, al fine di determinare il momento migliore per la vendemmia. Solo quando le condizioni risultano ottimali, procediamo come un tempo, alla raccolta manuale dell’uva, al fine di selezionare i migliori grappoli per il nostro vino.<br>
+                    Siamo aperti all’innovazione e con la nostra produzione biologica utilizziamo criteri di massima selettività, senza dimenticare di sperimentare nuovi trend nel mondo della vinificazione.<br>
+                    I vitigni si estendono lungo la vecchia Scuola della Tenuta, che è anch’essa parte caratterizzante del progetto. Mentre le piccole barbatelle crescevano, ci siamo dedicati alla ristrutturazione della Scuola, ridonandole il suo antico splendore e mantenendo gli elementi storici dell’edificio, quali la struttura originaria, la vecchia scala di pietra che portava gli alunni in classe, le finestre e l’albero che vi sorge accanto.<br>
                 </p>
                 <ui-action
                     url="/la-nostra-storia">
@@ -42,7 +44,7 @@
                 <ui-title
                     title="La Nostra Famiglia" />
                 <p>
-                    La Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane Bubu, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Siamo aperti all'innovazione, e con la nostra produzione biologica ci proponiamo di sperimentare nuovi trend nel mondo della vinificazione.
+                    Scuola Mocajo è entrata a far parte della nostra famiglia e il progetto di produrre vino, parte integrante delle nostre vite. Siamo noi 6, 7 con il nostro cane, accomunati tra le tante cose, da uno spiccato amore per il buon vino. Ci siamo innamorati sin da subito di Scuola Mocajo e la magia e il magnetismo di questo posto sono così forti da coinvolgerci totalmente nel progetto, tanto da non farlo più uscire dai nostri pensieri.
                 </p>
                 <ui-action
                     url="/i-nostri-vini">
