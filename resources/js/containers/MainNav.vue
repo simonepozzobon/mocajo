@@ -84,12 +84,16 @@ export default {
     left: 0;
     width: 100%;
     min-height: 60px;
-    height: 130px;
+    height: $section-padding;
     background-color: rgba($white, 0);
     z-index: 9999;
     padding-left: $spacer * 2;
 
     transition: $transition-base;
+
+    @include media-breakpoint-down('sm') {
+        height: $section-sm-padding;
+    }
 
     .nav-link {
         font-weight: normal;

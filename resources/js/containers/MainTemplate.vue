@@ -1,13 +1,25 @@
 <template lang="html">
     <div>
-        <main-nav :navClass="navClass" @menu-open="menuOpen" @menu-close="menuClose" v-if="this.bigMenu == true"/>
-        <page-menu :navClass="navClass" @menu-open="menuOpen" @menu-close="menuClose" v-else-if="this.bigMenu == false"/>
+        <main-nav
+            :navClass="navClass"
+            @menu-open="menuOpen"
+            @menu-close="menuClose"
+            v-if="this.bigMenu == true"/>
+
+        <page-menu
+            :navClass="navClass"
+            @menu-open="menuOpen"
+            @menu-close="menuClose"
+            v-else-if="this.bigMenu == false"/>
+
         <menu-overlay ref="menu"/>
+
         <main ref="main">
             <transition mode="out-in" name="fade" @enter="enter" @leave="leave" @after-leave="afterLeave">
                 <router-view></router-view>
             </transition>
         </main>
+
         <language-menu />
         <cookies-panel />
     </div>
@@ -59,13 +71,14 @@ export default {
                 return JSON.parse(this.cities)
             }
             return []
-        }
+        },
     },
     data: function() {
         return {
             bigMenu: null,
             cache: null,
-            navClass: null
+            navClass: null,
+            menuSwitch: null,
         }
     },
     methods: {
@@ -76,10 +89,16 @@ export default {
             this.setPadding()
         },
         hasBigMenu: function() {
-            if (this.$route.name === 'home') {
+            // se siamo su mobile il menu big c'è sempre
+            if (this.$root.window.w <= 576) {
                 this.bigMenu = true
+                this.navClass = 'bg-black'
+            } else if (this.$route.name === 'home') {
+                this.bigMenu = true
+                this.navClass = null
             } else {
                 this.bigMenu = false
+                this.navClass = null
             }
         },
         setPadding: function() {

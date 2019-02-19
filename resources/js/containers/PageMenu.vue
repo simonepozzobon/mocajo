@@ -193,7 +193,7 @@ export default {
     left: 0;
     width: 100%;
     min-height: 60px;
-    height: 130px;
+    height: $section-padding;
     background-color: rgba($black, 1);
     z-index: 9999;
     padding-left: $spacer * 2;
@@ -216,7 +216,7 @@ export default {
     }
 
     &.nav-up {
-        top: -130px;
+        top: -$section-padding;
         transition: $transition-base;
     }
 

@@ -87,8 +87,13 @@ export default {
 <style lang="scss">
 @import '~styles/shared';
 .section {
-    padding-top: 130px;
+    padding-top: $section-padding;
     max-width: 100vw;
     overflow-x: hidden;
+
+
+    @include media-breakpoint-down('sm') {
+        padding-top: $section-sm-padding;
+    }
 }
 </style>

@@ -265,11 +265,16 @@ export default {
 
 .container-fluid {
     &.vini-mocajo {
-        padding-top: 130px;
+        padding-top: $section-padding;
         padding-left: 0;
         padding-right: 0;
         max-width: 100vw;
         overflow-x: hidden;
+
+
+        @include media-breakpoint-down('sm') {
+            padding-top: $section-sm-padding;
+        }
     }
 }
 
@@ -334,7 +339,11 @@ export default {
         margin-left: 0;
 
         .ui-block {
-            min-height: calc(100vh - 130px);
+            min-height: calc(100vh - $section-padding);
+
+            @include media-breakpoint-down('sm') {
+                min-height: calc(100vh - $section-sm-padding);
+            }
 
             &.custom-block {
                 display: flex;
@@ -342,7 +351,12 @@ export default {
                 align-items: center;
 
                 img {
-                    max-height: calc(100vh - 130px);
+                    max-height: calc(100vh - $section-padding);
+
+                    @include media-breakpoint-down('sm') {
+                        max-height: calc(100vh - $section-sm-padding);
+                    }
+
                 }
             }
         }
