@@ -23,16 +23,17 @@ export default {
 		},
         animated: {
 			type: Boolean,
-			default: false, // true -> anima da sinistra verso destra
+			default: false,
 		},
         viewportTracking: {
 			type: Boolean,
-			default: true, // true -> anima da sinistra verso destra
+			default: true,
 		},
 	},
     data: function() {
         return {
             initialized: false,
+            isAnimated: null,
         }
     },
     computed: {
@@ -41,6 +42,14 @@ export default {
                 return 'from-left-to-right-animation'
             }
             return 'from-right-to-left-animation'
+        }
+    },
+    watch: {
+        '$root.isMobile': function(isMobile) {
+            if (isMobile) {
+                this.isAnimated = false
+                this.animateIn()
+            }
         }
     },
     methods: {
@@ -53,56 +62,69 @@ export default {
             this.$refs.img.style.backgroundImage = 'url('+this.imgSrc+')'
         },
         animateIn: function() {
-            if (!this.initialized) {
-                let master = new TimelineMax({
-                    paused: true,
-                    id: "reveal"
-                })
+            if (this.isAnimated) {
+                if (!this.initialized) {
+                    let master = new TimelineMax({
+                        paused: true,
+                        id: "reveal"
+                    })
 
-                master.fromTo(this.$refs.img, 1.25, {
-                    autoAlpha: 0
-                }, {
-                    autoAlpha: 1,
-                    clearProps: 'opacity',
-                    ease: Cubic.easeInOut,
-                }, 0.1)
+                    master.fromTo(this.$refs.img, 1.25, {
+                        autoAlpha: 0
+                    }, {
+                        autoAlpha: 1,
+                        clearProps: 'opacity',
+                        ease: Cubic.easeInOut,
+                    }, 0.1)
 
-                if (!this.direction) {
-                    master.fromTo(this.$refs.overlay, 1.7, {
-                        width: '100%',
+                    if (!this.direction) {
+                        master.fromTo(this.$refs.overlay, 1.7, {
+                            width: '100%',
+                        }, {
+                            onStart: () => {
+                                this.$emit('animate-parent')
+                            },
+                            width: 0,
+                            ease: Circ.easeInOut,
+                        }, 0)
+                    } else {
+                        master.fromTo(this.$refs.overlay, 1.7, {
+                            xPercent: 0,
+                        }, {
+                            onStart: () => {
+                                this.$emit('animate-parent')
+                            },
+                            xPercent: 100,
+                            ease: Circ.easeInOut,
+                        }, 0)
+                    }
+
+
+                    master.fromTo(this.$refs.img, 3, {
+                        scale: 1.1,
                     }, {
-                        onStart: () => {
-                            this.$emit('animate-parent')
-                        },
-                        width: 0,
-                        ease: Circ.easeInOut,
-                    }, 0)
-                } else {
-                    master.fromTo(this.$refs.overlay, 1.7, {
-                        xPercent: 0,
-                    }, {
-                        onStart: () => {
-                            this.$emit('animate-parent')
-                        },
-                        xPercent: 100,
-                        ease: Circ.easeInOut,
-                    }, 0)
+                        scale: 1,
+                        clearProps: 'scale',
+                    }, 2.1)
+
+                    this.initialized = true
+                    master.play()
                 }
+            } else {
+                let master = new TimelineMax()
+                master.set(this.$refs.img, {
+                    autoAlpha: 1,
+                }, 0)
 
-
-                master.fromTo(this.$refs.img, 3, {
-                    scale: 1.1,
-                }, {
-                    scale: 1,
-                    clearProps: 'scale',
-                }, 2.1)
-
-                this.initialized = true
-                master.play()
+                master.set(this.$refs.overlay, {
+                    xPercent: 100,
+                    width: 0,
+                }, 0)
             }
         },
     },
     mounted: function() {
+        this.isAnimated = this.animated
         this.setBackground()
     }
 }

@@ -35,6 +35,11 @@ export default {
             default: false,
         }
     },
+    data: function() {
+        return {
+            isAnimated: null,
+        }
+    },
     computed: {
         alignClass: function() {
             if (this.flexAlign == 'top') {
@@ -49,6 +54,14 @@ export default {
             return null
         }
     },
+    watch: {
+        '$root.isMobile': function(isMobile) {
+            if (isMobile) {
+                this.isAnimated = false
+                this.animateIn()
+            }
+        }
+    },
     methods: {
         setBackground: function() {
             if (this.imgSrc) {
@@ -56,7 +69,7 @@ export default {
             }
         },
         animateIn: function() {
-            if (this.animated) {
+            if (this.isAnimated) {
                 let master = new TimelineMax({
                     paused: true
                 })
@@ -78,6 +91,7 @@ export default {
     },
     mounted: function() {
         this.setBackground()
+        this.isAnimated = this.animated
         if (!this.animated) {
             this.animateIn()
         }
