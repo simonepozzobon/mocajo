@@ -1,38 +1,38 @@
 <template lang="html">
     <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" ref="menu">
-            <ul class="navbar-nav m-auto">
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
-                        Scuola Mocajo
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
-                        Storia
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active">
-                        <nav-logo width="80px" color="light" ref="logo"/>
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
-                        I Nostri Vini
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active">
-                        Contatti
-                    </router-link>
-                </li>
-                <li class="nav-item" v-if="hasCart">
-                    <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }">
-                        <cart-icon width="24px" color="#333" ref="icon"/>
-                    </router-link>
-                </li>
-            </ul>
-        </nav>
+        <ul class="navbar-nav m-auto">
+            <li class="nav-item">
+                <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
+                    Scuola Mocajo
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link tag="a" class="nav-link" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
+                    Storia
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active">
+                    <nav-logo width="80px" color="light" ref="logo"/>
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link tag="a" class="nav-link" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
+                    I Nostri Vini
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active">
+                    Contatti
+                </router-link>
+            </li>
+            <li class="nav-item" v-if="hasCart">
+                <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }">
+                    <cart-icon width="24px" color="#333" ref="icon"/>
+                </router-link>
+            </li>
+        </ul>
+    </nav>
 </template>
 
 <script>
