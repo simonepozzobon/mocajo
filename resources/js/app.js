@@ -35,6 +35,7 @@ const app = new Vue({
             cart: null,
             navLogo: true,
             cities: null,
+            isMobile: false,
         }
     },
     methods: {
@@ -42,6 +43,12 @@ const app = new Vue({
             this.window = {
                 h: window.innerHeight,
                 w: window.innerWidth
+            }
+
+            if (this.window.w <= 576) {
+                this.isMobile = true
+            } else {
+                this.isMobile = false
             }
         },
         cartRemove: function(productIdx) {

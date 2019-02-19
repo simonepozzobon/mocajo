@@ -85,7 +85,11 @@ export default {
         },
     },
     mounted: function() {
-        this.$refs.section.style.paddingTop = '130px';
+        if (this.$root.window.w <= 576) {
+            this.$refs.section.style.paddingTop = '90px';
+        } else {
+            this.$refs.section.style.paddingTop = '130px';
+        }
         // this.$root.navbar = 1
         // this.init()
         // this.animate()

@@ -5,24 +5,24 @@
         </div>
         <ul class="list-unstyled" ref="menu">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
+                <a href="#" class="nav-link" @click="goTo($event, '/scuola-mocajo')">
                     Scuola Mocajo
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/la-nostra-storia' }" exact-active-class="active" @click.native="toggleMobile" ref="odontoiatria">
+                <a href="#" class="nav-link" @click="goTo($event, '/la-nostra-storia')">
                     Storia
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/i-nostri-vini' }" exact-active-class="active" @click.native="toggleMobile" ref="estetica">
+                <a href="#" class="nav-link" @click="goTo($event, '/i-nostri-vini')">
                     I Nostri Vini
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active" @click.native="toggleMobile">
+                <a href="#" class="nav-link" @click="goTo($event, '/contatti')">
                     Contatti
-                </router-link>
+                </a>
             </li>
         </ul>
         <div class="social-links">
@@ -62,8 +62,13 @@ export default {
         }
     },
     methods: {
-        goTo: function(path) {
-            this.$router.push(path)
+        goTo: function(event, path) {
+            event.preventDefault()
+            if (this.$route.path != path) {
+                this.$router.push(path)
+                return false
+            }
+            return false
         },
         toggleMobile: function() {
             let container = this.$refs.container

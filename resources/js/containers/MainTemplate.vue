@@ -1,6 +1,7 @@
 <template lang="html">
     <div>
         <main-nav
+            ref="mainNav"
             :navClass="navClass"
             @menu-open="menuOpen"
             @menu-close="menuClose"
@@ -12,10 +13,17 @@
             @menu-close="menuClose"
             v-else-if="this.bigMenu == false"/>
 
-        <menu-overlay ref="menu"/>
+        <menu-overlay
+            ref="menu"/>
 
         <main ref="main">
-            <transition mode="out-in" name="fade" @enter="enter" @leave="leave" @after-leave="afterLeave">
+            <transition
+                mode="out-in"
+                name="fade"
+                @enter="enter"
+                @leave="leave"
+                @after-enter="afterEnter"
+                @after-leave="afterLeave">
                 <router-view></router-view>
             </transition>
         </main>
@@ -59,9 +67,12 @@ export default {
             }
         },
         '$root.window': function(value) {
-            this.setPadding()
+            this.hasBigMenu()
         },
         '$route.path': function(route) {
+            if (this.navClass) {
+                this.$refs.mainNav.changeStatus(false)
+            }
             this.hasBigMenu()
         }
     },
@@ -83,10 +94,10 @@ export default {
     },
     methods: {
         afterEnter: function() {
-            this.$root.$emit('page-loaded')
+            // console.log('after-enter')
+            // this.$root.$emit('page-loaded')
         },
         init: function() {
-            this.setPadding()
         },
         hasBigMenu: function() {
             // se siamo su mobile il menu big c'è sempre
@@ -100,14 +111,6 @@ export default {
                 this.bigMenu = false
                 this.navClass = null
             }
-        },
-        setPadding: function() {
-            // let main = this.$refs.main
-            // if (main.offsetHeight > this.$root.window.h) {
-            //     main.style.paddingTop = '100px'
-            // } else {
-            //     main.style.paddingTop = null
-            // }
         },
         menuOpen: function() {
             this.$refs.menu.toggleMobile()

@@ -54,6 +54,10 @@ export default {
                 this.$refs.icon.hide()
             }
         },
+        '$route': function(to, from) {
+            this.opened = true
+            this.menuToggle()
+        }
     },
     methods: {
         hoverAnim: function() {
@@ -62,8 +66,10 @@ export default {
         changeStatus: function(value) {
             this.opened = value
         },
-        menuToggle: function($event) {
-            $event.preventDefault()
+        menuToggle: function($event = null) {
+            if ($event) {
+                $event.preventDefault()
+            }
             if (this.opened) {
                 this.$emit('menu-close')
                 if (this.navClass) {
@@ -72,6 +78,7 @@ export default {
                         className: '+='+this.navClass
                     })
                 }
+                this.opened = false
                 this.$refs.menu.close()
             } else {
                 this.$emit('menu-open')
@@ -80,6 +87,7 @@ export default {
                         className: '-='+this.navClass
                     })
                 }
+                this.opened = true
                 this.$refs.menu.open()
             }
         },
