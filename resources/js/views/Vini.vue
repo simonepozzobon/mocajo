@@ -7,7 +7,7 @@
                 imgSrc="/images/vini.jpg"/>
         </div>
         <div class="row">
-            <div id="sidebar" class="col">
+            <div id="sidebar" class="col" v-if="!this.$root.isMobile">
                 <div class="sidebar-container" ref="sidebar">
                     <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
                         S
@@ -94,6 +94,17 @@
                 </div>
             </div>
         </div>
+        <div id="mobile-sidebar" ref="sidebarMobile" v-if="this.$root.isMobile">
+            <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
+                S
+            </div>
+            <div id="soffio-menu" class="product-menu bg-red" @click="goTo(2)">
+                S
+            </div>
+            <div id="saputo-menu" class="product-menu bg-yellow" @click="goTo(3)">
+                S
+            </div>
+        </div>
     </div>
 </template>
 
@@ -120,6 +131,16 @@ export default {
                 saputo: null,
             },
             wines: Wines,
+            isMobile: false,
+        }
+    },
+    watch: {
+        '$root.isMobile': function(value) {
+            if (value) {
+                TweenMax.set(this.$refs.sidebar, {
+                    display: 'none',
+                })
+            }
         }
     },
     methods: {
@@ -178,18 +199,14 @@ export default {
                 })
             }
         },
-        getScrollX: function() {
-            return (window.pageXOffset != null) ? window.pageXOffset : (document.documentElement.scrollLeft != null) ? document.documentElement.scrollLeft : document.body.scrollLeft;
-        },
         getScrollY: function() {
             const w = window
-
             // This works for all browsers except IE versions 8 and before
             if (w.pageXOffset != null) return {x: w.pageXOffset, y:w.pageYOffset}
             // For IE (or any browser) in Standards mode
-            var d = w.document
+            let d = w.document
             if (document.compatMode == "CSS1Compat")
-            return {x:d.documentElement.scrollLeft, y:d.documentElement.scrollTop}
+            return { x: d.documentElement.scrollLeft, y: d.documentElement.scrollTop }
             // For browsers in Quirks mode
             return { x: d.body.scrollLeft, y: d.body.scrollTop }
         },
@@ -215,6 +232,8 @@ export default {
                     case 1:
                         name = 'sette'
                         el = document.getElementById('sette')
+                        topPosition = el.getBoundingClientRect().top
+                        scrollYPos = topPosition + scrollOffset.y﻿
                         break;
                     case 2:
                         name = 'soffio'
@@ -274,6 +293,38 @@ export default {
 
         @include media-breakpoint-down('sm') {
             padding-top: $section-sm-padding;
+        }
+    }
+}
+#mobile-sidebar {
+    position: fixed;
+    bottom: 0;
+    min-height: 50px;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+
+    .product-menu {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.active {
+            background-color: $white !important;
+
+            &.bg-blue {
+                color: $blue;
+            }
+
+            &.bg-yellow {
+                color: $yellow;
+            }
+
+            &.bg-red {
+                color: $red;
+            }
         }
     }
 }
