@@ -67,16 +67,16 @@ export default {
             if (this.opened) {
                 this.$emit('menu-close')
                 if (this.navClass) {
-                    TweenMax.set(this.$refs.navbar, {
+                    TweenMax.to(this.$refs.navbar, .1, {
+                        delay: 1,
                         className: '+='+this.navClass
                     })
                 }
-
                 this.$refs.menu.close()
             } else {
                 this.$emit('menu-open')
                 if (this.navClass) {
-                    TweenMax.set(this.$refs.navbar, {
+                    TweenMax.to(this.$refs.navbar, .1, {
                         className: '-='+this.navClass
                     })
                 }
