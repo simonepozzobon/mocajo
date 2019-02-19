@@ -1,7 +1,7 @@
 <template lang="html">
     <div class="mobile-nav" ref="container">
         <div class="brand-logo" ref="logo">
-            <img src="/svg/logo.svg" alt="" class="img-fluid">
+            <img src="/svg/logo.svg" alt="" class="img-fluid" @click="goTo($event, '/')">
         </div>
         <ul class="list-unstyled" ref="menu">
             <li class="nav-item">

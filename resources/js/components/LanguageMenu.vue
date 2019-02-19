@@ -23,6 +23,13 @@ export default {
                 return false
             }
             this.$refs.menu.style.display = 'block'
+        },
+        '$root.isMobile': function(value) {
+            if (value) {
+                this.$refs.menu.style.top = '1rem'
+            } else {
+                this.$refs.menu.style.top = '2.5rem'
+            }
         }
     },
     mounted: function() {
