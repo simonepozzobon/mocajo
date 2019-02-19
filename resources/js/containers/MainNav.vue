@@ -66,9 +66,20 @@ export default {
             $event.preventDefault()
             if (this.opened) {
                 this.$emit('menu-close')
+                if (this.navClass) {
+                    TweenMax.set(this.$refs.navbar, {
+                        className: '+='+this.navClass
+                    })
+                }
+
                 this.$refs.menu.close()
             } else {
                 this.$emit('menu-open')
+                if (this.navClass) {
+                    TweenMax.set(this.$refs.navbar, {
+                        className: '-='+this.navClass
+                    })
+                }
                 this.$refs.menu.open()
             }
         },
