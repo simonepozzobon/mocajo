@@ -28,7 +28,7 @@
             </li>
             <li class="nav-item" v-if="hasCart">
                 <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }">
-                    <cart-icon width="24px" color="#333" ref="icon"/>
+                    <cart-icon width="24px" color="rgb(250, 200, 35)" ref="icon"/>
                 </router-link>
             </li>
         </ul>
