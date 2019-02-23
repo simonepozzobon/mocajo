@@ -9,14 +9,14 @@
         <div class="row">
             <div id="sidebar" class="col" v-if="!this.$root.isMobile">
                 <div class="sidebar-container" ref="sidebar">
-                    <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
-                        S
+                    <div id="sette-menu" class="product-menu active" @click="goTo(1)">
+                        <img src="/svg/sette.svg" class="product-img" />
                     </div>
-                    <div id="soffio-menu" class="product-menu bg-red" @click="goTo(2)">
-                        S
+                    <div id="soffio-menu" class="product-menu" @click="goTo(2)">
+                        <img src="/svg/soffio.svg" class="product-img" />
                     </div>
-                    <div id="saputo-menu" class="product-menu bg-yellow" @click="goTo(3)">
-                        S
+                    <div id="saputo-menu" class="product-menu" @click="goTo(3)">
+                        <img src="/svg/saputo.svg" class="product-img" />
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                             url="/i-nostri-vini">
                             Download Scheda Tecnica
                         </ui-action>
-                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(19.00)">Acquista</button>
+                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(19.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block"
@@ -57,10 +57,11 @@
                             :elements="this.wines"
                             :is-disabled="true"/>
                         <ui-action
-                            url="/i-nostri-vini">
+                            url="/i-nostri-vini"
+                            :isDisabled="true">
                             Download Scheda Tecnica
                         </ui-action>
-                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(14.00)">Acquista</button>
+                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(14.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block"
@@ -83,10 +84,11 @@
                             :elements="this.wines"
                             :is-disabled="true"/>
                         <ui-action
-                            url="/i-nostri-vini">
+                            url="/i-nostri-vini"
+                            :isDisabled="true">
                             Download Scheda Tecnica
                         </ui-action>
-                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(12.00)">Acquista</button>
+                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(12.00)">Acquista</button>
                     </ui-block>
                     <ui-block
                         class="custom-block"
@@ -98,14 +100,14 @@
             </div>
         </div>
         <div id="mobile-sidebar" ref="sidebarMobile" v-if="this.$root.isMobile">
-            <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
-                S
+            <div id="sette-menu" class="product-menu active" @click="goTo(1)">
+                <img src="/svg/sette.svg" class="product-img" />
             </div>
-            <div id="soffio-menu" class="product-menu bg-red" @click="goTo(2)">
-                S
+            <div id="soffio-menu" class="product-menu" @click="goTo(2)">
+                <img src="/svg/soffio.svg" class="product-img" />
             </div>
-            <div id="saputo-menu" class="product-menu bg-yellow" @click="goTo(3)">
-                S
+            <div id="saputo-menu" class="product-menu" @click="goTo(3)">
+                <img src="/svg/saputo.svg" class="product-img" />
             </div>
         </div>
     </div>
@@ -275,9 +277,9 @@ export default {
         }
     },
     mounted: function() {
-        window.addEventListener('scroll', (e) => {
-            this.setMenuOnCenter(e)
-        })
+        // window.addEventListener('scroll', (e) => {
+        //     this.setMenuOnCenter(e)
+        // })
     }
 }
 </script>
@@ -329,16 +331,26 @@ export default {
                 color: $red;
             }
         }
+
+        .product-img {
+            width: 100%;
+        }
     }
 }
 
 #sidebar {
-    max-width: $spacer * 6;
+    max-width: $spacer * 4;
     background-color: $white;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    z-index: 1;
+    padding: 0;
+    transform: translateY(-50%);
 
     .product-menu {
-        width: $spacer * 6;
-        height: $spacer * 6;
+        width: $spacer * 4;
+        height: $spacer * 4;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -363,15 +375,21 @@ export default {
                 color: $red;
             }
         }
+
+
+        .product-img {
+            width: $spacer * 4;
+            height: $spacer * 4;
+        }
     }
 
     &:hover {
-        max-width: $spacer * 6.5;
+        max-width: $spacer * 4.5;
         cursor: pointer;
 
         .product-menu {
-            width: $spacer * 6.5;
-            height: $spacer * 6.5;
+            width: $spacer * 4.5;
+            height: $spacer * 4.5;
 
             span {
                 display: inline-block;
@@ -379,6 +397,11 @@ export default {
                 width: auto;
                 opacity: 0.6;
                 transition: opacity .55s ease-in-out;
+            }
+
+            .product-img {
+                width: $spacer * 4.5;
+                height: $spacer * 4.5;
             }
         }
 

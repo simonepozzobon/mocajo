@@ -1,5 +1,5 @@
 <template lang="html">
-    <a href="#" class="block-action" @click="goTo($event, this.url)">
+    <a href="#" class="block-action btn btn-link" :class="isDisabledClass" @click="goTo($event, this.url)">
         <slot></slot>
     </a>
 </template>
@@ -11,6 +11,18 @@ export default {
         url: {
             type: String,
             default: null,
+        },
+        isDisabled: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        isDisabledClass: function() {
+            if (this.isDisabled) {
+                return 'disabled'
+            }
+            return null
         }
     },
     methods: {

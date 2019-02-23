@@ -145,6 +145,10 @@ export default {
         }
     }
 
+    @include media-breakpoint-down('sm') {
+        min-height: auto !important;
+    };
+
     .ui-block-container {
         opacity: 0;
         padding-right: 9.4%;
