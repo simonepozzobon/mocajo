@@ -99,6 +99,7 @@ export default {
         }
     },
     mounted: function() {
+        this.setMapHeight()
     }
 }
 </script>

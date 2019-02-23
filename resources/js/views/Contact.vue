@@ -79,17 +79,25 @@ export default {
             scuola: false,
         }
     },
+    watch: {
+        '$root.window': function(value) {
+            this.setPadding()
+        }
+    },
     methods: {
         animateStoria: function() {
             this.$refs.storia.animateIn()
         },
+        setPadding: function() {
+            if (this.$root.window.w <= 576) {
+                this.$refs.section.style.paddingTop = '90px';
+            } else {
+                this.$refs.section.style.paddingTop = '130px';
+            }
+        }
     },
     mounted: function() {
-        if (this.$root.window.w <= 576) {
-            this.$refs.section.style.paddingTop = '90px';
-        } else {
-            this.$refs.section.style.paddingTop = '130px';
-        }
+        this.setPadding()
         // this.$root.navbar = 1
         // this.init()
         // this.animate()
