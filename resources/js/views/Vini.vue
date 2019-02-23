@@ -4,7 +4,7 @@
             <ui-hero-banner
                 color="bg-dark"
                 title="ll nostro progetto:<br>produrre un ottimo Vino biologico"
-                imgSrc="/images/vini.jpg"/>
+                imgSrc="/images/vini_new.jpg"/>
         </div>
         <div class="row">
             <div id="sidebar" class="col" v-if="!this.$root.isMobile">
