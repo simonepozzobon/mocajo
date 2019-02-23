@@ -33,6 +33,7 @@ export default {
         color: $gray-400;
 
         > span {
+            color: $primary;
             font-size: 0.65rem;
             text-transform: uppercase;
         }
