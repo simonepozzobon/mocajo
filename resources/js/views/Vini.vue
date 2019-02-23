@@ -38,7 +38,8 @@
                     </ui-block>
                     <ui-block
                         class="custom-block"
-                        flex-align="top">
+                        flex-align="top"
+                        :disable-padding="true">
                             <img src="/images/sette.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>
@@ -63,7 +64,8 @@
                     </ui-block>
                     <ui-block
                         class="custom-block"
-                        flex-align="top">
+                        flex-align="top"
+                        :disable-padding="true">
                             <img src="/images/soffio.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>
@@ -88,7 +90,8 @@
                     </ui-block>
                     <ui-block
                         class="custom-block"
-                        flex-align="top">
+                        flex-align="top"
+                        :disable-padding="true">
                             <img src="/images/saputo.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>

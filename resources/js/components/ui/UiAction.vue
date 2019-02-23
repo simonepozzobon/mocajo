@@ -1,7 +1,7 @@
 <template lang="html">
-    <router-link tag="a" class="block-action" :to="{ path: '/'+this.url }" exact-active-class="active">
+    <a href="#" class="block-action" @click="goTo($event, this.url)">
         <slot></slot>
-    </router-link>
+    </a>
 </template>
 
 <script>
@@ -11,6 +11,16 @@ export default {
         url: {
             type: String,
             default: null,
+        }
+    },
+    methods: {
+        goTo: function(event, path) {
+            event.preventDefault()
+            if (this.$route.path != path) {
+                this.$router.push(this.url)
+                return false
+            }
+            return false
         }
     }
 }
