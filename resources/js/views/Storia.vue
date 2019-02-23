@@ -4,6 +4,7 @@
             <ui-hero-banner-video
                 videoSrc="/video/home.mp4"
                 imgSrc="/images/tenuta.jpg"
+                :hasControls="true"
                 />
         </div>
         <div class="row">
