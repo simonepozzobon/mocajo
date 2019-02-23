@@ -2,17 +2,17 @@
     <div class="home-menu-container" ref="container">
         <ul class="list-unstyled">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Scuola Mocajo" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
+                <router-link tag="a" class="nav-link" data-hover="Scuola Mocajo" :to="{ path: '/scuolamocajo' }" exact-active-class="active">
                     Scuola Mocajo
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Storia" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
+                <router-link tag="a" class="nav-link" data-hover="Storia" :to="{ path: '/storia' }" exact-active-class="active">
                     Storia
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="I Nostri Vini" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
+                <router-link tag="a" class="nav-link" data-hover="I Nostri Vini" :to="{ path: '/vini' }" exact-active-class="active">
                     I Nostri Vini
                 </router-link>
             </li>

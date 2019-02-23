@@ -5,17 +5,17 @@
         </div>
         <ul class="list-unstyled" ref="menu">
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/scuola-mocajo')">
+                <a href="#" class="nav-link" @click="goTo($event, '/scuolamocajo')">
                     Scuola Mocajo
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/la-nostra-storia')">
+                <a href="#" class="nav-link" @click="goTo($event, '/storia')">
                     Storia
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/i-nostri-vini')">
+                <a href="#" class="nav-link" @click="goTo($event, '/vini')">
                     I Nostri Vini
                 </a>
             </li>

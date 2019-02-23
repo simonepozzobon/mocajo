@@ -20,7 +20,7 @@
                     I vitigni si estendono lungo la vecchia Scuola della Tenuta, che è anch’essa parte caratterizzante del progetto. Mentre le piccole barbatelle crescevano, ci siamo dedicati alla ristrutturazione della Scuola, ridonandole il suo antico splendore e mantenendo gli elementi storici dell’edificio, quali la struttura originaria, la vecchia scala di pietra che portava gli alunni in classe, le finestre e l’albero che vi sorge accanto.<br>
                 </p>
                 <ui-action
-                    url="/la-nostra-storia">
+                    url="/storia">
                     Scopri la storia
                 </ui-action>
             </ui-block>

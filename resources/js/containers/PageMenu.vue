@@ -2,12 +2,12 @@
     <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" ref="menu">
         <ul class="navbar-nav m-auto">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
+                <router-link tag="a" class="nav-link" :to="{ path: '/scuolamocajo' }" exact-active-class="active">
                     Scuola Mocajo
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
+                <router-link tag="a" class="nav-link" :to="{ path: '/storia' }" exact-active-class="active">
                     Storia
                 </router-link>
             </li>
@@ -17,7 +17,7 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
+                <router-link tag="a" class="nav-link" :to="{ path: '/vini' }" exact-active-class="active">
                     I Nostri Vini
                 </router-link>
             </li>
