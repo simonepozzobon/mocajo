@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="col-md-6 ui-block" :class="color + ' ' + alignClass + ' ' + noPaddingClass" ref="block">
+    <div :class="size + ' ui-block ' + color + ' ' + alignClass + ' ' + noPaddingClass" ref="block">
         <div class="ui-block-container" ref="container">
             <slot></slot>
         </div>
@@ -20,7 +20,7 @@ export default {
         },
         animated: {
             type: Boolean,
-            default: false, // true -> anima da sinistra verso destra
+            default: false,
         },
         direction: {
             type: Boolean,
@@ -33,6 +33,10 @@ export default {
         disablePadding: {
             type: Boolean,
             default: false,
+        },
+        size: {
+            type: String,
+            default: 'col-md-6'
         }
     },
     data: function() {

@@ -29,6 +29,11 @@ const routes = [
         name: 'cart',
         component: require('./views/Cart.vue')
     },
+    {
+        path: '/privacy',
+        name: 'privacy',
+        component: require('./views/Privacy.vue')
+    }
 ]
 
 export default routes
