@@ -2,6 +2,7 @@
     <div class="container-fluid contact-mocajo section" ref="section">
         <div class="row">
             <ui-block
+                :full-height="true"
                 color="bg-light">
                 <div class="contact-details">
                     <div class="contat-hours">

@@ -1,5 +1,5 @@
 <template lang="html">
-    <div :class="size + ' ui-block ' + color + ' ' + alignClass + ' ' + noPaddingClass" ref="block">
+    <div :class="size + ' ui-block ' + color + ' ' + alignClass + ' ' + noPaddingClass + ' ' + isFullHeight" ref="block">
         <div class="ui-block-container" ref="container">
             <slot></slot>
         </div>
@@ -37,6 +37,10 @@ export default {
         size: {
             type: String,
             default: 'col-md-6'
+        },
+        fullHeight: {
+            type: Boolean,
+            default: false,
         }
     },
     data: function() {
@@ -54,6 +58,12 @@ export default {
         noPaddingClass: function() {
             if (this.disablePadding) {
                 return 'ui-block-no-padding'
+            }
+            return null
+        },
+        isFullHeight: function() {
+            if (this.fullHeight) {
+                return 'ui-block-full-height'
             }
             return null
         }
@@ -149,6 +159,14 @@ export default {
 
     &.ui-block-align-top {
         align-items: flex-start !important;
+    }
+
+    &.ui-block-full-height {
+        min-height: calc(100vh - 130px) !important;
+
+        @include media-breakpoint-down('sm') {
+            min-height: calc(100vh - 90px) !important;
+        }
     }
 }
 </style>

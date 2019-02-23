@@ -1,6 +1,7 @@
 <template lang="html">
     <ui-block
         ref="mapContainer"
+        :full-height="true"
         :disable-padding="true">
         <div class="contact-map-multiselect">
             <multiselect
