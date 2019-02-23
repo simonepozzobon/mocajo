@@ -18,6 +18,9 @@
                     <div id="saputo-menu" class="product-menu" @click="goTo(3)">
                         <img src="/svg/saputo.svg" class="product-img" />
                     </div>
+                    <div id="stello-menu" class="product-menu" @click="goTo(4)">
+                        <img src="/svg/stello.svg" class="product-img" />
+                    </div>
                 </div>
             </div>
             <div id="content" class="col">
@@ -97,6 +100,33 @@
                             <img src="/images/saputo.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>
+                <div id="stello" class="row" v-view="handler">
+                    <div id="stello-trigger"></div>
+                    <ui-block
+                        color="bg-light">
+                        <ui-title
+                            title="Stello"
+                            :is-disabled="true"/>
+                        <ui-subtitle
+                            title="Manca descrizione."
+                            :is-disabled="true"/>
+                        <ui-collapse
+                            :elements="this.wines"
+                            :is-disabled="true"/>
+                        <ui-action
+                            url="/i-nostri-vini"
+                            :isDisabled="true">
+                            Download Scheda Tecnica
+                        </ui-action>
+                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(16.00)">Acquista</button>
+                    </ui-block>
+                    <ui-block
+                        class="custom-block"
+                        flex-align="top"
+                        :disable-padding="true">
+                            <img src="/images/stello.jpg" class="img-fluid"/>
+                    </ui-block>
+                </div>
             </div>
         </div>
         <div id="mobile-sidebar" ref="sidebarMobile" v-if="this.$root.isMobile">
@@ -108,6 +138,9 @@
             </div>
             <div id="saputo-menu" class="product-menu" @click="goTo(3)">
                 <img src="/svg/saputo.svg" class="product-img" />
+            </div>
+            <div id="stello-menu" class="product-menu" @click="goTo(4)">
+                <img src="/svg/stello.svg" class="product-img" />
             </div>
         </div>
     </div>
@@ -175,23 +208,30 @@ export default {
             if (price == 12.00 || price == 12 || price == '12.00') {
                 product = {
                     id: 2,
-                    title: 'Ligia',
+                    title: 'Sette',
                     quantity: 1,
                     price: 12.00
                 }
             } else if (price == 19.00 || price == 19 || price == '19.00') {
                 product = {
                     id: 1,
-                    title: 'Mocajo',
+                    title: 'Soffio',
                     quantity: 1,
                     price: 19.00
                 }
             } else if (price == 14.00 || price == 14 || price == '14.00') {
                 product = {
                     id: 3,
-                    title: 'Ignis',
+                    title: 'Saputo',
                     quantity: 1,
                     price: 14.00
+                }
+            } else if (price == 16.00 || price == 16 || price == '16.00') {
+                product = {
+                    id: 4,
+                    title: 'Stello',
+                    quantity: 1,
+                    price: 16.00
                 }
             }
             this.$root.addToCart(product)
@@ -217,7 +257,7 @@ export default {
         },
         resetClass: function() {
             return new Promise(resolve => {
-                TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu'], .2, {
+                TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu', '#stello-menu'], .2, {
                     className: '-=active',
                     onComplete: () => {
                         resolve()
@@ -249,6 +289,12 @@ export default {
                     case 3:
                         name = 'saputo'
                         el = document.getElementById('saputo')
+                        topPosition = el.getBoundingClientRect().top
+                        scrollYPos = topPosition + scrollOffset.y﻿
+                        break;
+                    case 4:
+                        name = 'stello'
+                        el = document.getElementById('stello')
                         topPosition = el.getBoundingClientRect().top
                         scrollYPos = topPosition + scrollOffset.y﻿
                         break;
@@ -340,7 +386,6 @@ export default {
 
 #sidebar {
     max-width: $spacer * 4;
-    background-color: $white;
     position: fixed;
     top: 50%;
     left: 0;
@@ -378,19 +423,14 @@ export default {
 
 
         .product-img {
-            width: $spacer * 4;
-            height: $spacer * 4;
+            width: 100%;
         }
     }
 
     &:hover {
-        max-width: $spacer * 4.5;
         cursor: pointer;
 
         .product-menu {
-            width: $spacer * 4.5;
-            height: $spacer * 4.5;
-
             span {
                 display: inline-block;
                 visibility: visible;
@@ -399,10 +439,6 @@ export default {
                 transition: opacity .55s ease-in-out;
             }
 
-            .product-img {
-                width: $spacer * 4.5;
-                height: $spacer * 4.5;
-            }
         }
 
         transition: $transition-base;
