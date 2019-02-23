@@ -1,6 +1,12 @@
 <template lang="html">
     <div class="container-fluid privacy-section section" ref="section">
         <div class="row">
+            <ui-hero-banner
+                title="Privacy"
+                color="bg-dark"
+                imgSrc="/images/privacy.jpg" />
+        </div>
+        <div class="row">
             <ui-block
                 size="col"
                 color="bg-light">
@@ -79,12 +85,13 @@
 </template>
 
 <script>
-import { UiBlock, UiSubtitle, UiTitle } from '../components/ui'
+import { UiBlock, UiHeroBanner, UiSubtitle, UiTitle } from '../components/ui'
 
 export default {
     name: 'Privacy',
     components: {
         UiBlock,
+        UiHeroBanner,
         UiSubtitle,
         UiTitle
     }
