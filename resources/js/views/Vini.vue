@@ -39,7 +39,7 @@
                     <ui-block
                         class="custom-block"
                         flex-align="top">
-                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
+                            <img src="/images/sette.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>
                 <div id="soffio" class="row" v-view="handler">
@@ -64,7 +64,7 @@
                     <ui-block
                         class="custom-block"
                         flex-align="top">
-                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
+                            <img src="/images/soffio.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>
                 <div id="saputo" class="row" v-view="handler">
@@ -89,7 +89,7 @@
                     <ui-block
                         class="custom-block"
                         flex-align="top">
-                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
+                            <img src="/images/saputo.jpg" class="img-fluid"/>
                     </ui-block>
                 </div>
             </div>
