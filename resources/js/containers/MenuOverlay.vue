@@ -67,10 +67,8 @@ export default {
             if (this.$route.path != path) {
                 this.$router.push(path)
                 return false
-            } else {
-                this.toggleMobile()
-                return false
             }
+            return false
         },
         toggleMobile: function() {
             let container = this.$refs.container

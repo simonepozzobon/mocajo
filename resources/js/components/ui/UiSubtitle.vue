@@ -1,7 +1,7 @@
 <template lang="html">
     <div>
-        <h6 class="ui-subtitle" v-if="!this.isDisabled">{{ title }}</h6>
-        <h6 class="ui-subtitle ui-subtitle-disabled" v-else>{{ title }}</h6>
+        <h6 class="ui-subtitle" :class="noMarginClass" v-if="!this.isDisabled">{{ title }}</h6>
+        <h6 class="ui-subtitle ui-subtitle-disabled" :class="noMarginClass" v-else>{{ title }}</h6>
     </div>
 </template>
 
@@ -16,8 +16,20 @@ export default {
         isDisabled: {
             type: Boolean,
             default: false,
+        },
+        noMargin: {
+            type: Boolean,
+            default: false,
         }
     },
+    computed: {
+        noMarginClass: function() {
+            if (this.noMargin) {
+                return 'ui-subtitle-m0'
+            }
+            return null
+        }
+    }
 }
 </script>
 
@@ -32,6 +44,10 @@ export default {
 
     &.ui-subtitle-disabled {
         color: $gray-400;
+    }
+
+    &.ui-subtitle-m0 {
+        margin-bottom: 0;
     }
 }
 </style>
