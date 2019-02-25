@@ -11,4 +11,9 @@
 |
 */
 
+Route::prefix('admin')->group(function() {
+    Route::get('/', 'AdminController@index');
+    Route::get('/{slug}', 'AdminController@index')->where('slug', '.*');
+});
+
 Route::get('/{slug}', 'MainController@index')->where('slug', '.*');
