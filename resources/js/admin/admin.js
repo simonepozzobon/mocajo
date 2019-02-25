@@ -8,11 +8,13 @@ import MainTemplate from './containers/MainTemplate.vue'
 import checkView from 'vue-check-view'
 import VueLayers from 'vuelayers'
 import 'vuelayers/lib/style.css'
+import axios from 'axios'
 
 Vue.use(VueRouter)
 Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
 Vue.use(VueLayers)
+Vue.prototype.$http = axios
 
 const router = new VueRouter({
     mode: 'history',

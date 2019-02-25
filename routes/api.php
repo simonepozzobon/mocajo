@@ -18,3 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/cookies/accepted', 'MainController@cookies_preferences');
+
+Route::prefix('admin')->group(function() {
+    Route::prefix('homepage')->group(function() {
+        Route::post('/upload-video', 'AdminController@homepage_post_video');
+        Route::get('/get-video', 'AdminController@homepage_get_video');
+    });
+});
