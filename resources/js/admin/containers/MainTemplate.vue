@@ -1,10 +1,10 @@
 <template lang="html">
     <div>
         <top-bar></top-bar>
-        <div class="container-fluid">
-            <div class="row">
+        <div class="container-fluid main-container">
+            <div class="row no-gutters">
                 <sidebar></sidebar>
-                <main role="main" class="pt-5 col-md-9 ml-sm-auto col-lg-10 px-4">
+                <main role="main" class="col-md-9 ml-sm-auto col-lg-10">
                     <router-view></router-view>
                 </main>
             </div>
@@ -25,5 +25,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import '~styles/adminshared';
+
+.main-container {
+    padding: 0;
+}
 </style>

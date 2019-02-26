@@ -144,7 +144,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~styles/shared';
+@import '~styles/adminshared';
 
 .video-player-box {
     > div {

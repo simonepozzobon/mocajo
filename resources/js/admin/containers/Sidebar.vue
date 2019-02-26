@@ -1,11 +1,11 @@
 <template lang="html">
-    <nav class="col-md-2 d-none d-md-block bg-light sidebar pt-5">
+    <nav class="col-md-2 d-none d-md-block sidebar admin-sidebar shadows">
         <div class="sidebar-sticky">
-            <hr>
-            <h5 class="text-center">Pagine</h5>
+            <div class="divider"></div>
+            <h5 class="text-light pl-3">Pagine</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" @click="goTo($event, 'homepage')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'homepage')">
                         Home <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -25,11 +25,11 @@
                     </a>
                 </li>
             </ul>
-            <hr>
-            <h5 class="text-center">Vini</h5>
+            <div class="divider"></div>
+            <h5 class="text-light pl-3">Vini</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" @click="goTo($event, 'vini')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'vini')">
                         Vini <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -44,20 +44,20 @@
                     </a>
                 </li>
             </ul>
-            <hr>
-            <h5 class="text-center">Negozio</h5>
+            <div class="divider"></div>
+            <h5 class="text-light pl-3">Negozio</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" @click="goTo($event, 'homepage')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'homepage')">
                         Gestione Ordini <span class="sr-only">(current)</span>
                     </a>
                 </li>
             </ul>
-            <hr>
-            <h5 class="text-center">Generali</h5>
+            <div class="divider"></div>
+            <h5 class="text-light pl-3">Generali</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" @click="goTo($event, 'settings')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'settings')">
                         Impostazioni <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -79,8 +79,24 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~styles/shared';
-.sidebar {
+@import '~styles/adminshared';
+
+.admin-sidebar {
     min-height: 100vh;
+    padding-top: $spacer * 3.4;
+    @include gradient-directional($dark, $black, 135deg);
+    @include box-shadows($black);
+    z-index: 1;
+
+    .divider {
+        width: 10%;
+        height: 1px;
+        margin: $spacer $spacer;
+        background-color: rgba($light, .3);
+    }
+
+    .nav-link {
+        color: $gray-500;
+    }
 }
 </style>

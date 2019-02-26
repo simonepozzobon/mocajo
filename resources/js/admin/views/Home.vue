@@ -9,5 +9,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~styles/shared';
+@import '~styles/adminshared';
 </style>
