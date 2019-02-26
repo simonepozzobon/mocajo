@@ -6,22 +6,22 @@
         <ul class="list-unstyled" ref="menu">
             <li class="nav-item">
                 <a href="#" class="nav-link" @click="goTo($event, '/scuolamocajo')">
-                    Scuola Mocajo
+                    {{ this.menu.scuola }}
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" @click="goTo($event, '/storia')">
-                    Storia
+                    {{ this.menu.storia }}
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" @click="goTo($event, '/vini')">
-                    I Nostri Vini
+                    {{ this.menu.vini }}
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" @click="goTo($event, '/contatti')">
-                    Contatti
+                    {{ this.menu.contatti }}
                 </a>
             </li>
         </ul>
@@ -59,9 +59,23 @@ export default {
             isOpen: false,
             master: null,
             height: 0,
+            menu: {
+                scuola: null,
+                storia: null,
+                vini: null,
+                contatti: null,
+            }
+        }
+    },
+    watch: {
+        '$root.options': function(options) {
+            this.setOptions(options.menu)
         }
     },
     methods: {
+        setOptions: function(section) {
+            this.menu = section
+        },
         goTo: function(event, path) {
             event.preventDefault()
             if (this.$route.path != path) {
@@ -161,7 +175,9 @@ export default {
         }
     },
     mounted: function() {
-
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.menu)
+        }
     }
 }
 </script>

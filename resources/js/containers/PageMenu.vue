@@ -3,12 +3,12 @@
         <ul class="navbar-nav m-auto">
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/scuolamocajo' }" exact-active-class="active">
-                    Scuola Mocajo
+                    {{ this.menu.scuola }}
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/storia' }" exact-active-class="active">
-                    Storia
+                    {{ this.menu.storia }}
                 </router-link>
             </li>
             <li class="nav-item">
@@ -18,12 +18,12 @@
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/vini' }" exact-active-class="active">
-                    I Nostri Vini
+                    {{ this.menu.vini }}
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active">
-                    Contatti
+                    {{ this.menu.contatti }}
                 </router-link>
             </li>
             <li class="nav-item" v-if="hasCart">
@@ -69,6 +69,12 @@ export default {
             lastScrollTop: 0,
             delta: 5,
             navbarHeight: 0,
+            menu: {
+                scuola: null,
+                storia: null,
+                vini: null,
+                contatti: null,
+            }
         }
     },
     watch: {
@@ -92,9 +98,15 @@ export default {
             }
             this.hasLogo = true
             this.menuClass = 'ml-auto'
+        },
+        '$root.options': function(options) {
+            this.setOptions(options.menu)
         }
     },
     methods: {
+        setOptions: function(section) {
+            this.menu = section
+        },
         init: function() {
             let master = new TimelineMax({
                 paused: true,
@@ -161,6 +173,9 @@ export default {
         }
     },
     mounted: function() {
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.menu)
+        }
         this.init()
 
         this.$nextTick(() => {

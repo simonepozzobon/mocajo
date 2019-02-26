@@ -3,22 +3,22 @@
         <ul class="list-unstyled">
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" data-hover="Scuola Mocajo" :to="{ path: '/scuolamocajo' }" exact-active-class="active">
-                    Scuola Mocajo
+                    {{ this.menu.scuola }}
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" data-hover="Storia" :to="{ path: '/storia' }" exact-active-class="active">
-                    Storia
+                    {{ this.menu.storia }}
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" data-hover="I Nostri Vini" :to="{ path: '/vini' }" exact-active-class="active">
-                    I Nostri Vini
+                    {{ this.menu.vini }}
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link tag="a" class="nav-link" data-hover="Contatti" :to="{ path: '/contatti' }" exact-active-class="active">
-                    Contatti
+                    {{ this.menu.contatti }}
                 </router-link>
             </li>
         </ul>
@@ -27,7 +27,33 @@
 
 <script>
 export default {
-    name: 'HomeMenu'
+    name: 'HomeMenu',
+    watch: {
+        '$root.options': function(options) {
+            this.setOptions(options.menu)
+        }
+    },
+    data: function() {
+        return {
+            menu: {
+                scuola: null,
+                storia: null,
+                vini: null,
+                contatti: null,
+            }
+        }
+    },
+    methods: {
+        setOptions: function(section) {
+            this.menu = section
+        }
+    },
+    mounted: function() {
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.menu)
+        }
+
+    }
 }
 </script>
 

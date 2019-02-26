@@ -104,9 +104,17 @@ class MainController extends Controller
             'mail' => $options[22]->value,
         ];
 
+        $menu = [
+            'scuola' => $options[27]->value,
+            'storia' => $options[28]->value,
+            'vini' => $options[29]->value,
+            'contatti' => $options[30]->value,
+        ];
+
 
 
         return [
+            'menu' => $menu,
             'home' => $home,
             'scuola' => [
                 'header' => $headerScuola,
