@@ -1,6 +1,5 @@
 <template lang="html">
-    <div class="">
-        <h1 class="pt-3">Scuola Mocajo</h1>
+    <page-template title="Scuola Mocajo">
         <page-section
             title="Header"
             idx="header"
@@ -26,16 +25,18 @@
             :default-value="this.agriturismo"
             @changed-value="setOpts($event, 'agriturismo')"
             @upload="upload($event, 'agriturismo')"/>
-    </div>
+    </page-template>
 </template>
 
 <script>
 import { PageSection } from '../components/ui'
+import PageTemplate from '../containers/PageTemplate.vue'
 
 export default {
     name: 'HomePage',
     components: {
         PageSection,
+        PageTemplate,
     },
     data: function() {
         return {

@@ -1,6 +1,5 @@
 <template lang="html">
     <div>
-        <hr>
         <panel-block :title="title">
             <form-group :name="this.titleLower + '-title'" title="Titolo" v-if="!this.disableTitle">
                 <input type="text" :name="this.titleLower + '-title'" v-model="section.title" class="form-control">
@@ -44,6 +43,7 @@
                 <button class="btn btn-outline-primary" @click="upload">Salva Sezione</button>
             </form-group>
         </panel-block>
+        <hr>
     </div>
 </template>
 

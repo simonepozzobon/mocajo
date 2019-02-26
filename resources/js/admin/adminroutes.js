@@ -23,7 +23,12 @@ const routes = [
         path: '/contatti',
         name: 'contatti',
         component: require('./views/Contact.vue')
-    }
+    },
+    {
+        path: '/vini',
+        name: 'vini',
+        component: require('./views/Vini.vue')
+    },
 ]
 
 export default routes

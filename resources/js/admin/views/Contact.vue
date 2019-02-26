@@ -1,7 +1,5 @@
 <template lang="html">
-    <div class="">
-        <h1 class="pt-3">Contatti</h1>
-        <hr>
+    <page-template title="contatti">
         <panel-block title="Informazioni">
             <form-group name="name" title="Nome">
                 <input type="text" name="name" v-model="name" class="form-control">
@@ -19,17 +17,19 @@
                 <button class="btn btn-outline-primary" @click="upload">Salva</button>
             </form-group>
         </panel-block>
-    </div>
+    </page-template>
 </template>
 
 <script>
 import { FormGroup, PanelBlock } from '../components/ui'
+import PageTemplate from '../containers/PageTemplate.vue'
 
 export default {
     name: 'HomePage',
     components: {
         FormGroup,
         PanelBlock,
+        PageTemplate,
     },
     data: function() {
         return {

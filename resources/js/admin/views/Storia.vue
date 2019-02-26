@@ -1,6 +1,5 @@
 <template lang="html">
-    <div class="">
-        <h1 class="pt-3">La Nostra Storia</h1>
+    <page-template title="La Nostra Storia">
         <page-section
             title="Header"
             idx="header"
@@ -40,16 +39,18 @@
             :default-value="this.image3"
             @changed-value="setOpts($event, 'image-3')"
             @upload="upload($event, 'image-3')" />
-    </div>
+    </page-template>
 </template>
 
 <script>
 import { PageSection } from '../components/ui'
+import PageTemplate from '../containers/PageTemplate.vue'
 
 export default {
     name: 'HomePage',
     components: {
         PageSection,
+        PageTemplate,
     },
     data: function() {
         return {

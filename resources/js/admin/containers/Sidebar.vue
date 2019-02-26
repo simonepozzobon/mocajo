@@ -1,6 +1,8 @@
 <template lang="html">
     <nav class="col-md-2 d-none d-md-block bg-light sidebar pt-5">
         <div class="sidebar-sticky">
+            <hr>
+            <h5 class="text-center">Pagine</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link active" href="#" @click="goTo($event, 'homepage')">
@@ -22,9 +24,36 @@
                         Contatti
                     </a>
                 </li>
+            </ul>
+            <hr>
+            <h5 class="text-center">Vini</h5>
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link active" href="#" @click="goTo($event, 'vini')">
+                        Vini <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" @click="goTo($event, 'scuola-mocajo')">
                         Negozi
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <h5 class="text-center">Negozio</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" @click="goTo($event, 'homepage')">
+                        Gestione Ordini <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <h5 class="text-center">Generali</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" @click="goTo($event, 'homepage')">
+                        Impostazioni <span class="sr-only">(current)</span>
                     </a>
                 </li>
             </ul>

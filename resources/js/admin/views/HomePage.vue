@@ -1,7 +1,5 @@
 <template lang="html">
-    <div class="">
-        <h1>Home Page</h1>
-        <hr class="pb-4">
+    <page-template title="Homepage">
         <div class="form">
             <div class="form-group row">
                 <label for="video" class="col-md-3">Cambia video</label>
@@ -35,16 +33,18 @@
                 </div>
             </div>
         </div>
-    </div>
+    </page-template>
 </template>
 
 <script>
+import PageTemplate from '../containers/PageTemplate.vue'
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
 
 export default {
     name: 'HomePage',
     components: {
+        PageTemplate,
         videoPlayer,
     },
     data: function() {
