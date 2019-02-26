@@ -36,6 +36,7 @@ const app = new Vue({
             navLogo: true,
             cities: null,
             isMobile: false,
+            options: null,
         }
     },
     methods: {

@@ -18,7 +18,8 @@
     <body>
         <div id="app">
             <main-template
-                cities="{{ $cities }}">
+                cities="{{ $cities }}"
+                options="{{ $options }}">
             </main-template>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>

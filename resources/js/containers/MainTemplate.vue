@@ -53,7 +53,11 @@ export default {
         cities: {
             type: String,
             default: null,
-        }
+        },
+        options: {
+            type: String,
+            default: null,
+        },
     },
     watch: {
         '$root.navbar': function(color) {
@@ -83,6 +87,12 @@ export default {
             }
             return []
         },
+        parsedOptions: function() {
+            if (this.options) {
+                return JSON.parse(this.options)
+            }
+            return []
+        }
     },
     data: function() {
         return {
@@ -155,6 +165,7 @@ export default {
         this.init()
         this.hasBigMenu()
         this.$root.cities = this.parsedCities
+        this.$root.options = this.parsedOptions
     }
 }
 </script>
