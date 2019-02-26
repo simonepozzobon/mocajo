@@ -34,4 +34,9 @@ Route::prefix('admin')->group(function() {
         Route::get('/get-options', 'Admin\StoriaController@get_options');
         Route::post('/save-section', 'Admin\StoriaController@save_section');
     });
+
+    Route::prefix('contact')->group(function() {
+        Route::get('/get-options', 'Admin\ContactController@get_options');
+        Route::post('/save-section', 'Admin\ContactController@save_section');
+    });
 });

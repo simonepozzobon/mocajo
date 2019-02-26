@@ -18,6 +18,11 @@ const routes = [
         path: '/storia',
         name: 'storia',
         component: require('./views/Storia.vue')
+    },
+    {
+        path: '/contatti',
+        name: 'contatti',
+        component: require('./views/Contact.vue')
     }
 ]
 
