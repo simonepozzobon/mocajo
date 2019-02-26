@@ -8,6 +8,11 @@ const routes = [
         path: '/homepage',
         name: 'homepage',
         component: require('./views/HomePage.vue')
+    },
+    {
+        path: '/scuola-mocajo',
+        name: 'scuolamocajo',
+        component: require('./views/ScuolaMocajo.vue')
     }
 ]
 

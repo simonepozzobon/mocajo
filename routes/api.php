@@ -21,7 +21,12 @@ Route::post('/cookies/accepted', 'MainController@cookies_preferences');
 
 Route::prefix('admin')->group(function() {
     Route::prefix('homepage')->group(function() {
-        Route::post('/upload-video', 'AdminController@homepage_post_video');
-        Route::get('/get-video', 'AdminController@homepage_get_video');
+        Route::post('/upload-video', 'Admin\HomePageController@post_video');
+        Route::get('/get-video', 'Admin\HomePageController@get_video');
+    });
+
+    Route::prefix('scuolamocajo')->group(function() {
+        Route::get('/get-options', 'Admin\ScuolaMocajoController@get_options');
+        Route::post('/save-section', 'Admin\ScuolaMocajoController@save_section');
     });
 });
