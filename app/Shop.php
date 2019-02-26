@@ -9,6 +9,6 @@ class Shop extends Model
     protected $table = 'shops';
 
     public function city() {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(City::class);
     }
 }

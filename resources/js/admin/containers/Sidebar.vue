@@ -34,7 +34,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" @click="goTo($event, 'scuola-mocajo')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'negozi')">
                         Negozi
                     </a>
                 </li>

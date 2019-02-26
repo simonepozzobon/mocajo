@@ -45,4 +45,10 @@ Route::prefix('admin')->group(function() {
         Route::post('/save-product', 'Admin\ProductController@save_product');
         Route::post('/destroy', 'Admin\ProductController@destroy');
     });
+
+    Route::prefix('shops')->group(function() {
+        Route::get('/get-shops', 'Admin\ShopController@get_shops');
+        Route::post('/save-shop', 'Admin\ShopController@save_shop');
+        Route::post('/destroy', 'Admin\ShopController@destroy');
+    });
 });
