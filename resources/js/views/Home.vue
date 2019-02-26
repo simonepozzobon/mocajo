@@ -1,7 +1,7 @@
 <template lang="html">
     <div id="home">
         <video-bg
-            videoSrcMp4="/video/home.mp4"
+            :videoSrcMp4="this.video"
             ref="player">
             <div class="home-overlay">
                 <div class="top-overlay text-white">
@@ -34,7 +34,13 @@ export default {
     },
     data: function() {
         return {
-            status: false
+            status: false,
+            video: null,
+        }
+    },
+    watch: {
+        '$root.options': function(options) {
+            this.setContent(options.home)
         }
     },
     methods: {
@@ -42,10 +48,16 @@ export default {
             let player = this.$refs.player
             let video = player.$refs.video
             video.muted = status
+        },
+        setContent: function(section) {
+            this.video = section.video
         }
     },
     mounted: function() {
         this.$root.navLogo = false
+        if (this.$root.options) {
+            this.setContent(this.$root.options.home)
+        }
     },
     beforeDestroy: function() {
         this.$root.navLogo = true

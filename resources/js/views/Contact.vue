@@ -6,19 +6,16 @@
                 color="bg-light">
                 <div class="contact-details">
                     <ui-title title="Contatti"></ui-title>
-                    <div class="contat-hours mb-5">
-                        <h5>Scuola Mocajo</h5>
+                    <div class="contat-hours mb-5" v-if="this.name">
+                        <h5>{{ this.name }}</h5>
                         <div class="row">
                             <div class="col-md-5">
-                                <p>
-                                    Via Martiri, 10<br>
-                                    20143, Milano (MI)<br>
-                                </p>
+                                <p v-html="this.address"></p>
                             </div>
                             <div class="col-md-7">
                                 <p>
-                                    Telefono: 02 555 555 55<br>
-                                    Mail: <a href="mailto:info@scuolamocajo.it">info@scuolamocajo.it</a><br>
+                                    Telefono: {{ this.phone }}<br>
+                                    Mail: <a :href="'mailto:' + this.mail">{{ this.mail }}</a><br>
                                 </p>
                             </div>
                         </div>
@@ -72,14 +69,18 @@ export default {
     data: function() {
         return {
             controller: null,
-            about: false,
-            tenuta: false,
-            scuola: false,
+            name: null,
+            address: null,
+            phone: null,
+            mail: null,
         }
     },
     watch: {
         '$root.window': function(value) {
             this.setPadding()
+        },
+        '$root.options': function(options) {
+            this.setContent(options.contatti)
         }
     },
     methods: {
@@ -92,16 +93,19 @@ export default {
             } else {
                 this.$refs.section.style.paddingTop = '130px';
             }
+        },
+        setContent: function(section) {
+            this.name = section.name
+            this.address = section.address
+            this.phone = section.phone
+            this.mail = section.mail
         }
     },
     mounted: function() {
         this.setPadding()
-        // this.$root.navbar = 1
-        // this.init()
-        // this.animate()
-        // TweenMax.set(['#about-tenuta','#about-tenuta-description','#about-tenuta-image', '#about-storia', '#about-storia-description', '#about-storia-image'], {
-        //     autoAlpha: 0,
-        // })
+        if (this.$root.options) {
+            this.setContent(this.$root.options.contatti)
+        }
     }
 }
 </script>

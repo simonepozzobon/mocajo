@@ -93,7 +93,7 @@ export default {
     mounted: function() {
         this.setPadding()
         if (this.$root.options) {
-            this.setOptions(this.$root.options.storia)
+            this.setContent(this.$root.options.storia)
         }
         // this.$root.navbar = 1
         // this.init()

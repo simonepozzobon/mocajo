@@ -86,6 +86,14 @@ class MainController extends Controller
             'img3' => Utility::check_img($options[18]->value),
         ];
 
+        $contatti = [
+            'name' => $options[19]->value,
+            'address' => $options[20]->value,
+            'phone' => $options[21]->value,
+            'mail' => $options[22]->value,
+        ];
+
+
 
         return [
             'home' => $home,
@@ -100,6 +108,7 @@ class MainController extends Controller
                 'scuola' => $scuola,
                 'images' => $imagesStoria,
             ],
+            'contatti' => $contatti,
         ];
     }
 }
