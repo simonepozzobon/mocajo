@@ -6,9 +6,19 @@
                 format="svg"
                 @file-loaded="iconLoad"/>
         </form-group>
-        <form-group name="iconPreview" title="Anteprima">
+        <form-group name="iconPreview" title="Anteprima Icona">
             <img :src="product.icon" class="img-fluid" v-if="product.icon">
             <span class="text-danger" v-else>Nessuna Icona Caricata!</span>
+        </form-group>
+        <form-group name="img" title="Immagine">
+            <file-input
+                ref="image"
+                format="png"
+                @file-loaded="imageLoad"/>
+        </form-group>
+        <form-group name="iconPreview" title="Anteprima Immagine">
+            <img :src="product.img" class="img-fluid" v-if="product.img">
+            <span class="text-danger" v-else>Nessuna Immagine Caricata!</span>
         </form-group>
         <form-group name="title" title="Nome">
             <input type="text" name="title" v-model="product.title" class="form-control">
@@ -95,6 +105,7 @@ export default {
             product: {
                 icon: null,
                 title: null,
+                img: null,
                 short_description: null,
                 description: null,
                 vitigno: null,
@@ -108,6 +119,9 @@ export default {
         }
     },
     methods: {
+        imageLoad: function(img) {
+            this.product.img = img
+        },
         iconLoad: function(icon) {
             this.product.icon = icon
         },
@@ -126,6 +140,15 @@ export default {
                 let isFile = typeof this.product.icon.name == 'string'
                 if (isFile) {
                     data.append('icon', this.product.icon)
+                }
+            } else {
+                this.$refs.icon.setInvalid('Selezionare un file')
+            }
+
+            if (this.product.img && this.product.img != '/storage/') {
+                let isFile = typeof this.product.img.name == 'string'
+                if (isFile) {
+                    data.append('img', this.product.img)
                 }
             } else {
                 this.$refs.icon.setInvalid('Selezionare un file')
@@ -181,6 +204,7 @@ export default {
             this.product = {
                 icon: null,
                 title: null,
+                img: null,
                 short_description: null,
                 description: null,
                 vitigno: null,

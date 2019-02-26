@@ -1,9 +1,5 @@
 <template lang="html">
     <div>
-        <div class="d-flex justify-content-center">
-            <button class="btn btn-outline-primary" @click="newProduct">Aggiungi Vino</button>
-        </div>
-        <hr>
         <b-table
             :fields="this.fields"
             :items="this.products">

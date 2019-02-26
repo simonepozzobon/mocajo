@@ -35,10 +35,15 @@ class ProductController extends Controller
             if ($request->file('scheda_tecnica')) {
                 $product->scheda_tecnica = Utility::save_file_for_model($request->file('scheda_tecnica'));
             }
-            
+
+            if($request->file('img')) {
+                $product->img = Utility::save_file_for_model($request->file('img'));
+            }
+
         } else {
             $product = new Product();
             $product->icon = Utility::save_file_for_model($request->file('icon'));
+            $product->img = Utility::save_file_for_model($request->file('img'));
             $product->scheda_tecnica = Utility::save_file_for_model($request->file('scheda_tecnica'));
         }
 
@@ -54,6 +59,7 @@ class ProductController extends Controller
         $product->save();
 
         $product->icon = Utility::check_img($product->icon);
+        $product->img = Utility::check_img($product->img);
         $product->scheda_tecnica = Utility::check_img($product->scheda_tecnica);
 
         return $product;
@@ -62,6 +68,7 @@ class ProductController extends Controller
     public function format_products($products) {
         $products = $products->transform(function($product, $key) {
             $product->icon = Utility::check_img($product->icon);
+            $product->img = Utility::check_img($product->img);
             $product->scheda_tecnica = Utility::check_img($product->scheda_tecnica);
             return $product;
         });
