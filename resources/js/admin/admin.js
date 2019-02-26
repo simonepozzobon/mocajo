@@ -4,17 +4,20 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './adminroutes'
 import Cookie from '../Cookies'
-import MainTemplate from './containers/MainTemplate.vue'
 import checkView from 'vue-check-view'
-import VueLayers from 'vuelayers'
-import 'vuelayers/lib/style.css'
 import axios from 'axios'
+import VueLayers from 'vuelayers'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'vuelayers/lib/style.css'
+import MainTemplate from './containers/MainTemplate.vue'
 
 Vue.use(VueRouter)
 Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
 Vue.use(VueLayers)
 Vue.prototype.$http = axios
+Vue.use(BootstrapVue)
 
 const router = new VueRouter({
     mode: 'history',

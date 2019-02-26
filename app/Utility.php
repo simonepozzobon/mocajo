@@ -18,6 +18,15 @@ class Utility extends Model
         return $option;
     }
 
+    public static function save_file_for_model($file) {
+        if (isset($file)) {
+            $filename = $file->getClientOriginalName();
+            $img = $file->storeAs('public/files', $filename);
+            return $img;
+        }
+        return null;
+    }
+
     public static function save_option($option, $value) {
         if (isset($value)) {
             $option->value = $value;

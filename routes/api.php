@@ -39,4 +39,10 @@ Route::prefix('admin')->group(function() {
         Route::get('/get-options', 'Admin\ContactController@get_options');
         Route::post('/save-section', 'Admin\ContactController@save_section');
     });
+
+    Route::prefix('products')->group(function() {
+        Route::get('/get-products', 'Admin\ProductController@get_products');
+        Route::post('/save-product', 'Admin\ProductController@save_product');
+        Route::post('/destroy', 'Admin\ProductController@destroy');
+    });
 });
