@@ -29,4 +29,9 @@ Route::prefix('admin')->group(function() {
         Route::get('/get-options', 'Admin\ScuolaMocajoController@get_options');
         Route::post('/save-section', 'Admin\ScuolaMocajoController@save_section');
     });
+
+    Route::prefix('storia')->group(function() {
+        Route::get('/get-options', 'Admin\StoriaController@get_options');
+        Route::post('/save-section', 'Admin\StoriaController@save_section');
+    });
 });

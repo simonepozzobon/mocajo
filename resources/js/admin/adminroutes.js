@@ -13,6 +13,11 @@ const routes = [
         path: '/scuola-mocajo',
         name: 'scuolamocajo',
         component: require('./views/ScuolaMocajo.vue')
+    },
+    {
+        path: '/storia',
+        name: 'storia',
+        component: require('./views/Storia.vue')
     }
 ]
 

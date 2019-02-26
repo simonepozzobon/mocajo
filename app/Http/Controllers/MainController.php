@@ -6,6 +6,7 @@ use App\Shop;
 use App\City;
 use App\Cookie;
 use App\Option;
+use App\Utility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,32 +43,49 @@ class MainController extends Controller
 
     public function format_options($options) {
         $home = [
-            'video' => $this->check_img($options[0]->value),
+            'video' => Utility::check_img($options[0]->value),
         ];
 
         $headerScuola = [
             'title' => $options[2]->value,
             'txt' => null,
-            'img' => $this->check_img($options[1]->value),
+            'img' => Utility::check_img($options[1]->value),
         ];
 
         $project = [
             'title' => $options[3]->value,
             'txt' => $options[4]->value,
-            'img' => $this->check_img($options[5]->value),
+            'img' => Utility::check_img($options[5]->value),
         ];
 
         $family = [
             'title' => $options[6]->value,
             'txt' => $options[7]->value,
-            'img' => $this->check_img($options[8]->value),
+            'img' => Utility::check_img($options[8]->value),
         ];
 
         $agriturismo = [
             'title' => $options[9]->value,
             'txt' => $options[10]->value,
-            'img' => $this->check_img($options[11]->value),
+            'img' => Utility::check_img($options[11]->value),
         ];
+
+        $headerStoria = [
+            'video' => Utility::check_img($options[12]->value),
+        ];
+
+        $scuola = [
+            'title' => $options[13]->value,
+            'txt' => $options[14]->value,
+            'img' => Utility::check_img($options[15]->value),
+        ];
+
+        $imagesStoria = [
+            'img1' => Utility::check_img($options[16]->value),
+            'img2' => Utility::check_img($options[17]->value),
+            'img3' => Utility::check_img($options[18]->value),
+        ];
+
 
         return [
             'home' => $home,
@@ -76,6 +94,11 @@ class MainController extends Controller
                 'project' => $project,
                 'family' => $family,
                 'agriturismo' => $agriturismo,
+            ],
+            'storia' => [
+                'header' => $headerStoria,
+                'scuola' => $scuola,
+                'images' => $imagesStoria,
             ],
         ];
     }
