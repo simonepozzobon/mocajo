@@ -7,18 +7,21 @@
             :shopDefault="this.shopDefault"
             @destroy="destroy"
             @exit="exit"
-            @update-shops="updateShops"/>
+            @update-shops="updateShops"
+            @add-city="addCity"/>
 
         <shops-table
             ref="table"
             :shops="this.shops"
             @new-shop="newShop"
             @edit="edit"
-            @destroy="destroy"/>
+            @destroy="destroy"
+            @add-city="addCity"/>
     </page-template>
 </template>
 
 <script>
+import { FormGroup } from '../components/ui'
 import PageTemplate from '../containers/PageTemplate.vue'
 import ShopPanel from '../components/ShopPanel.vue'
 import ShopsTable from '../components/ShopsTable.vue'
@@ -26,6 +29,7 @@ import ShopsTable from '../components/ShopsTable.vue'
 export default {
     name: 'Negozi',
     components: {
+        FormGroup,
         PageTemplate,
         ShopPanel,
         ShopsTable,
@@ -40,6 +44,9 @@ export default {
         }
     },
     methods: {
+        addCity: function() {
+            this.$router.push('/cities')
+        },
         getShops: function() {
             this.$http.get('/api/admin/shops/get-shops').then(response => {
                 this.shops = response.data

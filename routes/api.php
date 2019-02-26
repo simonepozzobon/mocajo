@@ -48,7 +48,10 @@ Route::prefix('admin')->group(function() {
 
     Route::prefix('shops')->group(function() {
         Route::get('/get-shops', 'Admin\ShopController@get_shops');
+        Route::get('/get-cities', 'Admin\ShopController@get_cities');
         Route::post('/save-shop', 'Admin\ShopController@save_shop');
+        Route::post('/save-city', 'Admin\ShopController@save_city');
         Route::post('/destroy', 'Admin\ShopController@destroy');
+        Route::post('/city-destroy', 'Admin\ShopController@city_destroy');
     });
 });

@@ -2,6 +2,7 @@
     <div>
         <div class="d-flex justify-content-center mb-3">
             <button class="btn btn-outline-primary" @click="newShop">Aggiungi Negozio</button>
+            <button class=" ml-3 btn btn-outline-indigo" @click="addCity">Aggiungi Città</button>
         </div>
         <b-table
             :fields="this.fields"
@@ -20,6 +21,7 @@
         <hr>
         <div class="d-flex justify-content-center">
             <button class="btn btn-outline-primary" @click="newShop">Aggiungi Negozio</button>
+            <button class=" ml-3 btn btn-outline-indigo" @click="addCity">Aggiungi Città</button>
         </div>
     </div>
 </template>
@@ -51,6 +53,9 @@ export default {
         },
         destroy: function(product) {
             this.$emit('destroy', product)
+        },
+        addCity: function() {
+            this.$emit('add-city')
         }
     }
 }

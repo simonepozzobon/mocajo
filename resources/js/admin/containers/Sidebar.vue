@@ -38,6 +38,11 @@
                         Negozi
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" @click="goTo($event, 'cities')">
+                        Città
+                    </a>
+                </li>
             </ul>
             <hr>
             <h5 class="text-center">Negozio</h5>

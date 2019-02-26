@@ -26,7 +26,13 @@
             </vl-map>
         </form-group>
         <form-group name="city_id" title="Città">
-
+            <multiselect
+                v-model="city"
+                :options="options"
+                :searchable="true"
+                :close-on-select="true"
+                :show-labels="false"
+                placeholder="Seleziona una città..."/>
         </form-group>
         <form-group name="lat" title="Latitudine">
             <input type="text" name="lat" v-model="shop.lat" class="form-control">
@@ -54,10 +60,14 @@
 
 <script>
 import { FormGroup } from './ui'
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+
 export default {
     name: 'ShopPanel',
     components: {
         FormGroup,
+        Multiselect,
     },
     props: {
         isEdit: {
@@ -80,20 +90,51 @@ export default {
             selection: null,
             rotation: 0,
             shop: {
-                city_id: 1,
+                city_id: null,
                 name: null,
                 address: null,
-                lat: 45.461118675626096,
-                lng: 9.19131164549529,
-            }
+                lat: 0,
+                lng: 0,
+            },
+            cities: null,
+            options: [],
+            city: null,
         }
     },
     watch: {
         shopDefault: function(shop) {
             this.shop = shop
+            this.findCityById(shop.city_id)
+        },
+        city: function(value) {
+            let idx = this.cities.findIndex(item => item.name == value)
+            if (idx > -1) {
+                let result = this.cities[idx]
+                this.center = [ parseFloat(result.lng), parseFloat(result.lat) ]
+                this.shop.city_id = result.id
+            }
         }
     },
     methods: {
+        getCities: function() {
+            this.$http.get('/api/admin/shops/get-cities').then(response => {
+                this.cities = response.data
+                this.formatCities()
+            })
+        },
+        formatCities: function() {
+            for (var i = 0; i < this.cities.length; i++) {
+                let city = this.cities[i]
+                this.options.push(city.name)
+            }
+        },
+        findCityById: function(id) {
+            let idx = this.cities.findIndex(item => item.id == id)
+            if (idx > -1) {
+                let result = this.cities[idx]
+                this.city = result.name
+            }
+        },
         upload: function() {
             let data = new FormData();
 
@@ -129,11 +170,11 @@ export default {
         },
         reset: function() {
             this.shop = {
-                city_id: 1,
+                city_id: null,
                 name: null,
                 address: null,
-                lat: 45.461118675626096,
-                lng: 9.19131164549529,
+                lat: 0,
+                lng: 0,
             }
         },
         onMapClick: function(event) {
@@ -148,6 +189,9 @@ export default {
             }
             return data
         },
+    },
+    mounted: function() {
+        this.getCities()
     }
 }
 </script>
