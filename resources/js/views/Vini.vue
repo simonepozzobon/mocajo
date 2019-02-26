@@ -30,7 +30,8 @@
                 v-for="(item, i) in this.products"
                 :key="item.id"
                 :idx="item.id"
-                :svg="item.svg"
+                :title="item.title"
+                :svg-src="item.icon"
                 @go-to="goTo"/>
         </div>
     </div>
@@ -110,7 +111,6 @@ export default {
             })
         },
         goTo: function(name) {
-            console.log(name)
             let el,
             scrollYPos = 0,
             topPosition = 0,
@@ -148,6 +148,9 @@ export default {
         // window.addEventListener('scroll', (e) => {
         //     this.setMenuOnCenter(e)
         // })
+        if (this.$root.products) {
+            this.products = this.$root.products
+        }
     }
 }
 </script>

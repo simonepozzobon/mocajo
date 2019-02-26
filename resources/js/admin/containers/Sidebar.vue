@@ -57,7 +57,7 @@
             <h5 class="text-center">Generali</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" @click="goTo($event, 'homepage')">
+                    <a class="nav-link active" href="#" @click="goTo($event, 'settings')">
                         Impostazioni <span class="sr-only">(current)</span>
                     </a>
                 </li>

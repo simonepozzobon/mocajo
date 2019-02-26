@@ -39,6 +39,11 @@ const routes = [
         name: 'cities',
         component: require('./views/Cities.vue')
     },
+    {
+        path: '/settings',
+        name: 'settings',
+        component: require('./views/Settings.vue')
+    },
 ]
 
 export default routes

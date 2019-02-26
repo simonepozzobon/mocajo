@@ -54,4 +54,9 @@ Route::prefix('admin')->group(function() {
         Route::post('/destroy', 'Admin\ShopController@destroy');
         Route::post('/city-destroy', 'Admin\ShopController@city_destroy');
     });
+
+    Route::prefix('settings')->group(function() {
+        Route::get('/get-options', 'Admin\SettingController@get_options');
+        Route::post('/save-section', 'Admin\SettingController@save_section');
+    });
 });
