@@ -7,6 +7,7 @@ use App\City;
 use App\Cookie;
 use App\Option;
 use App\Utility;
+use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +19,17 @@ class MainController extends Controller
         $options = $this->format_options($options);
         $options = json_encode($options);
 
-        return view('welcome', compact('cities', 'options'));
+        $products = Product::all();
+        $products = $products->transform(function($product, $key) {
+            $product->icon = Utility::check_img($product->icon);
+            $product->img = Utility::check_img($product->img);
+            $product->scheda_tecnica = Utility::check_img($product->scheda_tecnica);
+            return $product;
+        });
+
+        $products = json_encode($products);
+
+        return view('welcome', compact('cities', 'options', 'products'));
     }
 
     public function cookies_preferences(Request $request) {

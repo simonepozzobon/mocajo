@@ -37,6 +37,7 @@ const app = new Vue({
             cities: null,
             isMobile: false,
             options: null,
+            products: null,
         }
     },
     methods: {

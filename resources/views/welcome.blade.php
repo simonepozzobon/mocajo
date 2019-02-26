@@ -19,7 +19,8 @@
         <div id="app">
             <main-template
                 cities="{{ $cities }}"
-                options="{{ $options }}">
+                options="{{ $options }}"
+                products="{{ $products }}">
             </main-template>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>

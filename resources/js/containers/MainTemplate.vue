@@ -58,6 +58,10 @@ export default {
             type: String,
             default: null,
         },
+        products: {
+            type: String,
+            default: null,
+        }
     },
     watch: {
         '$root.navbar': function(color) {
@@ -92,7 +96,13 @@ export default {
                 return JSON.parse(this.options)
             }
             return []
-        }
+        },
+        parsedProducts: function() {
+            if (this.products) {
+                return JSON.parse(this.products)
+            }
+            return []
+        },
     },
     data: function() {
         return {
@@ -166,6 +176,7 @@ export default {
         this.hasBigMenu()
         this.$root.cities = this.parsedCities
         this.$root.options = this.parsedOptions
+        this.$root.products = this.parsedProducts
     }
 }
 </script>

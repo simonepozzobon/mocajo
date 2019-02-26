@@ -7,141 +7,31 @@
                 imgSrc="/images/vini_new.jpg"/>
         </div>
         <div class="row">
-            <div id="sidebar" class="col" v-if="!this.$root.isMobile">
+            <div id="sidebar" class="col" v-if="!this.$root.isMobile && this.products">
                 <div class="sidebar-container" ref="sidebar">
-                    <div id="sette-menu" class="product-menu active" @click="goTo(1)">
-                        <img src="/svg/sette.svg" class="product-img" />
-                    </div>
-                    <div id="soffio-menu" class="product-menu" @click="goTo(2)">
-                        <img src="/svg/soffio.svg" class="product-img" />
-                    </div>
-                    <div id="saputo-menu" class="product-menu" @click="goTo(3)">
-                        <img src="/svg/saputo.svg" class="product-img" />
-                    </div>
-                    <div id="stello-menu" class="product-menu" @click="goTo(4)">
-                        <img src="/svg/stello.svg" class="product-img" />
-                    </div>
+                    <product-menu-icon
+                        v-for="(item, i) in this.products"
+                        :key="item.id"
+                        :idx="item.id"
+                        :title="item.title"
+                        :svg-src="item.icon"
+                        @go-to="goTo"/>
                 </div>
             </div>
             <div id="content" class="col">
-                <div id="sette" class="row" v-view="handler">
-                    <div id="sette-trigger"></div>
-                    <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Sette"/>
-                        <ui-subtitle
-                            title="dedicato alla nostra famiglia, all’amore, alla forza del lavoro in team e alla passione per il vino."/>
-                        <ui-collapse :elements="this.wines"/>
-                        <ui-action
-                            url="/i-nostri-vini">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(19.00)">Acquista</button>
-                    </ui-block>
-                    <ui-block
-                        class="custom-block"
-                        flex-align="top"
-                        :disable-padding="true">
-                            <img src="/images/sette.jpg" class="img-fluid"/>
-                    </ui-block>
-                </div>
-                <div id="soffio" class="row" v-view="handler">
-                    <div id="soffio-trigger"></div>
-                    <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Soffio"
-                            :is-disabled="true"/>
-                        <ui-subtitle
-                            title="Il vento è uno dei tanti elementi che caratterizzano l’area e che rendono questo vino fresco e perfetto per qualsiasi occasione."
-                            :is-disabled="true"/>
-                        <ui-collapse
-                            :elements="this.wines"
-                            :is-disabled="true"/>
-                        <ui-action
-                            url="/i-nostri-vini"
-                            :isDisabled="true">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(14.00)">Acquista</button>
-                    </ui-block>
-                    <ui-block
-                        class="custom-block"
-                        flex-align="top"
-                        :disable-padding="true">
-                            <img src="/images/soffio.jpg" class="img-fluid"/>
-                    </ui-block>
-                </div>
-                <div id="saputo" class="row" v-view="handler">
-                    <div id="saputo-trigger"></div>
-                    <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Saputo"
-                            :is-disabled="true"/>
-                        <ui-subtitle
-                            title="Sofisticatezza, Sontuosità e Sapere raccolti tutti insieme."
-                            :is-disabled="true"/>
-                        <ui-collapse
-                            :elements="this.wines"
-                            :is-disabled="true"/>
-                        <ui-action
-                            url="/i-nostri-vini"
-                            :isDisabled="true">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(12.00)">Acquista</button>
-                    </ui-block>
-                    <ui-block
-                        class="custom-block"
-                        flex-align="top"
-                        :disable-padding="true">
-                            <img src="/images/saputo.jpg" class="img-fluid"/>
-                    </ui-block>
-                </div>
-                <div id="stello" class="row" v-view="handler">
-                    <div id="stello-trigger"></div>
-                    <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Stello"
-                            :is-disabled="true"/>
-                        <ui-subtitle
-                            title="Manca descrizione."
-                            :is-disabled="true"/>
-                        <ui-collapse
-                            :elements="this.wines"
-                            :is-disabled="true"/>
-                        <ui-action
-                            url="/i-nostri-vini"
-                            :isDisabled="true">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart(16.00)">Acquista</button>
-                    </ui-block>
-                    <ui-block
-                        class="custom-block"
-                        flex-align="top"
-                        :disable-padding="true">
-                            <img src="/images/stello.jpg" class="img-fluid"/>
-                    </ui-block>
-                </div>
+                <product-single
+                    v-for="(item, i) in this.products"
+                    :key="item.id"
+                    :product="item"/>
             </div>
         </div>
         <div id="mobile-sidebar" ref="sidebarMobile" v-if="this.$root.isMobile">
-            <div id="sette-menu" class="product-menu active" @click="goTo(1)">
-                <img src="/svg/sette.svg" class="product-img" />
-            </div>
-            <div id="soffio-menu" class="product-menu" @click="goTo(2)">
-                <img src="/svg/soffio.svg" class="product-img" />
-            </div>
-            <div id="saputo-menu" class="product-menu" @click="goTo(3)">
-                <img src="/svg/saputo.svg" class="product-img" />
-            </div>
-            <div id="stello-menu" class="product-menu" @click="goTo(4)">
-                <img src="/svg/stello.svg" class="product-img" />
-            </div>
+            <product-menu-icon
+                v-for="(item, i) in this.products"
+                :key="item.id"
+                :idx="item.id"
+                :svg="item.svg"
+                @go-to="goTo"/>
         </div>
     </div>
 </template>
@@ -150,10 +40,14 @@
 import Wines from '../dummies/wines'
 import {TimelineMax} from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
+import ProductMenuIcon from '../components/ProductMenuIcon.vue'
+import ProductSingle from '../components/ProductSingle.vue'
 import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiSubtitle, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
     components: {
+        ProductMenuIcon,
+        ProductSingle,
         UiAction,
         UiBlock,
         UiCollapse,
@@ -170,6 +64,7 @@ export default {
             },
             wines: Wines,
             isMobile: false,
+            products: null,
         }
     },
     watch: {
@@ -179,63 +74,12 @@ export default {
                     display: 'none',
                 })
             }
+        },
+        '$root.products': function(products) {
+            this.products = products
         }
     },
     methods: {
-        handler: function(e) {
-            let name = e.target.element.id
-            if (e.percentCenter > 0.5 && e.percentCenter < 0.7) {
-                if (!this.cache[name]) {
-                    TweenMax.to('#'+name+'-menu', .6, {
-                        className: '+=active',
-                        onComplete: () => {
-                            this.cache[name] = true
-                        }
-                    })
-                }
-            } else if (e.type == 'exit') {
-                TweenMax.to('#'+name+'-menu', .2, {
-                    className: '-=active',
-                    onComplete: () => {
-                        this.cache[name] = false
-                    }
-                })
-            }
-        },
-        addToCart: function(price) {
-            price = price.toFixed(2)
-            let product = null
-            if (price == 12.00 || price == 12 || price == '12.00') {
-                product = {
-                    id: 2,
-                    title: 'Sette',
-                    quantity: 1,
-                    price: 12.00
-                }
-            } else if (price == 19.00 || price == 19 || price == '19.00') {
-                product = {
-                    id: 1,
-                    title: 'Soffio',
-                    quantity: 1,
-                    price: 19.00
-                }
-            } else if (price == 14.00 || price == 14 || price == '14.00') {
-                product = {
-                    id: 3,
-                    title: 'Saputo',
-                    quantity: 1,
-                    price: 14.00
-                }
-            } else if (price == 16.00 || price == 16 || price == '16.00') {
-                product = {
-                    id: 4,
-                    title: 'Stello',
-                    quantity: 1,
-                    price: 16.00
-                }
-            }
-            this.$root.addToCart(product)
-        },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop
             if (this.$refs.sidebar) {
@@ -265,40 +109,18 @@ export default {
                 })
             })
         },
-        goTo: function(id) {
-            let name = '',
-            el,
+        goTo: function(name) {
+            console.log(name)
+            let el,
             scrollYPos = 0,
             topPosition = 0,
             scrollOffset = this.getScrollY()
 
             this.resetClass().then( () => {
-                switch (id) {
-                    case 1:
-                        name = 'sette'
-                        el = document.getElementById('sette')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                    case 2:
-                        name = 'soffio'
-                        el = document.getElementById('soffio')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                    case 3:
-                        name = 'saputo'
-                        el = document.getElementById('saputo')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                    case 4:
-                        name = 'stello'
-                        el = document.getElementById('stello')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                }
+                el = document.getElementById(name)
+                console.log(el)
+                topPosition = el.getBoundingClientRect().top
+                scrollYPos = topPosition + scrollOffset.y﻿
 
                 let master = new TimelineMax({
                     paused: true,
