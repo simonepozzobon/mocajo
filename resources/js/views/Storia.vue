@@ -1,46 +1,40 @@
 <template lang="html">
     <div class="container-fluid storia-mocajo section" ref="section">
-        <div class="row">
+        <div class="row" v-if="this.header">
             <ui-hero-banner-video
-                videoSrc="/video/home.mp4"
-                imgSrc="/images/tenuta.jpg"
+                :videoSrc="this.header.video"
                 :hasControls="true"
                 />
         </div>
-        <div class="row">
+        <div class="row" v-if="this.scuolaSec">
             <ui-image-block
                 :isImage="true"
                 :animated="true"
-                imgSrc="/images/tenuta.jpg"
+                :imgSrc="this.scuolaSec.img"
                 @animate-parent="animateStoria"/>
             <ui-block
                 ref="storia"
                 :animated="true"
                 color="bg-light">
                 <ui-title
-                    title="La Vecchia Scuola Di Mocajo" />
-                <p>
-                    Adagiata su morbide colline toscane, a ridosso della costa degli Etruschi, nasceva nel 1942 Scuola Mocajo, intitolata a Riccardo Perucchetti e fondata per accudire i figli dei mezzadri che lavoravano nella Tenuta. Abbandonata a sé stessa per molti anni e ormai diroccata, oggi, grazie a un progetto di profondo restauro, riprende vita ed è pronta a scrivere una nuova storia.
-                </p>
+                    :title="this.scuolaSec.title" />
+                <p v-html="this.scuolaSec.txt"></p>
             </ui-block>
         </div>
-        <div class="row">
+        <div class="row" v-if="this.images">
             <ui-image-block
                 :isImage="true"
                 :animated="false"
                 :direction="false"
-                imgSrc="/images/storia-agriturismo-mocajo.jpg"
-                />
+                :imgSrc="this.images.img1" />
             <ui-image-block
                 :isImage="true"
                 :animated="false"
-                imgSrc="/images/storia-agriturismo-mocajo-2.jpg"
-                />
+                :imgSrc="this.images.img2" />
         </div>
-        <div class="row">
+        <div class="row" v-if="this.images">
             <ui-hero-banner
-                imgSrc="/images/storia-big.jpg"
-                />
+                :imgSrc="this.images.img3" />
         </div>
     </div>
 </template>
@@ -66,11 +60,17 @@ export default {
             about: false,
             tenuta: false,
             scuola: false,
+            header: null,
+            scuolaSec: null,
+            images: null,
         }
     },
     watch: {
         '$root.window': function() {
             this.setPadding()
+        },
+        '$root.options': function(options) {
+            this.setContent(options.storia)
         }
     },
     methods: {
@@ -84,9 +84,17 @@ export default {
                 this.$refs.section.style.paddingTop = '130px';
             }
         },
+        setContent: function(section) {
+            this.header = section.header
+            this.scuolaSec = section.scuola
+            this.images = section.images
+        }
     },
     mounted: function() {
         this.setPadding()
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.storia)
+        }
         // this.$root.navbar = 1
         // this.init()
         // this.animate()
