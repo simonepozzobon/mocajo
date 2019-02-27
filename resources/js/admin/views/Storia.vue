@@ -1,5 +1,7 @@
 <template lang="html">
     <page-template title="La Nostra Storia">
+        <seo-group
+            :page-id="3" />
         <page-section
             title="Header"
             idx="header"
@@ -43,7 +45,7 @@
 </template>
 
 <script>
-import { PageSection } from '../components/ui'
+import { PageSection, SeoGroup } from '../components/ui'
 import PageTemplate from '../containers/PageTemplate.vue'
 
 export default {
@@ -51,6 +53,7 @@ export default {
     components: {
         PageSection,
         PageTemplate,
+        SeoGroup,
     },
     data: function() {
         return {

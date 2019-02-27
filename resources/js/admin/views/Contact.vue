@@ -1,5 +1,7 @@
 <template lang="html">
     <page-template title="contatti">
+        <seo-group
+            :page-id="4" />
         <panel-block title="Informazioni">
             <form-group name="name" title="Nome">
                 <input type="text" name="name" v-model="name" class="form-control">
@@ -21,7 +23,7 @@
 </template>
 
 <script>
-import { FormGroup, PanelBlock } from '../components/ui'
+import { FormGroup, PanelBlock, SeoGroup } from '../components/ui'
 import PageTemplate from '../containers/PageTemplate.vue'
 
 export default {
@@ -30,6 +32,7 @@ export default {
         FormGroup,
         PanelBlock,
         PageTemplate,
+        SeoGroup,
     },
     data: function() {
         return {

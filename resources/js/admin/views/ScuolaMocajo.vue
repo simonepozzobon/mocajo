@@ -1,5 +1,7 @@
 <template lang="html">
     <page-template title="Scuola Mocajo">
+        <seo-group
+            :page-id="2" />
         <page-section
             title="Header"
             idx="header"
@@ -29,14 +31,15 @@
 </template>
 
 <script>
-import { PageSection } from '../components/ui'
+import { PageSection, SeoGroup } from '../components/ui'
 import PageTemplate from '../containers/PageTemplate.vue'
 
 export default {
-    name: 'HomePage',
+    name: 'ScuolaMocajo',
     components: {
         PageSection,
         PageTemplate,
+        SeoGroup,
     },
     data: function() {
         return {

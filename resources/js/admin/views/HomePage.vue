@@ -1,8 +1,8 @@
 <template lang="html">
     <page-template title="Homepage">
-        <seo-group>
+        <seo-group
+            :page-id="1" />
 
-        </seo-group>
         <page-section
             title="Video Principale"
             idx="video"

@@ -3,6 +3,7 @@ import FormGroup from './FormGroup.vue'
 import GeneralSection from './GeneralSection.vue'
 import PageSection from './PageSection.vue'
 import PanelBlock from './PanelBlock.vue'
+import SeoGroup from './SeoGroup.vue'
 
 export {
     FileInput,
@@ -10,4 +11,5 @@ export {
     GeneralSection,
     PageSection,
     PanelBlock,
+    SeoGroup,
 }

@@ -59,4 +59,10 @@ Route::prefix('admin')->group(function() {
         Route::get('/get-options', 'Admin\SettingController@get_options');
         Route::post('/save-section', 'Admin\SettingController@save_section');
     });
+
+    Route::prefix('seo')->group(function() {
+        Route::get('/page/{id}', 'Admin\SeoController@get_page_seo');
+        Route::post('/save', 'Admin\SeoController@save_seo');
+    });
+
 });
