@@ -19,6 +19,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="#" @click="goTo($event, 'vini')">
+                        Vini
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#" @click="goTo($event, 'contatti')">
                         Contatti
                     </a>
@@ -28,7 +33,7 @@
             <h5 class="text-light pl-3">Vini</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" @click="goTo($event, 'vini')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'prodotti')">
                         Vini <span class="sr-only">(current)</span>
                     </a>
                 </li>

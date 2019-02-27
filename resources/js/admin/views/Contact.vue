@@ -1,5 +1,5 @@
 <template lang="html">
-    <page-template title="contatti">
+    <page-template title="Contatti">
         <seo-group
             :page-id="4" />
         <panel-block title="Informazioni">

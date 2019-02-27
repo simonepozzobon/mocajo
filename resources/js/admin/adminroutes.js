@@ -20,13 +20,18 @@ const routes = [
         component: require('./views/Storia.vue')
     },
     {
+        path: '/vini',
+        name: 'vini',
+        component: require('./views/ViniPagina.vue')
+    },
+    {
         path: '/contatti',
         name: 'contatti',
         component: require('./views/Contact.vue')
     },
     {
-        path: '/vini',
-        name: 'vini',
+        path: '/prodotti',
+        name: 'prodotti',
         component: require('./views/Vini.vue')
     },
     {

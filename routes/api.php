@@ -30,6 +30,11 @@ Route::prefix('admin')->group(function() {
         Route::post('/save-section', 'Admin\ScuolaMocajoController@save_section');
     });
 
+    Route::prefix('vini')->group(function() {
+        Route::get('/get-options', 'Admin\ViniController@get_options');
+        Route::post('/save-section', 'Admin\ViniController@save_section');
+    });
+
     Route::prefix('storia')->group(function() {
         Route::get('/get-options', 'Admin\StoriaController@get_options');
         Route::post('/save-section', 'Admin\StoriaController@save_section');

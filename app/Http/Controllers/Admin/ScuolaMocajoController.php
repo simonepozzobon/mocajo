@@ -11,17 +11,22 @@ use Illuminate\Support\Facades\Storage;
 
 class ScuolaMocajoController extends Controller
 {
-    public function get_options(Request $request) {
+    public function get() {
         $page = Page::find(2);
         $options = $page->options;
+        return $options;
+    }
+
+    public function get_options(Request $request) {
+        $options = $this->get();
+
 
         $options_formatted = $this->format_options($options);
         return $options_formatted;
     }
 
     public function save_section(Request $request) {
-        $page = Page::find(2);
-        $options = $page->options;
+        $options = $this->get();
 
         switch ($request->type) {
             case 'header':
