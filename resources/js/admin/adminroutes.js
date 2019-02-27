@@ -45,6 +45,11 @@ const routes = [
         component: require('./views/Cities.vue')
     },
     {
+        path: '/corrieri',
+        name: 'corrieri',
+        component: require('./views/Corrieri.vue')
+    },
+    {
         path: '/settings',
         name: 'settings',
         component: require('./views/Settings.vue')

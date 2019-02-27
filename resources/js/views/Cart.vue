@@ -2,35 +2,61 @@
     <div class="container">
         <div class="row section">
             <div class="col">
-                <h1>Carrello</h1>
-                <table class="table my-4">
-                    <thead>
-                        <tr>
-                            <td>Prodotto</td>
-                            <td>Quantità</td>
-                            <td>Prezzo</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <cart-row
-                            v-for="product in this.$root.cart"
-                            :key="product.id"
-                            :idx="product.id"
-                            :title="product.title"
-                            :price="product.price"
-                            :quantity="product.quantity"
-                            @cart-update="cartUpdate"
-                            @cart-remove="cartRemove"/>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2">Totale</td>
-                            <td>€ {{ this.cartTotal }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <div class="cart" ref="cart">
+                    <h1>Carrello</h1>
+                    <table class="table my-4">
+                        <thead>
+                            <tr>
+                                <td>Prodotto</td>
+                                <td>Quantità</td>
+                                <td>Prezzo</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <cart-row
+                                v-for="product in this.$root.cart"
+                                :key="product.id"
+                                :idx="product.id"
+                                :title="product.title"
+                                :price="product.price"
+                                :quantity="product.quantity"
+                                @cart-update="cartUpdate"
+                                @cart-remove="cartRemove"/>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">Totale</td>
+                                <td>€ {{ this.cartTotal }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="spedizione" ref="shipping">
+                    <h1>Spedizione</h1>
+                    <table class="table my-4">
+                        <tbody>
+                            <cart-row
+                                v-for="product in this.$root.cart"
+                                :key="product.id"
+                                :idx="product.id"
+                                :title="product.title"
+                                :price="product.price"
+                                :quantity="product.quantity"
+                                @cart-update="cartUpdate"
+                                @cart-remove="cartRemove"/>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">Totale</td>
+                                <td>€ {{ this.cartTotal }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="btns">
-                    <a href="#" class="btn btn-primary">Procedi con il pagamento</a>
+                    <button class="btn btn-primary">
+                        Scegli la spedizione
+                    </button>
                     <router-link tag="a" class="btn btn-link" :to="{ path: '/vini' }" exact-active-class="active">
                         Continua con lo shopping
                     </router-link>

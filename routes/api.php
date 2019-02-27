@@ -66,6 +66,12 @@ Route::prefix('admin')->group(function() {
         Route::post('/city-destroy', 'Admin\ShopController@city_destroy');
     });
 
+    Route::prefix('shippings')->group(function() {
+        Route::get('/get-shippings', 'Admin\ShippingController@get_shippings');
+        Route::post('/save-shipping', 'Admin\ShippingController@save_shipping');
+        Route::post('/destroy', 'Admin\ShippingController@destroy');
+    });
+
     Route::prefix('settings')->group(function() {
         Route::get('/get-options', 'Admin\SettingController@get_options');
         Route::post('/save-section', 'Admin\SettingController@save_section');

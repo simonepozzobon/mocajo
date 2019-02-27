@@ -61,6 +61,11 @@
                         Gestione Ordini <span class="sr-only">(current)</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" @click="goTo($event, 'corrieri')">
+                        Corrieri <span class="sr-only">(current)</span>
+                    </a>
+                </li>
             </ul>
             <div class="divider"></div>
             <h5 class="text-light pl-3">Generali</h5>

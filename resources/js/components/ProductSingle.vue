@@ -17,7 +17,8 @@
                 :is-disabled="!product.is_active">
                 Download Scheda Tecnica
             </ui-action>
-            <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart">Acquista</button>
+            <button class="btn btn-outline-black add-to-cart" @click="addToCart" v-if="shop.active">Acquista</button>
+            <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart" v-else>Acquista</button>
         </ui-block>
         <ui-block
             class="custom-block"
@@ -44,6 +45,10 @@ export default {
     },
     props: {
         product: {
+            type: Object,
+            default: function() {}
+        },
+        shop: {
             type: Object,
             default: function() {}
         }
@@ -84,12 +89,17 @@ export default {
         handler: function(e) {
         },
         addToCart: function() {
-            this.$root.addToCart(this.product)
+            let shortenProduct = {
+                id: this.product.id,
+                title: this.product.title,
+                img: this.product.img,
+                icon: this.product.icon,
+                price: this.product.price,
+                quantity: 1 * this.shop.multiplier
+            }
+            this.$root.addToCart(shortenProduct)
         },
     },
-    mounted: function() {
-        console.log(this.product)
-    }
 }
 </script>
 

@@ -22,6 +22,10 @@ class MainController extends Controller
             $page = Page::find(1);
         }
 
+        if (!$page) {
+            $page = Page::find(1);
+        }
+        
         $seo = $page->seos()->first();
 
         if (!$seo) {
@@ -51,8 +55,6 @@ class MainController extends Controller
             case 7:
                 $seo->image = Utility::check_img($options[32]->value);
                 break;
-
-
             default:
                 $seo->image = Utility::check_img($options[1]->value);
                 break;
@@ -154,6 +156,11 @@ class MainController extends Controller
             'img' => Utility::check_img($options[24]->value),
         ];
 
+        $shop = [
+            'active' => $options[25]->value == 'true' ? true : false,
+            'multiplier' => $options[26]->value,
+        ];
+
         $menu = [
             'scuola' => $options[27]->value,
             'storia' => $options[28]->value,
@@ -169,6 +176,7 @@ class MainController extends Controller
 
         return [
             'menu' => $menu,
+            'shop' => $shop,
             'home' => $home,
             'scuola' => [
                 'header' => $headerScuola,

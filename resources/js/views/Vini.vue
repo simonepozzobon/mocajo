@@ -22,7 +22,8 @@
                 <product-single
                     v-for="(item, i) in this.products"
                     :key="item.id"
-                    :product="item"/>
+                    :product="item"
+                    :shop="shop"/>
             </div>
         </div>
         <div id="mobile-sidebar" ref="sidebarMobile" v-if="this.$root.isMobile">
@@ -69,7 +70,12 @@ export default {
             vini: {
                 title: null,
                 img: null,
-            }
+            },
+            shop: {
+                active: false,
+                multiplier: 1,
+            },
+            isActive: null,
         }
     },
     watch: {
@@ -84,12 +90,14 @@ export default {
             this.products = products
         },
         '$root.options': function(options) {
-            this.setContent(options.vini)
+            this.setContent(options.vini, options.shop)
         }
     },
     methods: {
-        setContent: function(section) {
+        setContent: function(section, shop) {
             this.vini = section
+            this.shop = shop
+            this.isActive = shop.active
         },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop
@@ -162,7 +170,7 @@ export default {
             this.products = this.$root.products
         }
         if (this.$root.options) {
-            this.setContent(this.$root.options.vini)
+            this.setContent(this.$root.options.vini, this.$root.options.shop)
         }
     }
 }
