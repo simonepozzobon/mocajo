@@ -104,14 +104,17 @@ class MainController extends Controller
             'mail' => $options[22]->value,
         ];
 
+        $vini = [
+            'title' => $options[23]->value,
+            'img' => Utility::check_img($options[24]->value),
+        ];
+
         $menu = [
             'scuola' => $options[27]->value,
             'storia' => $options[28]->value,
             'vini' => $options[29]->value,
             'contatti' => $options[30]->value,
         ];
-
-
 
         return [
             'menu' => $menu,
@@ -127,6 +130,7 @@ class MainController extends Controller
                 'scuola' => $scuola,
                 'images' => $imagesStoria,
             ],
+            'vini' => $vini,
             'contatti' => $contatti,
         ];
     }

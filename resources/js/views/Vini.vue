@@ -1,10 +1,10 @@
 <template lang="html">
     <div class="container-fluid vini-mocajo">
-        <div class="row">
+        <div class="row" v-if="this.vini.img">
             <ui-hero-banner
                 color="bg-dark"
-                title="ll nostro progetto:<br>produrre un ottimo Vino biologico"
-                imgSrc="/images/vini_new.jpg"/>
+                :title="this.vini.title"
+                :imgSrc="this.vini.img"/>
         </div>
         <div class="row">
             <div id="sidebar" class="col" v-if="!this.$root.isMobile && this.products">
@@ -66,6 +66,10 @@ export default {
             wines: Wines,
             isMobile: false,
             products: null,
+            vini: {
+                title: null,
+                img: null,
+            }
         }
     },
     watch: {
@@ -78,9 +82,15 @@ export default {
         },
         '$root.products': function(products) {
             this.products = products
+        },
+        '$root.options': function(options) {
+            this.setContent(options.vini)
         }
     },
     methods: {
+        setContent: function(section) {
+            this.vini = section
+        },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop
             if (this.$refs.sidebar) {
@@ -150,6 +160,9 @@ export default {
         // })
         if (this.$root.products) {
             this.products = this.$root.products
+        }
+        if (this.$root.options) {
+            this.setContent(this.$root.options.vini)
         }
     }
 }
