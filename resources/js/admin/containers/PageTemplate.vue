@@ -24,9 +24,9 @@ export default {
 @import '~styles/adminshared';
 
 .page-template {
-    padding-top: $spacer * 3.5;
+    padding-top: $spacer * 4.5;
     background-color: $dark;
-    @include gradient-directional($dark, $black, 135deg);
+    @include gradient-directional($gray-900, $black, 135deg);
     min-height: 100%;
 
     .page-template-container {

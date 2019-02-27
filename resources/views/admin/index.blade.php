@@ -15,7 +15,7 @@
             gtag('config', 'UA-134799170-1');
         </script>
     </head>
-    <body>
+    <body class="bg-black">
         <div id="admin">
             <main-template></main-template>
         </div>

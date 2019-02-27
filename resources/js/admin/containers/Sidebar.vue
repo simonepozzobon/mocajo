@@ -1,7 +1,6 @@
 <template lang="html">
     <nav class="col-md-2 d-none d-md-block sidebar admin-sidebar shadows">
         <div class="sidebar-sticky">
-            <div class="divider"></div>
             <h5 class="text-light pl-3">Pagine</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -83,10 +82,13 @@ export default {
 
 .admin-sidebar {
     min-height: 100vh;
-    padding-top: $spacer * 3.4;
     @include gradient-directional($dark, $black, 135deg);
     @include box-shadows($black);
     z-index: 1;
+
+    .sidebar-sticky {
+        padding-top: $spacer * 8.38;
+    }
 
     .divider {
         width: 10%;
