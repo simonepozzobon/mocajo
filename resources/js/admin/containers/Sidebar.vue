@@ -28,6 +28,11 @@
                         Contatti
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" @click="goTo($event, 'privacy')">
+                        Privacy
+                    </a>
+                </li>
             </ul>
             <div class="divider"></div>
             <h5 class="text-light pl-3">Vini</h5>

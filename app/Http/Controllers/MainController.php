@@ -48,6 +48,10 @@ class MainController extends Controller
             case 5:
                 $seo->image = Utility::check_img($options[24]->value);
                 break;
+            case 7:
+                $seo->image = Utility::check_img($options[32]->value);
+                break;
+
 
             default:
                 $seo->image = Utility::check_img($options[1]->value);
@@ -157,6 +161,12 @@ class MainController extends Controller
             'contatti' => $options[30]->value,
         ];
 
+        $privacy = [
+            'title' => $options[31]->value,
+            'img' => Utility::check_img($options[32]->value),
+            'txt' => $options[33]->value,
+        ];
+
         return [
             'menu' => $menu,
             'home' => $home,
@@ -173,6 +183,7 @@ class MainController extends Controller
             ],
             'vini' => $vini,
             'contatti' => $contatti,
+            'privacy' => $privacy,
         ];
     }
 }

@@ -45,6 +45,12 @@ Route::prefix('admin')->group(function() {
         Route::post('/save-section', 'Admin\ContactController@save_section');
     });
 
+    Route::prefix('privacy')->group(function() {
+        Route::get('/get-options', 'Admin\PrivacyController@get_options');
+        Route::post('/save-section', 'Admin\PrivacyController@save_section');
+    });
+
+
     Route::prefix('products')->group(function() {
         Route::get('/get-products', 'Admin\ProductController@get_products');
         Route::post('/save-product', 'Admin\ProductController@save_product');

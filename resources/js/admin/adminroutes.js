@@ -49,6 +49,11 @@ const routes = [
         name: 'settings',
         component: require('./views/Settings.vue')
     },
+    {
+        path: '/privacy',
+        name: 'privacy',
+        component: require('./views/Privacy.vue')
+    },
 ]
 
 export default routes

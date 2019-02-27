@@ -1,5 +1,5 @@
 <template lang="html">
-    <div id="home">
+    <div id="home" v-if="this.video">
         <video-bg
             :videoSrcMp4="this.video"
             ref="player">
