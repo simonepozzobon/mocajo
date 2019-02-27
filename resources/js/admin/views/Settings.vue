@@ -62,7 +62,7 @@ export default {
     },
     computed: {
         shopStatus: function() {
-            if (this.shop_active) {
+            if (this.shop.active) {
                 return 'Attivo'
             }
             return 'Disattivato'
