@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Seo;
+use App\Page;
 use App\Shop;
 use App\City;
 use App\Cookie;
@@ -14,6 +16,40 @@ use Illuminate\Support\Facades\Storage;
 class MainController extends Controller
 {
     public function index($slug = null) {
+        if ($slug) {
+            $page = Page::where('slug', $slug)->first();
+        } else {
+            $page = Page::find(1);
+        }
+
+        $seo = $page->seos()->first();
+        $seo->current_url = url()->current();
+
+        $options = Option::all();
+
+        switch ($page->id) {
+            case 1:
+                $seo->image = Utility::check_img($options[1]->value);
+                break;
+            case 2:
+                $seo->image = Utility::check_img($options[1]->value);
+                break;
+            case 3:
+                $seo->image = Utility::check_img($options[16]->value);
+                break;
+            case 4:
+                $seo->image = Utility::check_img($options[1]->value);
+                break;
+            case 5:
+                $seo->image = Utility::check_img($options[24]->value);
+                break;
+
+            default:
+                $seo->image = Utility::check_img($options[1]->value);
+                break;
+        }
+
+
         $cities = City::with('shops')->get();
         $options = Option::all();
         $options = $this->format_options($options);
@@ -29,7 +65,7 @@ class MainController extends Controller
 
         $products = json_encode($products);
 
-        return view('welcome', compact('cities', 'options', 'products'));
+        return view('welcome', compact('cities', 'options', 'products', 'seo'));
     }
 
     public function cookies_preferences(Request $request) {
