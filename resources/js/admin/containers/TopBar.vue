@@ -1,5 +1,5 @@
 <template lang="html">
-    <nav class="navbar navbar-light fixed-top flex-md-nowrap shadow admin-top-bar">
+    <nav class="navbar navbar-dark fixed-top flex-md-nowrap admin-top-bar">
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">
             <nav-logo width="40px" color="light" ref="logo" class="logo"/><span class="text"> - Admin Panel</span>
         </a>
@@ -27,14 +27,15 @@ export default {
 .admin-top-bar {
     padding-top: $spacer;
     padding-bottom: $spacer;
-    @include gradient-directional($gray-300, $gray-400, 179deg);
+    @include gradient-directional(darken(#343a40, 3), lighten(#0a0a0a, 2), 165deg);
     display: flex;
     align-items: baseline;
+    @include box-shadows($black);
 
     .navbar-brand {
         letter-spacing: 1px;
         font-variant: small-caps;
-        @include text-shadow($black);
+        @include text-shadow($white);
         -webkit-text-size-adjust: 100%;
         /* Font varient */
         font-variant-ligatures: none;
