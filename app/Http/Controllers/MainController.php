@@ -23,6 +23,11 @@ class MainController extends Controller
         }
 
         $seo = $page->seos()->first();
+
+        if (!$seo) {
+            $seo = Seo::first();
+        }
+
         $seo->current_url = url()->current();
 
         $options = Option::all();
