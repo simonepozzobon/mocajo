@@ -38,6 +38,7 @@ const app = new Vue({
             isMobile: false,
             options: null,
             products: null,
+            shippings: null,
         }
     },
     methods: {

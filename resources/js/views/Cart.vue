@@ -26,7 +26,7 @@
                         <tbody>
                             <tr>
                                 <td colspan="2">Totale</td>
-                                <td>€ {{ this.cartTotal }}</td>
+                                <td>€ {{ this.cartTotal.toFixed(2) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -34,28 +34,31 @@
                 <div class="spedizione" ref="shipping">
                     <h1>Spedizione</h1>
                     <table class="table my-4">
-                        <tbody>
-                            <cart-row
-                                v-for="product in this.$root.cart"
-                                :key="product.id"
-                                :idx="product.id"
-                                :title="product.title"
-                                :price="product.price"
-                                :quantity="product.quantity"
-                                @cart-update="cartUpdate"
-                                @cart-remove="cartRemove"/>
+                        <tbody
+                            v-for="item in this.shippings"
+                            :key="item.id">
+                            <td>
+                                {{ item.description }}
+                            </td>
+                            <td>
+                                O
+                            </td>
+                            <td>
+                                € {{ calculateShipping(item.price) }}
+                            </td>
                         </tbody>
                         <tbody>
                             <tr>
                                 <td colspan="2">Totale</td>
-                                <td>€ {{ this.cartTotal }}</td>
+                                <td>€ {{ parseFloat(this.shippingTotal).toFixed(2) }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
                 <div class="btns">
                     <button class="btn btn-primary">
-                        Scegli la spedizione
+                        Effettua il checkout
                     </button>
                     <router-link tag="a" class="btn btn-link" :to="{ path: '/vini' }" exact-active-class="active">
                         Continua con lo shopping
@@ -77,31 +80,55 @@ export default {
     data: function() {
         return {
             cartTotal: 0,
+            shippings: null,
+            shippingTotal: 0,
+            totalQuantity: 0,
         }
     },
     watch: {
         '$root.cart': function(cart) {
             this.updateTotal(cart)
+        },
+        '$root.shippings': function(shippings) {
+            this.shippings = shippings
+            this.updateShipping()
         }
     },
     methods: {
         updateTotal: function(cart) {
             let total = 0
+            this.totalQuantity = 0
             for (var i = 0; i < cart.length; i++) {
                 total = total + (cart[i].quantity * cart[i].price)
+                this.totalQuantity = this.totalQuantity + cart[i].quantity
             }
-            this.cartTotal = total.toFixed(2)
+            this.cartTotal = parseFloat(total)
+            this.updateShipping()
+
         },
         cartUpdate: function(product) {
             this.$root.cartUpdate(product)
         },
         cartRemove: function(idx) {
             this.$root.cartRemove(idx)
+        },
+        calculateShipping: function(price) {
+            return parseFloat(price * this.totalQuantity * this.shippings[0].increment).toFixed(2)
+        },
+        updateShipping: function() {
+            if (this.shippings) {
+                this.shippingTotal = this.cartTotal + (this.shippings[0].price * this.totalQuantity * this.shippings[0].increment)
+            }
         }
     },
     mounted: function() {
         if (this.$root.cart) {
             this.updateTotal(this.$root.cart)
+        }
+
+        if (this.$root.shippings) {
+            this.shippings = this.$root.shippings
+            this.updateShipping()
         }
     }
 }

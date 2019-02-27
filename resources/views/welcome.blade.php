@@ -34,7 +34,8 @@
             <main-template
                 cities="{{ $cities }}"
                 options="{{ $options }}"
-                products="{{ $products }}">
+                products="{{ $products }}"
+                shippings="{{ $shippings }}">
             </main-template>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>
