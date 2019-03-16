@@ -1,10 +1,17 @@
 <template lang="html">
-    <nav class="navbar navbar-dark navbar-expand-lg" ref="navbar" :class="this.navClass">
+    <nav
+        class="navbar navbar-dark navbar-expand-lg"
+        ref="navbar"
+        :class="this.navClass">
         <div class="d-flex mr-auto">
-            <a href="#" class="nav-link-item mr-4" data-hover="Scuola Mocajo" @click="goTo($event, 'cart')">
+            <!-- <a href="#" class="nav-link-item mr-4" data-hover="Scuola Mocajo" @click="goTo($event, 'cart')">
                 <cart-icon width="24px" color="#333" ref="icon"/>
-            </a>
-            <a href="#" class="nav-link-item d-flex align-items-center" @click="menuToggle" @mouseenter="hoverAnim">
+            </a> -->
+            <a
+                href="#"
+                class="nav-link-main nav-link-item d-flex align-items-center"
+                @click="menuToggle"
+                @mouseenter="hoverAnim">
                 <menu-anim
                     ref="menu"
                     size="48px"
@@ -56,7 +63,7 @@ export default {
         },
         '$route': function(to, from) {
             this.opened = true
-            this.menuToggle()
+            // this.menuToggle()
         }
     },
     methods: {
@@ -121,6 +128,10 @@ export default {
     .nav-link {
         font-weight: normal;
         letter-spacing: 1px;
+    }
+
+    .nav-link-main {
+        display: block;
     }
 
     .navbar-brand {

@@ -1,5 +1,9 @@
 <template lang="html">
-    <div id="menu-anim" ref="container" :style="'width: '+this.size+'; height: '+this.size+';'"></div>
+    <div
+        id="menu-anim"
+        ref="container"
+        :style="'width: '+this.size+'; height: '+this.size+';'">
+    </div>
 </template>
 
 <script>

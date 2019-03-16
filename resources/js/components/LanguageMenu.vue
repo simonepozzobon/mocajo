@@ -1,12 +1,12 @@
 <template lang="html">
-    <div class="language-menu" ref="menu">
+    <div class="language-menu" ref="container">
         <nav class="language-menu-navbar">
             <ul class="list-unstyled">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Ita</a>
+                    <a href="#" @click="setLocale($event, 'it')" class="nav-link">Ita</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Eng</a>
+                    <a href="#" @click="setLocale($event, 'en')" class="nav-link">Eng</a>
                 </li>
             </ul>
         </nav>
@@ -19,22 +19,30 @@ export default {
     watch: {
         '$route': function(route) {
             if (route.name != 'home') {
-                this.$refs.menu.style.display = 'none'
+                this.$refs.container.style.display = 'none'
                 return false
             }
-            this.$refs.menu.style.display = 'block'
+            this.$refs.container.style.display = 'block'
         },
         '$root.isMobile': function(value) {
             if (value) {
-                this.$refs.menu.style.top = '1rem'
+                this.$refs.container.style.top = '1rem'
             } else {
-                this.$refs.menu.style.top = '2.5rem'
+                this.$refs.container.style.top = '2.5rem'
             }
+        }
+    },
+    methods: {
+        setLocale: function(event, locale) {
+            event.preventDefault()
+            let name = this.$route.name
+            this.locale = locale
+            this.$router.push({name: name, params: {lang: locale}})
         }
     },
     mounted: function() {
         if (this.$route.name != 'home') {
-            this.$refs.menu.style.display = 'none'
+            this.$refs.container.style.display = 'none'
         }
     }
 }
@@ -47,7 +55,7 @@ export default {
     position: fixed;
     top: $spacer * 2.5;
     right: $spacer;
-    z-index: 9999;
+    z-index: 10000;
 
     nav {
         ul {
@@ -57,7 +65,7 @@ export default {
 
             li {
                 .nav-link  {
-                    color: $white;
+                    color: $black;
                     text-transform: uppercase;
                     cursor: pointer;
 
