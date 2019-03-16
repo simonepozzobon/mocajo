@@ -2,34 +2,34 @@
     <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" ref="menu">
         <ul class="navbar-nav m-auto">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/scuolamocajo' }" exact-active-class="active">
+                <a href="#" class="nav-link" @click="goTo($event, 'scuola')">
                     {{ this.menu.scuola }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/storia' }" exact-active-class="active">
+                <a href="#" class="nav-link" @click="goTo($event, 'storia')">
                     {{ this.menu.storia }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active">
+                <a href="#" class="nav-link" @click="goTo($event, '')">
                     <nav-logo width="80px" color="light" ref="logo"/>
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/vini' }" exact-active-class="active">
+                <a href="#" class="nav-link" @click="goTo($event, 'vini')">
                     {{ this.menu.vini }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active">
+                <a href="#" class="nav-link" @click="goTo($event, 'contatti')">
                     {{ this.menu.contatti }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item" v-if="hasCart">
-                <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }">
+                <a href="#" class="nav-link" @click="goTo($event, 'cart')">
                     <cart-icon width="24px" color="rgb(250, 200, 35)" ref="icon"/>
-                </router-link>
+                </a>
             </li>
         </ul>
     </nav>
@@ -104,6 +104,10 @@ export default {
         }
     },
     methods: {
+        goTo: function(event, name) {
+            event.preventDefault()
+            this.$router.push({name: name, params: {lang: this.$root.locale}})
+        },
         setOptions: function(section) {
             this.menu = section
         },

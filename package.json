@@ -29,6 +29,7 @@
         "vue-router": "^3.0.2"
     },
     "dependencies": {
+        "i18next": "^15.0.7",
         "lottie-web": "^5.4.3",
         "scrollmagic": "^2.0.6",
         "vue-awesome-swiper": "^3.1.3",

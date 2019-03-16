@@ -39,6 +39,7 @@ const app = new Vue({
             options: null,
             products: null,
             shippings: null,
+            locale: 'it',
         }
     },
     methods: {
@@ -95,6 +96,18 @@ const app = new Vue({
                 this.cart.push(product)
             }
             this.$cookie.set('mocajo-cart', JSON.stringify(this.cart))
+        },
+        checkLang: function(route) {
+            let language = 'it'
+            if (route.hasOwnProperty('params') && route.params.hasOwnProperty('lang')) {
+                console.log(route.params.lang, this.locale);
+                language = route.params.lang
+            }
+
+            if (language != this.locale) {
+                this.locale = language
+            }
+            return language
         }
     },
     mounted: function() {
@@ -107,5 +120,11 @@ const app = new Vue({
         if (cart) {
             this.cart = JSON.parse(cart)
         }
+
+        let lng = this.checkLang(this.$route)
+        this.$router.beforeEach((to, from, next) => {
+            lng = this.checkLang(to)
+            next()
+        })
     }
 }).$mount('#app')
