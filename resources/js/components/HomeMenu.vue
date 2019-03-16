@@ -2,24 +2,24 @@
     <div class="home-menu-container" ref="container">
         <ul class="list-unstyled">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Scuola Mocajo" :to="{ path: '/scuolamocajo' }" exact-active-class="active">
+                <a href="#" class="nav-link" data-hover="Scuola Mocajo" @click="goTo($event, 'scuola')">
                     {{ this.menu.scuola }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Storia" :to="{ path: '/storia' }" exact-active-class="active">
+                <a href="#" class="nav-link" data-hover="Storia" @click="goTo($event, 'storia')">
                     {{ this.menu.storia }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="I Nostri Vini" :to="{ path: '/vini' }" exact-active-class="active">
+                <a href="#" class="nav-link" data-hover="I Nostri Vini" @click="goTo($event, 'vini')">
                     {{ this.menu.vini }}
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Contatti" :to="{ path: '/contatti' }" exact-active-class="active">
+                <a href="#" class="nav-link" data-hover="Contatti" @click="goTo($event, 'contatti')">
                     {{ this.menu.contatti }}
-                </router-link>
+                </a>
             </li>
         </ul>
     </div>
@@ -46,7 +46,11 @@ export default {
     methods: {
         setOptions: function(section) {
             this.menu = section
-        }
+        },
+        goTo: function(event, name) {
+            event.preventDefault()
+            this.$router.push({name: name, params: {lang: this.$root.locale}})
+        },
     },
     mounted: function() {
         if (this.$root.options) {

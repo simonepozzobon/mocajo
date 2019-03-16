@@ -5,22 +5,22 @@
         </div>
         <ul class="list-unstyled" ref="menu">
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/scuolamocajo')">
+                <a href="#" class="nav-link" @click="goTo($event, 'scuola')">
                     {{ this.menu.scuola }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/storia')">
+                <a href="#" class="nav-link" @click="goTo($event, 'storia')">
                     {{ this.menu.storia }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/vini')">
+                <a href="#" class="nav-link" @click="goTo($event, 'vini')">
                     {{ this.menu.vini }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '/contatti')">
+                <a href="#" class="nav-link" @click="goTo($event, 'contatti')">
                     {{ this.menu.contatti }}
                 </a>
             </li>
@@ -76,13 +76,9 @@ export default {
         setOptions: function(section) {
             this.menu = section
         },
-        goTo: function(event, path) {
+        goTo: function(event, name) {
             event.preventDefault()
-            if (this.$route.path != path) {
-                this.$router.push(path)
-                return false
-            }
-            return false
+            this.$router.push({name: name, params: {lang: this.$root.locale}})
         },
         toggleMobile: function() {
             let container = this.$refs.container

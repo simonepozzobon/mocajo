@@ -12,7 +12,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, '')">
+                <a href="#" class="nav-link" @click="goTo($event, 'home')">
                     <nav-logo width="80px" color="light" ref="logo"/>
                 </a>
             </li>

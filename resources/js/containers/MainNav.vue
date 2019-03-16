@@ -1,9 +1,9 @@
 <template lang="html">
     <nav class="navbar navbar-dark navbar-expand-lg" ref="navbar" :class="this.navClass">
         <div class="d-flex mr-auto">
-            <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }" v-if="hasCart">
+            <a href="#" class="nav-link-item mr-4" data-hover="Scuola Mocajo" @click="goTo($event, 'cart')">
                 <cart-icon width="24px" color="#333" ref="icon"/>
-            </router-link>
+            </a>
             <a href="#" class="nav-link-item d-flex align-items-center" @click="menuToggle" @mouseenter="hoverAnim">
                 <menu-anim
                     ref="menu"
@@ -60,6 +60,10 @@ export default {
         }
     },
     methods: {
+        goTo: function(event, name) {
+            event.preventDefault()
+            this.$router.push({name: name, params: {lang: this.$root.locale}})
+        },
         hoverAnim: function() {
             this.$refs.menu.hoverAnim()
         },
