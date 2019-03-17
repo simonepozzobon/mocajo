@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="container-fluid vini-mocajo">
+    <div class="container-fluid vini-mocajo vini">
         <div class="row" v-if="this.vini.img">
             <ui-hero-banner
                 color="bg-dark"
@@ -18,7 +18,7 @@
                         @go-to="goTo"/>
                 </div>
             </div>
-            <div id="content" class="col">
+            <div id="content" class="col vini__products">
                 <product-single
                     v-for="(item, i) in this.products"
                     :key="item.id"
@@ -80,7 +80,8 @@ export default {
     },
     watch: {
         '$root.isMobile': function(value) {
-            if (value) {
+            if (value && this.$refs.sidebar) {
+                console.log(this.$refs.sidebar);
                 TweenMax.set(this.$refs.sidebar, {
                     display: 'none',
                 })
@@ -327,4 +328,9 @@ export default {
     }
 }
 
+.vini {
+    &__products {
+        padding-bottom: $spacer * 5;
+    }
+}
 </style>

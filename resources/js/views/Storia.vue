@@ -9,12 +9,12 @@
         <div class="row" v-if="this.scuolaSec">
             <ui-image-block
                 :isImage="true"
-                :animated="true"
+                :animated="animated"
                 :imgSrc="this.scuolaSec.img"
                 @animate-parent="animateStoria"/>
             <ui-block
                 ref="storia"
-                :animated="true"
+                :animated="animated"
                 color="bg-light">
                 <ui-title
                     :title="this.scuolaSec.title" />
@@ -63,6 +63,7 @@ export default {
             header: null,
             scuolaSec: null,
             images: null,
+            animated: true,
         }
     },
     watch: {
@@ -71,6 +72,12 @@ export default {
         },
         '$root.options': function(options) {
             this.setContent(options.storia)
+        },
+        '$root.isMobile': function(value) {
+            if (value) {
+                return this.animated = false
+            }
+            return this.animated = true
         }
     },
     methods: {

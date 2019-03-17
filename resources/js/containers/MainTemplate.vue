@@ -137,7 +137,6 @@ export default {
         },
         hasBigMenu: function() {
             // se siamo su mobile il menu big c'è sempre
-            console.log(this.$root.window.w);
             if (this.$root.window.w <= 576) {
                 this.bigMenu = true
                 this.isPage = true

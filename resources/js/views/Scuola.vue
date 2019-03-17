@@ -10,7 +10,7 @@
         <div class="row" v-if="this.project">
             <ui-block
                 color="bg-light"
-                :animated="true"
+                :animated="animated"
                 ref="progetto">
                 <ui-title :title="this.project.title"/>
                 <p v-html="this.project.txt"></p>
@@ -21,7 +21,7 @@
             </ui-block>
             <ui-image-block
                 :isImage="true"
-                :animated="true"
+                :animated="animated"
                 :direction="false"
                 @animate-parent="animateProgetto"
                 imgSrc="/images/il-nostro-progetto.jpg" />
@@ -30,12 +30,12 @@
         <div class="row" v-if="this.family">
             <ui-image-block
                 :isImage="true"
-                :animated="true"
+                :animated="animated"
                 @animate-parent="animateFamiglia"
                 :imgSrc="this.family.img" />
             <ui-block
                 ref="famiglia"
-                :animated="true"
+                :animated="animated"
                 color="bg-light">
                 <ui-title
                     :title="this.family.title" />
@@ -50,7 +50,7 @@
         <div class="row" v-if="this.agriturismo">
             <ui-block
                 ref="agriturismo"
-                :animated="true"
+                :animated="animated"
                 color="bg-light">
                 <ui-title
                     :title="this.agriturismo.title" />
@@ -62,7 +62,7 @@
             </ui-block>
             <ui-image-block
                 :isImage="true"
-                :animated="true"
+                :animated="animated"
                 @animate-parent="animateAgriturismo"
                 :imgSrc="this.agriturismo.img"
                 :direction="false"/>
@@ -96,11 +96,18 @@ export default {
             project: null,
             family: null,
             agriturismo: null,
+            animated: true,
         }
     },
     watch: {
         '$root.options': function(options) {
             this.setContent(options.scuola)
+        },
+        '$root.isMobile': function(value) {
+            if (value) {
+                return this.animated = false
+            }
+            return this.animated = true
         }
     },
     methods: {
@@ -121,7 +128,6 @@ export default {
         },
     },
     mounted: function() {
-        console.log(this.$root.options);
         if (this.$root.options) {
             this.setContent(this.$root.options.scuola)
         }

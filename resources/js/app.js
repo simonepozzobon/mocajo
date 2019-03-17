@@ -44,7 +44,6 @@ const app = new Vue({
     },
     watch: {
         options: function(opts) {
-            console.log(opts);
         }
     },
     methods: {
@@ -105,7 +104,7 @@ const app = new Vue({
         checkLang: function(route) {
             let language = 'it'
             if (route.hasOwnProperty('params') && route.params.hasOwnProperty('lang')) {
-                console.log(route.params.lang, this.locale);
+                // console.log(route.params.lang, this.locale);
                 language = route.params.lang
             }
 
