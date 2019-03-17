@@ -79,13 +79,16 @@ export default {
     },
     watch: {
         '$root.isMobile': function(isMobile) {
-            if (isMobile) {
-                this.isAnimated = false
-                this.animateIn()
-            }
+            this.setAnimationsMobile()
         }
     },
     methods: {
+        setAnimationsMobile: function() {
+            if (this.$root.isMobile) {
+                this.isAnimated = false
+                this.animateIn()
+            }
+        },
         setBackground: function() {
             if (this.imgSrc) {
                 this.$refs.block.style.backgroundImage = 'url('+this.imgSrc+')'
@@ -115,13 +118,13 @@ export default {
     mounted: function() {
         this.setBackground()
         this.isAnimated = this.animated
+        this.setAnimationsMobile()
         if (!this.animated) {
             this.animateIn()
         }
 
         if (this.minHeight && this.minHeightSize) {
             this.$refs.block.style.minHeight = this.minHeightSize
-            console.log(this.minHeightSize);
         }
     }
 }

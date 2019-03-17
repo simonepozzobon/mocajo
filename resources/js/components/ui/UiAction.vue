@@ -1,5 +1,9 @@
 <template lang="html">
-    <a href="#" class="block-action btn btn-link" :class="isDisabledClass" @click="goTo($event, url)">
+    <a :href="link"
+        :target="target"
+        class="block-action btn btn-link"
+        :class="isDisabledClass"
+        @click="goTo($event, url)">
         <slot></slot>
     </a>
 </template>
@@ -15,7 +19,11 @@ export default {
         isDisabled: {
             type: Boolean,
             default: false
-        }
+        },
+        target: {
+            type: String,
+            default: '_self'
+        },
     },
     computed: {
         isDisabledClass: function() {
@@ -23,16 +31,29 @@ export default {
                 return 'disabled'
             }
             return null
-        }
+        },
+        link: function() {
+            if (this.target == '_self') {
+                return '#'
+            }
+            return this.url
+        },
+        isExternal: function() {
+            if (this.target == '_self') {
+                return false
+            }
+            return true
+        },
     },
     methods: {
         goTo: function(event, name) {
-            event.preventDefault()
-            console.log(this.$route.name, name);
-            if (this.$route.name != name) {
-                console.log('ciao');
-                this.$router.push({name: name, params: {lang: this.$root.locale}})
+            if (!this.isExternal) {
+                event.preventDefault()
+                if (this.$route.name != name) {
+                    this.$router.push({name: name, params: {lang: this.$root.locale}})
+                }
             }
+
         }
     }
 }

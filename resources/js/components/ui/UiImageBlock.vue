@@ -46,13 +46,16 @@ export default {
     },
     watch: {
         '$root.isMobile': function(isMobile) {
-            if (isMobile) {
-                this.isAnimated = false
-                this.animateIn()
-            }
+            this.setAnimationsMobile()
         }
     },
     methods: {
+        setAnimationsMobile: function() {
+            if (this.$root.isMobile) {
+                this.isAnimated = false
+                this.animateIn()
+            }
+        },
         handler: function(e) {
             if (e.percentInView > 0) {
                 this.animateIn()
@@ -126,6 +129,7 @@ export default {
     mounted: function() {
         this.isAnimated = this.animated
         this.setBackground()
+        this.setAnimationsMobile()
     }
 }
 </script>

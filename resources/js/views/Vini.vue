@@ -29,6 +29,7 @@
                         <p class="vini-description-paragraph">{{ this.vini.txt }}</p>
                     </ui-block>
                     <ui-block
+                        class="d-none d-md-block"
                         :min-height="true"
                         minHeightSize="0">
                     </ui-block>
@@ -348,9 +349,9 @@ export default {
         font-weight: 200;
         font-size: $font-size-base;
     }
-    
+
     &__products {
-        padding-bottom: $spacer * 5;
+        padding-bottom: $spacer * 7;
     }
 }
 </style>

@@ -34,6 +34,8 @@
         </div>
         <div class="row" v-if="this.images">
             <ui-hero-banner
+                :no-overlay="true"
+                min-height-mobile="300px"
                 :imgSrc="this.images.img3" />
         </div>
     </div>
