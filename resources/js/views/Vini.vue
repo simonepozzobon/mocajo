@@ -19,6 +19,20 @@
                 </div>
             </div>
             <div id="content" class="col vini__products">
+                <div id="vini-description" class="row">
+                    <div id="vini-description-trigger"></div>
+                    <ui-block
+                        :min-height="true"
+                        minHeightSize="100px"
+                        color="bg-light"
+                        :disablePadding="false">
+                        <p class="vini-description-paragraph">{{ this.vini.txt }}</p>
+                    </ui-block>
+                    <ui-block
+                        :min-height="true"
+                        minHeightSize="0">
+                    </ui-block>
+                </div>
                 <product-single
                     v-for="(item, i) in this.products"
                     :key="item.id"
@@ -70,6 +84,7 @@ export default {
             vini: {
                 title: null,
                 img: null,
+                txt: null,
             },
             shop: {
                 active: false,
@@ -81,7 +96,6 @@ export default {
     watch: {
         '$root.isMobile': function(value) {
             if (value && this.$refs.sidebar) {
-                console.log(this.$refs.sidebar);
                 TweenMax.set(this.$refs.sidebar, {
                     display: 'none',
                 })
@@ -137,7 +151,6 @@ export default {
 
             this.resetClass().then( () => {
                 el = document.getElementById(name)
-                console.log(el)
                 topPosition = el.getBoundingClientRect().top
                 scrollYPos = topPosition + scrollOffset.y﻿
 
@@ -329,6 +342,13 @@ export default {
 }
 
 .vini {
+    .vini-description-paragraph {
+        margin-bottom: $spacer * 2;
+        letter-spacing: 2px;
+        font-weight: 200;
+        font-size: $font-size-base;
+    }
+    
     &__products {
         padding-bottom: $spacer * 5;
     }

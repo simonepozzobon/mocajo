@@ -41,7 +41,16 @@ export default {
         fullHeight: {
             type: Boolean,
             default: false,
-        }
+        },
+        minHeight: {
+            type: Boolean,
+            default: false,
+        },
+        minHeightSize: {
+            type: String,
+            default: null,
+        },
+
     },
     data: function() {
         return {
@@ -108,6 +117,11 @@ export default {
         this.isAnimated = this.animated
         if (!this.animated) {
             this.animateIn()
+        }
+
+        if (this.minHeight && this.minHeightSize) {
+            this.$refs.block.style.minHeight = this.minHeightSize
+            console.log(this.minHeightSize);
         }
     }
 }

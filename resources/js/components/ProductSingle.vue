@@ -5,6 +5,7 @@
             color="bg-light">
             <ui-title
                 :title="product.title"
+                tag="h1"
                 :is-disabled="!product.is_active"/>
             <ui-subtitle
                 :title="product.short_description"

@@ -1,5 +1,5 @@
 <template lang="html">
-    <a href="#" class="block-action btn btn-link" :class="isDisabledClass" @click="goTo($event, this.url)">
+    <a href="#" class="block-action btn btn-link" :class="isDisabledClass" @click="goTo($event, url)">
         <slot></slot>
     </a>
 </template>
@@ -26,13 +26,13 @@ export default {
         }
     },
     methods: {
-        goTo: function(event, path) {
+        goTo: function(event, name) {
             event.preventDefault()
-            if (this.$route.path != path) {
-                this.$router.push(this.url)
-                return false
+            console.log(this.$route.name, name);
+            if (this.$route.name != name) {
+                console.log('ciao');
+                this.$router.push({name: name, params: {lang: this.$root.locale}})
             }
-            return false
         }
     }
 }

@@ -97,7 +97,6 @@ export default {
             }
         },
         '$root.isPage': function(value) {
-            console.log('fuori');
             this.isPage = value
         },
         '$root.bigMenu': function(value) {
@@ -164,7 +163,6 @@ export default {
             done()
         },
         pageEnter: function(el, done) {
-            console.log('overlay enter');
             let menu = this.$refs.page
             if (menu.master) {
                 menu.delay = .3
@@ -174,7 +172,6 @@ export default {
             }
         },
         pageLeave: function(el, done) {
-            console.log('overlay leave', this.$root.isMobile);
             let menu = this.$refs.page
             if (menu.master) {
                 menu.master.eventCallback('onReverseComplete', () => {
@@ -228,6 +225,12 @@ export default {
                 })
 
                 master.play()
+
+                TweenLite.to(window, .2, {
+                    scrollTo: {
+                        y: 0
+                    }
+                })
             } else {
                 console.log('non ');
             }

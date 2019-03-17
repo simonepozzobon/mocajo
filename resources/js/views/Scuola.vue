@@ -15,7 +15,7 @@
                 <ui-title :title="this.project.title"/>
                 <p v-html="this.project.txt"></p>
                 <ui-action
-                    url="/storia">
+                    url="storia">
                     Scopri la storia
                 </ui-action>
             </ui-block>
@@ -41,7 +41,7 @@
                     :title="this.family.title" />
                 <p v-html="this.family.txt"></p>
                 <ui-action
-                    url="/i-nostri-vini">
+                    url="vini">
                     Scopri i nostri vini
                 </ui-action>
             </ui-block>
@@ -56,7 +56,7 @@
                     :title="this.agriturismo.title" />
                 <p v-html="this.agriturismo.txt"></p>
                 <ui-action
-                    url="/contatti">
+                    url="contatti">
                     Vai a contatti
                 </ui-action>
             </ui-block>

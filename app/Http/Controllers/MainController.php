@@ -161,6 +161,7 @@ class MainController extends Controller
 
         $vini = [
             'title' => $options[23]->value,
+            'txt' => $options[34]->value,
             'img' => Utility::check_img($options[24]->value),
         ];
 

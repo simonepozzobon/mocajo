@@ -82,7 +82,6 @@ export default {
         },
         setBg: function() {
             let el = this.$refs.navbar
-            console.log(this.isPage);
             if (this.isPage) {
                 TweenMax.fromTo(el, .6, {
                     backgroundColor: 'rgba(255, 255, 255, 0)',

@@ -1,7 +1,17 @@
 <template lang="html">
     <div>
-        <h2 class="ui-title" v-if="!this.isDisabled">{{ title }}</h2>
-        <h2 class="ui-title ui-title-disabled" v-else>{{ title }} <span>- Coming soon</span></h2>
+        <component
+            :is="tag"
+            class="ui-title"
+            v-if="!this.isDisabled">
+                {{ title }}
+        </component>
+        <component
+            :is="tag"
+            class="ui-title ui-title-disabled"
+            v-else>
+                {{ title }} <span>- Coming soon</span>
+        </component>
     </div>
 </template>
 
@@ -16,7 +26,11 @@ export default {
         isDisabled: {
             type: Boolean,
             default: false,
-        }
+        },
+        tag: {
+            type: String,
+            default: 'h2',
+        },
     },
 }
 </script>
@@ -28,6 +42,7 @@ export default {
     margin-bottom: $spacer * 2;
     text-transform: capitalize;
     letter-spacing: 2px;
+    font-size: $h2-font-size;
 
     &.ui-title-disabled {
         color: $gray-400;
