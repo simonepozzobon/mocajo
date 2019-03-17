@@ -2,34 +2,34 @@
     <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" ref="menu">
         <ul class="navbar-nav m-auto">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
-                    Scuola Mocajo
-                </router-link>
+                <a href="#" class="nav-link" @click="goTo($event, 'scuola')">
+                    {{ this.menu.scuola }}
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
-                    Storia
-                </router-link>
+                <a href="#" class="nav-link" @click="goTo($event, 'storia')">
+                    {{ this.menu.storia }}
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/' }" exact-active-class="active">
+                <a href="#" class="nav-link" @click="goTo($event, 'home')">
                     <nav-logo width="80px" color="light" ref="logo"/>
-                </router-link>
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
-                    I Nostri Vini
-                </router-link>
+                <a href="#" class="nav-link" @click="goTo($event, 'vini')">
+                    {{ this.menu.vini }}
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" :to="{ path: '/contatti' }" exact-active-class="active">
-                    Contatti
-                </router-link>
+                <a href="#" class="nav-link" @click="goTo($event, 'contatti')">
+                    {{ this.menu.contatti }}
+                </a>
             </li>
             <li class="nav-item" v-if="hasCart">
-                <router-link tag="a" class="nav-link-item mr-4" :to="{ path: '/carrello' }">
-                    <cart-icon width="24px" color="#333" ref="icon"/>
-                </router-link>
+                <a href="#" class="nav-link" @click="goTo($event, 'cart')">
+                    <cart-icon width="24px" color="rgb(250, 200, 35)" ref="icon"/>
+                </a>
             </li>
         </ul>
     </nav>
@@ -69,6 +69,15 @@ export default {
             lastScrollTop: 0,
             delta: 5,
             navbarHeight: 0,
+            menu: {
+                scuola: null,
+                storia: null,
+                vini: null,
+                contatti: null,
+            },
+            master: null,
+            delay: 0,
+            changeBgTimeline: null,
         }
     },
     watch: {
@@ -92,38 +101,97 @@ export default {
             }
             this.hasLogo = true
             this.menuClass = 'ml-auto'
+        },
+        '$root.options': function(options) {
+            this.setOptions(options.menu)
         }
     },
     methods: {
+        goTo: function(event, name) {
+            event.preventDefault()
+            this.$router.push({name: name, params: {lang: this.$root.locale}})
+        },
+        setOptions: function(section) {
+            this.menu = section
+        },
         init: function() {
-            let master = new TimelineMax({
-                paused: true,
+            if (!this.master) {
+                let el = this.$refs.menu
+                let links = el.getElementsByClassName('nav-item')
+
+                this.master = new TimelineMax({
+                    paused: true,
+                    yoyo: true,
+                })
+
+                this.changeBgTimeline = new TimelineMax({
+                    paused: true,
+                    yoyo: true,
+                })
+
+                this.changeBgTimeline.fromTo(el, .6, {
+                    backgroundColor: '#ffffff',
+                    ease: Sine.easeInOut,
+                }, {
+                    backgroundColor: '#000000',
+                    ease: Sine.easeInOut,
+                }, 0)
+
+                this.master.add(this.changeBgTimeline)
+
+                this.master.fromTo(el, .6, {
+                    opacity: 0,
+                    ease: Sine.easeInOut,
+                }, {
+                    opacity: 1,
+                    ease: Sine.easeInOut,
+                }, 0)
+
+                this.master.staggerFromTo(links, 1.2, {
+                    delay: .5,
+                    y: -100,
+                    autoAlpha: 0,
+                    ease: Power3.easeInOut,
+                }, {
+                    y: 0,
+                    autoAlpha: 1,
+                    ease: Power3.easeInOut,
+                }, .3, .3)
+
+                this.master.progress(1).progress(0)
+
+                this.master.eventCallback('onComplete', () => {
+                    this.addScrollListener()
+                    this.master.delay(0)
+                    this.$nextTick(() => {
+                        this.master.removeCallback('onComplete')
+                    })
+
+                })
+
+                this.$nextTick(() => {
+                    this.master.delay(this.delay).play()
+                })
+            }
+        },
+        addScrollListener: function() {
+            TweenLite.to(window, .2, {
+                scrollTo: 0
+            }).play()
+
+            $(window).scroll(() => {
+                this.didScroll = true
             })
 
-            master.staggerFrom('.nav-item', 1.2, {
-                delay: .5,
-                y: -100,
-                autoAlpha: 0,
-                ease: Power3.easeInOut,
-            }, .3)
-
-            master.play()
+            setInterval(() => {
+                if (this.didScroll) {
+                    this.hasScrolled()
+                    this.didScroll = false
+                }
+            }, 250)
         },
         hoverAnim: function() {
             this.$refs.menu.hoverAnim()
-        },
-        changeStatus: function(value) {
-            this.opened = value
-        },
-        menuToggle: function($event) {
-            $event.preventDefault()
-            if (this.opened) {
-                this.$emit('menu-close')
-                this.$refs.menu.close()
-            } else {
-                this.$emit('menu-open')
-                this.$refs.menu.open()
-            }
         },
         hasScrolled: function() {
             let st = $(window).scrollTop();
@@ -153,34 +221,28 @@ export default {
                         y: 0,
                     },
                     onComplete: () => {
-                        resolve()
                         console.log('completed')
+                        resolve()
                     }
                 })
             })
         }
     },
     mounted: function() {
-        this.init()
+        this.navbarHeight = $('#page-menu').outerHeight();
+        let el = this.$refs.menu
+        // TweenMax.set(el, {
+        //     y: -this.navbarHeight
+        // }, 0)
 
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.menu)
+        }
         this.$nextTick(() => {
-            TweenLite.to(window, .2, {
-                scrollTo: 0
-            }).play()
-
-            this.navbarHeight = $('#page-menu').outerHeight();
-
-            $(window).scroll(() => {
-                this.didScroll = true
-            })
-
-            setInterval(() => {
-                if (this.didScroll) {
-                    this.hasScrolled()
-                    this.didScroll = false
-                }
-            }, 250)
+            this.init()
         })
+
+
     },
 }
 </script>
@@ -197,7 +259,7 @@ export default {
     background-color: rgba($black, 1);
     z-index: 9999;
     padding-left: $spacer * 2;
-    transition: $transition-base;
+    // transition: $transition-base;
 
     .navbar-nav {
         align-items: center;
@@ -217,6 +279,9 @@ export default {
 
     &.nav-up {
         top: -$section-padding;
+        transition: $transition-base;
+    }
+    &.down {
         transition: $transition-base;
     }
 

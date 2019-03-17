@@ -8,6 +8,7 @@
 
 <script>
 import {TimelineMax} from 'gsap'
+import ScrollToPlugin from 'gsap/ScrollToPlugin'
 export default {
     name: 'CartIcon',
     props: {
@@ -31,7 +32,14 @@ export default {
                 autoAlpha: 1,
             })
 
-            master.to(this.$refs.item, .2, {
+            master.to(window, .2, {
+                scrollTo: 0
+            })
+
+            master.fromTo(this.$refs.item, .2, {
+                fill: '#666',
+                scale: 1,
+            },{
                 fill: 'rgb(250, 200, 35)',
                 scale: 0.7,
                 ease: Power2.easeInOut,

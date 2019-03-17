@@ -2,24 +2,24 @@
     <div class="home-menu-container" ref="container">
         <ul class="list-unstyled">
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Scuola Mocajo" :to="{ path: '/scuola-mocajo' }" exact-active-class="active">
-                    Scuola Mocajo
-                </router-link>
+                <a href="#" class="nav-link" data-hover="Scuola Mocajo" @click="goTo($event, 'scuola')">
+                    {{ this.menu.scuola }}
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Storia" :to="{ path: '/la-nostra-storia' }" exact-active-class="active">
-                    Storia
-                </router-link>
+                <a href="#" class="nav-link" data-hover="Storia" @click="goTo($event, 'storia')">
+                    {{ this.menu.storia }}
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="I Nostri Vini" :to="{ path: '/i-nostri-vini' }" exact-active-class="active">
-                    I Nostri Vini
-                </router-link>
+                <a href="#" class="nav-link" data-hover="I Nostri Vini" @click="goTo($event, 'vini')">
+                    {{ this.menu.vini }}
+                </a>
             </li>
             <li class="nav-item">
-                <router-link tag="a" class="nav-link" data-hover="Contatti" :to="{ path: '/contatti' }" exact-active-class="active">
-                    Contatti
-                </router-link>
+                <a href="#" class="nav-link" data-hover="Contatti" @click="goTo($event, 'contatti')">
+                    {{ this.menu.contatti }}
+                </a>
             </li>
         </ul>
     </div>
@@ -27,7 +27,37 @@
 
 <script>
 export default {
-    name: 'HomeMenu'
+    name: 'HomeMenu',
+    watch: {
+        '$root.options': function(options) {
+            this.setOptions(options.menu)
+        }
+    },
+    data: function() {
+        return {
+            menu: {
+                scuola: null,
+                storia: null,
+                vini: null,
+                contatti: null,
+            }
+        }
+    },
+    methods: {
+        setOptions: function(section) {
+            this.menu = section
+        },
+        goTo: function(event, name) {
+            event.preventDefault()
+            this.$router.push({name: name, params: {lang: this.$root.locale}})
+        },
+    },
+    mounted: function() {
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.menu)
+        }
+
+    }
 }
 </script>
 

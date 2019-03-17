@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="col-md-6 ui-block" :class="color + ' ' + alignClass + ' ' + noPaddingClass" ref="block">
+    <div :class="size + ' ui-block ' + color + ' ' + alignClass + ' ' + noPaddingClass + ' ' + isFullHeight" ref="block">
         <div class="ui-block-container" ref="container">
             <slot></slot>
         </div>
@@ -20,7 +20,7 @@ export default {
         },
         animated: {
             type: Boolean,
-            default: false, // true -> anima da sinistra verso destra
+            default: false,
         },
         direction: {
             type: Boolean,
@@ -33,7 +33,24 @@ export default {
         disablePadding: {
             type: Boolean,
             default: false,
-        }
+        },
+        size: {
+            type: String,
+            default: 'col-md-6'
+        },
+        fullHeight: {
+            type: Boolean,
+            default: false,
+        },
+        minHeight: {
+            type: Boolean,
+            default: false,
+        },
+        minHeightSize: {
+            type: String,
+            default: null,
+        },
+
     },
     data: function() {
         return {
@@ -52,17 +69,26 @@ export default {
                 return 'ui-block-no-padding'
             }
             return null
+        },
+        isFullHeight: function() {
+            if (this.fullHeight) {
+                return 'ui-block-full-height'
+            }
+            return null
         }
     },
     watch: {
         '$root.isMobile': function(isMobile) {
-            if (isMobile) {
-                this.isAnimated = false
-                this.animateIn()
-            }
+            this.setAnimationsMobile()
         }
     },
     methods: {
+        setAnimationsMobile: function() {
+            if (this.$root.isMobile) {
+                this.isAnimated = false
+                this.animateIn()
+            }
+        },
         setBackground: function() {
             if (this.imgSrc) {
                 this.$refs.block.style.backgroundImage = 'url('+this.imgSrc+')'
@@ -92,8 +118,13 @@ export default {
     mounted: function() {
         this.setBackground()
         this.isAnimated = this.animated
+        this.setAnimationsMobile()
         if (!this.animated) {
             this.animateIn()
+        }
+
+        if (this.minHeight && this.minHeightSize) {
+            this.$refs.block.style.minHeight = this.minHeightSize
         }
     }
 }
@@ -131,6 +162,10 @@ export default {
         }
     }
 
+    @include media-breakpoint-down('sm') {
+        min-height: auto !important;
+    };
+
     .ui-block-container {
         opacity: 0;
         padding-right: 9.4%;
@@ -145,6 +180,14 @@ export default {
 
     &.ui-block-align-top {
         align-items: flex-start !important;
+    }
+
+    &.ui-block-full-height {
+        min-height: calc(100vh - 130px) !important;
+
+        @include media-breakpoint-down('sm') {
+            min-height: calc(100vh - 90px) !important;
+        }
     }
 }
 </style>

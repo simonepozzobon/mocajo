@@ -1,5 +1,9 @@
 <template lang="html">
-    <div id="menu-anim" ref="container" :style="'width: '+this.size+'; height: '+this.size+';'"></div>
+    <div
+        id="menu-anim"
+        ref="container"
+        :style="'width: '+this.size+'; height: '+this.size+';'">
+    </div>
 </template>
 
 <script>
@@ -30,6 +34,7 @@ export default {
             opened: false,
             data: null,
             hovering: false,
+            status: false,
         }
     },
     watch: {
@@ -40,31 +45,33 @@ export default {
     },
     methods: {
         hoverAnim: function() {
-            if (!this.hovering && !this.opened) {
-                this.hovering = true
+            if (!this.hovering && !this.status) {
                 this.anim.playSegments([0, 76], true)
+                this.anim.addEventListener('enterFrame', e => {
+                    if (e.currentTime > 0) {
+                        this.hovering = true
+                        this.anim.removeEventListener('enterFrame')
+                    }
+                })
                 this.anim.addEventListener('complete', () => {
                     this.hovering = false
+                    this.anim.removeEventListener('complete')
                 })
             }
         },
         open: function() {
             this.anim.playSegments([76, 124], true)
-            this.anim.addEventListener('complete', () => {
-                this.opened = true
-            })
         },
         close: function() {
             this.anim.playSegments([125, 175], true)
-            this.anim.addEventListener('complete', () => {
-                this.opened = false
-            })
         },
-        getData: function() {
-            axios.get('/js/animations/Menu.json').then(response => {
-                this.data = response.data
-                this.init()
-            })
+        toggle: function() {
+            if (this.status) {
+                this.status = false
+                return this.close()
+            }
+            this.status = true
+            return this.open()
         },
         init: function() {
             this.anim = lottie.loadAnimation({
@@ -86,7 +93,7 @@ export default {
             this.split = this.duration / 2
             this.anim.setSpeed(this.speed)
             this.anim.pause()
-            this.loaded = true
+            return this.loaded = true
         }
     },
     mounted: function() {

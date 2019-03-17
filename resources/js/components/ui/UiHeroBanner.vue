@@ -1,5 +1,9 @@
 <template lang="html">
-    <div class="col-12 ui-hero-banner" :class="color" ref="block">
+    <div
+        ref="block"
+        class="col-12 ui-hero-banner"
+        :class="color +' '+ overlayClass">
+
         <div class="ui-hero-banner-overlay" ref="overlay"></div>
         <h1 class="ui-hero-banner-title text-white text-center" ref="title" v-html="title"></h1>
         <slot></slot>
@@ -25,9 +29,39 @@ export default {
         animated: {
             type: Boolean,
             default: true,
+        },
+        noOverlay: {
+            type: Boolean,
+            default: false,
+        },
+        minHeight: {
+            type: String,
+            default: null,
+        },
+        minHeightMobile: {
+            type: String,
+            default: null,
+        },
+    },
+    computed: {
+        overlayClass: function() {
+            if (this.noOverlay) {
+                return 'no-overlay'
+            }
+            return null
+        }
+    },
+    watch: {
+        '$root.window': function(w) {
+            this.setHeight()
         }
     },
     methods: {
+        setHeight: function() {
+            if (this.minHeightMobile && this.$root.isMobile) {
+                this.$refs.block.style.minHeight = this.minHeightMobile
+            }
+        },
         setBackground: function() {
             if (this.imgSrc) {
                 this.$refs.block.style.backgroundImage = 'url('+this.imgSrc+')'
@@ -61,6 +95,7 @@ export default {
         }
     },
     mounted: function() {
+        this.setHeight()
         this.setBackground()
         this.animateIn()
     }
@@ -87,6 +122,17 @@ export default {
         left: 0;
         top: 0;
         background-color: $black;
+    }
+
+    &.no-overlay {
+
+        .ui-hero-banner-overlay {
+            display: none;
+        }
+
+        .ui-hero-banner-title {
+            display: none;
+        }
     }
 
     .ui-hero-banner-title {

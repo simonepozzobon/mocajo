@@ -1,6 +1,8 @@
 <template lang="html">
     <ui-block
         ref="mapContainer"
+        class="contact-map-custom"
+        :full-height="true"
         :disable-padding="true">
         <div class="contact-map-multiselect">
             <multiselect
@@ -99,12 +101,17 @@ export default {
         }
     },
     mounted: function() {
+        this.setMapHeight()
     }
 }
 </script>
 
 <style lang="scss">
 @import '~styles/shared';
+
+.contact-map-custom {
+    margin: $spacer * 2;
+}
 
 .contact-map-multiselect {
     position: absolute;

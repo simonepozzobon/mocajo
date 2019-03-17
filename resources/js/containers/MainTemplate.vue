@@ -1,30 +1,48 @@
 <template lang="html">
     <div>
-        <main-nav
-            ref="mainNav"
-            :navClass="navClass"
-            @menu-open="menuOpen"
-            @menu-close="menuClose"
-            v-if="this.bigMenu == true"/>
+        <transition
+            name="mobile"
+            mode="out-in"
+            @enter="mobileEnter"
+            @leave="mobileLeave">
+            <main-nav
+                ref="burger"
+                :is-page="this.isPage"
+                v-if="this.bigMenu == true"
+                @toggle="toggle"/>
+        </transition>
 
-        <page-menu
-            :navClass="navClass"
-            @menu-open="menuOpen"
-            @menu-close="menuClose"
-            v-else-if="this.bigMenu == false"/>
 
-        <menu-overlay
-            ref="menu"/>
+        <transition
+            name="page"
+            mode="out-in"
+            @enter="pageEnter"
+            @leave="pageLeave">
+            <page-menu
+                ref="page"
+                :navClass="navClass"
+                v-if="this.bigMenu == false"/>
+        </transition>
+
+        <transition
+            name="overlay"
+            mode="out-in"
+            @enter="overlayEnter"
+            @leave="overlayLeave">
+                <menu-overlay
+                ref="overlay"
+                v-if="this.bigMenu == true"
+                @main-click="mainClick"/>
+        </transition>
 
         <main ref="main">
             <transition
                 mode="out-in"
-                name="fade"
                 @enter="enter"
                 @leave="leave"
                 @after-enter="afterEnter"
                 @after-leave="afterLeave">
-                <router-view></router-view>
+                <router-view v-bind:key="$route.fullPath"></router-view>
             </transition>
         </main>
 
@@ -53,7 +71,19 @@ export default {
         cities: {
             type: String,
             default: null,
-        }
+        },
+        options: {
+            type: String,
+            default: null,
+        },
+        products: {
+            type: String,
+            default: null,
+        },
+        shippings: {
+            type: String,
+            default: null,
+        },
     },
     watch: {
         '$root.navbar': function(color) {
@@ -66,20 +96,35 @@ export default {
                     break;
             }
         },
-        '$root.window': function(value) {
-            this.hasBigMenu()
+        '$root.isPage': function(value) {
+            this.isPage = value
         },
-        '$route.path': function(route) {
-            if (this.navClass) {
-                this.$refs.mainNav.changeStatus(false)
-            }
-            this.hasBigMenu()
+        '$root.bigMenu': function(value) {
+            this.bigMenu = value
         }
     },
     computed: {
         parsedCities: function() {
             if (this.cities) {
                 return JSON.parse(this.cities)
+            }
+            return []
+        },
+        parsedOptions: function() {
+            if (this.options) {
+                return JSON.parse(this.options)
+            }
+            return []
+        },
+        parsedProducts: function() {
+            if (this.products) {
+                return JSON.parse(this.products)
+            }
+            return []
+        },
+        parsedShippings: function() {
+            if (this.shippings) {
+                return JSON.parse(this.shippings)
             }
             return []
         },
@@ -90,71 +135,141 @@ export default {
             cache: null,
             navClass: null,
             menuSwitch: null,
+            isPage: true,
+            mobileMenuTransition: false,
+            status: false,
+            temp: null,
         }
     },
     methods: {
+        overlayEnter: function(el, done) {
+            done()
+        },
+        overlayLeave: function(el, done) {
+            let menu = this.$refs.overlay
+            if (menu.master) {
+                menu.master.eventCallback('onReverseComplete', () => {
+                    done()
+                })
+                menu.master.reverse()
+            } else {
+                done()
+            }
+        },
+        mobileEnter: function(el, done) {
+            done()
+        },
+        mobileLeave: function(el, done) {
+            done()
+        },
+        pageEnter: function(el, done) {
+            let menu = this.$refs.page
+            if (menu.master) {
+                menu.delay = .3
+                done()
+            } else {
+                done()
+            }
+        },
+        pageLeave: function(el, done) {
+            let menu = this.$refs.page
+            if (menu.master) {
+                menu.master.eventCallback('onReverseComplete', () => {
+                    done()
+                })
+
+                let speed = 3
+                if (this.$root.isMobile) {
+                    speed = 10
+                }
+
+                menu.master.timeScale(speed).reverse()
+            } else {
+                done()
+            }
+        },
+        mainClick: function(name, master = false){
+            this.toggle()
+            this.$nextTick(() => {
+                this.$router.push({name: name, params: {lang: this.$root.locale}})
+            })
+        },
+        toggle: function() {
+            this.$refs.burger.toggle()
+            this.$refs.overlay.toggle()
+        },
         afterEnter: function() {
             // console.log('after-enter')
             // this.$root.$emit('page-loaded')
         },
-        init: function() {
-        },
-        hasBigMenu: function() {
-            // se siamo su mobile il menu big c'è sempre
-            if (this.$root.window.w <= 576) {
-                this.bigMenu = true
-                this.navClass = 'bg-black'
-            } else if (this.$route.name === 'home') {
-                this.bigMenu = true
-                this.navClass = null
-            } else {
-                this.bigMenu = false
-                this.navClass = null
-            }
-        },
-        menuOpen: function() {
-            this.$refs.menu.toggleMobile()
-        },
-        menuClose: function() {
-            this.$refs.menu.toggleMobile()
-        },
         enter: function(el, done) {
             // console.log('entrato', el, document.body.contains(el))
+
             if (document.body.contains(el)) {
-                let master = new TimelineMax()
+                let master = new TimelineMax({
+                    paused: true,
+                })
+
                 master.fromTo(el, .4, {
                     autoAlpha: 0,
                 }, {
                     autoAlpha: 1,
                 })
 
+                master.progress(1).progress(0)
+
                 master.eventCallback('onComplete', () => {
+                    master.kill()
+                    master = null
                     done()
                 })
+
+                master.play()
+
+                TweenLite.to(window, .2, {
+                    scrollTo: {
+                        y: 0
+                    }
+                })
+            } else {
+                console.log('non ');
             }
         },
+        beforeLeave: function(el, done) {
+            // console.log('before-leave',el, done);
+        },
         afterLeave: function(el) {
-
+            // console.log('after-leave')
         },
         leave: function(el, done) {
             // console.log('leave', el,document.body.contains(el))
-            let master = new TimelineMax()
+            let master = new TimelineMax({
+                paused: true,
+            })
             master.fromTo(el, .4, {
                 autoAlpha: 1,
             }, {
                 autoAlpha: 0,
             })
 
+            // master.progress(1).progress(0)
+
             master.eventCallback('onComplete', () => {
+                // console.log('terminata la transizione');
+                master.kill()
+                master = null
                 done()
             })
 
+            master.play()
+            // done()
         }
     },
     mounted: function() {
-        this.init()
-        this.hasBigMenu()
         this.$root.cities = this.parsedCities
+        this.$root.options = this.parsedOptions
+        this.$root.products = this.parsedProducts
+        this.$root.shippings = this.parsedShippings
     }
 }
 </script>

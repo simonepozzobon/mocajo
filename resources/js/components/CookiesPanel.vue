@@ -2,11 +2,10 @@
     <div class="cookies-policy container-fluid" ref="panel">
         <div class="cookies-policy-content">
             <p>
-                Informiamo che in questo sito sono utilizzati "cookies tecnici" necessari per ottimizzare la navigazione, ma anche "cookies di terze parti".
-                <br>
-                Puoi avere maggiori dettagli e bloccare l'uso di tutti o solo di alcuni cookies, visionando l'informativa estesa <a href="#">Clicca qui</a>.
-                <br>
-                Se invece prosegui con la navigazione sul presente sito, è implicito che esprimi il consenso all'uso dei suddetti cookies.
+              Informiamo che in questo sito sono utilizzati cookie tecnici e di terze parti, necessari per ottimizzare la navigazione.<br>
+              Per avere maggiori dettagli e visionare l'informativa estesa,
+              <a href="#" @click="goTo($event, '/privacy')">clicca qui</a>.<br>
+              Se invece prosegui con la navigazione, è implicito che esprimi il consenso all'utilizzo dei suddetti cookie.<br>
             </p>
             <button class="btn btn-outline-primary" @click="cookieAccepted">
                 Accetto
@@ -28,6 +27,14 @@ export default {
         }
     },
     methods: {
+        goTo: function(event, path) {
+            event.preventDefault()
+            if (this.$route.path != path) {
+                this.$router.push(path)
+                return false
+            }
+            return false
+        },
         showPanel: function() {
             let master = new TimelineMax({
                 paused: true

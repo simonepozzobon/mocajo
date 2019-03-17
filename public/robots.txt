@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Disallow: /it/carrello
+Disallow: /en/carrello
+Disallow: /it/cart
+Disallow: /en/cart
+Disallow: /it/checkout
+Disallow: /en/checkout
+Disallow: /admin

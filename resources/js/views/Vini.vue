@@ -1,109 +1,54 @@
 <template lang="html">
-    <div class="container-fluid vini-mocajo">
-        <div class="row">
+    <div class="container-fluid vini-mocajo vini">
+        <div class="row" v-if="this.vini.img">
             <ui-hero-banner
                 color="bg-dark"
-                title="ll nostro progetto:<br>produrre un ottimo Vino biologico"
-                imgSrc="/images/vini.jpg"/>
+                :title="this.vini.title"
+                :imgSrc="this.vini.img"/>
         </div>
         <div class="row">
-            <div id="sidebar" class="col" v-if="!this.$root.isMobile">
+            <div id="sidebar" class="col" v-if="!this.$root.isMobile && this.products">
                 <div class="sidebar-container" ref="sidebar">
-                    <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
-                        S
-                    </div>
-                    <div id="soffio-menu" class="product-menu bg-red" @click="goTo(2)">
-                        S
-                    </div>
-                    <div id="saputo-menu" class="product-menu bg-yellow" @click="goTo(3)">
-                        S
-                    </div>
+                    <product-menu-icon
+                        v-for="(item, i) in this.products"
+                        :key="item.id"
+                        :idx="item.id"
+                        :title="item.title"
+                        :svg-src="item.icon"
+                        @go-to="goTo"/>
                 </div>
             </div>
-            <div id="content" class="col">
-                <div id="sette" class="row" v-view="handler">
-                    <div id="sette-trigger"></div>
+            <div id="content" class="col vini__products">
+                <div id="vini-description" class="row">
+                    <div id="vini-description-trigger"></div>
                     <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Sette"/>
-                        <ui-subtitle
-                            title="dedicato alla nostra famiglia, all’amore, alla forza del lavoro in team e alla passione per il vino."/>
-                        <ui-collapse :elements="this.wines"/>
-                        <ui-action
-                            url="/i-nostri-vini">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(19.00)">Acquista</button>
+                        :min-height="true"
+                        minHeightSize="100px"
+                        color="bg-light"
+                        :disablePadding="false">
+                        <p class="vini-description-paragraph">{{ this.vini.txt }}</p>
                     </ui-block>
                     <ui-block
-                        class="custom-block"
-                        flex-align="top">
-                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
+                        class="d-none d-md-block"
+                        :min-height="true"
+                        minHeightSize="0">
                     </ui-block>
                 </div>
-                <div id="soffio" class="row" v-view="handler">
-                    <div id="soffio-trigger"></div>
-                    <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Soffio"
-                            :is-disabled="true"/>
-                        <ui-subtitle
-                            title="Il vento è uno dei tanti elementi che caratterizzano l’area e che rendono questo vino fresco e perfetto per qualsiasi occasione."
-                            :is-disabled="true"/>
-                        <ui-collapse
-                            :elements="this.wines"
-                            :is-disabled="true"/>
-                        <ui-action
-                            url="/i-nostri-vini">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(14.00)">Acquista</button>
-                    </ui-block>
-                    <ui-block
-                        class="custom-block"
-                        flex-align="top">
-                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
-                    </ui-block>
-                </div>
-                <div id="saputo" class="row" v-view="handler">
-                    <div id="saputo-trigger"></div>
-                    <ui-block
-                        color="bg-light">
-                        <ui-title
-                            title="Saputo"
-                            :is-disabled="true"/>
-                        <ui-subtitle
-                            title="Sofisticatezza, Sontuosità e Sapere raccolti tutti insieme."
-                            :is-disabled="true"/>
-                        <ui-collapse
-                            :elements="this.wines"
-                            :is-disabled="true"/>
-                        <ui-action
-                            url="/i-nostri-vini">
-                            Download Scheda Tecnica
-                        </ui-action>
-                        <button class="btn btn-outline-black add-to-cart" @click="addToCart(12.00)">Acquista</button>
-                    </ui-block>
-                    <ui-block
-                        class="custom-block"
-                        flex-align="top">
-                            <img src="/images/wine-placeholder.jpeg" class="img-fluid"/>
-                    </ui-block>
-                </div>
+                <product-single
+                    v-for="(item, i) in this.products"
+                    :key="item.id"
+                    :product="item"
+                    :shop="shop"/>
             </div>
         </div>
         <div id="mobile-sidebar" ref="sidebarMobile" v-if="this.$root.isMobile">
-            <div id="sette-menu" class="product-menu bg-blue active" @click="goTo(1)">
-                S
-            </div>
-            <div id="soffio-menu" class="product-menu bg-red" @click="goTo(2)">
-                S
-            </div>
-            <div id="saputo-menu" class="product-menu bg-yellow" @click="goTo(3)">
-                S
-            </div>
+            <product-menu-icon
+                v-for="(item, i) in this.products"
+                :key="item.id"
+                :idx="item.id"
+                :title="item.title"
+                :svg-src="item.icon"
+                @go-to="goTo"/>
         </div>
     </div>
 </template>
@@ -112,10 +57,14 @@
 import Wines from '../dummies/wines'
 import {TimelineMax} from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
+import ProductMenuIcon from '../components/ProductMenuIcon.vue'
+import ProductSingle from '../components/ProductSingle.vue'
 import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiSubtitle, UiTitle } from '../components/ui'
 export default {
     name: 'Vini',
     components: {
+        ProductMenuIcon,
+        ProductSingle,
         UiAction,
         UiBlock,
         UiCollapse,
@@ -132,64 +81,39 @@ export default {
             },
             wines: Wines,
             isMobile: false,
+            products: null,
+            vini: {
+                title: null,
+                img: null,
+                txt: null,
+            },
+            shop: {
+                active: false,
+                multiplier: 1,
+            },
+            isActive: null,
         }
     },
     watch: {
         '$root.isMobile': function(value) {
-            if (value) {
+            if (value && this.$refs.sidebar) {
                 TweenMax.set(this.$refs.sidebar, {
                     display: 'none',
                 })
             }
+        },
+        '$root.products': function(products) {
+            this.products = products
+        },
+        '$root.options': function(options) {
+            this.setContent(options.vini, options.shop)
         }
     },
     methods: {
-        handler: function(e) {
-            let name = e.target.element.id
-            if (e.percentCenter > 0.5 && e.percentCenter < 0.7) {
-                if (!this.cache[name]) {
-                    TweenMax.to('#'+name+'-menu', .6, {
-                        className: '+=active',
-                        onComplete: () => {
-                            this.cache[name] = true
-                        }
-                    })
-                }
-            } else if (e.type == 'exit') {
-                TweenMax.to('#'+name+'-menu', .2, {
-                    className: '-=active',
-                    onComplete: () => {
-                        this.cache[name] = false
-                    }
-                })
-            }
-        },
-        addToCart: function(price) {
-            price = price.toFixed(2)
-            let product = null
-            if (price == 12.00 || price == 12 || price == '12.00') {
-                product = {
-                    id: 2,
-                    title: 'Ligia',
-                    quantity: 1,
-                    price: 12.00
-                }
-            } else if (price == 19.00 || price == 19 || price == '19.00') {
-                product = {
-                    id: 1,
-                    title: 'Mocajo',
-                    quantity: 1,
-                    price: 19.00
-                }
-            } else if (price == 14.00 || price == 14 || price == '14.00') {
-                product = {
-                    id: 3,
-                    title: 'Ignis',
-                    quantity: 1,
-                    price: 14.00
-                }
-            }
-            this.$root.addToCart(product)
+        setContent: function(section, shop) {
+            this.vini = section
+            this.shop = shop
+            this.isActive = shop.active
         },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop
@@ -212,7 +136,7 @@ export default {
         },
         resetClass: function() {
             return new Promise(resolve => {
-                TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu'], .2, {
+                TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu', '#stello-menu'], .2, {
                     className: '-=active',
                     onComplete: () => {
                         resolve()
@@ -220,34 +144,16 @@ export default {
                 })
             })
         },
-        goTo: function(id) {
-            let name = '',
-            el,
+        goTo: function(name) {
+            let el,
             scrollYPos = 0,
             topPosition = 0,
             scrollOffset = this.getScrollY()
 
             this.resetClass().then( () => {
-                switch (id) {
-                    case 1:
-                        name = 'sette'
-                        el = document.getElementById('sette')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                    case 2:
-                        name = 'soffio'
-                        el = document.getElementById('soffio')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                    case 3:
-                        name = 'saputo'
-                        el = document.getElementById('saputo')
-                        topPosition = el.getBoundingClientRect().top
-                        scrollYPos = topPosition + scrollOffset.y﻿
-                        break;
-                }
+                el = document.getElementById(name)
+                topPosition = el.getBoundingClientRect().top
+                scrollYPos = topPosition + scrollOffset.y﻿
 
                 let master = new TimelineMax({
                     paused: true,
@@ -272,9 +178,15 @@ export default {
         }
     },
     mounted: function() {
-        window.addEventListener('scroll', (e) => {
-            this.setMenuOnCenter(e)
-        })
+        // window.addEventListener('scroll', (e) => {
+        //     this.setMenuOnCenter(e)
+        // })
+        if (this.$root.products) {
+            this.products = this.$root.products
+        }
+        if (this.$root.options) {
+            this.setContent(this.$root.options.vini, this.$root.options.shop)
+        }
     }
 }
 </script>
@@ -326,16 +238,25 @@ export default {
                 color: $red;
             }
         }
+
+        .product-img {
+            width: 100%;
+        }
     }
 }
 
 #sidebar {
-    max-width: $spacer * 6;
-    background-color: $white;
+    max-width: $spacer * 4;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    z-index: 1;
+    padding: 0;
+    transform: translateY(-50%);
 
     .product-menu {
-        width: $spacer * 6;
-        height: $spacer * 6;
+        width: $spacer * 4;
+        height: $spacer * 4;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -360,16 +281,17 @@ export default {
                 color: $red;
             }
         }
+
+
+        .product-img {
+            width: 100%;
+        }
     }
 
     &:hover {
-        max-width: $spacer * 6.5;
         cursor: pointer;
 
         .product-menu {
-            width: $spacer * 6.5;
-            height: $spacer * 6.5;
-
             span {
                 display: inline-block;
                 visibility: visible;
@@ -377,6 +299,7 @@ export default {
                 opacity: 0.6;
                 transition: opacity .55s ease-in-out;
             }
+
         }
 
         transition: $transition-base;
@@ -419,4 +342,16 @@ export default {
     }
 }
 
+.vini {
+    .vini-description-paragraph {
+        margin-bottom: $spacer * 2;
+        letter-spacing: 2px;
+        font-weight: 200;
+        font-size: $font-size-base;
+    }
+
+    &__products {
+        padding-bottom: $spacer * 7;
+    }
+}
 </style>
