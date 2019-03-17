@@ -2,7 +2,7 @@
     <div class="mobile-nav" ref="container">
         <div class="mobile-nav__content">
             <div class="mobile-nav__logo" ref="logo">
-                <img src="/svg/logo-new.svg" alt="" class="img-fluid" @click="goTo($event, '/')">
+                <img src="/svg/logo-new.svg" alt="" class="img-fluid" @click="goTo($event, 'home')">
             </div>
             <ul class="mobile-nav__menu" ref="menu">
                 <li class="mobile-nav__item">
@@ -79,6 +79,7 @@ export default {
             back: Back.easeOut.config(1.3),
             customEase: null,
             status: false,
+            started: true,
         }
     },
     watch: {
@@ -86,13 +87,21 @@ export default {
             this.setOptions(options.menu)
         }
     },
+    computed: {
+        uuid: function() {
+            // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            )
+        },
+    },
     methods: {
         setOptions: function(section) {
             this.menu = section
         },
         goTo: function(event, name) {
             event.preventDefault()
-            this.$emit('main-click', name)
+            this.$emit('main-click', name, true)
         },
         init: function() {
             if (!this.master) {
@@ -161,21 +170,6 @@ export default {
                 this.master.progress(1).progress(0)
 
                 // vai sempre in alto quando apre il il menu
-                this.master.eventCallback('onComplete', () => {
-                        this.url = null
-                        // this.$nextTick(() => {
-                        //     this.tempTimelineCheck([this.$refs.container, window])
-                        // })
-                })
-
-                this.master.eventCallback('onReverseComplete', () => {
-                    if (this.tempTimeline) {
-
-                        console.log('reverse complete');
-                        // this.tempTimeline.play()
-                    }
-                })
-
                 this.$emit('ready')
 
             } else {
@@ -200,13 +194,27 @@ export default {
         close: function() {
             this.master.reverse()
         },
+        destroy: function() {
+            return new Promise(resolve => {
+                if (this.master) {
+                    console.log('attendo');
+                    this.master.pause()
+                    this.master.eventCallback('onReverseComplete', () => {
+                        resolve()
+                    })
+                    this.master.reverse()
+                } else {
+                    resolve()
+                }
+            })
+        }
     },
     mounted: function() {
         if (this.$root.options) {
             this.setOptions(this.$root.options.menu)
         }
         this.init()
-    }
+    },
 }
 </script>
 

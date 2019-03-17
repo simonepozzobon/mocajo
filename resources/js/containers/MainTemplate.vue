@@ -1,29 +1,48 @@
 <template lang="html">
     <div>
-        <main-nav
-            ref="burger"
-            :is-page="isPage"
-            v-if="this.bigMenu == true"
-            @toggle="toggle"/>
+        <transition
+            name="mobile"
+            mode="out-in"
+            @enter="mobileEnter"
+            @leave="mobileLeave">
+            <main-nav
+                ref="burger"
+                :is-page="this.isPage"
+                v-if="this.bigMenu == true"
+                @toggle="toggle"/>
+        </transition>
 
-        <page-menu
-            :navClass="navClass"
-            v-else-if="this.bigMenu == false"/>
 
-        <menu-overlay
-            ref="overlay"
-            v-if="this.bigMenu == true"
-            @main-click="mainClick"/>
+        <transition
+            name="page"
+            mode="out-in"
+            @enter="pageEnter"
+            @leave="pageLeave">
+            <page-menu
+                ref="page"
+                :navClass="navClass"
+                v-if="this.bigMenu == false"/>
+        </transition>
+
+        <transition
+            name="overlay"
+            mode="out-in"
+            @enter="overlayEnter"
+            @leave="overlayLeave">
+                <menu-overlay
+                ref="overlay"
+                v-if="this.bigMenu == true"
+                @main-click="mainClick"/>
+        </transition>
 
         <main ref="main">
             <transition
                 mode="out-in"
-                name="fade"
                 @enter="enter"
                 @leave="leave"
                 @after-enter="afterEnter"
                 @after-leave="afterLeave">
-                <router-view></router-view>
+                <router-view v-bind:key="$route.fullPath"></router-view>
             </transition>
         </main>
 
@@ -78,6 +97,7 @@ export default {
             }
         },
         '$root.isPage': function(value) {
+            console.log('fuori');
             this.isPage = value
         },
         '$root.bigMenu': function(value) {
@@ -117,10 +137,61 @@ export default {
             navClass: null,
             menuSwitch: null,
             isPage: true,
+            mobileMenuTransition: false,
+            status: false,
+            temp: null,
         }
     },
     methods: {
-        mainClick: function(name){
+        overlayEnter: function(el, done) {
+            done()
+        },
+        overlayLeave: function(el, done) {
+            let menu = this.$refs.overlay
+            if (menu.master) {
+                menu.master.eventCallback('onReverseComplete', () => {
+                    done()
+                })
+                menu.master.reverse()
+            } else {
+                done()
+            }
+        },
+        mobileEnter: function(el, done) {
+            done()
+        },
+        mobileLeave: function(el, done) {
+            done()
+        },
+        pageEnter: function(el, done) {
+            console.log('overlay enter');
+            let menu = this.$refs.page
+            if (menu.master) {
+                menu.delay = .3
+                done()
+            } else {
+                done()
+            }
+        },
+        pageLeave: function(el, done) {
+            console.log('overlay leave', this.$root.isMobile);
+            let menu = this.$refs.page
+            if (menu.master) {
+                menu.master.eventCallback('onReverseComplete', () => {
+                    done()
+                })
+
+                let speed = 3
+                if (this.$root.isMobile) {
+                    speed = 10
+                }
+
+                menu.master.timeScale(speed).reverse()
+            } else {
+                done()
+            }
+        },
+        mainClick: function(name, master = false){
             this.toggle()
             this.$nextTick(() => {
                 this.$router.push({name: name, params: {lang: this.$root.locale}})
@@ -134,58 +205,64 @@ export default {
             // console.log('after-enter')
             // this.$root.$emit('page-loaded')
         },
-        init: function() {
-        },
-        hasBigMenu: function() {
-            // se siamo su mobile il menu big c'è sempre
-            // console.log(this.$route);
-            // if (this.$root.window.w <= 576) {
-            //     this.bigMenu = true
-            //     this.isPage = true
-            // } else if (this.$route.name === 'home') {
-            //     console.log('siamo qui');
-            //     this.bigMenu = true
-            //     this.isPage = false
-            // } else {
-            //     this.bigMenu = false
-            //     this.isPage = false
-            // }
-        },
         enter: function(el, done) {
             // console.log('entrato', el, document.body.contains(el))
+
             if (document.body.contains(el)) {
-                let master = new TimelineMax()
+                let master = new TimelineMax({
+                    paused: true,
+                })
+
                 master.fromTo(el, .4, {
                     autoAlpha: 0,
                 }, {
                     autoAlpha: 1,
                 })
 
+                master.progress(1).progress(0)
+
                 master.eventCallback('onComplete', () => {
+                    master.kill()
+                    master = null
                     done()
                 })
+
+                master.play()
+            } else {
+                console.log('non ');
             }
         },
+        beforeLeave: function(el, done) {
+            // console.log('before-leave',el, done);
+        },
         afterLeave: function(el) {
-
+            // console.log('after-leave')
         },
         leave: function(el, done) {
             // console.log('leave', el,document.body.contains(el))
-            let master = new TimelineMax()
+            let master = new TimelineMax({
+                paused: true,
+            })
             master.fromTo(el, .4, {
                 autoAlpha: 1,
             }, {
                 autoAlpha: 0,
             })
 
+            // master.progress(1).progress(0)
+
             master.eventCallback('onComplete', () => {
+                // console.log('terminata la transizione');
+                master.kill()
+                master = null
                 done()
             })
 
+            master.play()
+            // done()
         }
     },
     mounted: function() {
-        this.init()
         this.$root.cities = this.parsedCities
         this.$root.options = this.parsedOptions
         this.$root.products = this.parsedProducts

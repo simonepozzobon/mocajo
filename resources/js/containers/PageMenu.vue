@@ -74,7 +74,10 @@ export default {
                 storia: null,
                 vini: null,
                 contatti: null,
-            }
+            },
+            master: null,
+            delay: 0,
+            changeBgTimeline: null,
         }
     },
     watch: {
@@ -112,34 +115,83 @@ export default {
             this.menu = section
         },
         init: function() {
-            let master = new TimelineMax({
-                paused: true,
+            if (!this.master) {
+                let el = this.$refs.menu
+                let links = el.getElementsByClassName('nav-item')
+
+                this.master = new TimelineMax({
+                    paused: true,
+                    yoyo: true,
+                })
+
+                this.changeBgTimeline = new TimelineMax({
+                    paused: true,
+                    yoyo: true,
+                })
+
+                this.changeBgTimeline.fromTo(el, .6, {
+                    backgroundColor: '#ffffff',
+                    ease: Sine.easeInOut,
+                }, {
+                    backgroundColor: '#000000',
+                    ease: Sine.easeInOut,
+                }, 0)
+
+                this.master.add(this.changeBgTimeline)
+
+                this.master.fromTo(el, .6, {
+                    opacity: 0,
+                    ease: Sine.easeInOut,
+                }, {
+                    opacity: 1,
+                    ease: Sine.easeInOut,
+                }, 0)
+
+                this.master.staggerFromTo(links, 1.2, {
+                    delay: .5,
+                    y: -100,
+                    autoAlpha: 0,
+                    ease: Power3.easeInOut,
+                }, {
+                    y: 0,
+                    autoAlpha: 1,
+                    ease: Power3.easeInOut,
+                }, .3, .3)
+
+                this.master.progress(1).progress(0)
+
+                this.master.eventCallback('onComplete', () => {
+                    this.addScrollListener()
+                    this.master.delay(0)
+                    this.$nextTick(() => {
+                        this.master.removeCallback('onComplete')
+                    })
+
+                })
+
+                this.$nextTick(() => {
+                    this.master.delay(this.delay).play()
+                })
+            }
+        },
+        addScrollListener: function() {
+            TweenLite.to(window, .2, {
+                scrollTo: 0
+            }).play()
+
+            $(window).scroll(() => {
+                this.didScroll = true
             })
 
-            master.staggerFrom('.nav-item', 1.2, {
-                delay: .5,
-                y: -100,
-                autoAlpha: 0,
-                ease: Power3.easeInOut,
-            }, .3)
-
-            master.play()
+            setInterval(() => {
+                if (this.didScroll) {
+                    this.hasScrolled()
+                    this.didScroll = false
+                }
+            }, 250)
         },
         hoverAnim: function() {
             this.$refs.menu.hoverAnim()
-        },
-        changeStatus: function(value) {
-            this.opened = value
-        },
-        menuToggle: function($event) {
-            $event.preventDefault()
-            if (this.opened) {
-                this.$emit('menu-close')
-                this.$refs.menu.close()
-            } else {
-                this.$emit('menu-open')
-                this.$refs.menu.open()
-            }
         },
         hasScrolled: function() {
             let st = $(window).scrollTop();
@@ -169,37 +221,28 @@ export default {
                         y: 0,
                     },
                     onComplete: () => {
-                        resolve()
                         console.log('completed')
+                        resolve()
                     }
                 })
             })
         }
     },
     mounted: function() {
+        this.navbarHeight = $('#page-menu').outerHeight();
+        let el = this.$refs.menu
+        // TweenMax.set(el, {
+        //     y: -this.navbarHeight
+        // }, 0)
+
         if (this.$root.options) {
             this.setOptions(this.$root.options.menu)
         }
-        this.init()
-
         this.$nextTick(() => {
-            TweenLite.to(window, .2, {
-                scrollTo: 0
-            }).play()
-
-            this.navbarHeight = $('#page-menu').outerHeight();
-
-            $(window).scroll(() => {
-                this.didScroll = true
-            })
-
-            setInterval(() => {
-                if (this.didScroll) {
-                    this.hasScrolled()
-                    this.didScroll = false
-                }
-            }, 250)
+            this.init()
         })
+
+
     },
 }
 </script>
@@ -216,7 +259,7 @@ export default {
     background-color: rgba($black, 1);
     z-index: 9999;
     padding-left: $spacer * 2;
-    transition: $transition-base;
+    // transition: $transition-base;
 
     .navbar-nav {
         align-items: center;
@@ -236,6 +279,9 @@ export default {
 
     &.nav-up {
         top: -$section-padding;
+        transition: $transition-base;
+    }
+    &.down {
         transition: $transition-base;
     }
 

@@ -98,7 +98,6 @@ export default {
         }
     },
     mounted: function() {
-        console.log('montata');
         this.setPadding()
         if (this.$root.options) {
             this.setContent(this.$root.options.storia)

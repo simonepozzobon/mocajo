@@ -35,13 +35,17 @@ const app = new Vue({
             cart: null,
             navLogo: true,
             cities: null,
-            isMobile: false,
+            isMobile: null,
             options: null,
             products: null,
             shippings: null,
             locale: 'it',
             bigMenu: null,
-            isPage: true,
+            isPage: null,
+            animCache: [],
+            isAnimating: null,
+            next: null,
+            mainMenu: null,
         }
     },
     watch: {
@@ -118,16 +122,26 @@ const app = new Vue({
             return language
         },
         hasBigMenu: function() {
-            if (this.window.w <= 576) {
+
+            if (this.window.w <= 576 && this.$route.name != 'home') {
                 this.bigMenu = true
                 this.isPage = true
             } else if (this.$route.name == 'home') {
-                console.log('siamo qui');
                 this.bigMenu = true
                 this.isPage = false
             } else {
                 this.bigMenu = false
                 this.isPage = false
+            }
+        },
+        removeAnimationFromCache: function(obj) {
+            let idx = this.animCache.findIndex(timeline => timeline.uuid == obj.uuid)
+            console.log(idx);
+            if (idx > -1) {
+                this.animCache.splice(idx, 1)
+                this.$nextTick(() => {
+                    this.isAnimating = false
+                })
             }
         },
     },
@@ -136,22 +150,36 @@ const app = new Vue({
         window.addEventListener('resize', () => {
             this.getSize()
         })
+        this.hasBigMenu()
 
         let cart = this.$cookie.get('mocajo-cart')
         if (cart) {
             this.cart = JSON.parse(cart)
         }
 
-        this.hasBigMenu()
         let lng = this.checkLang(this.$route)
         this.$router.beforeEach((to, from, next) => {
-            console.log('test', to);
             lng = this.checkLang(to)
             next()
+
+            // this.$on('animation-complete', obj => {
+            //     this.removeAnimationFromCache(obj)
+            //     if (this.animCache.length == 0) {
+            //         next()
+            //     }
+            // })
+
+            // console.log(this.isAnimating);
+            // if (this.animCache.length == 0) {
+            //     // procedi
+            //     next()
+            // }
         })
 
         this.$router.afterEach((to, from, next) => {
             this.hasBigMenu()
         })
+
+
     }
 }).$mount('#app')

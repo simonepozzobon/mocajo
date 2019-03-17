@@ -54,9 +54,12 @@ export default {
                 this.$refs.icon.hide()
             }
         },
+        isPage: function(value) {
+            this.setBg()
+        }
     },
     computed: {
-        menuClass: function(value) {
+        menuClass: function() {
             if (this.isPage) {
                 return 'mobile-menu mobile-menu--dark'
             }
@@ -76,7 +79,28 @@ export default {
         },
         hoverAnim: function() {
             return this.$refs.menu.hoverAnim()
+        },
+        setBg: function() {
+            let el = this.$refs.navbar
+            console.log(this.isPage);
+            if (this.isPage) {
+                TweenMax.fromTo(el, .6, {
+                    backgroundColor: 'rgba(255, 255, 255, 0)',
+                }, {
+                    backgroundColor: '#000'
+                }).play()
+                // return 'mobile-menu mobile-menu--dark'
+            } else {
+                TweenMax.fromTo(el, .6, {
+                    backgroundColor: '#000'
+                }, {
+                    backgroundColor: 'rgba(255, 255, 255, 0)',
+                }).play()
+            }
         }
+    },
+    mounted: function() {
+        this.setBg()
     }
 }
 </script>
@@ -103,7 +127,7 @@ export default {
     }
 
     &#{$self}--dark {
-        background-color: $black;
+        // background-color: $black;
         // padding-top: $spacer;
         width: 100%;
 
