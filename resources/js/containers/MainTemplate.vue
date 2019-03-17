@@ -8,8 +8,6 @@
 
         <page-menu
             :navClass="navClass"
-            @menu-open="menuOpen"
-            @menu-close="menuClose"
             v-else-if="this.bigMenu == false"/>
 
         <menu-overlay
@@ -79,9 +77,12 @@ export default {
                     break;
             }
         },
-        '$root.window': function(value) {
-            this.hasBigMenu()
+        '$root.isPage': function(value) {
+            this.isPage = value
         },
+        '$root.bigMenu': function(value) {
+            this.bigMenu = value
+        }
     },
     computed: {
         parsedCities: function() {
@@ -137,16 +138,18 @@ export default {
         },
         hasBigMenu: function() {
             // se siamo su mobile il menu big c'è sempre
-            if (this.$root.window.w <= 576) {
-                this.bigMenu = true
-                this.isPage = true
-            } else if (this.$route.name === 'home') {
-                this.bigMenu = true
-                this.isPage = false
-            } else {
-                this.bigMenu = false
-                this.isPage = false
-            }
+            // console.log(this.$route);
+            // if (this.$root.window.w <= 576) {
+            //     this.bigMenu = true
+            //     this.isPage = true
+            // } else if (this.$route.name === 'home') {
+            //     console.log('siamo qui');
+            //     this.bigMenu = true
+            //     this.isPage = false
+            // } else {
+            //     this.bigMenu = false
+            //     this.isPage = false
+            // }
         },
         enter: function(el, done) {
             // console.log('entrato', el, document.body.contains(el))
@@ -183,7 +186,6 @@ export default {
     },
     mounted: function() {
         this.init()
-        this.hasBigMenu()
         this.$root.cities = this.parsedCities
         this.$root.options = this.parsedOptions
         this.$root.products = this.parsedProducts

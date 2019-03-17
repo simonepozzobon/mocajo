@@ -40,6 +40,8 @@ const app = new Vue({
             products: null,
             shippings: null,
             locale: 'it',
+            bigMenu: null,
+            isPage: true,
         }
     },
     watch: {
@@ -58,6 +60,8 @@ const app = new Vue({
             } else {
                 this.isMobile = false
             }
+
+            this.hasBigMenu()
         },
         cartRemove: function(productIdx) {
             if (this.cart) {
@@ -112,7 +116,20 @@ const app = new Vue({
                 this.locale = language
             }
             return language
-        }
+        },
+        hasBigMenu: function() {
+            if (this.window.w <= 576) {
+                this.bigMenu = true
+                this.isPage = true
+            } else if (this.$route.name == 'home') {
+                console.log('siamo qui');
+                this.bigMenu = true
+                this.isPage = false
+            } else {
+                this.bigMenu = false
+                this.isPage = false
+            }
+        },
     },
     mounted: function() {
         this.getSize()
@@ -125,10 +142,16 @@ const app = new Vue({
             this.cart = JSON.parse(cart)
         }
 
+        this.hasBigMenu()
         let lng = this.checkLang(this.$route)
         this.$router.beforeEach((to, from, next) => {
+            console.log('test', to);
             lng = this.checkLang(to)
             next()
+        })
+
+        this.$router.afterEach((to, from, next) => {
+            this.hasBigMenu()
         })
     }
 }).$mount('#app')

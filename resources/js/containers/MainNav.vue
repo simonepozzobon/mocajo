@@ -57,7 +57,7 @@ export default {
     },
     computed: {
         menuClass: function(value) {
-            if (value) {
+            if (this.isPage) {
                 return 'mobile-menu mobile-menu--dark'
             }
             return 'mobile-menu'
