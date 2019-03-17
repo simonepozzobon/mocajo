@@ -42,6 +42,11 @@ const app = new Vue({
             locale: 'it',
         }
     },
+    watch: {
+        options: function(opts) {
+            console.log(opts);
+        }
+    },
     methods: {
         getSize: function() {
             this.window = {

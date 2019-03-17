@@ -1,29 +1,23 @@
 <template lang="html">
     <nav
-        class="navbar navbar-dark navbar-expand-lg"
         ref="navbar"
-        :class="this.navClass">
-        <div class="d-flex mr-auto">
-            <!-- <a href="#" class="nav-link-item mr-4" data-hover="Scuola Mocajo" @click="goTo($event, 'cart')">
-                <cart-icon width="24px" color="#333" ref="icon"/>
-            </a> -->
-            <a
-                href="#"
-                class="nav-link-main nav-link-item d-flex align-items-center"
-                @click="menuToggle"
-                @mouseenter="hoverAnim">
-                <menu-anim
-                    ref="menu"
-                    size="48px"
-                    :speed="1.6"
-                    @changeStatus="changeStatus"/>
-            </a>
-        </div>
+        :class="menuClass">
+        <a
+            href="#"
+            class="mobile-menu__link"
+            @click="mainClick"
+            @mouseenter="hoverAnim">
+
+            <menu-anim
+                ref="menu"
+                size="48px"
+                :speed="1.6"
+                />
+        </a>
     </nav>
 </template>
 
 <script>
-import CartIcon from '../components/CartIcon.vue'
 import MenuAnim from '../components/MenuAnim.vue'
 import NavLogo from '../components/NavLogo.vue'
 import SplitText from 'gsap/SplitText'
@@ -32,23 +26,22 @@ import {TimelineMax} from 'gsap'
 export default {
     name: 'MainNav',
     components: {
-        CartIcon,
         MenuAnim,
         NavLogo
     },
     props: {
-        navClass: {
-            type: String,
-            default: null
+        isPage: {
+            type: Boolean,
+            default: true
         }
     },
     data: function() {
         return {
             hasCart: false,
             hasLogo: true,
-            menuClass: 'mr-auto',
             opened: false,
-            text: {}
+            text: {},
+            status: false,
         }
     },
     watch: {
@@ -61,9 +54,13 @@ export default {
                 this.$refs.icon.hide()
             }
         },
-        '$route': function(to, from) {
-            this.opened = true
-            // this.menuToggle()
+    },
+    computed: {
+        menuClass: function(value) {
+            if (value) {
+                return 'mobile-menu mobile-menu--dark'
+            }
+            return 'mobile-menu'
         }
     },
     methods: {
@@ -71,71 +68,45 @@ export default {
             event.preventDefault()
             this.$router.push({name: name, params: {lang: this.$root.locale}})
         },
+        mainClick: function() {
+            this.$emit('toggle')
+        },
+        toggle: function() {
+            return this.$refs.menu.toggle()
+        },
         hoverAnim: function() {
-            this.$refs.menu.hoverAnim()
-        },
-        changeStatus: function(value) {
-            this.opened = value
-        },
-        menuToggle: function($event = null) {
-            if ($event) {
-                $event.preventDefault()
-            }
-            if (this.opened) {
-                this.$emit('menu-close')
-                if (this.navClass) {
-                    TweenMax.to(this.$refs.navbar, .1, {
-                        delay: 1,
-                        className: '+='+this.navClass
-                    })
-                }
-                this.opened = false
-                this.$refs.menu.close()
-            } else {
-                this.$emit('menu-open')
-                if (this.navClass) {
-                    TweenMax.to(this.$refs.navbar, .1, {
-                        className: '-='+this.navClass
-                    })
-                }
-                this.opened = true
-                this.$refs.menu.open()
-            }
-        },
+            return this.$refs.menu.hoverAnim()
+        }
     }
 }
 </script>
 
 <style lang="scss">
 @import '~styles/shared';
-.navbar {
+.mobile-menu {
+    $self: &;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
     min-height: 60px;
-    height: $section-padding;
+    height: $section-sm-padding;
     background-color: rgba($white, 0);
     z-index: 9999;
     padding-left: $spacer * 2;
+    // padding-top: $spacer * 2;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 
-    transition: $transition-base;
-
-    @include media-breakpoint-down('sm') {
-        height: $section-sm-padding;
+    @include media-breakpoint-up('sm') {
+        height: $section-padding;
     }
 
-    .nav-link {
-        font-weight: normal;
-        letter-spacing: 1px;
-    }
+    &#{$self}--dark {
+        background-color: $black;
+        // padding-top: $spacer;
+        width: 100%;
 
-    .nav-link-main {
-        display: block;
-    }
-
-    .navbar-brand {
-        padding-top: $spacer;
     }
 }
 </style>

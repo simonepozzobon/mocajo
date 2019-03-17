@@ -1,11 +1,10 @@
 <template lang="html">
     <div>
         <main-nav
-            ref="mainNav"
-            :navClass="navClass"
-            @menu-open="menuOpen"
-            @menu-close="menuClose"
-            v-if="this.bigMenu == true"/>
+            ref="burger"
+            :is-page="isPage"
+            v-if="this.bigMenu == true"
+            @toggle="toggle"/>
 
         <page-menu
             :navClass="navClass"
@@ -14,7 +13,9 @@
             v-else-if="this.bigMenu == false"/>
 
         <menu-overlay
-            ref="menu"/>
+            ref="overlay"
+            v-if="this.bigMenu == true"
+            @main-click="mainClick"/>
 
         <main ref="main">
             <transition
@@ -81,12 +82,6 @@ export default {
         '$root.window': function(value) {
             this.hasBigMenu()
         },
-        '$route.path': function(route) {
-            if (this.navClass) {
-                this.$refs.mainNav.changeStatus(false)
-            }
-            this.hasBigMenu()
-        }
     },
     computed: {
         parsedCities: function() {
@@ -120,9 +115,20 @@ export default {
             cache: null,
             navClass: null,
             menuSwitch: null,
+            isPage: true,
         }
     },
     methods: {
+        mainClick: function(name){
+            this.toggle()
+            this.$nextTick(() => {
+                this.$router.push({name: name, params: {lang: this.$root.locale}})
+            })
+        },
+        toggle: function() {
+            this.$refs.burger.toggle()
+            this.$refs.overlay.toggle()
+        },
         afterEnter: function() {
             // console.log('after-enter')
             // this.$root.$emit('page-loaded')
@@ -131,22 +137,17 @@ export default {
         },
         hasBigMenu: function() {
             // se siamo su mobile il menu big c'è sempre
+            console.log(this.$root.window.w);
             if (this.$root.window.w <= 576) {
                 this.bigMenu = true
-                this.navClass = 'bg-black'
+                this.isPage = true
             } else if (this.$route.name === 'home') {
                 this.bigMenu = true
-                this.navClass = null
+                this.isPage = false
             } else {
                 this.bigMenu = false
-                this.navClass = null
+                this.isPage = false
             }
-        },
-        menuOpen: function() {
-            this.$refs.menu.toggleMobile()
-        },
-        menuClose: function() {
-            this.$refs.menu.toggleMobile()
         },
         enter: function(el, done) {
             // console.log('entrato', el, document.body.contains(el))

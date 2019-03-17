@@ -121,6 +121,7 @@ export default {
         },
     },
     mounted: function() {
+        console.log(this.$root.options);
         if (this.$root.options) {
             this.setContent(this.$root.options.scuola)
         }
