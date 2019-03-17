@@ -11,10 +11,10 @@
         <meta property="og:image" content="{{ $seo->image }}">
         <meta property="og:url" content="{{ $seo->current_url }}">
 
-        <meta name="twitter:title" content="{{ $seo->title }}">
-        <meta name="twitter:description" content="{{ $seo->description }}">
-        <meta name="twitter:image" content=" {{ $seo->image }}">
-        <meta name="twitter:card" content="summary_large_image">
+        <meta property="twitter:title" content="{{ $seo->title }}">
+        <meta property="twitter:description" content="{{ $seo->description }}">
+        <meta property="twitter:image" content=" {{ $seo->image }}">
+        <meta property="twitter:card" content="summary_large_image">
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
@@ -25,7 +25,6 @@
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-
             gtag('config', 'UA-134799170-1');
         </script>
     </head>
