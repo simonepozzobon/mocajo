@@ -7,4 +7,4 @@ Disallow: /it/checkout
 Disallow: /en/checkout
 Disallow: /admin
 
-Sitemap: http://www.example.com/sitemap.xml
+Sitemap: https://www.scuolamocajo.it/sitemap.xml
