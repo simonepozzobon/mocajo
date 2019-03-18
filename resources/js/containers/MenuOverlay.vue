@@ -244,23 +244,29 @@ export default {
     &__content {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
         min-height: 100vh;
+        padding-top: $spacer * 3;
+
+        @include media-breakpoint-up('xs') {
+            justify-content: center;
+            padding-top: inherit;
+        };
     }
 
     &__logo {
         max-width: 80%;
         max-width: 180px;
         height: auto;
-        margin-top: -$spacer;
         margin-bottom: $spacer * 2;
         display: none;
         padding-bottom: 0;
 
         @include media-breakpoint-up('xs') {
             display: block;
+            margin-top: -$spacer;
             padding-bottom: 40px;
         };
     }
