@@ -111,6 +111,10 @@ export default {
 
 .contact-map-custom {
     margin: $spacer * 2;
+
+    @include media-breakpoint-up('xs') {
+        margin: 0;
+    }
 }
 
 .contact-map-multiselect {
