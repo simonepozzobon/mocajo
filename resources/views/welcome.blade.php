@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $seo->title }}</title>
+        <meta name="title" content="{{ $seo->title }}">
         <meta name="description" content="{{ $seo->description }}" />
 
         <meta property="og:title" content="{{ $seo->title }}">
