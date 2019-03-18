@@ -252,14 +252,16 @@ export default {
 
     &__logo {
         max-width: 80%;
-        max-width: 120px;
+        max-width: 180px;
         height: auto;
         margin-top: -$spacer;
         margin-bottom: $spacer * 2;
         display: none;
+        padding-bottom: 0;
 
         @include media-breakpoint-up('xs') {
             display: block;
+            padding-bottom: 40px;
         };
     }
 
