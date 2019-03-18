@@ -47,21 +47,29 @@ export default {
             header: {
                 title: null,
                 txt: null,
+                title_en: null,
+                txt_en: null,
                 img: null,
             },
             project: {
                 title: null,
                 txt: null,
+                title_en: null,
+                txt_en: null,
                 img: null,
             },
             family: {
                 title: null,
                 txt: null,
+                title_en: null,
+                txt_en: null,
                 img: null,
             },
             agriturismo: {
                 title: null,
                 txt: null,
+                title_en: null,
+                txt_en: null,
                 img: null,
             },
         }
@@ -73,6 +81,8 @@ export default {
                 data.append('type', value)
                 data.append('title', obj.title)
                 data.append('txt', obj.txt)
+                data.append('title_en', obj.title_en)
+                data.append('txt_en', obj.txt_en)
 
                 let isFile = typeof obj.img.name == 'string'
                 if (isFile) {

@@ -7,7 +7,7 @@
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
         "axios": "^0.18",
@@ -16,7 +16,6 @@
         "browser-sync": "^2.26.3",
         "browser-sync-webpack-plugin": "2.0.1",
         "cross-env": "^5.1",
-        "css-loader": "^2.1.0",
         "gsap": "^2.0.2",
         "jquery": "^3.2",
         "laravel-mix": "^3.0.0",
@@ -29,6 +28,7 @@
         "vue-router": "^3.0.2"
     },
     "dependencies": {
+        "css-loader": "^2.1.1",
         "i18next": "^15.0.7",
         "lottie-web": "^5.4.3",
         "scrollmagic": "^2.0.6",

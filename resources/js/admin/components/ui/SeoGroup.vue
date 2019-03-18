@@ -1,10 +1,10 @@
 <template lang="html">
     <div>
         <panel-block title="Seo">
-            <form-group name="seo_title" title="Titolo Pagina">
+            <form-group name="seo_title" title="Titolo">
                 <input type="text" name="seo_title" v-model="seo.title" class="form-control">
             </form-group>
-            <form-group name="seo_description" title="Titolo Pagina">
+            <form-group name="seo_description" title="Descrizione">
                 <textarea name="seo_description" rows="4" cols="80" v-model="seo.description" class="form-control"></textarea>
             </form-group>
             <form-group name="save" title="Salva">
