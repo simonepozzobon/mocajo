@@ -14,6 +14,7 @@
                 :elements="this.wine_description"
                 :is-disabled="!product.is_active"/>
             <ui-action
+                target="_blank"
                 :url="product.scheda_tecnica"
                 :is-disabled="!product.is_active">
                 Download Scheda Tecnica
