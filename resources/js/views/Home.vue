@@ -7,7 +7,7 @@
                 <div class="top-overlay text-white">
                 </div>
                 <div class="logo-overlay">
-                    <img src="/svg/logo.svg" alt="La Scuola di Mocajo" class="home-img">
+                    <img src="/svg/logo-new.svg" alt="La Scuola di Mocajo" class="home-img">
                 </div>
                 <video-controls
                     @mute="toggleMute(true)"
