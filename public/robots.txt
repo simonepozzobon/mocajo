@@ -6,3 +6,5 @@ Disallow: /en/cart
 Disallow: /it/checkout
 Disallow: /en/checkout
 Disallow: /admin
+
+Sitemap: http://www.example.com/sitemap.xml
