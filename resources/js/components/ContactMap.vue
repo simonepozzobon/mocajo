@@ -112,7 +112,7 @@ export default {
 .contact-map-custom {
     margin: $spacer * 2;
 
-    @include media-breakpoint-up('xs') {
+    @include media-breakpoint-up('sm') {
         margin: 0;
     }
 }
