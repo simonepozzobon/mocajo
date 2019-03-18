@@ -248,7 +248,7 @@ export default {
         align-items: center;
         width: 100%;
         min-height: 100vh;
-        padding-top: $spacer * 3;
+        padding-top: $spacer * 4;
 
         @include media-breakpoint-up('sm') {
             justify-content: center;
@@ -263,6 +263,7 @@ export default {
         margin-bottom: $spacer * 2;
         display: block;
         padding-bottom: 0;
+        margin-top: 0;
 
         @include media-breakpoint-up('sm') {
             display: block;
