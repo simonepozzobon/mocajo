@@ -250,7 +250,7 @@ export default {
         min-height: 100vh;
         padding-top: $spacer * 3;
 
-        @include media-breakpoint-up('xs') {
+        @include media-breakpoint-up('sm') {
             justify-content: center;
             padding-top: inherit;
         };
@@ -264,7 +264,7 @@ export default {
         display: none;
         padding-bottom: 0;
 
-        @include media-breakpoint-up('xs') {
+        @include media-breakpoint-up('sm') {
             display: block;
             margin-top: -$spacer;
             padding-bottom: 40px;
