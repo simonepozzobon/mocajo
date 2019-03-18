@@ -261,7 +261,7 @@ export default {
         max-width: 180px;
         height: auto;
         margin-bottom: $spacer * 2;
-        display: none;
+        display: block;
         padding-bottom: 0;
 
         @include media-breakpoint-up('sm') {
