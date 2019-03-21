@@ -32,6 +32,17 @@
                 <button class="btn btn-outline-primary" @click="upload('menu')">Salva Sezione</button>
             </form-group>
         </general-section>
+        <general-section title="Testo Cookies">
+            <form-group name="cookies" title="Testo">
+                <textarea name="cookies" rows="8" cols="80" v-model="cookies.text" class="form-control"></textarea>
+            </form-group>
+            <form-group name="cookies_en" title="Testo [eng]">
+                <textarea name="cookies_en" rows="8" cols="80" v-model="cookies.text_en" class="form-control"></textarea>
+            </form-group>
+            <form-group name="save" title="Salva">
+                <button class="btn btn-outline-primary" @click="upload('cookies')">Salva Sezione</button>
+            </form-group>
+        </general-section>
     </page-template>
 </template>
 
@@ -57,6 +68,10 @@ export default {
                 storia: null,
                 vini: null,
                 contatti: null,
+            },
+            cookies: {
+                text: null,
+                text_en: null,
             }
         }
     },
@@ -80,6 +95,7 @@ export default {
                 active: options.shop.active == 'true' ? true : false
             }
             this.menu = options.menu
+            this.cookies = options.cookies
         },
         upload: function(value) {
             let data = new FormData()
@@ -96,6 +112,11 @@ export default {
                     data = this.setData(data, 'storia', this.menu.storia)
                     data = this.setData(data, 'vini', this.menu.vini)
                     data = this.setData(data, 'contatti', this.menu.contatti)
+                    break;
+                case 'cookies':
+                    data.append('type', 'cookies')
+                    data = this.setData(data, 'text', this.cookies.text)
+                    data = this.setData(data, 'text_en', this.cookies.text_en)
                     break;
             }
 

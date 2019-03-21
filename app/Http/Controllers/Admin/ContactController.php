@@ -26,6 +26,8 @@ class ContactController extends Controller
         $options[1] = Utility::save_option($options[1], $request->address);
         $options[2] = Utility::save_option($options[2], $request->phone);
         $options[3] = Utility::save_option($options[3], $request->mail);
+        $options[4] = Utility::save_option($options[4], $request->denominazione);
+        $options[5] = Utility::save_option($options[5], $request->piva);
 
         $options_formatted = $this->format_options($options);
         return $options_formatted;
@@ -37,6 +39,8 @@ class ContactController extends Controller
             'address' => $options[1]->value,
             'phone' => $options[2]->value,
             'mail' => $options[3]->value,
+            'denominazione' => $options[4]->value,
+            'piva' => $options[5]->value,
         ];
 
         return $data;

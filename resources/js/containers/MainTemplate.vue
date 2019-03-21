@@ -265,6 +265,12 @@ export default {
             // done()
         }
     },
+    // created: function() {
+    //     this.$root.cities = this.parsedCities
+    //     this.$root.options = this.parsedOptions
+    //     this.$root.products = this.parsedProducts
+    //     this.$root.shippings = this.parsedShippings
+    // },
     mounted: function() {
         this.$root.cities = this.parsedCities
         this.$root.options = this.parsedOptions

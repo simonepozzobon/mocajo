@@ -50,6 +50,7 @@ const app = new Vue({
     },
     watch: {
         options: function(opts) {
+            console.log('set options', opts);
         }
     },
     methods: {

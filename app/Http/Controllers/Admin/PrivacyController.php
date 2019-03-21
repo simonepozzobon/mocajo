@@ -29,6 +29,8 @@ class PrivacyController extends Controller
         $options[0] = Utility::save_option($options[0], $request->title);
         $options[1] = Utility::save_file($options[1], $request->file('img'));
         $options[2] = Utility::save_option($options[2], $request->txt);
+        $options[3] = Utility::save_option($options[3], $request->title_en);
+        $options[4] = Utility::save_option($options[4], $request->txt_en);
 
         $options_formatted = $this->format_options($options);
         return $options_formatted;
@@ -39,6 +41,8 @@ class PrivacyController extends Controller
             'title' => $options[0]->value,
             'txt' => $options[2]->value,
             'img' => Utility::check_img($options[1]->value),
+            'txt_en' => Utility::check_img($options[3]->value),
+            'title_en' => Utility::check_img($options[4]->value),
         ];
 
         return [

@@ -7,11 +7,11 @@
             <form-group :name="this.titleLower + '-text'" title="Testo" v-if="!this.disableTxt">
                 <textarea :name="this.titleLower + '-text'" rows="8" cols="80" v-model="section.txt" class="form-control"></textarea>
             </form-group>
-            <form-group :name="this.titleLower + '-title'" title="Titolo [eng]" v-if="!this.disableTitle">
-                <input type="text" :name="this.titleLower + '-title'" v-model="section.title_en" class="form-control">
+            <form-group :name="this.titleLower + '-title-en'" title="Titolo [eng]" v-if="!this.disableTitle">
+                <input type="text" :name="this.titleLower + '-title-en'" v-model="section.title_en" class="form-control">
             </form-group>
-            <form-group :name="this.titleLower + '-text'" title="Testo [eng]" v-if="!this.disableTxt">
-                <textarea :name="this.titleLower + '-text'" rows="8" cols="80" v-model="section.txt_en" class="form-control"></textarea>
+            <form-group :name="this.titleLower + '-text-en'" title="Testo [eng]" v-if="!this.disableTxt">
+                <textarea :name="this.titleLower + '-text-en'" rows="8" cols="80" v-model="section.txt_en" class="form-control"></textarea>
             </form-group>
             <form-group name="headerImg" title="Cambia immagine" v-if="!this.isVideo">
                 <div class="custom-file">

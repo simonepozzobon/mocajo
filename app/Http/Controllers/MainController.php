@@ -183,6 +183,11 @@ class MainController extends Controller
             'txt' => $options[33]->value,
         ];
 
+        $cookies = [
+            'text' => $options[35]->value,
+            'text_en' => $options[36]->value,
+        ];
+
         return [
             'menu' => $menu,
             'shop' => $shop,
@@ -201,6 +206,7 @@ class MainController extends Controller
             'vini' => $vini,
             'contatti' => $contatti,
             'privacy' => $privacy,
+            'cookies' => $cookies,
         ];
     }
 }

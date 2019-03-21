@@ -35,6 +35,10 @@ class SettingController extends Controller
                 $options[4] = Utility::save_option($options[4], $request->vini);
                 $options[5] = Utility::save_option($options[5], $request->contatti);
                 break;
+            case 'cookies':
+                $options[6] = Utility::save_option($options[6], $request->text);
+                $options[7] = Utility::save_option($options[7], $request->text_en);
+                break;
         }
 
         $options_formatted = $this->format_options($options);
@@ -54,9 +58,15 @@ class SettingController extends Controller
             'contatti' => $options[5]->value,
         ];
 
+        $cookies = [
+            'text' => $options[6]->value,
+            'text_en' => $options[7]->value,
+        ];
+
         return [
             'shop' => $shop,
             'menu' => $menu,
+            'cookies' => $cookies,
         ];
     }
 }

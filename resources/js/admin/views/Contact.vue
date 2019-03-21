@@ -3,6 +3,9 @@
         <seo-group
             :page-id="4" />
         <panel-block title="Informazioni">
+            <form-group name="denominazione" title="Ragione Sociale">
+                <input type="text" name="denominazione" v-model="denominazione" class="form-control">
+            </form-group>
             <form-group name="name" title="Nome">
                 <input type="text" name="name" v-model="name" class="form-control">
             </form-group>
@@ -14,6 +17,9 @@
             </form-group>
             <form-group name="mail" title="E-mail">
                 <input type="text" name="mail" v-model="mail" class="form-control">
+            </form-group>
+            <form-group name="piva" title="P. Iva">
+                <input type="text" name="piva" v-model="piva" class="form-control">
             </form-group>
             <form-group name="button" title="Salva">
                 <button class="btn btn-outline-primary" @click="upload">Salva</button>
@@ -41,6 +47,8 @@ export default {
             address: null,
             phone: null,
             mail: null,
+            denominazione: null,
+            piva: null,
         }
     },
     methods: {
@@ -50,6 +58,8 @@ export default {
             data = this.setData(data, 'address', this.address)
             data = this.setData(data, 'phone', this.phone)
             data = this.setData(data, 'mail', this.mail)
+            data = this.setData(data, 'denominazione', this.denominazione)
+            data = this.setData(data, 'piva', this.piva)
 
             this.$http.post('/api/admin/contact/save-section', data).then(response => {
                 this.formatResponse(response.data)
@@ -72,6 +82,8 @@ export default {
             this.address = data.address
             this.phone = data.phone
             this.mail = data.mail
+            this.denominazione = data.denominazione
+            this.piva = data.piva
             this.$emit('clear-feedback')
         }
     },

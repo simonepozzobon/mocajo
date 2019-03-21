@@ -17,6 +17,8 @@
                 :animated="animated"
                 color="bg-light">
                 <ui-title
+                    tag="h1"
+                    size="h2"
                     :title="this.scuolaSec.title" />
                 <p v-html="this.scuolaSec.txt"></p>
             </ui-block>

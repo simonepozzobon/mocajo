@@ -1,12 +1,7 @@
 <template lang="html">
     <div class="cookies-policy container-fluid" ref="panel">
         <div class="cookies-policy-content">
-            <p>
-              Informiamo che in questo sito sono utilizzati cookie tecnici e di terze parti, necessari per ottimizzare la navigazione.<br>
-              Per avere maggiori dettagli e visionare l'informativa estesa,
-              <a href="#" @click="goTo($event, '/privacy')">clicca qui</a>.<br>
-              Se invece prosegui con la navigazione, è implicito che esprimi il consenso all'utilizzo dei suddetti cookie.<br>
-            </p>
+            <p v-html="this.text"></p>
             <button class="btn btn-outline-primary" @click="cookieAccepted">
                 Accetto
             </button>
@@ -22,11 +17,30 @@ export default {
     name: 'CookiesPanel',
     data: function() {
         return {
+            text: null,
+            cookies: null,
             cookie: null,
             accepted: false,
         }
     },
+    watch: {
+        '$root.options': function(options) {
+            this.text = this.translate(options.cookies)
+            this.setContent(options.cookies)
+        },
+    },
     methods: {
+        translate: function(obj) {
+            if (obj) {
+                if (this.$root.locale == 'it') {
+                    return obj.text
+                }
+                return obj.text_en
+            }
+        },
+        setContent: function(section) {
+            this.cookies = section.cookies
+        },
         goTo: function(event, path) {
             event.preventDefault()
             if (this.$route.path != path) {
