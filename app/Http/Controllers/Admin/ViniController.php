@@ -27,7 +27,10 @@ class ViniController extends Controller
         $options = $this->get();
 
         $options[0] = Utility::save_option($options[0], $request->title);
+        $options[4] = Utility::save_option($options[4], $request->title_en);
         $options[1] = Utility::save_file($options[1], $request->file('img'));
+        $options[2] = Utility::save_option($options[2], $request->txt);
+        $options[3] = Utility::save_option($options[3], $request->txt_en);
 
         $options_formatted = $this->format_options($options);
         return $options_formatted;
@@ -36,7 +39,9 @@ class ViniController extends Controller
     public function format_options($options) {
         $header = [
             'title' => $options[0]->value,
-            'txt' => null,
+            'title_en' => $options[4]->value,
+            'txt' => $options[2]->value,
+            'txt_en' => $options[3]->value,
             'img' => Utility::check_img($options[1]->value),
         ];
 

@@ -30,6 +30,8 @@ class StoriaController extends Controller
             case 'scuola':
                 $options[1] = Utility::save_option($options[1], $request->title);
                 $options[2] = Utility::save_option($options[2], $request->txt);
+                $options[7] = Utility::save_option($options[7], $request->title);
+                $options[8] = Utility::save_option($options[8], $request->txt);
                 $options[3] = Utility::save_file($options[3], $request->file('img'));
                 break;
             case 'image-1':
@@ -54,7 +56,9 @@ class StoriaController extends Controller
 
         $scuola = [
             'title' => $options[1]->value,
+            'title_en' => $options[7]->value,
             'txt' => $options[2]->value,
+            'txt_en' => $options[8]->value,
             'img' => Utility::check_img($options[3]->value),
         ];
 

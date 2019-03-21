@@ -25,7 +25,9 @@ class SeoController extends Controller
 
         $seo->page_id = $request->page_id;
         $seo->title = $request->title;
+        $seo->title_en = $request->title_en;
         $seo->description = $request->description;
+        $seo->description_en = $request->description_en;
         $seo->save();
 
         return $seo;

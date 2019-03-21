@@ -43,8 +43,8 @@ class ShippingController extends Controller
         }
 
         $shipping->description = $request->description;
+        $shipping->description_en = $request->description_en;
         $shipping->default = $request->default;
-        $shipping->price = $request->price;
         $shipping->increment = $request->increment;
         $shipping->timing = $request->timing;
         $shipping->save();

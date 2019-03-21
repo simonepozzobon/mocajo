@@ -5,7 +5,7 @@
         <page-section
             title="Header"
             idx="header"
-            :disable-txt="true"
+            :disable-txt="false"
             :default-value="this.header"
             @changed-value="setOpts($event, 'header')"
             @upload="upload($event, 'header')"/>
@@ -28,7 +28,9 @@ export default {
             errorMessage: 'Formato del file sbagliato, solo mp4',
             header: {
                 title: null,
+                title_en: null,
                 txt: null,
+                txt_en: null,
                 img: null,
             },
         }
@@ -38,7 +40,9 @@ export default {
             if (obj.img && obj.img != '/storage/') {
                 let data = new FormData()
                 data.append('title', obj.title)
+                data.append('title_en', obj.title_en)
                 data.append('txt', obj.txt)
+                data.append('txt_en', obj.txt_en)
 
                 let isFile = typeof obj.img.name == 'string'
                 if (isFile) {

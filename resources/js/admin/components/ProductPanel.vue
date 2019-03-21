@@ -23,23 +23,44 @@
         <form-group name="title" title="Nome">
             <input type="text" name="title" v-model="product.title" class="form-control">
         </form-group>
+        <form-group name="title_en" title="Nome [eng]">
+            <input type="text" name="title_en" v-model="product.title_en" class="form-control">
+        </form-group>
         <form-group name="short_description" title="Descrizione Breve">
             <textarea name="short_description" rows="2" cols="80" v-model="product.short_description" class="form-control"></textarea>
+        </form-group>
+        <form-group name="short_description_en" title="Descrizione Breve [eng]">
+            <textarea name="short_description_en" rows="2" cols="80" v-model="product.short_description_en" class="form-control"></textarea>
         </form-group>
         <form-group name="description" title="Descrizione">
             <textarea name="description" rows="5" cols="80" v-model="product.description" class="form-control"></textarea>
         </form-group>
+        <form-group name="description_en" title="Descrizione [eng]">
+            <textarea name="description_en" rows="5" cols="80" v-model="product.description_en" class="form-control"></textarea>
+        </form-group>
         <form-group name="vitigno" title="Vitigno">
             <textarea name="vitigno" rows="2" cols="80" v-model="product.vitigno" class="form-control"></textarea>
+        </form-group>
+        <form-group name="vitigno_en" title="Vitigno [eng]">
+            <textarea name="vitigno_en" rows="2" cols="80" v-model="product.vitigno_en" class="form-control"></textarea>
         </form-group>
         <form-group name="zona" title="Zona">
             <textarea name="zona" rows="2" cols="80" v-model="product.zona" class="form-control"></textarea>
         </form-group>
+        <form-group name="zona_en" title="Zona [eng]">
+            <textarea name="zona_en" rows="2" cols="80" v-model="product.zona_en" class="form-control"></textarea>
+        </form-group>
         <form-group name="vinificazione" title="Vinificazione">
             <textarea name="vinificazione" rows="2" cols="80" v-model="product.vinificazione" class="form-control"></textarea>
         </form-group>
+        <form-group name="vinificazione_en" title="Vinificazione [eng]">
+            <textarea name="vinificazione_en" rows="2" cols="80" v-model="product.vinificazione_en" class="form-control"></textarea>
+        </form-group>
         <form-group name="valori_analitici" title="Valori Analitici">
             <textarea name="valori_analitici" rows="2" cols="80" v-model="product.valori_analitici" class="form-control"></textarea>
+        </form-group>
+        <form-group name="valori_analitici_en" title="Valori Analitici [eng]">
+            <textarea name="valori_analitici_en" rows="2" cols="80" v-model="product.valori_analitici_en" class="form-control"></textarea>
         </form-group>
         <form-group name="scheda_tecnica" title="Scheda Tecnica">
             <file-input
@@ -49,6 +70,16 @@
         </form-group>
         <form-group name="scheda_tecnicaPreview" title="Anteprima">
             <a :href="this.product.scheda_tecnica" target="_blank" v-if="this.product.scheda_tecnica">Anteprima scheda</a>
+            <span class="text-danger" v-else>Nessuna Scheda Caricata!</span>
+        </form-group>
+        <form-group name="scheda_tecnica_en" title="Scheda Tecnica [eng]">
+            <file-input
+                ref="scheda_en"
+                format="pdf"
+                @file-loaded="schedaEnLoad"/>
+        </form-group>
+        <form-group name="scheda_tecnicaPreview_en" title="Anteprima [eng]">
+            <a :href="this.product.scheda_tecnica_en" target="_blank" v-if="this.product.scheda_tecnica_en">Anteprima scheda</a>
             <span class="text-danger" v-else>Nessuna Scheda Caricata!</span>
         </form-group>
         <form-group name="price" title="Prezzo">
@@ -115,6 +146,14 @@ export default {
                 scheda_tecnica: null,
                 price: null,
                 is_active: true,
+                title_en: null,
+                short_description_en: null,
+                description_en: null,
+                vitigno_en: null,
+                zona_en: null,
+                vinificazione_en: null,
+                valori_analitici_en: null,
+                scheda_tecnica_en: null,
             }
         }
     },
@@ -127,6 +166,9 @@ export default {
         },
         schedaLoad: function(scheda) {
             this.product.scheda_tecnica = scheda
+        },
+        schedaEnLoad: function(scheda) {
+            this.product.scheda_tecnica_en = scheda
         },
         upload: function() {
             let data = new FormData()
@@ -172,6 +214,15 @@ export default {
             data = this.setData(data, 'valori_analitici', this.product.valori_analitici)
             data = this.setData(data, 'price', this.product.price)
 
+            data = this.setData(data, 'title_en', this.product.title_en)
+            data = this.setData(data, 'short_description_en', this.product.short_description_en)
+            data = this.setData(data, 'description_en', this.product.description_en)
+            data = this.setData(data, 'vitigno_en', this.product.vitigno_en)
+            data = this.setData(data, 'zona_en', this.product.zona_en)
+            data = this.setData(data, 'vinificazione_en', this.product.vinificazione_en)
+            data = this.setData(data, 'valori_analitici_en', this.product.valori_analitici_en)
+            data = this.setData(data, 'price_en', this.product.price_en)
+
             if (this.product.is_active) {
                 data.append('is_active', 1)
             } else {
@@ -214,6 +265,14 @@ export default {
                 scheda_tecnica: null,
                 price: null,
                 is_active: true,
+                title_en: null,
+                short_description_en: null,
+                description_en: null,
+                vitigno_en: null,
+                zona_en: null,
+                vinificazione_en: null,
+                valori_analitici_en: null,
+                scheda_tecnica_en: null,
             }
         }
     }
