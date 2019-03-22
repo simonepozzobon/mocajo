@@ -4,7 +4,9 @@
             <ui-hero-banner
                 :title="this.locale.title"
                 color="bg-dark"
-                :imgSrc="this.header.img"/>
+                :imgSrc="this.header.img"
+                :alt="this.locale.alt"
+                :image_title="this.locale.image_title"/>
         </div>
         <div v-else>NO BANNER</div>
         <div class="row" v-if="this.project">
@@ -25,7 +27,9 @@
                 :animated="animated"
                 :direction="false"
                 @animate-parent="animateProgetto"
-                imgSrc="/images/il-nostro-progetto.jpg" />
+                imgSrc="/images/il-nostro-progetto.jpg"
+                :alt="this.locale.project.alt"
+                :image_title="this.locale.project.image_title"/>
         </div>
         <div v-else>NO PROGETTO</div>
         <div class="row" v-if="this.family">
@@ -33,7 +37,9 @@
                 :isImage="true"
                 :animated="animated"
                 @animate-parent="animateFamiglia"
-                :imgSrc="this.family.img" />
+                :imgSrc="this.family.img"
+                :alt="this.locale.family.alt"
+                :image_title="this.locale.family.image_title"/>
             <ui-block
                 ref="famiglia"
                 :animated="animated"
@@ -68,7 +74,9 @@
                 :animated="animated"
                 @animate-parent="animateAgriturismo"
                 :imgSrc="this.agriturismo.img"
-                :direction="false"/>
+                :direction="false"
+                :alt="this.locale.agriturismo.alt"
+                :image_title="this.locale.agriturismo.image_title"/>
         </div>
         <div v-else>NO AGRITURISMO</div>
     </div>
@@ -102,23 +110,31 @@ export default {
             animated: true,
             locale: {
                 title: null,
+                alt: null,
+                image_title: null,
                 project: {
                     title: null,
                     txt: null,
                     linktxt: null,
                     linkhref: null,
+                    alt: null,
+                    image_title: null,
                 },
                 family: {
                     title: null,
                     txt: null,
                     linktxt: null,
                     linkhref: null,
+                    alt: null,
+                    image_title: null,
                 },
                 agriturismo: {
                     title: null,
                     txt: null,
                     linktxt: null,
                     linkhref: null,
+                    alt: null,
+                    image_title: null,
                 }
             }
         }
@@ -152,23 +168,31 @@ export default {
 
             this.locale = {
                 title: this.getTranslation(this.header, 'title'),
+                alt: this.getTranslation(this.header, 'alt'),
+                image_title: this.getTranslation(this.header, 'image_title'),
                 project: {
                     title: this.getTranslation(this.project, 'title'),
                     txt: this.getTranslation(this.project, 'txt'),
                     linktxt: this.getTranslation(this.project, 'linktxt'),
                     linkhref: this.getTranslation(this.project, 'linkhref'),
+                    alt: this.getTranslation(this.project, 'alt'),
+                    image_title: this.getTranslation(this.project, 'image_title'),
                 },
                 family: {
                     title: this.getTranslation(this.family, 'title'),
                     txt: this.getTranslation(this.family, 'txt'),
                     linktxt: this.getTranslation(this.family, 'linktxt'),
                     linkhref: this.getTranslation(this.family, 'linkhref'),
+                    alt: this.getTranslation(this.family, 'alt'),
+                    image_title: this.getTranslation(this.family, 'image_title'),
                 },
                 agriturismo: {
                     title: this.getTranslation(this.agriturismo, 'title'),
                     txt: this.getTranslation(this.agriturismo, 'txt'),
                     linktxt: this.getTranslation(this.agriturismo, 'linktxt'),
                     linkhref: this.getTranslation(this.agriturismo, 'linkhref'),
+                    alt: this.getTranslation(this.agriturismo, 'alt'),
+                    image_title: this.getTranslation(this.agriturismo, 'image_title'),
                 }
             }
         },

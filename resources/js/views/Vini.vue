@@ -4,7 +4,9 @@
             <ui-hero-banner
                 color="bg-dark"
                 :title="this.title"
-                :imgSrc="this.vini.img"/>
+                :imgSrc="this.vini.img"
+                :alt="this.alt"
+                :image_title="this.image_title"/>
         </div>
         <div class="row">
             <div id="sidebar" class="col" v-if="!this.$root.isMobile && this.products">
@@ -87,9 +89,13 @@ export default {
                 title: null,
                 img: null,
                 txt: null,
+                alt: null,
+                image_title: null,
             },
             title: null,
             text: null,
+            alt: null,
+            image_title: null,
             shop: {
                 active: false,
                 multiplier: 1,
@@ -129,6 +135,8 @@ export default {
         translate: function(locale = false) {
             this.title = this.getTranslations(this.vini, 'title')
             this.text = this.getTranslations(this.vini, 'txt')
+            this.alt = this.getTranslations(this.vini, 'alt')
+            this.image_title = this.getTranslations(this.vini, 'image_title')
             if (!this.initialized) {
                 this.$nextTick(() => {
                     this.scrollToTop()

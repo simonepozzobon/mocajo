@@ -11,7 +11,9 @@
                 :isImage="true"
                 :animated="animated"
                 :imgSrc="this.scuolaSec.img"
-                @animate-parent="animateStoria"/>
+                @animate-parent="animateStoria"
+                :alt="this.locale.scuolaSec.alt"
+                :image_title="this.locale.scuolaSec.image_title"/>
             <ui-block
                 ref="storia"
                 :animated="animated"
@@ -19,26 +21,32 @@
                 <ui-title
                     tag="h1"
                     size="h2"
-                    :title="this.title" />
-                <p v-html="this.text"></p>
+                    :title="this.locale.scuolaSec.title" />
+                <p v-html="this.locale.scuolaSec.txt"></p>
             </ui-block>
         </div>
-        <div class="row" v-if="this.images">
+        <div class="row" v-if="this.image1 && this.image2">
             <ui-image-block
                 :isImage="true"
                 :animated="false"
                 :direction="false"
-                :imgSrc="this.images.img1" />
+                :imgSrc="this.image1.img"
+                :alt="this.locale.image1.alt"
+                :image_title="this.locale.image1.image_title"/>
             <ui-image-block
                 :isImage="true"
                 :animated="false"
-                :imgSrc="this.images.img2" />
+                :imgSrc="this.image2.img"
+                :alt="this.locale.image2.alt"
+                :image_title="this.locale.image2.image_title"/>
         </div>
-        <div class="row" v-if="this.images">
+        <div class="row" v-if="this.image3">
             <ui-hero-banner
                 :no-overlay="true"
                 min-height-mobile="300px"
-                :imgSrc="this.images.img3" />
+                :imgSrc="this.image3.img"
+                :alt="this.locale.image3.alt"
+                :image_title="this.locale.image3.image_title"/>
         </div>
     </div>
 </template>
@@ -70,6 +78,33 @@ export default {
             animated: true,
             title: null,
             text: null,
+            image1: null,
+            image2: null,
+            image3: null,
+            locale: {
+                title: null,
+                text: null,
+                alt: null,
+                image_title: null,
+                scuolaSec: {
+                    title: null,
+                    txt: null,
+                    alt: null,
+                    image_title: null,
+                },
+                image1: {
+                    alt: null,
+                    image_title: null,
+                },
+                image2: {
+                    alt: null,
+                    image_title: null,
+                },
+                image3: {
+                    alt: null,
+                    image_title: null,
+                },
+            },
         }
     },
     watch: {
@@ -78,7 +113,7 @@ export default {
         },
         '$root.options': function(options) {
             this.setContent(options.storia)
-            this.translateStatic()
+            this.translate()
         },
         '$root.isMobile': function(value) {
             if (value) {
@@ -87,21 +122,45 @@ export default {
             return this.animated = true
         },
         '$root.locale': function(locale) {
-            this.translateStatic(locale)
+            this.translate(locale)
         },
     },
     methods: {
-        translateStatic: function(locale = false) {
+        getTranslation: function(obj, key) {
+            if (obj.hasOwnProperty(key) || obj.hasOwnProperty(key + '_en')) {
+                if (this.$root.locale == 'it') {
+                    return obj[key]
+                }
+                return obj[key + '_en']
+            }
+            return null
+        },
+        translate: function(locale = false) {
             locale = locale ? locale : this.$root.locale
-            switch (locale) {
-                case 'en':
-                    this.text = this.scuolaSec ? this.scuolaSec.txt_en : null
-                    this.title = this.scuolaSec ? this.scuolaSec.title_en : null
-                    break;
-                case 'it':
-                    this.text = this.scuolaSec ? this.scuolaSec.txt : null
-                    this.title = this.scuolaSec ? this.scuolaSec.title : null
-                    break;
+
+            this.locale = {
+                title: this.getTranslation(this.header, 'title'),
+                text: this.getTranslation(this.header, 'txt'),
+                alt: this.getTranslation(this.header, 'alt'),
+                image_title: this.getTranslation(this.header, 'image_title'),
+                scuolaSec: {
+                    title: this.getTranslation(this.scuolaSec, 'title'),
+                    txt: this.getTranslation(this.scuolaSec, 'txt'),
+                    alt: this.getTranslation(this.scuolaSec, 'alt'),
+                    image_title: this.getTranslation(this.scuolaSec, 'image_title'),
+                },
+                image1: {
+                    alt: this.getTranslation(this.image1, 'alt'),
+                    image_title: this.getTranslation(this.image1, 'image_title'),
+                },
+                image2: {
+                    alt: this.getTranslation(this.image2, 'alt'),
+                    image_title: this.getTranslation(this.image2, 'image_title'),
+                },
+                image3: {
+                    alt: this.getTranslation(this.image3, 'alt'),
+                    image_title: this.getTranslation(this.image3, 'image_title'),
+                },
             }
         },
         animateStoria: function() {
@@ -117,8 +176,10 @@ export default {
         setContent: function(section) {
             this.header = section.header
             this.scuolaSec = section.scuola
-            this.images = section.images
-            this.translateStatic()
+            this.image1 = section.image1
+            this.image2 = section.image2
+            this.image3 = section.image3
+            this.translate()
         }
     },
     mounted: function() {

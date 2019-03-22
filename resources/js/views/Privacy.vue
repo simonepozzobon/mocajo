@@ -2,15 +2,17 @@
     <div class="container-fluid privacy-section section" ref="section">
         <div class="row" v-if="privacy.img">
             <ui-hero-banner
-                :title="privacy.title"
+                :title="this.locale.title"
                 color="bg-dark"
-                :imgSrc="privacy.img" />
+                :imgSrc="privacy.img"
+                :alt="this.locale.alt"
+                :image_title="this.locale.image_title"/>
         </div>
         <div class="row" v-if="privacy.txt">
             <ui-block
                 size="col"
                 color="bg-light"
-                v-html="privacy.txt">
+                v-html="this.locale.txt">
             </ui-block>
         </div>
     </div>
@@ -31,18 +33,49 @@ export default {
                 title: null,
                 txt: null,
                 img: null,
+                alt: null,
+                image_title: null,
+            },
+            locale: {
+                title: null,
+                txt: null,
+                img: null,
+                alt: null,
+                image_title: null,
             }
         }
     },
     watch: {
         '$root.options': function(options) {
             this.setContent(options.privacy)
-        }
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
+        },
     },
     methods: {
         setContent: function(section) {
             this.privacy = section
-            console.log(section);
+            this.translate()
+        },
+        getTranslation: function(obj, key) {
+            if (obj.hasOwnProperty(key) || obj.hasOwnProperty(key + '_en')) {
+                if (this.$root.locale == 'it') {
+                    return obj[key]
+                }
+                return obj[key + '_en']
+            }
+            return null
+        },
+        translate: function(locale = false) {
+            locale = locale ? locale : this.$root.locale
+
+            this.locale = {
+                title: this.getTranslation(this.privacy, 'title'),
+                txt: this.getTranslation(this.privacy, 'txt'),
+                alt: this.getTranslation(this.privacy, 'alt'),
+                image_title: this.getTranslation(this.privacy, 'image_title')
+            }
         },
     },
     mounted: function() {

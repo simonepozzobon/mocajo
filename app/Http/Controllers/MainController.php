@@ -129,6 +129,10 @@ class MainController extends Controller
             'title_en' => $options[43]->value,
             'txt' => null,
             'img' => Utility::check_img($options[1]->value),
+            'alt' => $options[57]->value,
+            'alt_en' => $options[58]->value,
+            'image_title' => $options[55]->value,
+            'image_title_en' => $options[56]->value,
         ];
 
         $project = [
@@ -137,6 +141,10 @@ class MainController extends Controller
             'txt' => $options[4]->value,
             'txt_en' => $options[38]->value,
             'img' => Utility::check_img($options[5]->value),
+            'alt' => $options[61]->value,
+            'alt_en' => $options[62]->value,
+            'image_title' => $options[59]->value,
+            'image_title_en' => $options[60]->value,
         ];
 
         $project = $this->format_link($project, 5);
@@ -147,6 +155,10 @@ class MainController extends Controller
             'txt' => $options[7]->value,
             'txt_en' => $options[40]->value,
             'img' => Utility::check_img($options[8]->value),
+            'alt' => $options[65]->value,
+            'alt_en' => $options[66]->value,
+            'image_title' => $options[63]->value,
+            'image_title_en' => $options[64]->value,
         ];
 
         $family = $this->format_link($family, 6);
@@ -157,6 +169,10 @@ class MainController extends Controller
             'txt' => $options[10]->value,
             'txt_en' => $options[42]->value,
             'img' => Utility::check_img($options[11]->value),
+            'alt' => $options[69]->value,
+            'alt_en' => $options[70]->value,
+            'image_title' => $options[67]->value,
+            'image_title_en' => $options[68]->value,
         ];
 
         $agriturismo = $this->format_link($agriturismo, 7);
@@ -172,12 +188,34 @@ class MainController extends Controller
             'txt' => $options[14]->value,
             'txt_en' => $options[45]->value,
             'img' => Utility::check_img($options[15]->value),
+            'alt' => $options[71]->value,
+            'alt_en' => $options[72]->value,
+            'image_title' => $options[73]->value,
+            'image_title_en' => $options[74]->value,
         ];
 
-        $imagesStoria = [
-            'img1' => Utility::check_img($options[16]->value),
-            'img2' => Utility::check_img($options[17]->value),
-            'img3' => Utility::check_img($options[18]->value),
+        $imageStoria1 = [
+            'img' => Utility::check_img($options[16]->value),
+            'alt' => $options[75]->value,
+            'alt_en' => $options[76]->value,
+            'image_title' => $options[77]->value,
+            'image_title_en' => $options[78]->value,
+        ];
+
+        $imageStoria2 = [
+            'img' => Utility::check_img($options[17]->value),
+            'alt' => $options[79]->value,
+            'alt_en' => $options[80]->value,
+            'image_title' => $options[81]->value,
+            'image_title_en' => $options[82]->value,
+        ];
+
+        $imageStoria3 = [
+            'img' => Utility::check_img($options[18]->value),
+            'alt' => $options[83]->value,
+            'alt_en' => $options[84]->value,
+            'image_title' => $options[85]->value,
+            'image_title_en' => $options[86]->value,
         ];
 
         $contatti = [
@@ -195,6 +233,10 @@ class MainController extends Controller
             'txt' => $options[34]->value,
             'txt_en' => $options[48]->value,
             'img' => Utility::check_img($options[24]->value),
+            'alt' => $options[87]->value,
+            'alt_en' => $options[88]->value,
+            'image_title' => $options[89]->value,
+            'image_title_en' => $options[90]->value,
         ];
 
         $shop = [
@@ -211,8 +253,14 @@ class MainController extends Controller
 
         $privacy = [
             'title' => $options[31]->value,
+            'title_en' => $options[90]->value,
             'img' => Utility::check_img($options[32]->value),
             'txt' => $options[33]->value,
+            'txt_en' => $options[91]->value,
+            'alt' => $options[91]->value,
+            'alt_en' => $options[92]->value,
+            'image_title' => $options[93]->value,
+            'image_title_en' => $options[94]->value,
         ];
 
         $cookies = [
@@ -240,7 +288,9 @@ class MainController extends Controller
             'storia' => [
                 'header' => $headerStoria,
                 'scuola' => $scuola,
-                'images' => $imagesStoria,
+                'image1' => $imageStoria1,
+                'image2' => $imageStoria2,
+                'image3' => $imageStoria3,
             ],
             'vini' => $vini,
             'contatti' => $contatti,

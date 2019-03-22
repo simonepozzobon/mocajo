@@ -1,7 +1,11 @@
 <template lang="html">
     <div class="col-md-6 ui-image-block" ref="block" v-view.once="handler">
         <div class="overlay" ref="overlay"></div>
-        <div class="image-container" :class="animateDirection" ref="img">
+        <div
+            class="image-container"
+            :class="animateDirection"
+            ref="img"
+            :title="image_title">
         </div>
     </div>
 </template>
@@ -29,6 +33,14 @@ export default {
 			type: Boolean,
 			default: true,
 		},
+        alt: {
+            type: String,
+            default: null,
+        },
+        image_title: {
+            type: String,
+            default: null,
+        },
 	},
     data: function() {
         return {

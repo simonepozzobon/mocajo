@@ -2,7 +2,8 @@
     <div
         ref="block"
         class="col-12 ui-hero-banner"
-        :class="color +' '+ overlayClass">
+        :class="color +' '+ overlayClass"
+        :title="image_title">
 
         <div class="ui-hero-banner-overlay" ref="overlay"></div>
         <h1 class="ui-hero-banner-title text-white text-center" ref="title" v-html="title"></h1>
@@ -39,6 +40,14 @@ export default {
             default: null,
         },
         minHeightMobile: {
+            type: String,
+            default: null,
+        },
+        alt: {
+            type: String,
+            default: null,
+        },
+        image_title: {
             type: String,
             default: null,
         },
