@@ -18,7 +18,7 @@ export default {
     name: 'LanguageMenu',
     watch: {
         '$route': function(route) {
-            if (route.name != 'home') {
+            if (route.name != 'home' && route.name != 'home_en') {
                 this.$refs.container.style.display = 'none'
                 return false
             }
