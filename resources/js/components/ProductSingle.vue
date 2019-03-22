@@ -122,7 +122,7 @@ export default {
                 img: this.product.img,
                 icon: this.product.icon,
                 price: this.product.price,
-                quantity: 1 * this.shop.multiplier
+                quantity: this.product.multiplier > 0 ? (1 * this.product.multiplier) : (1 * this.shop.multiplier)
             }
             this.$root.addToCart(shortenProduct)
         },

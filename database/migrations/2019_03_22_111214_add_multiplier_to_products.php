@@ -14,7 +14,7 @@ class AddMultiplierToProducts extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            //
+            $table->integer('multiplier')->default(0)->after('id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddMultiplierToProducts extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            //
+            $table->dropColumn('multiplier');
         });
     }
 }

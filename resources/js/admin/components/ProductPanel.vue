@@ -85,6 +85,9 @@
         <form-group name="price" title="Prezzo">
             <input type="text" name="price" v-model="product.price" class="form-control">
         </form-group>
+        <form-group name="multiplier" title="Moltiplicatore">
+            <input type="text" name="multiplier" v-model="product.multiplier" class="form-control">
+        </form-group>
         <form-group name="is_active" title="Attivo?">
             <span class="switch">
                 <input type="checkbox" class="switch" id="is_active" :checked="this.product.is_active" v-model="product.is_active">
@@ -135,8 +138,9 @@ export default {
         return {
             product: {
                 icon: null,
-                title: null,
                 img: null,
+
+                title: null,
                 short_description: null,
                 description: null,
                 vitigno: null,
@@ -144,8 +148,11 @@ export default {
                 vinificazione: null,
                 valori_analitici: null,
                 scheda_tecnica: null,
+
                 price: null,
                 is_active: true,
+                multiplier: null,
+
                 title_en: null,
                 short_description_en: null,
                 description_en: null,
@@ -205,6 +212,15 @@ export default {
                 this.$refs.scheda.setInvalid('Selezionare un file')
             }
 
+            if (this.product.scheda_tecnica_en && this.product.scheda_tecnica_en != '/storage/') {
+                let isFile = typeof this.product.scheda_tecnica_en.name == 'string'
+                if (isFile) {
+                    data.append('scheda_tecnica_en', this.product.scheda_tecnica_en)
+                }
+            } else {
+                this.$refs.scheda.setInvalid('Selezionare un file')
+            }
+
             data = this.setData(data, 'title', this.product.title)
             data = this.setData(data, 'short_description', this.product.short_description)
             data = this.setData(data, 'description', this.product.description)
@@ -212,7 +228,6 @@ export default {
             data = this.setData(data, 'zona', this.product.zona)
             data = this.setData(data, 'vinificazione', this.product.vinificazione)
             data = this.setData(data, 'valori_analitici', this.product.valori_analitici)
-            data = this.setData(data, 'price', this.product.price)
 
             data = this.setData(data, 'title_en', this.product.title_en)
             data = this.setData(data, 'short_description_en', this.product.short_description_en)
@@ -221,7 +236,9 @@ export default {
             data = this.setData(data, 'zona_en', this.product.zona_en)
             data = this.setData(data, 'vinificazione_en', this.product.vinificazione_en)
             data = this.setData(data, 'valori_analitici_en', this.product.valori_analitici_en)
-            data = this.setData(data, 'price_en', this.product.price_en)
+
+            data = this.setData(data, 'price', this.product.price)
+            data = this.setData(data, 'multiplier', this.product.multiplier)
 
             if (this.product.is_active) {
                 data.append('is_active', 1)
@@ -254,8 +271,9 @@ export default {
         reset: function() {
             this.product = {
                 icon: null,
-                title: null,
                 img: null,
+
+                title: null,
                 short_description: null,
                 description: null,
                 vitigno: null,
@@ -263,8 +281,11 @@ export default {
                 vinificazione: null,
                 valori_analitici: null,
                 scheda_tecnica: null,
+
                 price: null,
                 is_active: true,
+                multiplier: null,
+
                 title_en: null,
                 short_description_en: null,
                 description_en: null,

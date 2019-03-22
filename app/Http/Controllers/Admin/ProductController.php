@@ -47,6 +47,7 @@ class ProductController extends Controller
             $product->scheda_tecnica = Utility::save_file_for_model($request->file('scheda_tecnica'));
         }
 
+        $product->multiplier = $request->multiplier;
         $product->title = $request->title;
         $product->short_description = $request->short_description;
         $product->description = $request->description;
