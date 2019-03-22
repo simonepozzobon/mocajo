@@ -103,12 +103,23 @@ export default {
             this.menuClass = 'ml-auto'
         },
         '$root.options': function(options) {
-            this.setOptions(options.menu)
+            this.setOptions(options.home.links)
         }
     },
     methods: {
         setOptions: function(section) {
-            this.menu = section
+            this.menu.scuola = this.translate(section.scuola)
+            this.menu.storia = this.translate(section.storia)
+            this.menu.vini = this.translate(section.vini)
+            this.menu.contatti = this.translate(section.contatti)
+        },
+        translate: function(obj) {
+            if (obj) {
+                if (this.$root.locale == 'it') {
+                    return obj.linktxt
+                }
+                return obj.linktxt_en
+            }
         },
         init: function() {
             if (!this.master) {
@@ -232,7 +243,7 @@ export default {
         // }, 0)
 
         if (this.$root.options) {
-            this.setOptions(this.$root.options.menu)
+            this.setOptions(this.$root.options.home.links)
         }
         this.$nextTick(() => {
             this.init()

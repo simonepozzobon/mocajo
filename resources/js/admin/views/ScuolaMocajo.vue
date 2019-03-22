@@ -6,7 +6,6 @@
             title="Header"
             idx="header"
             :disable-txt="true"
-            :disable-link="false"
             :default-value="this.header"
             @changed-value="setOpts($event, 'header')"
             @upload="upload($event, 'header')"/>

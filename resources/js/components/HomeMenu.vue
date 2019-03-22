@@ -30,7 +30,7 @@ export default {
     name: 'HomeMenu',
     watch: {
         '$root.options': function(options) {
-            this.setOptions(options.menu)
+            this.setOptions(options.home.links)
         }
     },
     data: function() {
@@ -45,7 +45,18 @@ export default {
     },
     methods: {
         setOptions: function(section) {
-            this.menu = section
+            this.menu.scuola = this.translate(section.scuola)
+            this.menu.storia = this.translate(section.storia)
+            this.menu.vini = this.translate(section.vini)
+            this.menu.contatti = this.translate(section.contatti)
+        },
+        translate: function(obj) {
+            if (obj) {
+                if (this.$root.locale == 'it') {
+                    return obj.linktxt
+                }
+                return obj.linktxt_en
+            }
         },
         goTo: function(event, name) {
             event.preventDefault()
@@ -58,7 +69,7 @@ export default {
     },
     mounted: function() {
         if (this.$root.options) {
-            this.setOptions(this.$root.options.menu)
+            this.setOptions(this.$root.options.home.links)
         }
 
     }

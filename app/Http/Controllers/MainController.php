@@ -12,10 +12,13 @@ use App\Utility;
 use App\Product;
 use App\Shipping;
 use Illuminate\Http\Request;
+use App\Http\Traits\LinkTrait;
 use Illuminate\Support\Facades\Storage;
 
 class MainController extends Controller
 {
+    use LinkTrait;
+
     public function index($slug = null) {
         if ($slug) {
             $page = Page::where('slug', $slug)->first();
@@ -110,7 +113,15 @@ class MainController extends Controller
     public function format_options($options) {
         $home = [
             'video' => Utility::check_img($options[0]->value),
+            'links' => [
+                'scuola' => $this->format_link(collect(), 1),
+                'storia' => $this->format_link(collect(), 2),
+                'vini' => $this->format_link(collect(), 3),
+                'contatti' => $this->format_link(collect(), 4),
+            ]
         ];
+
+
 
         $headerScuola = [
             'title' => $options[2]->value,
@@ -124,17 +135,24 @@ class MainController extends Controller
             'img' => Utility::check_img($options[5]->value),
         ];
 
+        $project = $this->format_link($project, 5);
+
         $family = [
             'title' => $options[6]->value,
             'txt' => $options[7]->value,
             'img' => Utility::check_img($options[8]->value),
         ];
 
+        $family = $this->format_link($family, 6);
+
         $agriturismo = [
             'title' => $options[9]->value,
             'txt' => $options[10]->value,
             'img' => Utility::check_img($options[11]->value),
         ];
+
+        $agriturismo = $this->format_link($agriturismo, 7);
+
 
         $headerStoria = [
             'video' => Utility::check_img($options[12]->value),

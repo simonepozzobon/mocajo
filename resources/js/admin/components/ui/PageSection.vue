@@ -13,18 +13,6 @@
             <form-group :name="this.titleLower + '-text-en'" title="Testo [eng]" v-if="!this.disableTxt">
                 <textarea :name="this.titleLower + '-text-en'" rows="8" cols="80" v-model="section.txt_en" class="form-control"></textarea>
             </form-group>
-            <form-group :name="this.titleLower + '-link-txt'" title="Testo Link" v-if="!this.disableLink">
-                <input type="text" :name="this.titleLower + '-link-txt'" v-model="section.linktxt" class="form-control">
-            </form-group>
-            <form-group :name="this.titleLower + '-link-txt-en'" title="Testo Link [eng]" v-if="!this.disableLink">
-                <input type="text" :name="this.titleLower + '-link-txt-en'" v-model="section.linktxt_en" class="form-control">
-            </form-group>
-            <form-group :name="this.titleLower + '-link-href'" title="Testo Href" v-if="!this.disableLink">
-                <input type="text" :name="this.titleLower + '-link-href'" v-model="section.linkhref" class="form-control">
-            </form-group>
-            <form-group :name="this.titleLower + '-link-href-en'" title="Testo Href [eng]" v-if="!this.disableLink">
-                <input type="text" :name="this.titleLower + '-link-href-en'" v-model="section.linkhref_en" class="form-control">
-            </form-group>
             <form-group name="headerImg" title="Cambia immagine" v-if="!this.isVideo">
                 <div class="custom-file">
                     <input @change="filesChange($event.target.name, $event.target.files)" type="file" class="form-control-file" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" ref="input">
@@ -57,6 +45,20 @@
                     :options="playerOptions"
                     :playsinline="true"/>
             </form-group>
+            <div class="sep"></div>
+            <form-group :name="this.titleLower + '-link-txt'" title="Testo Link" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-txt'" v-model="section.linktxt" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-link-txt-en'" title="Testo Link [eng]" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-txt-en'" v-model="section.linktxt_en" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-link-href'" title="Testo Href" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-href'" v-model="section.linkhref" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-link-href-en'" title="Testo Href [eng]" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-href-en'" v-model="section.linkhref_en" class="form-control">
+            </form-group>
+            <div class="sep"></div>
             <form-group name="save" title="Salva">
                 <button class="btn btn-outline-primary" @click="upload">Salva Sezione</button>
             </form-group>
@@ -236,5 +238,9 @@ export default {
     > div {
         max-width: 100%;
     }
+}
+
+.sep {
+    margin-bottom: $spacer * 3;
 }
 </style>
