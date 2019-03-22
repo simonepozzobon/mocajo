@@ -6,6 +6,7 @@
             title="Header"
             idx="header"
             :disable-txt="true"
+            :disable-link="false"
             :default-value="this.header"
             @changed-value="setOpts($event, 'header')"
             @upload="upload($event, 'header')"/>
@@ -13,18 +14,21 @@
             title="Progetto"
             idx="project"
             :default-value="this.project"
+            :disable-link="false"
             @changed-value="setOpts($event, 'project')"
             @upload="upload($event, 'project')"/>
         <page-section
             title="Famiglia"
             idx="family"
             :default-value="this.family"
+            :disable-link="false"
             @changed-value="setOpts($event, 'family')"
             @upload="upload($event, 'family')"/>
         <page-section
             title="Agriturismo"
             idx="agriturismo"
             :default-value="this.agriturismo"
+            :disable-link="false"
             @changed-value="setOpts($event, 'agriturismo')"
             @upload="upload($event, 'agriturismo')"/>
     </page-template>
@@ -50,6 +54,10 @@ export default {
                 title_en: null,
                 txt_en: null,
                 img: null,
+                linktxt: null,
+                linktxt_en: null,
+                linkhref: null,
+                linkhref_en: null,
             },
             project: {
                 title: null,
@@ -57,6 +65,10 @@ export default {
                 title_en: null,
                 txt_en: null,
                 img: null,
+                linktxt: null,
+                linktxt_en: null,
+                linkhref: null,
+                linkhref_en: null,
             },
             family: {
                 title: null,
@@ -64,6 +76,10 @@ export default {
                 title_en: null,
                 txt_en: null,
                 img: null,
+                linktxt: null,
+                linktxt_en: null,
+                linkhref: null,
+                linkhref_en: null,
             },
             agriturismo: {
                 title: null,
@@ -71,6 +87,10 @@ export default {
                 title_en: null,
                 txt_en: null,
                 img: null,
+                linktxt: null,
+                linktxt_en: null,
+                linkhref: null,
+                linkhref_en: null,
             },
         }
     },
@@ -83,6 +103,11 @@ export default {
                 data.append('txt', obj.txt)
                 data.append('title_en', obj.title_en)
                 data.append('txt_en', obj.txt_en)
+                data.append('linktxt', obj.linktxt)
+                data.append('linktxt_en', obj.linktxt_en)
+                data.append('linkhref', obj.linkhref)
+                data.append('linkhref_en', obj.linkhref_en)
+
 
                 let isFile = typeof obj.img.name == 'string'
                 if (isFile) {

@@ -2,26 +2,26 @@
     <div class="mobile-nav" ref="container">
         <div class="mobile-nav__content">
             <div class="mobile-nav__logo" ref="logo">
-                <img src="/svg/logo-new.svg" alt="" class="img-fluid" @click="goTo($event, 'home')">
+                <img src="/svg/logo-new.svg" alt="" class="img-fluid" @click="$root.goTo($event, 'home')">
             </div>
             <ul class="mobile-nav__menu" ref="menu">
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'scuola')">
+                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'scuola')">
                         {{ this.menu.scuola }}
                     </a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'storia')">
+                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'storia')">
                         {{ this.menu.storia }}
                     </a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'vini')">
+                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'vini')">
                         {{ this.menu.vini }}
                     </a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'contatti')">
+                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'contatti')">
                         {{ this.menu.contatti }}
                     </a>
                 </li>

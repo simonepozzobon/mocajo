@@ -3,7 +3,7 @@
         <component
             :is="tag"
             class="ui-title"
-            :class="sizeClass"
+            :class="[sizeClass, alignClass]"
             v-if="!this.isDisabled">
                 {{ title }}
         </component>
@@ -37,10 +37,21 @@ export default {
             type: String,
             default: 'h2',
         },
+        align: {
+            type: String,
+            default: null,
+        }
     },
     computed: {
         sizeClass: function() {
             return 'ui-title--'+this.size
+        },
+        alignClass: function() {
+            if (this.align == 'center') {
+                return 'ui-title--align-center'
+            }
+
+            return null
         }
     }
 }
@@ -71,5 +82,7 @@ export default {
     &#{$self}--h4 { font-size: $h4-font-size; }
     &#{$self}--h5 { font-size: $h5-font-size; }
     &#{$self}--h6 { font-size: $h6-font-size; }
+
+    &#{$self}--align-center { text-align: center; }
 }
 </style>

@@ -50,7 +50,7 @@ export default {
             if (!this.isExternal) {
                 event.preventDefault()
                 if (this.$route.name != name) {
-                    this.$router.push({name: name, params: {lang: this.$root.locale}})
+                    this.$root.goTo(name)
                 }
             }
 

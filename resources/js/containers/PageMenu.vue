@@ -2,32 +2,32 @@
     <nav id="page-menu" class="navbar navbar-expand-sm navbar-dark bg-black" ref="menu">
         <ul class="navbar-nav m-auto">
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, 'scuola')">
+                <a href="#" class="nav-link" @click="$root.goTo($event, 'scuola')">
                     {{ this.menu.scuola }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, 'storia')">
+                <a href="#" class="nav-link" @click="$root.goTo($event, 'storia')">
                     {{ this.menu.storia }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, 'home')">
+                <a href="#" class="nav-link" @click="$root.goTo($event, 'home')">
                     <nav-logo width="80px" color="light" ref="logo"/>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, 'vini')">
+                <a href="#" class="nav-link" @click="$root.goTo($event, 'vini')">
                     {{ this.menu.vini }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" @click="goTo($event, 'contatti')">
+                <a href="#" class="nav-link" @click="$root.goTo($event, 'contatti')">
                     {{ this.menu.contatti }}
                 </a>
             </li>
             <li class="nav-item" v-if="hasCart">
-                <a href="#" class="nav-link" @click="goTo($event, 'cart')">
+                <a href="#" class="nav-link" @click="$root.goTo($event, 'cart')">
                     <cart-icon width="24px" color="rgb(250, 200, 35)" ref="icon"/>
                 </a>
             </li>
@@ -107,10 +107,6 @@ export default {
         }
     },
     methods: {
-        goTo: function(event, name) {
-            event.preventDefault()
-            this.$router.push({name: name, params: {lang: this.$root.locale}})
-        },
         setOptions: function(section) {
             this.menu = section
         },

@@ -67,10 +67,6 @@ export default {
         }
     },
     methods: {
-        goTo: function(event, name) {
-            event.preventDefault()
-            this.$router.push({name: name, params: {lang: this.$root.locale}})
-        },
         mainClick: function() {
             this.$emit('toggle')
         },

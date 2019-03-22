@@ -3,6 +3,7 @@ require('./bootstrap')
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
+import { routesTranslations } from './routesTranslations'
 import Cookie from './Cookies'
 import MainTemplate from './containers/MainTemplate.vue'
 import checkView from 'vue-check-view'
@@ -46,14 +47,22 @@ const app = new Vue({
             isAnimating: null,
             next: null,
             mainMenu: null,
+            routes: routesTranslations,
         }
     },
     watch: {
         options: function(opts) {
-            console.log('set options', opts);
         }
     },
     methods: {
+        goTo: function(event, name) {
+            event.preventDefault()
+            if (this.locale == 'it') {
+                this.$router.push({name: name, params: {lang: this.locale}})
+            } else {
+                this.$router.push({name: name + '_en', params: {lang: this.locale}})
+            }
+        },
         getSize: function() {
             this.window = {
                 h: window.innerHeight,
@@ -110,12 +119,35 @@ const app = new Vue({
             }
             this.$cookie.set('mocajo-cart', JSON.stringify(this.cart))
         },
+        checkRouteTranslation: function(path, lng) {
+            let idx = -1
+            let routes = this.routes[lng]
+            idx = routes.findIndex(route => route == path)
+            if (idx > -1) {
+                return true
+            } else {
+                this.$router.push({name: 'error'})
+            }
+        },
         checkLang: function(route) {
+            // set default lang
             let language = 'it'
             if (route.hasOwnProperty('params') && route.params.hasOwnProperty('lang')) {
                 // console.log(route.params.lang, this.locale);
                 language = route.params.lang
+                // se la lingua non esiste redirige alla 404
+                if (language != 'it' && language !=  'en') {
+                    // redirect to 404
+                    this.$router.push({name: 'error'})
+                }
+
+                let path = route.fullPath.slice(4)
+                if (path != '') {
+                    this.checkRouteTranslation(path, language)
+                }
             }
+
+
 
             if (language != this.locale) {
                 this.locale = language
@@ -123,11 +155,10 @@ const app = new Vue({
             return language
         },
         hasBigMenu: function() {
-
-            if (this.window.w <= 576 && this.$route.name != 'home') {
+            if (this.window.w <= 576 && this.$route.name != 'home' && this.$route.name != 'home_en') {
                 this.bigMenu = true
                 this.isPage = true
-            } else if (this.$route.name == 'home') {
+            } else if (this.$route.name == 'home' || this.$route.name == 'home_en') {
                 this.bigMenu = true
                 this.isPage = false
             } else {

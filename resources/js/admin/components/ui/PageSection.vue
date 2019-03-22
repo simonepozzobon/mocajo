@@ -13,6 +13,18 @@
             <form-group :name="this.titleLower + '-text-en'" title="Testo [eng]" v-if="!this.disableTxt">
                 <textarea :name="this.titleLower + '-text-en'" rows="8" cols="80" v-model="section.txt_en" class="form-control"></textarea>
             </form-group>
+            <form-group :name="this.titleLower + '-link-txt'" title="Testo Link" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-txt'" v-model="section.linktxt" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-link-txt-en'" title="Testo Link [eng]" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-txt-en'" v-model="section.linktxt_en" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-link-href'" title="Testo Href" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-href'" v-model="section.linkhref" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-link-href-en'" title="Testo Href [eng]" v-if="!this.disableLink">
+                <input type="text" :name="this.titleLower + '-link-href-en'" v-model="section.linkhref_en" class="form-control">
+            </form-group>
             <form-group name="headerImg" title="Cambia immagine" v-if="!this.isVideo">
                 <div class="custom-file">
                     <input @change="filesChange($event.target.name, $event.target.files)" type="file" class="form-control-file" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" ref="input">
@@ -75,6 +87,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        disableLink: {
+            type: Boolean,
+            default: true,
+        },
         disableTitle: {
             type: Boolean,
             default: false,
@@ -102,6 +118,10 @@ export default {
                 title_en: null,
                 txt_en: null,
                 img: null,
+                linktxt: null,
+                linktxt_en: null,
+                linkhref: null,
+                linkhref_en: null,
             },
             playerOptions: {
                 sources: [],

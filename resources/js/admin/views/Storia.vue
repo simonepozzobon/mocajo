@@ -7,6 +7,7 @@
             idx="header"
             :disable-title="true"
             :disable-txt="true"
+            :disable-link="false"
             :is-video="true"
             :default-value="this.header"
             @changed-value="setOpts($event, 'header')"
@@ -14,6 +15,7 @@
         <page-section
             title="La Scuola"
             idx="scuola"
+            :disable-link="false"
             :default-value="this.scuola"
             @changed-value="setOpts($event, 'scuola')"
             @upload="upload($event, 'scuola')"/>
@@ -65,6 +67,10 @@ export default {
                 title: null,
                 txt: null,
                 img: null,
+                linktxt: null,
+                linktxt_en: null,
+                linkhref: null,
+                linkhref_en: null,
             },
             image1: {
                 img: null,

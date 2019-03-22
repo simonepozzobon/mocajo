@@ -2,22 +2,22 @@
     <div class="home-menu-container" ref="container">
         <ul class="list-unstyled">
             <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="Scuola Mocajo" @click="goTo($event, 'scuola')">
+                <a href="#" class="nav-link" data-hover="Scuola Mocajo" @click="$root.goTo($event, 'scuola')">
                     {{ this.menu.scuola }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="Storia" @click="goTo($event, 'storia')">
+                <a href="#" class="nav-link" data-hover="Storia" @click="$root.goTo($event, 'storia')">
                     {{ this.menu.storia }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="I Nostri Vini" @click="goTo($event, 'vini')">
+                <a href="#" class="nav-link" data-hover="I Nostri Vini" @click="$root.goTo($event, 'vini')">
                     {{ this.menu.vini }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="Contatti" @click="goTo($event, 'contatti')">
+                <a href="#" class="nav-link" data-hover="Contatti" @click="$root.goTo($event, 'contatti')">
                     {{ this.menu.contatti }}
                 </a>
             </li>
@@ -49,7 +49,11 @@ export default {
         },
         goTo: function(event, name) {
             event.preventDefault()
-            this.$router.push({name: name, params: {lang: this.$root.locale}})
+            if (this.$root.locale == 'it') {
+                this.$router.push({name: name, params: {lang: this.$root.locale}})
+            } else {
+                this.$router.push({name: name + '_en', params: {lang: this.$root.locale}})
+            }
         },
     },
     mounted: function() {
