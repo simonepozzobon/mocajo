@@ -351,7 +351,9 @@ export default {
     }
 
     &__products {
-        padding-bottom: $spacer * 7;
+        @include media-breakpoint-down('sm') {
+            padding-bottom: $spacer * 7;
+        }
     }
 }
 </style>
