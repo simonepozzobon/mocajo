@@ -41,8 +41,8 @@ class PrivacyController extends Controller
             'title' => $options[0]->value,
             'txt' => $options[2]->value,
             'img' => Utility::check_img($options[1]->value),
-            'txt_en' => Utility::check_img($options[3]->value),
-            'title_en' => Utility::check_img($options[4]->value),
+            'txt_en' => $options[3]->value,
+            'title_en' => $options[4]->value,
         ];
 
         return [

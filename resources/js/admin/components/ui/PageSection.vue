@@ -13,7 +13,7 @@
             <form-group :name="this.titleLower + '-text-en'" title="Testo [eng]" v-if="!this.disableTxt">
                 <textarea :name="this.titleLower + '-text-en'" rows="8" cols="80" v-model="section.txt_en" class="form-control"></textarea>
             </form-group>
-            <form-group name="headerImg" title="Cambia immagine" v-if="!this.isVideo">
+            <form-group name="headerImg" title="Cambia immagine" v-if="!this.isVideo && !this.disableImage">
                 <div class="custom-file">
                     <input @change="filesChange($event.target.name, $event.target.files)" type="file" class="form-control-file" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" ref="input">
                     <div class="valid-feedback">
@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </form-group>
-            <form-group name="headerImg" title="Cambia Video" v-else>
+            <form-group name="headerImg" title="Cambia Video" v-else-if="!this.disableImage">
                 <div class="custom-file">
                     <input @change="filesChange($event.target.name, $event.target.files)" type="file" class="form-control-file" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" ref="input">
                     <div class="valid-feedback">
@@ -35,10 +35,10 @@
                     </div>
                 </div>
             </form-group>
-            <form-group name="headerImgPreview" title="Immagine" v-if="!this.isVideo">
+            <form-group name="headerImgPreview" title="Immagine" v-if="!this.isVideo && !this.disableImage">
                 <img :src="section.img" class="img-fluid" />
             </form-group>
-            <form-group name="headerImgPreview" title="Video" v-else>
+            <form-group name="headerImgPreview" title="Video" v-else-if="!this.disableImage">
                 <video-player
                     class="video-player-box img-fluid"
                     ref="videoPlayer"
@@ -92,6 +92,10 @@ export default {
         disableLink: {
             type: Boolean,
             default: true,
+        },
+        disableImage: {
+            type: Boolean,
+            default: false,
         },
         disableTitle: {
             type: Boolean,

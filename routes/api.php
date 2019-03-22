@@ -50,6 +50,10 @@ Route::prefix('admin')->group(function() {
         Route::post('/save-section', 'Admin\PrivacyController@save_section');
     });
 
+    Route::prefix('error')->group(function() {
+        Route::get('/get-options', 'Admin\ErrorController@get_options');
+        Route::post('/save-section', 'Admin\ErrorController@save_section');
+    });
 
     Route::prefix('products')->group(function() {
         Route::get('/get-products', 'Admin\ProductController@get_products');

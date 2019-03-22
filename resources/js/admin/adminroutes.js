@@ -59,6 +59,11 @@ const routes = [
         name: 'privacy',
         component: require('./views/Privacy.vue')
     },
+    {
+        path: '/404',
+        name: 'error',
+        component: require('./views/Error.vue')
+    },
 ]
 
 export default routes
