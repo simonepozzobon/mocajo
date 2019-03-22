@@ -82,6 +82,7 @@ class MainController extends Controller
             $product->icon = Utility::check_img($product->icon);
             $product->img = Utility::check_img($product->img);
             $product->scheda_tecnica = Utility::check_img($product->scheda_tecnica);
+            $product->scheda_tecnica_en = Utility::check_img($product->scheda_tecnica_en);
             return $product;
         });
 
@@ -190,7 +191,9 @@ class MainController extends Controller
 
         $vini = [
             'title' => $options[23]->value,
+            'title_en' => $options[49]->value,
             'txt' => $options[34]->value,
+            'txt_en' => $options[48]->value,
             'img' => Utility::check_img($options[24]->value),
         ];
 

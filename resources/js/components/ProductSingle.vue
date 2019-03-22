@@ -1,5 +1,5 @@
 <template lang="html">
-    <div :id="this.titleToLower" class="row" v-view="handler">
+    <div :id="this.titleToLower" class="row">
         <div :id="this.titleToLower + '-trigger'"></div>
         <ui-block
             color="bg-light">
@@ -8,16 +8,16 @@
                 tag="h2"
                 :is-disabled="!product.is_active"/>
             <ui-subtitle
-                :title="product.short_description"
+                :title="this.description"
                 :is-disabled="!product.is_active"/>
             <ui-collapse
                 :elements="this.wine_description"
                 :is-disabled="!product.is_active"/>
             <ui-action
                 target="_blank"
-                :url="product.scheda_tecnica"
+                :url="scheda_tecnica"
                 :is-disabled="!product.is_active">
-                Download Scheda Tecnica
+                {{ this.btn }}
             </ui-action>
             <button class="btn btn-outline-black add-to-cart" @click="addToCart" v-if="shop.active">Acquista</button>
             <button class="btn btn-outline-black add-to-cart d-none" @click="addToCart" v-else>Acquista</button>
@@ -55,6 +55,13 @@ export default {
             default: function() {}
         }
     },
+    data: function() {
+        return {
+            description: null,
+            btn: null,
+            scheda_tecnica: null,
+        }
+    },
     computed: {
         titleToLower: function() {
             if (this.product.title) {
@@ -66,29 +73,47 @@ export default {
             return [
                 {
                     title: 'descrizione',
-                    content: this.product.description
+                    title_en: 'description',
+                    content: this.product.description,
+                    content_en: this.product.description_en,
                 },
                 {
                     title: 'vitigno',
-                    content: this.product.vitigno
+                    title_en: 'grape variety',
+                    content: this.product.vitigno,
+                    content_en: this.product.vitigno_en,
                 },
                 {
                     title: 'zona',
-                    content: this.product.zona
+                    title_en: 'zone',
+                    content: this.product.zona,
+                    content_en: this.product.zona_en,
                 },
                 {
                     title: 'vinificazione',
-                    content: this.product.vinificazione
+                    title_en: 'winemaking',
+                    content: this.product.vinificazione,
+                    content_en: this.product.vinificazione_en,
                 },
                 {
-                    title: 'valori_analitici',
-                    content: this.product.valori_analitici
+                    title: 'valori analitici',
+                    title_en: 'analytical values',
+                    content: this.product.valori_analitici,
+                    content_en: this.product.valori_analitici_en,
                 },
             ]
         }
     },
+    watch: {
+        '$root.locale': function(locale) {
+            this.translate(locale)
+        }
+    },
     methods: {
-        handler: function(e) {
+        translate: function(locale = false) {
+            this.description = this.$root.locale == 'it' ? this.product.short_description : this.product.short_description_en
+            this.scheda_tecnica = this.$root.locale == 'it' ? this.product.scheda_tecnica : this.product.scheda_tecnica_en
+            this.btn = this.$root.locale == 'it' ? 'Download Scheda Tecnica' : 'Download Technical Sheet'
         },
         addToCart: function() {
             let shortenProduct = {
@@ -101,6 +126,9 @@ export default {
             }
             this.$root.addToCart(shortenProduct)
         },
+    },
+    mounted: function() {
+        this.translate()
     },
 }
 </script>

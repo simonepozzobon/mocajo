@@ -3,7 +3,7 @@
         <div class="row" v-if="this.vini.img">
             <ui-hero-banner
                 color="bg-dark"
-                :title="this.vini.title"
+                :title="this.title"
                 :imgSrc="this.vini.img"/>
         </div>
         <div class="row">
@@ -26,7 +26,7 @@
                         minHeightSize="100px"
                         color="bg-light"
                         :disablePadding="false">
-                        <p class="vini-description-paragraph">{{ this.vini.txt }}</p>
+                        <p class="vini-description-paragraph">{{ this.text }}</p>
                     </ui-block>
                     <ui-block
                         class="d-none d-md-block"
@@ -87,6 +87,8 @@ export default {
                 img: null,
                 txt: null,
             },
+            title: null,
+            text: null,
             shop: {
                 active: false,
                 multiplier: 1,
@@ -107,13 +109,30 @@ export default {
         },
         '$root.options': function(options) {
             this.setContent(options.vini, options.shop)
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
         }
     },
     methods: {
+        getTranslations: function(obj, key) {
+            if (obj.hasOwnProperty(key) && obj.hasOwnProperty(key + '_en')) {
+                if (this.$root.locale == 'it') {
+                    return obj[key]
+                }
+                return obj[key + '_en']
+            }
+            return null
+        },
+        translate: function(locale = false) {
+            this.title = this.getTranslations(this.vini, 'title')
+            this.text = this.getTranslations(this.vini, 'txt')
+        },
         setContent: function(section, shop) {
             this.vini = section
             this.shop = shop
             this.isActive = shop.active
+            this.translate()
         },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop

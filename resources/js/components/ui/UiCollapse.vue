@@ -5,6 +5,7 @@
             v-for="(item, i) in this.elements"
             :key="i"
             :title="item.title"
+            :item="item"
             :is-disabled="true"/>
     </div>
 </template>
