@@ -20,6 +20,10 @@ export default {
             type: Boolean,
             default: false
         },
+        isPath: {
+            type: Boolean,
+            default: false
+        },
         target: {
             type: String,
             default: '_self'
@@ -50,10 +54,13 @@ export default {
             if (!this.isExternal) {
                 event.preventDefault()
                 if (this.$route.name != name) {
-                    this.$root.goTo(name)
+                    if (this.isPath) {
+                        this.$router.push(name)
+                    } else {
+                        this.$root.goTo(name)
+                    }
                 }
             }
-
         }
     }
 }

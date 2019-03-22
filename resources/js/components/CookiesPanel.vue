@@ -3,7 +3,7 @@
         <div class="cookies-policy-content">
             <p v-html="this.text"></p>
             <button class="btn btn-outline-primary" @click="cookieAccepted">
-                Accetto
+                {{ this.btnText }}
             </button>
         </div>
     </div>
@@ -21,25 +21,36 @@ export default {
             cookies: null,
             cookie: null,
             accepted: false,
+            btnText: null,
         }
     },
     watch: {
         '$root.options': function(options) {
-            this.text = this.translate(options.cookies)
-            this.setContent(options.cookies)
+            this.setOptions(options.cookies)
+            this.translate()
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
         },
     },
     methods: {
-        translate: function(obj) {
-            if (obj) {
-                if (this.$root.locale == 'it') {
-                    return obj.text
-                }
-                return obj.text_en
+        translate: function(locale = false) {
+            locale = locale ? locale : this.$root.locale
+
+            switch (locale) {
+                case 'en':
+                    this.btnText = 'Accept'
+                    this.text = this.cookies ? this.cookies.text_en : null
+                    break;
+                case 'it':
+                    this.btnText = 'Accetto'
+                    this.text = this.cookies ? this.cookies.text : null
+                    break;
             }
         },
-        setContent: function(section) {
-            this.cookies = section.cookies
+        setOptions: function(section) {
+            this.cookies = section
+            this.text = this.$root.locale == 'it' ? section.text : section.text_en
         },
         goTo: function(event, path) {
             event.preventDefault()
@@ -94,6 +105,9 @@ export default {
     },
     mounted: function() {
         // this.hidePanel()
+        if (this.$root.options) {
+            this.setOptions(this.$root.options.cookies)
+        }
         if (!this.accepted) {
             let cookie = this.$cookie.get('mocajo-cookie-policy')
             if (cookie) {

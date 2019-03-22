@@ -19,8 +19,8 @@
                 <ui-title
                     tag="h1"
                     size="h2"
-                    :title="this.scuolaSec.title" />
-                <p v-html="this.scuolaSec.txt"></p>
+                    :title="this.title" />
+                <p v-html="this.text"></p>
             </ui-block>
         </div>
         <div class="row" v-if="this.images">
@@ -68,6 +68,8 @@ export default {
             scuolaSec: null,
             images: null,
             animated: true,
+            title: null,
+            text: null,
         }
     },
     watch: {
@@ -76,15 +78,32 @@ export default {
         },
         '$root.options': function(options) {
             this.setContent(options.storia)
+            this.translateStatic()
         },
         '$root.isMobile': function(value) {
             if (value) {
                 return this.animated = false
             }
             return this.animated = true
-        }
+        },
+        '$root.locale': function(locale) {
+            this.translateStatic(locale)
+        },
     },
     methods: {
+        translateStatic: function(locale = false) {
+            locale = locale ? locale : this.$root.locale
+            switch (locale) {
+                case 'en':
+                    this.text = this.scuolaSec ? this.scuolaSec.txt_en : null
+                    this.title = this.scuolaSec ? this.scuolaSec.title_en : null
+                    break;
+                case 'it':
+                    this.text = this.scuolaSec ? this.scuolaSec.txt : null
+                    this.title = this.scuolaSec ? this.scuolaSec.title : null
+                    break;
+            }
+        },
         animateStoria: function() {
             this.$refs.storia.animateIn()
         },
@@ -99,6 +118,7 @@ export default {
             this.header = section.header
             this.scuolaSec = section.scuola
             this.images = section.images
+            this.translateStatic()
         }
     },
     mounted: function() {

@@ -125,13 +125,16 @@ class MainController extends Controller
 
         $headerScuola = [
             'title' => $options[2]->value,
+            'title_en' => $options[43]->value,
             'txt' => null,
             'img' => Utility::check_img($options[1]->value),
         ];
 
         $project = [
             'title' => $options[3]->value,
+            'title_en' => $options[37]->value,
             'txt' => $options[4]->value,
+            'txt_en' => $options[38]->value,
             'img' => Utility::check_img($options[5]->value),
         ];
 
@@ -139,7 +142,9 @@ class MainController extends Controller
 
         $family = [
             'title' => $options[6]->value,
+            'title_en' => $options[39]->value,
             'txt' => $options[7]->value,
+            'txt_en' => $options[40]->value,
             'img' => Utility::check_img($options[8]->value),
         ];
 
@@ -147,7 +152,9 @@ class MainController extends Controller
 
         $agriturismo = [
             'title' => $options[9]->value,
+            'title_en' => $options[41]->value,
             'txt' => $options[10]->value,
+            'txt_en' => $options[42]->value,
             'img' => Utility::check_img($options[11]->value),
         ];
 
@@ -160,7 +167,9 @@ class MainController extends Controller
 
         $scuola = [
             'title' => $options[13]->value,
+            'title_en' => $options[44]->value,
             'txt' => $options[14]->value,
+            'txt_en' => $options[45]->value,
             'img' => Utility::check_img($options[15]->value),
         ];
 
@@ -208,6 +217,13 @@ class MainController extends Controller
             'text_en' => $options[36]->value,
         ];
 
+        $error = [
+            'title' => $options[50]->value,
+            'title_en' => $options[52]->value,
+            'txt' => $options[51]->value,
+            'txt_en' => $options[53]->value,
+        ];
+
         return [
             'menu' => $menu,
             'shop' => $shop,
@@ -227,6 +243,7 @@ class MainController extends Controller
             'contatti' => $contatti,
             'privacy' => $privacy,
             'cookies' => $cookies,
+            'error' => $error,
         ];
     }
 }

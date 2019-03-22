@@ -2,7 +2,7 @@
     <div class="container-fluid scuola-mocajo section">
         <div class="row" v-if="this.header">
             <ui-hero-banner
-                :title="this.header.title"
+                :title="this.locale.title"
                 color="bg-dark"
                 :imgSrc="this.header.img"/>
         </div>
@@ -12,11 +12,12 @@
                 color="bg-light"
                 :animated="animated"
                 ref="progetto">
-                <ui-title :title="this.project.title"/>
-                <p v-html="this.project.txt"></p>
+                <ui-title :title="this.locale.project.title"/>
+                <p v-html="this.locale.project.txt"></p>
                 <ui-action
-                    url="storia">
-                    Scopri la storia
+                    :is-path="true"
+                    :url="this.locale.project.linkhref">
+                    {{ this.locale.project.linktxt }}
                 </ui-action>
             </ui-block>
             <ui-image-block
@@ -38,11 +39,12 @@
                 :animated="animated"
                 color="bg-light">
                 <ui-title
-                    :title="this.family.title" />
-                <p v-html="this.family.txt"></p>
+                    :title="this.locale.family.title" />
+                <p v-html="this.locale.family.txt"></p>
                 <ui-action
-                    url="vini">
-                    Scopri i nostri vini
+                    :is-path="true"
+                    :url="this.locale.family.linkhref">
+                    {{ this.locale.family.linktxt }}
                 </ui-action>
             </ui-block>
         </div>
@@ -53,11 +55,12 @@
                 :animated="animated"
                 color="bg-light">
                 <ui-title
-                    :title="this.agriturismo.title" />
-                <p v-html="this.agriturismo.txt"></p>
+                    :title="this.locale.agriturismo.title" />
+                <p v-html="this.locale.agriturismo.txt"></p>
                 <ui-action
-                    url="contatti">
-                    Vai a contatti
+                    :is-path="true"
+                    :url="this.locale.agriturismo.linkhref">
+                    {{ this.locale.agriturismo.linktxt }}
                 </ui-action>
             </ui-block>
             <ui-image-block
@@ -97,6 +100,27 @@ export default {
             family: null,
             agriturismo: null,
             animated: true,
+            locale: {
+                title: null,
+                project: {
+                    title: null,
+                    txt: null,
+                    linktxt: null,
+                    linkhref: null,
+                },
+                family: {
+                    title: null,
+                    txt: null,
+                    linktxt: null,
+                    linkhref: null,
+                },
+                agriturismo: {
+                    title: null,
+                    txt: null,
+                    linktxt: null,
+                    linkhref: null,
+                }
+            }
         }
     },
     watch: {
@@ -108,9 +132,46 @@ export default {
                 return this.animated = false
             }
             return this.animated = true
-        }
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
+        },
     },
     methods: {
+        getTranslation: function(obj, key) {
+            if (obj.hasOwnProperty(key) || obj.hasOwnProperty(key + '_en')) {
+                if (this.$root.locale == 'it') {
+                    return obj[key]
+                }
+                return obj[key + '_en']
+            }
+            return null
+        },
+        translate: function(locale = false) {
+            locale = locale ? locale : this.$root.locale
+
+            this.locale = {
+                title: this.getTranslation(this.header, 'title'),
+                project: {
+                    title: this.getTranslation(this.project, 'title'),
+                    txt: this.getTranslation(this.project, 'txt'),
+                    linktxt: this.getTranslation(this.project, 'linktxt'),
+                    linkhref: this.getTranslation(this.project, 'linkhref'),
+                },
+                family: {
+                    title: this.getTranslation(this.family, 'title'),
+                    txt: this.getTranslation(this.family, 'txt'),
+                    linktxt: this.getTranslation(this.family, 'linktxt'),
+                    linkhref: this.getTranslation(this.family, 'linkhref'),
+                },
+                agriturismo: {
+                    title: this.getTranslation(this.agriturismo, 'title'),
+                    txt: this.getTranslation(this.agriturismo, 'txt'),
+                    linktxt: this.getTranslation(this.agriturismo, 'linktxt'),
+                    linkhref: this.getTranslation(this.agriturismo, 'linkhref'),
+                }
+            }
+        },
         animateFamiglia: function() {
             this.$refs.famiglia.animateIn()
         },
@@ -125,6 +186,7 @@ export default {
             this.project = section.project
             this.family = section.family
             this.agriturismo = section.agriturismo
+            this.translate()
         },
     },
     mounted: function() {

@@ -146,7 +146,7 @@ export default {
     mounted: function() {
         this.setPadding()
         this.translate()
-        
+
         if (this.$root.options) {
             this.setContent(this.$root.options.contatti)
         }
