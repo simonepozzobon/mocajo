@@ -45,6 +45,18 @@
                     :options="playerOptions"
                     :playsinline="true"/>
             </form-group>
+            <form-group :name="this.titleLower + '-alt'" title="Alt Tag" v-if="!this.isVideo && !this.disableImage">
+                <input type="text" :name="this.titleLower + '-alt'" v-model="section.alt" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-alt-en'" title="Alt Tag [eng]" v-if="!this.isVideo && !this.disableImage">
+                <input type="text" :name="this.titleLower + '-alt-en'" v-model="section.alt_en" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-image-title-en'" title="Image Title" v-if="!this.isVideo && !this.disableImage">
+                <input type="text" :name="this.titleLower + '-image-title-en'" v-model="section.image_title" class="form-control">
+            </form-group>
+            <form-group :name="this.titleLower + '-image-title-en'" title="Image Title [eng]" v-if="!this.isVideo && !this.disableImage">
+                <input type="text" :name="this.titleLower + '-image-title-en'" v-model="section.image_title_en" class="form-control">
+            </form-group>
             <div class="sep"></div>
             <form-group :name="this.titleLower + '-link-txt'" title="Testo Link" v-if="!this.disableLink">
                 <input type="text" :name="this.titleLower + '-link-txt'" v-model="section.linktxt" class="form-control">
@@ -128,6 +140,10 @@ export default {
                 linktxt_en: null,
                 linkhref: null,
                 linkhref_en: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             playerOptions: {
                 sources: [],

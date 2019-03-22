@@ -57,6 +57,10 @@ export default {
                 linktxt_en: null,
                 linkhref: null,
                 linkhref_en: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             project: {
                 title: null,
@@ -68,6 +72,10 @@ export default {
                 linktxt_en: null,
                 linkhref: null,
                 linkhref_en: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             family: {
                 title: null,
@@ -79,6 +87,10 @@ export default {
                 linktxt_en: null,
                 linkhref: null,
                 linkhref_en: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             agriturismo: {
                 title: null,
@@ -90,6 +102,10 @@ export default {
                 linktxt_en: null,
                 linkhref: null,
                 linkhref_en: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
         }
     },
@@ -106,6 +122,10 @@ export default {
                 data.append('linktxt_en', obj.linktxt_en)
                 data.append('linkhref', obj.linkhref)
                 data.append('linkhref_en', obj.linkhref_en)
+                data.append('alt', obj.alt)
+                data.append('alt_en', obj.alt_en)
+                data.append('image_title', obj.image_title)
+                data.append('image_title_en', obj.image_title_en)
 
 
                 let isFile = typeof obj.img.name == 'string'

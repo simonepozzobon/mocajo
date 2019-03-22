@@ -7,15 +7,14 @@
             idx="header"
             :disable-title="true"
             :disable-txt="true"
-            :disable-link="false"
             :is-video="true"
             :default-value="this.header"
             @changed-value="setOpts($event, 'header')"
             @upload="upload($event, 'header')"/>
         <page-section
-            title="La Scuola"
+            title="La Storia"
             idx="scuola"
-            :disable-link="false"
+            :disable-link="true"
             :default-value="this.scuola"
             @changed-value="setOpts($event, 'scuola')"
             @upload="upload($event, 'scuola')"/>
@@ -71,20 +70,31 @@ export default {
                 linktxt_en: null,
                 linkhref: null,
                 linkhref_en: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             image1: {
                 img: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             image2: {
                 img: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
             image3: {
                 img: null,
-            },
-            images: {
-                img1: null,
-                img2: null,
-                img3: null,
+                alt: null,
+                alt_en: null,
+                image_title: null,
+                image_title_en: null,
             },
         }
     },
@@ -107,6 +117,10 @@ export default {
                     data.append('img', obj.img)
                 }
 
+                data = this.setData(data, 'alt', obj)
+                data = this.setData(data, 'alt_en', obj)
+                data = this.setData(data, 'image_title', obj)
+                data = this.setData(data, 'image_title_en', obj)
 
                 this.$http.post('/api/admin/storia/save-section', data).then(response => {
                     this.formatResponse(response.data)
@@ -116,6 +130,12 @@ export default {
             }
 
         },
+        setData: function(data, key, obj) {
+            if (obj.hasOwnProperty(key)) {
+                data.append(key, obj[key])
+            }
+            return data
+        },
         setOpts: function(obj, value) {
             switch (value) {
                 case 'header':
@@ -124,10 +144,14 @@ export default {
                 case 'scuola':
                     this.scuola = obj
                     break;
-                case 'images':
-                    this.image1 = { img: obj.img1 }
-                    this.image2 = { img: obj.img2 }
-                    this.image3 = { img: obj.img3 }
+                case 'image-1':
+                    this.image1 = obj
+                    break;
+                case 'image-2':
+                    this.image2 = obj
+                    break;
+                case 'image-3':
+                    this.image3 = obj
                     break;
             }
         },
@@ -137,12 +161,12 @@ export default {
             })
         },
         formatResponse: function(data) {
+            console.log(data);
             this.header = data.header
             this.scuola = data.scuola
-            this.images = data.images
-            this.image1 = { img: data.images.img1 }
-            this.image2 = { img: data.images.img2 }
-            this.image3 = { img: data.images.img3 }
+            this.image1 = data.image1
+            this.image2 = data.image2
+            this.image3 = data.image3
             this.$emit('clear-feedback')
         }
     },
