@@ -193,19 +193,6 @@ const app = new Vue({
         this.$router.beforeEach((to, from, next) => {
             lng = this.checkLang(to)
             next()
-
-            // this.$on('animation-complete', obj => {
-            //     this.removeAnimationFromCache(obj)
-            //     if (this.animCache.length == 0) {
-            //         next()
-            //     }
-            // })
-
-            // console.log(this.isAnimating);
-            // if (this.animCache.length == 0) {
-            //     // procedi
-            //     next()
-            // }
         })
 
         this.$router.afterEach((to, from, next) => {

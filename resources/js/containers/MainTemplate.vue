@@ -188,10 +188,10 @@ export default {
                 done()
             }
         },
-        mainClick: function(name, master = false){
+        mainClick: function(event, name, master = false){
             this.toggle()
             this.$nextTick(() => {
-                this.$router.push({name: name, params: {lang: this.$root.locale}})
+                this.$root.goTo(event, name)
             })
         },
         toggle: function() {
@@ -265,12 +265,6 @@ export default {
             // done()
         }
     },
-    // created: function() {
-    //     this.$root.cities = this.parsedCities
-    //     this.$root.options = this.parsedOptions
-    //     this.$root.products = this.parsedProducts
-    //     this.$root.shippings = this.parsedShippings
-    // },
     mounted: function() {
         this.$root.cities = this.parsedCities
         this.$root.options = this.parsedOptions

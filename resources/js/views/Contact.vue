@@ -141,11 +141,11 @@ export default {
             this.mail = section.mail
             this.piva = section.piva
             this.denominazione = section.denominazione
+            this.translate()
         }
     },
     mounted: function() {
         this.setPadding()
-        this.translate()
 
         if (this.$root.options) {
             this.setContent(this.$root.options.contatti)

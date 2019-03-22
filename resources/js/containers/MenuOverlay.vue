@@ -2,27 +2,27 @@
     <div class="mobile-nav" ref="container">
         <div class="mobile-nav__content">
             <div class="mobile-nav__logo" ref="logo">
-                <img src="/svg/logo-new.svg" alt="" class="img-fluid" @click="$root.goTo($event, 'home')">
+                <img src="/svg/logo-new.svg" alt="" class="img-fluid" @click="goTo($event, 'home')">
             </div>
             <ul class="mobile-nav__menu" ref="menu">
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'scuola')">
-                        {{ this.menu.scuola }}
+                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'scuola')">
+                        {{ this.locale.scuola }}
                     </a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'storia')">
-                        {{ this.menu.storia }}
+                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'storia')">
+                        {{ this.locale.storia }}
                     </a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'vini')">
-                        {{ this.menu.vini }}
+                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'vini')">
+                        {{ this.locale.vini }}
                     </a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a href="#" class="mobile-nav__link" @click="$root.goTo($event, 'contatti')">
-                        {{ this.menu.contatti }}
+                    <a href="#" class="mobile-nav__link" @click="goTo($event, 'contatti')">
+                        {{ this.locale.contatti }}
                     </a>
                 </li>
             </ul>
@@ -73,6 +73,12 @@ export default {
                 vini: null,
                 contatti: null,
             },
+            locale: {
+                scuola: null,
+                storia: null,
+                vini: null,
+                contatti: null,
+            },
             duration: .6,
             scale: 2,
             ease: Sine.easeOut,
@@ -85,6 +91,9 @@ export default {
     watch: {
         '$root.options': function(options) {
             this.setOptions(options.home.links)
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
         }
     },
     computed: {
@@ -96,23 +105,28 @@ export default {
         },
     },
     methods: {
-        setOptions: function(section) {
-            this.menu.scuola = this.translate(section.scuola)
-            this.menu.storia = this.translate(section.storia)
-            this.menu.vini = this.translate(section.vini)
-            this.menu.contatti = this.translate(section.contatti)
-        },
-        translate: function(obj) {
-            if (obj) {
+        getTranslations: function(obj, parent, key) {
+            if (obj.hasOwnProperty(parent) && obj[parent].hasOwnProperty(key) && obj[parent].hasOwnProperty(key + '_en')) {
                 if (this.$root.locale == 'it') {
-                    return obj.linktxt
+                    return obj[parent][key]
                 }
-                return obj.linktxt_en
+                return obj[parent][key + '_en']
             }
+            return null
+        },
+        translate: function(locale = false) {
+            this.locale.scuola = this.getTranslations(this.menu, 'scuola', 'linktxt')
+            this.locale.storia = this.getTranslations(this.menu, 'storia', 'linktxt')
+            this.locale.vini = this.getTranslations(this.menu, 'vini', 'linktxt')
+            this.locale.contatti = this.getTranslations(this.menu, 'contatti', 'linktxt')
+        },
+        setOptions: function(section) {
+            this.menu = section
+            this.translate()
         },
         goTo: function(event, name) {
             event.preventDefault()
-            this.$emit('main-click', name, true)
+            this.$emit('main-click', event, name, true)
         },
         init: function() {
             if (!this.master) {
