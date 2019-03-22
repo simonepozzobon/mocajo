@@ -40,7 +40,7 @@ import CartIcon from '../components/CartIcon.vue'
 import MenuAnim from '../components/MenuAnim.vue'
 import NavLogo from '../components/NavLogo.vue'
 import {TimelineMax, TweenLite} from 'gsap'
-import ScrollToPlugin from 'gsap/ScrollToPlugin'
+require('gsap/ScrollToPlugin')
 import SplitText from 'gsap/SplitText'
 
 export default {
@@ -183,7 +183,10 @@ export default {
         },
         addScrollListener: function() {
             TweenLite.to(window, .2, {
-                scrollTo: 0
+                scrollTo: {
+                    y:0,
+                    autokill: false,
+                }
             }).play()
 
             $(window).scroll(() => {
@@ -226,6 +229,7 @@ export default {
                 TweenLite.to(window, .2, {
                     scrollTo: {
                         y: 0,
+                        autokill: false,
                     },
                     onComplete: () => {
                         console.log('completed')

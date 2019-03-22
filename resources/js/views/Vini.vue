@@ -56,10 +56,11 @@
 <script>
 import Wines from '../dummies/wines'
 import {TimelineMax} from 'gsap'
-import ScrollToPlugin from 'gsap/ScrollToPlugin'
 import ProductMenuIcon from '../components/ProductMenuIcon.vue'
 import ProductSingle from '../components/ProductSingle.vue'
 import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiSubtitle, UiTitle } from '../components/ui'
+require('gsap/ScrollToPlugin')
+
 export default {
     name: 'Vini',
     components: {
@@ -94,6 +95,7 @@ export default {
                 multiplier: 1,
             },
             isActive: null,
+            initialized: null,
         }
     },
     watch: {
@@ -127,12 +129,18 @@ export default {
         translate: function(locale = false) {
             this.title = this.getTranslations(this.vini, 'title')
             this.text = this.getTranslations(this.vini, 'txt')
+            if (!this.initialized) {
+                this.$nextTick(() => {
+                    this.scrollToTop()
+                })
+            }
         },
         setContent: function(section, shop) {
             this.vini = section
             this.shop = shop
             this.isActive = shop.active
             this.translate()
+
         },
         setMenuOnCenter: function(e) {
             let position = document.documentElement.scrollTop
@@ -187,6 +195,7 @@ export default {
                         offsetY: 130,
                         y: scrollYPos,
                         x: 0,
+                        autokill: false,
                     },
                     ease: Sine.easeOut
                 }, 0)
@@ -194,18 +203,27 @@ export default {
                 master.play()
             })
 
+        },
+        scrollToTop: function() {
+            TweenMax.to(window, .2, {
+                scrollTo: {
+                    y: 0,
+                    autokill: false,
+                },
+                onComplete: () => {
+                    this.initialized = true
+                }
+            })
         }
     },
     mounted: function() {
-        // window.addEventListener('scroll', (e) => {
-        //     this.setMenuOnCenter(e)
-        // })
         if (this.$root.products) {
             this.products = this.$root.products
         }
         if (this.$root.options) {
             this.setContent(this.$root.options.vini, this.$root.options.shop)
         }
+
     }
 }
 </script>

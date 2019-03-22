@@ -8,7 +8,7 @@
 
 <script>
 import {TimelineMax} from 'gsap'
-import ScrollToPlugin from 'gsap/ScrollToPlugin'
+require('gsap/ScrollToPlugin')
 export default {
     name: 'CartIcon',
     props: {
@@ -33,7 +33,10 @@ export default {
             })
 
             master.to(window, .2, {
-                scrollTo: 0
+                scrollTo: {
+                    y:0,
+                    autokill: false,
+                },
             })
 
             master.fromTo(this.$refs.item, .2, {

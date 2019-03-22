@@ -228,7 +228,8 @@ export default {
 
                 TweenLite.to(window, .2, {
                     scrollTo: {
-                        y: 0
+                        y: 0,
+                        autokill: false,
                     }
                 })
             } else {
