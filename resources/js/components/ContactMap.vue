@@ -11,7 +11,7 @@
                 :searchable="true"
                 :close-on-select="true"
                 :show-labels="false"
-                placeholder="Seleziona una città..."/>
+                :placeholder="this.placeholder"/>
         </div>
         <vl-map
             :load-tiles-while-animating="true"
@@ -60,6 +60,7 @@ export default {
             value: '',
             options: [],
             shops: [],
+            placeholder: null,
         }
     },
     watch: {
@@ -68,6 +69,9 @@ export default {
         },
         '$root.cities': function(cities) {
             this.formatCities(cities)
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
         },
         value: function(value) {
             let idx = this.$root.cities.findIndex(item => item.name == value)
@@ -78,6 +82,18 @@ export default {
         }
     },
     methods: {
+        translate: function(locale = false) {
+            locale = locale ? locale : this.$root.locale
+
+            switch (locale) {
+                case 'en':
+                    this.placeholder = 'Select a city...'
+                    break;
+                case 'it':
+                    this.placeholder = 'Seleziona una città...'
+                    break;
+            }
+        },
         formatCities: function(cities) {
             for (let i = 0; i < cities.length; i++) {
                 this.options.push(cities[i].name)
@@ -101,6 +117,7 @@ export default {
         }
     },
     mounted: function() {
+        this.translate()
         this.setMapHeight()
     }
 }

@@ -5,20 +5,30 @@
                 :full-height="true"
                 color="bg-light">
                 <div class="contact-details">
-                    <ui-title title="Contatti" tag="h1"></ui-title>
+                    <h1 class="contact-title">
+                        <span class="contact-title__main">
+                            {{ this.locale.title }}
+                        </span><br>
+                        <span class="contact-title__secondary">
+                            {{ this.name }}
+                        </span>
+                    </h1>
                     <div class="contat-hours mb-5" v-if="this.name">
-                        <h5>{{ this.name }}</h5>
-                        <p>
-                            Denominazione: La Scuola Di Mocajo Società Agricola di Perucchetti Giuseppe & C SS
-                        </p>
+                        <p><i>{{ this.denominazione }}</i></p>
                         <div class="row">
                             <div class="col-md-5">
                                 <p v-html="this.address"></p>
-                                <p>Partita IVA: {{ this.pIva }}</p>
+                            </div>
+                            <div class="col-md-7">
+                                <p>P. IVA: {{ this.piva }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                {{ this.locale.phone }}: {{ this.phone }}<br>
                             </div>
                             <div class="col-md-7">
                                 <p>
-                                    Telefono: {{ this.phone }}<br>
                                     Mail: <a :href="'mailto:' + this.mail">{{ this.mail }}</a><br>
                                 </p>
                             </div>
@@ -75,12 +85,17 @@ export default {
     },
     data: function() {
         return {
+            locale: {
+                title: null,
+                phone: null,
+            },
             controller: null,
             name: null,
             address: null,
             phone: null,
             mail: null,
-            pIva: null,
+            piva: null,
+            denominazione: null,
         }
     },
     watch: {
@@ -89,9 +104,26 @@ export default {
         },
         '$root.options': function(options) {
             this.setContent(options.contatti)
+        },
+        '$root.locale': function(locale) {
+            this.translate(locale)
         }
     },
     methods: {
+        translate: function(locale = false) {
+            locale = locale ? locale : this.$root.locale
+
+            switch (locale) {
+                case 'en':
+                    this.locale.title = 'Contacts'
+                    this.locale.phone = 'Phone'
+                    break;
+                case 'it':
+                    this.locale.title = 'Contatti'
+                    this.locale.phone = 'Telefono'
+                    break;
+            }
+        },
         animateStoria: function() {
             this.$refs.storia.animateIn()
         },
@@ -107,10 +139,14 @@ export default {
             this.address = section.address
             this.phone = section.phone
             this.mail = section.mail
+            this.piva = section.piva
+            this.denominazione = section.denominazione
         }
     },
     mounted: function() {
         this.setPadding()
+        this.translate()
+        
         if (this.$root.options) {
             this.setContent(this.$root.options.contatti)
         }
@@ -131,6 +167,21 @@ export default {
 
     .contact-details {
         width: 100%;
+
+        .contact-title {
+
+            &__main {
+                margin-bottom: $spacer * 2;
+                text-transform: capitalize;
+                letter-spacing: 2px;
+                font-size: $h2-font-size;
+            }
+
+            &__secondary {
+                font-size: $h5-font-size;
+            }
+        }
+
         .social-links {
             // background-color: $black;
 

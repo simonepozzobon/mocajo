@@ -175,6 +175,8 @@ class MainController extends Controller
             'address' => $options[20]->value,
             'phone' => $options[21]->value,
             'mail' => $options[22]->value,
+            'denominazione' => $options[46]->value,
+            'piva' => $options[47]->value,
         ];
 
         $vini = [
