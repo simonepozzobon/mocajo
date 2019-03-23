@@ -64,7 +64,9 @@ export default {
             },
             scuola: {
                 title: null,
+                title_en: null,
                 txt: null,
+                txt_en: null,
                 img: null,
                 linktxt: null,
                 linktxt_en: null,
@@ -106,10 +108,12 @@ export default {
 
                 if (obj.title) {
                     data.append('title', obj.title)
+                    data.append('title_en', obj.title_en)
                 }
 
                 if (obj.txt) {
                     data.append('txt', obj.txt)
+                    data.append('txt_en', obj.txt_en)
                 }
 
                 let isFile = typeof obj.img.name == 'string'

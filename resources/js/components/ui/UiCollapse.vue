@@ -6,7 +6,7 @@
             :key="i"
             :title="item.title"
             :item="item"
-            :is-disabled="true"/>
+            :is-disabled="isDisabled"/>
     </div>
 </template>
 

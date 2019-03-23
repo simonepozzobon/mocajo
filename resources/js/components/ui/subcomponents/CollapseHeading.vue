@@ -1,15 +1,15 @@
 <template lang="html">
-    <div class="collapse-container">
-        <div class="collapse-header" @click="openPanel" ref="header">
-            <div class="button" ref="close">
+    <div class="collapse-heading" :class="disableClass">
+        <div class="collapse-heading__head" @click="openPanel" ref="header">
+            <div class="collapse-heading__button" ref="close">
                 +
             </div>
-            <div class="title" ref="title">
+            <div class="collapse-heading__title" ref="title">
                 {{ this.title }}
             </div>
         </div>
-        <div class="collapse-body" ref="panel">
-            <p class="collapse-content" ref="content">
+        <div class="collapse-heading__body" ref="panel">
+            <p class="collapse-heading__content" ref="content">
                 {{ this.text }}
             </p>
         </div>
@@ -39,6 +39,13 @@ export default {
             text: null,
             isAnimating: false,
             panel: null,
+        }
+    },
+    computed: {
+        disableClass: function() {
+            if (this.isDisabled) {
+                return 'collapse-heading--disable'
+            }
         }
     },
     watch: {
@@ -174,27 +181,39 @@ export default {
 <style lang="scss" >
 @import '~styles/shared';
 
-.collapse-container {
+.collapse-heading {
+    $self: &;
     border-bottom: 1px solid $black;
 
-    .collapse-header {
+    &__head {
         display: flex;
         justify-content: space-between;
         cursor: pointer;
         padding: ($spacer / 2) * 1.618;
     }
 
-    .collapse-body {
+    &__body {
         position: relative;
         // height: 0;
 
         visibility:hidden; /* hides all .Tile-flyout on load so GSAP autoAlpha can do its thing */
         height:auto; /* tell the browser that initial height is auto */
         overflow:hidden;
+    }
 
-        .collapse-content {
-            padding-top: $spacer * 1.618;
-            padding-bottom: $spacer * 1.618 * 2;
+    &__content {
+        padding-top: $spacer * 1.618;
+        padding-bottom: $spacer * 1.618 * 2;
+    }
+
+    &#{$self}--disable {
+        // border-bottom: 1px solid $red;
+        // &__head {
+        //     background-color: $blue;
+        // }
+
+        &__button {
+            z-index: -1;
         }
     }
 }

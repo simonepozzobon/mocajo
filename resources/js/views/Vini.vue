@@ -150,14 +150,6 @@ export default {
             this.translate()
 
         },
-        setMenuOnCenter: function(e) {
-            let position = document.documentElement.scrollTop
-            if (this.$refs.sidebar) {
-                TweenMax.to(this.$refs.sidebar, .2, {
-                    y: position
-                })
-            }
-        },
         getScrollY: function() {
             const w = window
             // This works for all browsers except IE versions 8 and before
@@ -169,47 +161,32 @@ export default {
             // For browsers in Quirks mode
             return { x: d.body.scrollLeft, y: d.body.scrollTop }
         },
-        resetClass: function() {
-            return new Promise(resolve => {
-                TweenMax.to(['#sette-menu', '#soffio-menu', '#saputo-menu', '#stello-menu'], .2, {
-                    className: '-=active',
-                    onComplete: () => {
-                        resolve()
-                    }
-                })
-            })
-        },
         goTo: function(name) {
             let el,
             scrollYPos = 0,
             topPosition = 0,
             scrollOffset = this.getScrollY()
 
-            this.resetClass().then( () => {
-                el = document.getElementById(name)
-                topPosition = el.getBoundingClientRect().top
-                scrollYPos = topPosition + scrollOffset.y﻿
 
-                let master = new TimelineMax({
-                    paused: true,
-                })
+            el = document.getElementById(name)
+            topPosition = el.getBoundingClientRect().top
+            scrollYPos = topPosition + scrollOffset.y﻿
 
-                master.to('#'+name+'-menu', .6, {
-                    className: '+=active'
-                }, 0)
-
-                master.to(window﻿, .6, {
-                    scrollTo:{
-                        offsetY: 130,
-                        y: scrollYPos,
-                        x: 0,
-                        autokill: false,
-                    },
-                    ease: Sine.easeOut
-                }, 0)
-
-                master.play()
+            let master = new TimelineMax({
+                paused: true,
             })
+
+            master.to(window﻿, .6, {
+                scrollTo:{
+                    offsetY: 130,
+                    y: scrollYPos,
+                    x: 0,
+                    autokill: false,
+                },
+                ease: Sine.easeOut
+            }, 0)
+
+            master.play()
 
         },
         scrollToTop: function() {
