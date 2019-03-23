@@ -18,7 +18,7 @@
         <meta property="twitter:card" content="summary_large_image">
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset(mix('css/app.css')) }}">
 
 
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134799170-1"></script>
@@ -38,6 +38,6 @@
                 shippings="{{ $shippings }}">
             </main-template>
         </div>
-        <script src="{{ mix('js/app.js') }}"></script>
+        <script src="{{ asset(mix('js/app.js')) }}"></script>
     </body>
 </html>
