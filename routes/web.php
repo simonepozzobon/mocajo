@@ -11,6 +11,9 @@
 |
 */
 
+Route::get('/login', 'LoginController@login');
+Route::post('/login-attempt', 'LoginController@attempt_login')->name('login.attempt');
+
 Route::prefix('admin')->group(function() {
     Route::get('/', 'AdminController@index');
     Route::get('/{slug}', 'AdminController@index')->where('slug', '.*');

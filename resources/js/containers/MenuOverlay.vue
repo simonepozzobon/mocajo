@@ -278,6 +278,7 @@ export default {
         @include media-breakpoint-up('sm') {
             justify-content: center;
             padding-top: inherit;
+            margin-top: $spacer;
         };
     }
 

@@ -1,0 +1,32 @@
+.ui-login {
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__form {
+        min-width: 300px;
+        background-color: $gray-300;
+        border-radius: 5px;
+        padding: $spacer;
+    }
+
+    &__title {
+        font-size: $h4-font-size;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: $spacer;
+        letter-spacing: 2px;
+    }
+
+    &__input {
+        input {
+            border-radius: 5px;
+        }
+    }
+
+    &__button {
+        border-radius: 5px;
+    }
+}

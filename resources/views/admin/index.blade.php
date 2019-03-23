@@ -7,14 +7,6 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="robots" content="noindex, nofollow">
         <link rel="stylesheet" href="{{ mix('css/admin.css') }}">
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134799170-1"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'UA-134799170-1');
-        </script>
     </head>
     <body class="bg-black">
         <div id="admin">

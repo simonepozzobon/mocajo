@@ -3,6 +3,7 @@ mix
     .js('resources/js/admin/admin.js', 'public/js')
     .js('resources/js/app.js', 'public/js')
     .sass('resources/sass/admin.scss', 'public/css')
+    .sass('resources/sass/login.scss', 'public/css')
     .sass('resources/sass/app.scss', 'public/css')
     .webpackConfig(webpack => {
         return {
