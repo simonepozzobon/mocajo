@@ -3,7 +3,7 @@
         <ui-title
             title="Wine Shop"/>
         <wine-city
-            v-for="city in this.cities"
+            v-for="city in this.$root.cities"
             :key="city.id"
             :city="city"/>
     </div>
