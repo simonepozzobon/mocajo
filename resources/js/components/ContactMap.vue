@@ -84,7 +84,6 @@ export default {
     methods: {
         translate: function(locale = false) {
             locale = locale ? locale : this.$root.locale
-
             switch (locale) {
                 case 'en':
                     this.placeholder = 'Select a city...'
@@ -119,6 +118,9 @@ export default {
     mounted: function() {
         this.translate()
         this.setMapHeight()
+        if (this.$root.cities) {
+            this.formatCities(this.$root.cities)
+        }
     }
 }
 </script>

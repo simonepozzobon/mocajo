@@ -125,7 +125,6 @@ const app = new Vue({
         checkRouteTranslation: function(path, lng) {
             let idx = -1
             let routes = routesTranslations[lng]
-            console.log(lng,routes);
             idx = routes.findIndex(route => route == path)
             if (idx > -1) {
                 return true

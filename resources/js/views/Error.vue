@@ -4,15 +4,16 @@
             <ui-block
                 color="bg-light"
                 size="col-12"
+                :disable-padding="true"
                 :full-height="true"
                 :animated="false"
                 ref="progetto">
-                <ui-title
-                    :title="this.title"
-                    align="center"/>
-                <ui-paragraph align="center">
+                <p class="error-page__title">
+                    {{ this.title }}
+                </p>
+                <p class="error-page__paragraph">
                     {{ this.text }}
-                </ui-paragraph>
+                </p>
             </ui-block>
         </div>
     </div>
@@ -96,6 +97,21 @@ export default {
 
     @include media-breakpoint-down('sm') {
         padding-top: $section-sm-padding;
+    }
+}
+
+.error-page {
+    p {
+        text-align: center;
+    }
+
+    &__title {
+        font-weight: bold;
+        font-size: 5rem;
+    }
+
+    &__paragraph {
+        font-size: 1.5rem;
     }
 }
 </style>
