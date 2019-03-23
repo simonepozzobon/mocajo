@@ -36,6 +36,10 @@ class ProductController extends Controller
                 $product->scheda_tecnica = Utility::save_file_for_model($request->file('scheda_tecnica'));
             }
 
+            if ($request->file('scheda_tecnica_en')) {
+                $product->scheda_tecnica_en = Utility::save_file_for_model($request->file('scheda_tecnica_en'));
+            }
+
             if($request->file('img')) {
                 $product->img = Utility::save_file_for_model($request->file('img'));
             }
@@ -47,7 +51,11 @@ class ProductController extends Controller
             $product->scheda_tecnica = Utility::save_file_for_model($request->file('scheda_tecnica'));
         }
 
-        $product->multiplier = $request->multiplier;
+        $product->alt = $request->alt;
+        $product->alt_en = $request->alt_en;
+        $product->image_title = $request->image_title;
+        $product->image_title_en = $request->image_title_en;
+
         $product->title = $request->title;
         $product->short_description = $request->short_description;
         $product->description = $request->description;
@@ -55,6 +63,16 @@ class ProductController extends Controller
         $product->zona = $request->zona;
         $product->vinificazione = $request->vinificazione;
         $product->valori_analitici = $request->valori_analitici;
+
+        $product->title_en = $request->title_en;
+        $product->short_description_en = $request->short_description_en;
+        $product->description_en = $request->description_en;
+        $product->vitigno_en = $request->vitigno_en;
+        $product->zona_en = $request->zona_en;
+        $product->vinificazione_en = $request->vinificazione_en;
+        $product->valori_analitici_en = $request->valori_analitici_en;
+
+        $product->multiplier = $request->multiplier;
         $product->price = $request->price;
         $product->is_active = $request->is_active;
         $product->save();
@@ -62,6 +80,7 @@ class ProductController extends Controller
         $product->icon = Utility::check_img($product->icon);
         $product->img = Utility::check_img($product->img);
         $product->scheda_tecnica = Utility::check_img($product->scheda_tecnica);
+        $product->scheda_tecnica_en = Utility::check_img($product->scheda_tecnica_en);
 
         return $product;
     }
@@ -71,6 +90,7 @@ class ProductController extends Controller
             $product->icon = Utility::check_img($product->icon);
             $product->img = Utility::check_img($product->img);
             $product->scheda_tecnica = Utility::check_img($product->scheda_tecnica);
+            $product->scheda_tecnica_en = Utility::check_img($product->scheda_tecnica_en);
             return $product;
         });
 

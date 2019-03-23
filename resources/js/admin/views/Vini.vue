@@ -50,18 +50,24 @@ export default {
             this.isEdit = false
             this.idx = null
             this.$refs.panel.reset()
-            this.showPanel()
+            this.$nextTick(() => {
+                this.showPanel()
+            })
         },
         edit: function(product) {
             this.isEdit = true
             this.idx = product.id
             this.productDefault = product
-            this.showPanel()
+            this.$nextTick(() => {
+                this.showPanel()
+            })
         },
         exit: function() {
             this.isEdit = false
             this.idx = null
-            this.hidePanel()
+            this.$nextTick(() => {
+                this.hidePanel()
+            })
         },
         destroy: function(product) {
             let data = new FormData()

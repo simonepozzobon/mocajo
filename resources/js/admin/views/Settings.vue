@@ -19,14 +19,26 @@
             <form-group name="menu_scuola" title="Scuola">
                 <input type="text" name="menu_scuola" v-model="menu.scuola" class="form-control">
             </form-group>
+            <form-group name="menu_scuola_en" title="Scuola [eng]">
+                <input type="text" name="menu_scuola_en" v-model="menu.scuola_en" class="form-control">
+            </form-group>
             <form-group name="menu_storia" title="Storia">
                 <input type="text" name="menu_storia" v-model="menu.storia" class="form-control">
+            </form-group>
+            <form-group name="menu_storia_en" title="Storia [eng]">
+                <input type="text" name="menu_storia_en" v-model="menu.storia_en" class="form-control">
             </form-group>
             <form-group name="menu_vini" title="Vini">
                 <input type="text" name="menu_vini" v-model="menu.vini" class="form-control">
             </form-group>
+            <form-group name="menu_vini_en" title="Vini [eng]">
+                <input type="text" name="menu_vini_en" v-model="menu.vini_en" class="form-control">
+            </form-group>
             <form-group name="menu_contatti" title="Contatti">
                 <input type="text" name="menu_contatti" v-model="menu.contatti" class="form-control">
+            </form-group>
+            <form-group name="menu_contatti_en" title="Contatti [eng]">
+                <input type="text" name="menu_contatti_en" v-model="menu.contatti_en" class="form-control">
             </form-group>
             <form-group name="save" title="Salva">
                 <button class="btn btn-outline-primary" @click="upload('menu')">Salva Sezione</button>
@@ -94,8 +106,17 @@ export default {
                 ...options.shop,
                 active: options.shop.active == 'true' ? true : false
             }
-            this.menu = options.menu
             this.cookies = options.cookies
+            this.menu = {
+                scuola: options.menu.scuola.txt,
+                storia: options.menu.storia.txt,
+                vini: options.menu.vini.txt,
+                contatti: options.menu.contatti.txt,
+                scuola_en: options.menu.scuola.txt_en,
+                storia_en: options.menu.storia.txt_en,
+                vini_en: options.menu.vini.txt_en,
+                contatti_en: options.menu.contatti.txt_en,
+            }
         },
         upload: function(value) {
             let data = new FormData()
@@ -112,6 +133,10 @@ export default {
                     data = this.setData(data, 'storia', this.menu.storia)
                     data = this.setData(data, 'vini', this.menu.vini)
                     data = this.setData(data, 'contatti', this.menu.contatti)
+                    data = this.setData(data, 'scuola_en', this.menu.scuola_en)
+                    data = this.setData(data, 'storia_en', this.menu.storia_en)
+                    data = this.setData(data, 'vini_en', this.menu.vini_en)
+                    data = this.setData(data, 'contatti_en', this.menu.contatti_en)
                     break;
                 case 'cookies':
                     data.append('type', 'cookies')

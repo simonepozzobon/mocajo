@@ -6,10 +6,13 @@ use App\Page;
 use App\Option;
 use App\Utility;
 use Illuminate\Http\Request;
+use App\Http\Traits\LinkTrait;
 use App\Http\Controllers\Controller;
 
 class SettingController extends Controller
 {
+    use LinkTrait;
+
     public function get() {
         $page = Page::find(6);
         $options = $page->options;
@@ -30,10 +33,10 @@ class SettingController extends Controller
                 $options[1] = Utility::save_option($options[1], $request->multiplier);
                 break;
             case 'menu':
-                $options[2] = Utility::save_option($options[2], $request->scuola);
-                $options[3] = Utility::save_option($options[3], $request->storia);
-                $options[4] = Utility::save_option($options[4], $request->vini);
-                $options[5] = Utility::save_option($options[5], $request->contatti);
+                $options[2] = $this->save_link_single($request->scuola, $request->scuola_en, '#', '#', 1, 1);
+                $options[3] = $this->save_link_single($request->storia, $request->storia_en, '#', '#', 2, 1);
+                $options[4] = $this->save_link_single($request->vini, $request->vini_en, '#', '#', 3, 1);
+                $options[5] = $this->save_link_single($request->contatti, $request->contatti_en, '#', '#', 4, 1);
                 break;
             case 'cookies':
                 $options[6] = Utility::save_option($options[6], $request->text);
@@ -52,10 +55,10 @@ class SettingController extends Controller
         ];
 
         $menu = [
-            'scuola' => $options[2]->value,
-            'storia' => $options[3]->value,
-            'vini' => $options[4]->value,
-            'contatti' => $options[5]->value,
+            'scuola' => $this->get_link(1),
+            'storia' => $this->get_link(2),
+            'vini' => $this->get_link(3),
+            'contatti' => $this->get_link(4),
         ];
 
         $cookies = [

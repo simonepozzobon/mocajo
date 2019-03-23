@@ -15,12 +15,12 @@ class AddTitleEnToProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->string('title_en')->nullable()->after('title');
-            $table->string('short_description_en')->nullable()->after('short_description');
-            $table->string('description_en')->nullable()->after('description');
-            $table->string('vitigno_en')->nullable()->after('vitigno');
-            $table->string('zona_en')->nullable()->after('zona');
-            $table->string('vinificazione_en')->nullable()->after('vinificazione');
-            $table->string('valori_analitici_en')->nullable()->after('valori_analitici');
+            $table->text('short_description_en')->nullable()->after('short_description');
+            $table->text('description_en')->nullable()->after('description');
+            $table->text('vitigno_en')->nullable()->after('vitigno');
+            $table->text('zona_en')->nullable()->after('zona');
+            $table->text('vinificazione_en')->nullable()->after('vinificazione');
+            $table->text('valori_analitici_en')->nullable()->after('valori_analitici');
             $table->string('scheda_tecnica_en')->nullable()->after('scheda_tecnica');
         });
     }

@@ -206,14 +206,11 @@ export default {
         padding-bottom: $spacer * 1.618 * 2;
     }
 
-    &#{$self}--disable {
-        // border-bottom: 1px solid $red;
-        // &__head {
-        //     background-color: $blue;
-        // }
-
-        &__button {
+    &__button {
+        #{$self}--disable & {
+            background-color: $blue;
             z-index: -1;
+
         }
     }
 }

@@ -20,6 +20,18 @@
             <img :src="product.img" class="img-fluid" v-if="product.img">
             <span class="text-danger" v-else>Nessuna Immagine Caricata!</span>
         </form-group>
+        <form-group name="alt" title="Alt">
+            <input type="text" name="alt" v-model="product.alt" class="form-control">
+        </form-group>
+        <form-group name="alt_en" title="Alt [eng]">
+            <input type="text" name="alt_en" v-model="product.alt_en" class="form-control">
+        </form-group>
+        <form-group name="image_title" title="Image Title">
+            <input type="text" name="image_title" v-model="product.image_title" class="form-control">
+        </form-group>
+        <form-group name="image_title_en" title="Image Title [eng]">
+            <input type="text" name="image_title_en" v-model="product.image_title_en" class="form-control">
+        </form-group>
         <form-group name="title" title="Nome">
             <input type="text" name="title" v-model="product.title" class="form-control">
         </form-group>
@@ -140,6 +152,8 @@ export default {
                 icon: null,
                 img: null,
 
+                alt: null,
+                image_title: null,
                 title: null,
                 short_description: null,
                 description: null,
@@ -153,6 +167,8 @@ export default {
                 is_active: true,
                 multiplier: null,
 
+                alt_en: null,
+                image_title_en: null,
                 title_en: null,
                 short_description_en: null,
                 description_en: null,
@@ -221,6 +237,8 @@ export default {
                 this.$refs.scheda.setInvalid('Selezionare un file')
             }
 
+            data = this.setData(data, 'alt', this.product.alt)
+            data = this.setData(data, 'image_title', this.product.image_title)
             data = this.setData(data, 'title', this.product.title)
             data = this.setData(data, 'short_description', this.product.short_description)
             data = this.setData(data, 'description', this.product.description)
@@ -229,6 +247,8 @@ export default {
             data = this.setData(data, 'vinificazione', this.product.vinificazione)
             data = this.setData(data, 'valori_analitici', this.product.valori_analitici)
 
+            data = this.setData(data, 'alt_en', this.product.alt_en)
+            data = this.setData(data, 'image_title_en', this.product.image_title_en)
             data = this.setData(data, 'title_en', this.product.title_en)
             data = this.setData(data, 'short_description_en', this.product.short_description_en)
             data = this.setData(data, 'description_en', this.product.description_en)
@@ -273,6 +293,8 @@ export default {
                 icon: null,
                 img: null,
 
+                alt: null,
+                image_title: null,
                 title: null,
                 short_description: null,
                 description: null,
@@ -286,6 +308,8 @@ export default {
                 is_active: true,
                 multiplier: null,
 
+                alt_en: null,
+                image_title_en: null,
                 title_en: null,
                 short_description_en: null,
                 description_en: null,

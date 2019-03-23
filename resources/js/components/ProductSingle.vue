@@ -26,7 +26,7 @@
             class="custom-block"
             flex-align="top"
             :disable-padding="true">
-                <img :src="product.img" class="img-fluid"/>
+                <img :src="product.img" class="img-fluid" :alt="alt" :title="image_title"/>
         </ui-block>
     </div>
 </template>
@@ -57,6 +57,8 @@ export default {
     },
     data: function() {
         return {
+            alt: null,
+            image_title: null,
             description: null,
             btn: null,
             scheda_tecnica: null,
@@ -114,11 +116,14 @@ export default {
             this.description = this.$root.locale == 'it' ? this.product.short_description : this.product.short_description_en
             this.scheda_tecnica = this.$root.locale == 'it' ? this.product.scheda_tecnica : this.product.scheda_tecnica_en
             this.btn = this.$root.locale == 'it' ? 'Download Scheda Tecnica' : 'Download Technical Sheet'
+            this.alt = this.$root.locale == 'it' ? this.product.alt : this.product.alt_en
+            this.image_title = this.$root.locale == 'it' ? this.product.image_title : this.product.image_title_en
         },
         addToCart: function() {
             let shortenProduct = {
                 id: this.product.id,
                 title: this.product.title,
+                title_en: this.product.title_en,
                 img: this.product.img,
                 icon: this.product.icon,
                 price: this.product.price,
