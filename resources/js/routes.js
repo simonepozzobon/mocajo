@@ -12,7 +12,7 @@ const routes = [
         initialParams: {
             id: 2,
         },
-        component: require('./views/Error.vue'),
+        component: require('./views/Error.vue').default,
     },
     {
         path: '/:lang',
@@ -23,7 +23,7 @@ const routes = [
             {
                 path: '',
                 name: 'home',
-                component: require('./views/Home.vue'),
+                component: require('./views/Home.vue').default,
                 initialParams: {
                     id: 3,
                 },
@@ -31,7 +31,7 @@ const routes = [
             {
                 path: '',
                 name: 'home_en',
-                component: require('./views/Home.vue'),
+                component: require('./views/Home.vue').default,
                 initialParams: {
                     id: 4,
                 },
@@ -39,12 +39,12 @@ const routes = [
             {
                 path: 'scuolamocajo',
                 name: 'scuola',
-                component: require('./views/Scuola.vue'),
+                component: require('./views/Scuola.vue').default,
             },
             {
                 path: 'scuolamocajo',
                 name: 'scuola_en',
-                component: require('./views/Scuola.vue'),
+                component: require('./views/Scuola.vue').default,
                 initialParams: {
                     id: 5,
                 },
@@ -52,7 +52,7 @@ const routes = [
             {
                 path: 'storia',
                 name: 'storia',
-                component: require('./views/Storia.vue'),
+                component: require('./views/Storia.vue').default,
                 initialParams: {
                     id: 6,
                 },
@@ -60,7 +60,7 @@ const routes = [
             {
                 path: 'history',
                 name: 'storia_en',
-                component: require('./views/Storia.vue'),
+                component: require('./views/Storia.vue').default,
                 initialParams: {
                     id: 7,
                 },
@@ -68,7 +68,7 @@ const routes = [
             {
                 path: 'vini',
                 name: 'vini',
-                component: require('./views/Vini.vue'),
+                component: require('./views/Vini.vue').default,
                 initialParams: {
                     id: 8,
                 },
@@ -76,7 +76,7 @@ const routes = [
             {
                 path: 'wines',
                 name: 'vini_en',
-                component: require('./views/Vini.vue'),
+                component: require('./views/Vini.vue').default,
                 initialParams: {
                     id: 9,
                 },
@@ -84,7 +84,7 @@ const routes = [
             {
                 path: 'contatti',
                 name: 'contatti',
-                component: require('./views/Contact.vue'),
+                component: require('./views/Contact.vue').default,
                 initialParams: {
                     id: 10,
                 },
@@ -92,7 +92,7 @@ const routes = [
             {
                 path: 'contacts',
                 name: 'contatti_en',
-                component: require('./views/Contact.vue'),
+                component: require('./views/Contact.vue').default,
                 initialParams: {
                     id: 11,
                 },
@@ -100,7 +100,7 @@ const routes = [
             {
                 path: 'carrello',
                 name: 'cart',
-                component: require('./views/Cart.vue'),
+                component: require('./views/Cart.vue').default,
                 initialParams: {
                     id: 12,
                 },
@@ -108,7 +108,7 @@ const routes = [
             {
                 path: 'cart',
                 name: 'cart_en',
-                component: require('./views/Cart.vue'),
+                component: require('./views/Cart.vue').default,
                 initialParams: {
                     id: 13,
                 },
@@ -116,7 +116,7 @@ const routes = [
             {
                 path: 'privacy',
                 name: 'privacy',
-                component: require('./views/Privacy.vue'),
+                component: require('./views/Privacy.vue').default,
                 initialParams: {
                     id: 14,
                 },
@@ -124,7 +124,7 @@ const routes = [
             {
                 path: '*',
                 name: 'children-error',
-                component: require('./views/Error.vue'),
+                component: require('./views/Error.vue').default,
                 initialParams: {
                     id: 15,
                 },
