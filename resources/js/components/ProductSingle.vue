@@ -6,17 +6,17 @@
             <ui-title
                 :title="product.title"
                 tag="h2"
-                :is-disabled="!product.is_active"/>
+                :is-disabled="this.isDisable"/>
             <ui-subtitle
                 :title="this.description"
-                :is-disabled="!product.is_active"/>
+                :is-disabled="this.isDisable"/>
             <ui-collapse
                 :elements="this.wine_description"
-                :is-disabled="!product.is_active"/>
+                :is-disabled="this.isDisable"/>
             <ui-action
                 target="_blank"
                 :url="scheda_tecnica"
-                :is-disabled="!product.is_active">
+                :is-disabled="this.isDisable">
                 {{ this.btn }}
             </ui-action>
             <button class="btn btn-outline-black add-to-cart" @click="addToCart" v-if="shop.active">Acquista</button>
@@ -70,6 +70,12 @@ export default {
                 return this.product.title.toLowerCase()
             }
             return null
+        },
+        isDisable: function() {
+            if (this.product.is_active == 1) {
+                return false
+            }
+            return true
         },
         wine_description: function() {
             return [
