@@ -28,6 +28,7 @@
         "vue-router": "^3.0.2"
     },
     "dependencies": {
+        "@sentry/browser": "^4.6.5",
         "css-loader": "^2.1.1",
         "i18next": "^15.0.7",
         "lottie-web": "^5.4.3",

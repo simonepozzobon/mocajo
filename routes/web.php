@@ -11,12 +11,12 @@
 |
 */
 
-Route::get('/login', 'LoginController@login');
+Route::get('/login', 'LoginController@login')->name('user.login');
 Route::post('/login-attempt', 'LoginController@attempt_login')->name('login.attempt');
+Route::get('/logout', 'LoginController@logout')->name('user.logout');
 
-Route::prefix('admin')->group(function() {
-    Route::get('/', 'AdminController@index');
-    Route::get('/{slug}', 'AdminController@index')->where('slug', '.*');
+Route::prefix('admin')->middleware('admin')->group(function() {
+    Route::get('/{slug?}', 'AdminController@index')->where('slug', '.*')->name('admin.dashboard');
 });
 
-Route::get('/{slug}', 'MainController@index')->where('slug', '.*');
+Route::get('/{slug?}', 'MainController@index')->where('slug', '.*');

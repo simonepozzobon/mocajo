@@ -20,6 +20,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="stylesheet" href="{{ asset(mix('css/app.css')) }}">
 
+        <meta property="env" content="{{ env('APP_ENV') }}">
 
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134799170-1"></script>
         <script>
@@ -30,7 +31,7 @@
         </script>
     </head>
     <body>
-        <div id="app">
+        <div id="app" process-env="local">
             <main-template
                 cities="{{ $cities }}"
                 options="{{ $options }}"

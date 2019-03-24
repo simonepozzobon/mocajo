@@ -9,11 +9,24 @@ import MainTemplate from './containers/MainTemplate.vue'
 import checkView from 'vue-check-view'
 import VueLayers from 'vuelayers'
 import 'vuelayers/lib/style.css'
+import * as Sentry from '@sentry/browser'
 
 Vue.use(VueRouter)
 Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
 Vue.use(VueLayers)
+
+let env = document.head.querySelector("[property~=env][content]").content
+
+if (env == 'production') {
+    Sentry.init({
+      dsn: 'https://82858030e8f441d1a9e78fcd4ab2682d@sentry.io/1422611',
+      integrations: [new Sentry.Integrations.Vue({
+        Vue,
+        attachProps: true
+      })]
+    })
+}
 
 const router = new VueRouter({
     mode: 'history',

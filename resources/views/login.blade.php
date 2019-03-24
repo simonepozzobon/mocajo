@@ -14,8 +14,8 @@
                 {{ csrf_field() }}
                 <h2 class="ui-login__title">Login</h2>
                 <div class="form-group ui-login__input">
-                    <label for="mail">Mail</label>
-                    <input type="email" name="mail" class="form-control" placeholder="Email...">
+                    <label for="email">Mail</label>
+                    <input type="email" name="email" class="form-control" placeholder="Email...">
                 </div>
                 <div class="form-group mb-4 ui-login__input">
                     <label for="password">Password</label>
