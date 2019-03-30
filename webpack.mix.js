@@ -22,7 +22,7 @@ mix
         }
     })
     .browserSync({
-        proxy: 'http://mocajo.test:89',
+        proxy: 'http://mocajo.test',
         browser: 'google chrome',
         port: 3011,
         files: [
