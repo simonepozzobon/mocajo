@@ -63,9 +63,17 @@ const app = new Vue({
             next: null,
             mainMenu: null,
             routes: routesTranslations,
+            customer: null,
+            order: null,
         }
     },
     watch: {
+        customer: function(customer) {
+
+        },
+        order: function(order) {
+            
+        },
         options: function(opts) {
         }
     },

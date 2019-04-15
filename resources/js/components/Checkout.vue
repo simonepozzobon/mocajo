@@ -72,7 +72,7 @@
                 :action="'checkout'"/>
         </div>
         <div>
-            <button ref="submit" class="btn btn-primary" @click="pay">Pagamento</button>
+            <button ref="submit" class="btn btn-primary" @click="pay">Vai Al Pagamento</button>
         </div>
     </div>
 </template>
@@ -182,7 +182,11 @@ export default {
 
         },
         checkFields: function(isPaying = false) {
-            this.hasErrors = false
+            if (isPaying == true) {
+                this.hasErrors = false
+            } else {
+                this.hasErrors = null
+            }
             this.$nextTick(() => {
                 for (let key in this.formValues) {
                     if (this.formValues.hasOwnProperty(key)) {
@@ -202,14 +206,14 @@ export default {
             element.classList.remove('is-valid')
 
             if (isRequired) {
-                this.hasErrors = true
-
                 if (value == 0 || !value) {
+                    this.hasErrors = true
                     this.setInvalidField(element, previous, isPaying)
                 } else if (type == 'email') {
                     if (this.validateEmail(value)) {
                         this.setValidField(element, previous, isPaying)
                     } else {
+                        this.hasErrors = true
                         this.setInvalidField(element, previous, isPaying)
                     }
                 }
@@ -240,14 +244,19 @@ export default {
             }
         },
         pay: function() {
-            this.checkFields(true)
-            if (!this.hasErrors) {
-                this.verifyHuman().then(response => {
-                    this.$emit('completed')
-                }).catch(err => {
-                    console.error('errore', err);
-                })
-            }
+            let submit = this.$refs.submit
+            let isValid = this.checkFields(true)
+            this.$nextTick(() => {
+                if (this.hasErrors == false) {
+                    this.verifyHuman().then(response => {
+                        this.$emit('completed')
+                    }).catch(err => {
+                        console.error('errore', err);
+                    })
+                } else {
+                    console.log('has errors');
+                }
+            })
         }
     },
     created: function() {

@@ -66,11 +66,13 @@
                 </div>
 
                 <checkout
-                    ref="checkPanel"
-                    @completed="showPayment"/>
+                    ref="checkout"
+                    @completed="validateCheckout"/>
 
                 <payment
-                    ref="payment"/>
+                    ref="payment"
+                    :cart="$root.cart"/>
+
             </div>
         </div>
     </div>
@@ -94,11 +96,13 @@ export default {
             shippings: null,
             shippingTotal: 0,
             totalQuantity: 0,
+            products: [],
         }
     },
     watch: {
         '$root.cart': function(cart) {
             this.updateTotal(cart)
+            this.$nextTick(this.validateCheckout)
         },
         '$root.shippings': function(shippings) {
             this.shippings = shippings
@@ -115,10 +119,10 @@ export default {
             for (var i = 0; i < cart.length; i++) {
                 total = total + (cart[i].quantity * cart[i].price)
                 this.totalQuantity = this.totalQuantity + cart[i].quantity
+                this.products.push(cart[i].id)
             }
             this.cartTotal = parseFloat(total)
             this.updateShipping()
-
         },
         cartUpdate: function(product) {
             this.$root.cartUpdate(product)
@@ -151,15 +155,43 @@ export default {
             master.progress(1).progress(0)
 
             master.eventCallback('onComplete', () => {
-                this.$nextTick(this.$refs.checkPanel.init)
+                this.$nextTick(this.$refs.checkout.init)
             })
 
             master.play()
 
         },
-        showPayment: function() {
-            console.log();
-        }
+        validateCheckout: function(event = null, checkout = null) {
+            if (!checkout) {
+                checkout = {
+                    category: 3,
+                    email: 'info@simonepozzobon.com',
+                    company_name: 'Simone Pozzobon',
+                    code: 'PZZSMN89L28M172V',
+                    vat: '90585049860954',
+                    city: 'Salzano',
+                    cap: '30030',
+                    region: 'Venezia',
+                    address: 'Via puccini, 10',
+                    country: 94,
+                    phone: '3402967333',
+                    surname: 'Pozzobon',
+                    name: 'Simone',
+                    address_secondary: 'scala 2, interno a',
+                }
+            }
+
+            let data = {
+                products: this.$root.cart,
+                checkout: checkout,
+            }
+
+            this.$http.post('/api/save-order', data).then(response => {
+                this.$root.customer = response.data.customer
+                this.$root.order = response.data.order
+                this.$nextTick(this.$refs.payment.showPayment)
+            })
+        },
     },
     mounted: function() {
         if (this.$root.cart) {
@@ -171,7 +203,7 @@ export default {
             this.updateShipping()
         }
 
-        this.$nextTick(this.$refs.checkPanel.init)
+        this.$nextTick(this.$refs.checkout.init)
     }
 }
 </script>
