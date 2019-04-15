@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/cookies/accepted', 'MainController@cookies_preferences');
 Route::post('/verify', 'CaptchaController@verify');
+Route::post('/pay', 'CheckoutController@pay');
 
 Route::prefix('admin')->group(function() {
     Route::prefix('homepage')->group(function() {

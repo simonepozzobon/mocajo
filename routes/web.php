@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/test', 'CheckoutController@test');
 
 Route::get('/login', 'LoginController@login')->name('user.login');
 Route::post('/login-attempt', 'LoginController@attempt_login')->name('login.attempt');
