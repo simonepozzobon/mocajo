@@ -10,10 +10,12 @@ import checkView from 'vue-check-view'
 import VueLayers from 'vuelayers'
 import 'vuelayers/lib/style.css'
 import * as Sentry from '@sentry/browser'
+import axios from 'axios'
 
 Vue.use(VueRouter)
 Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
+Vue.prototype.$http = axios
 Vue.use(VueLayers)
 
 let env = document.head.querySelector("[property~=env][content]").content
@@ -205,7 +207,9 @@ const app = new Vue({
 
         let cart = this.$cookie.get('mocajo-cart')
         if (cart) {
-            this.cart = JSON.parse(cart)
+            this.$nextTick(() => {
+                this.cart = JSON.parse(cart)
+            })
         }
 
         let lng = this.checkLang(this.$route)

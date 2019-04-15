@@ -1,11 +1,131 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "66ca7343889332c2b8ecca11c251430c",
+    "content-hash": "8a1f2e43b6d2a276c4b5f622bb4b9657",
     "packages": [
+        {
+            "name": "cartalyst/collections",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cartalyst/collections.git",
+                "reference": "2b39755c52cb69e9ac4014891d857629f682da90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cartalyst/collections/zipball/2b39755c52cb69e9ac4014891d857629f682da90",
+                "reference": "2b39755c52cb69e9ac4014891d857629f682da90",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "library",
+            "extra": {
+                "component": "package",
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Cartalyst\\Collections\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Cartalyst LLC",
+                    "email": "help@cartalyst.com"
+                },
+                {
+                    "name": "Bruno Gaspar",
+                    "email": "bruno.gaspar@cartalyst.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Dan Syme",
+                    "email": "dan.syme@cartalyst.com",
+                    "role": "Project Lead"
+                },
+                {
+                    "name": "Suhayb Wardany",
+                    "email": "su.wardany@cartalyst.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Collection Abstaction library for PHP.",
+            "keywords": [
+                "cartalyst",
+                "collections",
+                "php"
+            ],
+            "time": "2015-03-06T21:10:35+00:00"
+        },
+        {
+            "name": "cartalyst/stripe",
+            "version": "v2.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cartalyst/stripe.git",
+                "reference": "a507598048314fc22b3418b55956bcbefc07e8af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cartalyst/stripe/zipball/a507598048314fc22b3418b55956bcbefc07e8af",
+                "reference": "a507598048314fc22b3418b55956bcbefc07e8af",
+                "shasum": ""
+            },
+            "require": {
+                "cartalyst/collections": "~1.0",
+                "guzzlehttp/guzzle": "~6.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "extra": {
+                "component": "package",
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Cartalyst\\Stripe\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Cartalyst LLC",
+                    "email": "help@cartalyst.com",
+                    "homepage": "https://cartalyst.com"
+                }
+            ],
+            "description": "A comprehensive Stripe API package.",
+            "keywords": [
+                "cartalyst",
+                "php",
+                "stripe"
+            ],
+            "time": "2018-04-11T12:19:25+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -3053,6 +3173,76 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27T11:13:29+00:00"
+        },
+        {
+            "name": "timehunter/laravel-google-recaptcha-v3",
+            "version": "2.2.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RyanDaDeng/laravel-google-recaptcha-v3.git",
+                "reference": "b5eb1998103aca7c0b0b20cd0c843d6427e8af34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RyanDaDeng/laravel-google-recaptcha-v3/zipball/b5eb1998103aca7c0b0b20cd0c843d6427e8af34",
+                "reference": "b5eb1998103aca7c0b0b20cd0c843d6427e8af34",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.0",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "TimeHunter\\LaravelGoogleReCaptchaV3\\Providers\\GoogleReCaptchaV3ServiceProvider"
+                    ],
+                    "aliases": {
+                        "GoogleReCaptchaV3": "TimeHunter\\LaravelGoogleReCaptchaV3\\Facades\\GoogleReCaptchaV3"
+                    }
+                },
+                "branch-alias": {
+                    "dev-master": "3.0.*-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "TimeHunter\\LaravelGoogleReCaptchaV3\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Deng",
+                    "email": "ryandadeng@gmail.com",
+                    "homepage": "https://ryandeng.com"
+                }
+            ],
+            "description": "Laravel Package for google reCAPTCHA v3",
+            "homepage": "https://github.com/RyanDaDeng/laravel-google-recaptcha-v3",
+            "keywords": [
+                "Google ReCaptcha",
+                "GoogleReCaptcha",
+                "Laravel reCAPTCHA",
+                "google recaptcha v3",
+                "laravel",
+                "laravel google recaptcha",
+                "laravel google recaptcha v3",
+                "laravel recaptcha v3",
+                "recaptcha",
+                "recaptcha v3",
+                "recaptcha v3 laravel"
+            ],
+            "time": "2019-03-30T08:49:33+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

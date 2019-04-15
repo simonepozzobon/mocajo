@@ -1,6 +1,6 @@
 <template lang="html">
-    <div class="container">
-        <div class="row section">
+    <div class="container section pb-5">
+        <div class="row">
             <div class="col">
                 <div class="cart" ref="cart">
                     <h1>Carrello</h1>
@@ -56,14 +56,21 @@
                     </table>
                 </div>
 
-                <div class="btns">
-                    <button class="btn btn-primary">
+                <div class="btns" ref="checkoutBtn">
+                    <button class="btn btn-primary btns__btn" @click="showCheckout">
                         Effettua il checkout
                     </button>
-                    <router-link tag="a" class="btn btn-link" :to="{ path: '/vini' }" exact-active-class="active">
+                    <router-link tag="a" class="btn btn-link btns__btn" :to="{ path: '/vini' }" exact-active-class="active">
                         Continua con lo shopping
                     </router-link>
                 </div>
+
+                <checkout
+                    ref="checkPanel"
+                    @completed="showPayment"/>
+
+                <payment
+                    ref="payment"/>
             </div>
         </div>
     </div>
@@ -71,11 +78,15 @@
 
 <script>
 import CartRow from '../components/CartRow.vue'
+import Checkout from '../components/Checkout.vue'
+import Payment from '../components/Payment.vue'
 
 export default {
     name: 'Cart',
     components: {
-        CartRow
+        CartRow,
+        Checkout,
+        Payment,
     },
     data: function() {
         return {
@@ -92,6 +103,9 @@ export default {
         '$root.shippings': function(shippings) {
             this.shippings = shippings
             this.updateShipping()
+        },
+        '$root.isMobile': function() {
+
         }
     },
     methods: {
@@ -119,6 +133,32 @@ export default {
             if (this.shippings) {
                 this.shippingTotal = this.cartTotal + (this.shippings[0].price * this.totalQuantity * this.shippings[0].increment)
             }
+        },
+        showCheckout: function() {
+            let container = this.$refs.checkoutBtn
+            let btns = container.getElementsByClassName('btns__btn')
+            let master = new TimelineMax({
+                paused: true,
+            })
+
+            master.staggerFromTo(btns, .6, {
+                autoAlpha: 1,
+            }, {
+                autoAlpha: 0,
+            }, .1, 0)
+
+
+            master.progress(1).progress(0)
+
+            master.eventCallback('onComplete', () => {
+                this.$nextTick(this.$refs.checkPanel.init)
+            })
+
+            master.play()
+
+        },
+        showPayment: function() {
+            console.log();
         }
     },
     mounted: function() {
@@ -130,6 +170,8 @@ export default {
             this.shippings = this.$root.shippings
             this.updateShipping()
         }
+
+        this.$nextTick(this.$refs.checkPanel.init)
     }
 }
 </script>
@@ -138,10 +180,11 @@ export default {
 @import '~styles/shared';
 
 .section {
-    max-width: 100%;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: $section-padding;
+    overflow-x: hidden;
+
+    @include media-breakpoint-down('sm') {
+        padding-top: $section-sm-padding;
+    }
 }
 </style>
