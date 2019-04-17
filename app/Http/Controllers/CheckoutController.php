@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Order;
 Use App\Customer;
 use Illuminate\Http\Request;
+use App\Events\CreatePayment;
 use Cartalyst\Stripe\Stripe;
 
 class CheckoutController extends Controller
@@ -60,10 +61,6 @@ class CheckoutController extends Controller
         //
         foreach ($request->products as $key => $product) {
             $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
-            // array_push($items, [
-            //     'type' => $product['id'],
-            //     'parent' => $product['title'],
-            // ]);
         }
 
         // $ord = $stripe->orders()->create([
@@ -89,6 +86,15 @@ class CheckoutController extends Controller
     }
 
     public function pay(Request $request) {
+        $order = Order::find($request->order_id);
+        $data = [
+            'number' => $request->number,
+            'exp_month' => $request->expiry_month,
+            'exp_year' => $request->expiry_year,
+            'cvc' => $request->cvv,
+        ];
+        event(new CreatePayment($data, $request->order_id));
+        return [true];
         $stripe = $this->stripe;
 
         $local_order = Order::find($request->order_id);
