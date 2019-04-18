@@ -2,13 +2,30 @@
 
 namespace App\Listeners;
 
+// Model
 use App\Order;
 use App\Product;
 use App\Customer;
+
+// Evento per la gestione dei pagamenti
+use App\Events\CreatePayment;
+
+// Debug
 use App\Mail\DebugPayment;
+
+// Mail per l'admin
+use App\Mail\AdminFailPayment;
+use App\Mail\AdminSuccessOrder;
+use App\Mail\AdminRefusedPayment;
+
+// Mail per i client
+use App\Mail\ClientFailPayment;
+use App\Mail\ClientSuccessOrder;
+use App\Mail\ClientRefusedPayment;
+
+// Librerie
 use Illuminate\Support\Arr;
 use Cartalyst\Stripe\Stripe;
-use App\Events\CreatePayment;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,6 +39,7 @@ class SetPayment
      */
     public function __construct()
     {
+        $this->admin_email = env('ADMIN_EMAIL', 'info@scuolamocajo.it');
         $this->key = env('PUBLISHABLE_KEY', '');
         $this->secret = env('SECRET_KEY', '');
         $this->stripe = Stripe::make($this->key);
@@ -36,6 +54,7 @@ class SetPayment
      */
     public function handle(CreatePayment $event)
     {
+        $admin_email = $this->admin_email;
 
         $id = $event->id;
         $order = Order::find($id);
@@ -46,37 +65,40 @@ class SetPayment
         $order->amount = $total;
         $order->save();
 
+        $stripe = $this->connect();
+
         try {
             // mi connetto e creo un token
-            $stripe = $this->connect();
             $token = $stripe->tokens()->create([
                 'card' => $event->card,
             ]);
-
-            // verifico l'impronta
-            $fingerprint = $token['card']['fingerprint'];
-            $cards = $stripe->cards()->all($customer->stripe_id);
-
-            // verifico che non ci siano doppioni
-            $checks = Arr::where($cards['data'], function($card, $key) use($fingerprint) {
-                return $card['fingerprint'] != $fingerprint;
-            });
-
-            // se l'impronta è diversa aggiungo la nuova carta
-            if (count($checks) > 0) {
-                $card = $stripe->cards()->create($customer['id'], $token['id']);
-                $customer->card_id = $card['id'];
-                $customer->save();
-            }
         } catch (\Exception $e) {
             // Se la carta non viene approvata devo mandare un messaggio di errore
-            return [false];
+            $json = json_encode('Carta rifiutata');
+            $debug = Mail::to('gianni@email.com')->send(new DebugPayment($json));
+            $order->status_code_id = 6;
+            $order->save();
+        }
+
+        // verifico l'impronta
+        $fingerprint = $token['card']['fingerprint'];
+        $cards = $stripe->cards()->all($customer->stripe_id);
+
+        // verifico che non ci siano doppioni
+        $checks = Arr::where($cards['data'], function($card, $key) use($fingerprint) {
+            return $card['fingerprint'] != $fingerprint;
+        });
+
+        // se l'impronta è diversa aggiungo la nuova carta
+        if (count($checks) > 0) {
+            $card = $stripe->cards()->create($customer['id'], $token['id']);
+            $customer->card_id = $card['id'];
+            $customer->save();
         }
 
         // genero il trasferimento
         try {
-            $metadata = $this->set_charge_metadata($order->products, $order->id);
-            $charge = $this->stripe->charges()->create([
+            $charge = $stripe->charges()->create([
                 'customer' => $customer->stripe_id,
                 'currency' => 'EUR',
                 'amount' => $total,
@@ -84,14 +106,27 @@ class SetPayment
                 'statement_descriptor' => 'SUCOLAMOCAJO',
                 'metadata' => $metadata,
             ]);
+            $order->transaction_id = $charge['id'];
+
         } catch (\Exception $e) {
             // Invia Messaggio di errore pagamento non riuscito
-            return [false];
+            $json = json_encode($e);
+            $debug = Mail::to('gianni@email.com')->send(new DebugPayment($json));
+            $client_payment_fail = Mail::to($customer->email)->send(new ClientFailPayment($order));
+            $admin_payment_fail = Mail::to($admin_email)->send(new AdminFailPayment($order));
+            $order->status_code_id = 5;
+            $order->save();
+
         }
-        
-        $json = json_encode($charge);
-        Mail::to('gianni@email.com')->send(new DebugPayment($json));
-        return [true];
+        // set order paid
+        $order->status_code_id = 2;
+        $order->save();
+
+        // Invio la mail al cliente
+        $client_success = Mail::to($customer->email)->send(new ClientSuccessOrder($order));
+        $admin_success = Mail::to($admin_email)->send(new AdminSuccessOrder($order));
+
+        return true;
     }
 
     public function connect() {

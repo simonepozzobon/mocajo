@@ -51,7 +51,7 @@ class CheckoutController extends Controller
 
         $order = new Order();
         $order->customer_id = $customer->id;
-        $order->status_code = 0;
+        $order->status_code_id = 1;
         $order->shipping_id = 1;
         $order->save();
 
@@ -94,7 +94,9 @@ class CheckoutController extends Controller
             'cvc' => $request->cvv,
         ];
         event(new CreatePayment($data, $request->order_id));
-        return [true];
+        return [
+            'event' => true
+        ];
         $stripe = $this->stripe;
 
         $local_order = Order::find($request->order_id);
