@@ -1,5 +1,5 @@
 <template lang="html">
-    <tr @mouseenter="showTrash" @mouseleave="hideTrash">
+    <tr class="cart-row" @mouseenter="showTrash" @mouseleave="hideTrash">
         <td>
             {{ title }}
             <span :class="hasTrash">
@@ -7,9 +7,19 @@
             </span>
         </td>
         <td>
-            <button class="btn btn-link" @click="removeQuantity">-</button>
+            <button
+                class="btn btn-link"
+                :class="hasQuantityEnabled"
+                @click="removeQuantity">
+                -
+            </button>
             {{ quantity }}
-            <button class="btn btn-link" @click="addQuantity">+</button>
+            <button
+                class="btn btn-link"
+                :class="hasQuantityEnabled"
+                @click="addQuantity">
+                +
+            </button>
         </td>
         <td>€ {{ total }}</td>
     </tr>
@@ -34,11 +44,20 @@ export default {
         idx: {
             type: Number,
             default: 0,
+        },
+        isEditable: {
+            type: Boolean,
+            default: true,
         }
     },
     watch: {
         '$root.options': function(options) {
             this.setContent(options.shop)
+        },
+        isEditable: function(value) {
+            if (!value) {
+                this.hasQuantityEnabled = 'invisible'
+            }
         }
     },
     computed: {
@@ -53,6 +72,7 @@ export default {
     data: function() {
         return {
             hasTrash: 'invisible',
+            hasQuantityEnabled: 'visible',
             shop: {
                 active: false,
                 multiplier: 1,
@@ -61,7 +81,9 @@ export default {
     },
     methods: {
         showTrash: function() {
-            this.hasTrash = 'visible'
+            if (this.isEditable) {
+                this.hasTrash = 'visible'
+            }
         },
         hideTrash: function() {
             this.hasTrash = 'invisible'

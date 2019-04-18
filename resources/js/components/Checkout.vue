@@ -86,6 +86,12 @@ export default {
     components: {
         GoogleReCaptchaV3,
     },
+    props: {
+        isDebug: {
+            type: Boolean,
+            default: false,
+        }
+    },
     data: function() {
         return {
             countries: [
@@ -139,11 +145,28 @@ export default {
         },
     },
     methods: {
+        setDebug: function() {
+            this.formValues = {
+                category: 3,
+                email: 'info@simonepozzobon.com',
+                company_name: 'Simone Pozzobon',
+                code: 'PZZSMN89L28M172V',
+                vat: '90585049860954',
+                city: 'Salzano',
+                cap: '30030',
+                region: 'Venezia',
+                address: 'Via puccini, 10',
+                country: 94,
+                phone: '3402967333',
+                surname: 'Pozzobon',
+                name: 'Simone',
+                address_secondary: 'scala 2, interno a',
+            }
+        },
         init: function() {
             let master = new TimelineMax({
                 paused: true
             })
-
 
             master.fromTo(this.$refs.form, .6, {
                 display: 'none',
@@ -263,7 +286,9 @@ export default {
         this.$watch('formValues', this.checkFields,  {deep: true})
     },
     mounted: function() {
-        // this.checkFields()
+        if (this.$env.debug) {
+            this.setDebug()
+        }
     },
 }
 </script>

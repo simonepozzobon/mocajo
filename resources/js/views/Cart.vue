@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col">
                 <div class="cart" ref="cart">
-                    <h1>Carrello</h1>
+                    <h1 class="pt-5">Carrello</h1>
                     <table class="table my-4">
                         <thead>
                             <tr>
@@ -20,6 +20,7 @@
                                 :title="product.title"
                                 :price="product.price"
                                 :quantity="product.quantity"
+                                :is-editable="isCartEditable"
                                 @cart-update="cartUpdate"
                                 @cart-remove="cartRemove"/>
                         </tbody>
@@ -67,6 +68,7 @@
 
                 <checkout
                     ref="checkout"
+                    :is-debug="true"
                     @completed="validateCheckout"/>
 
                 <payment
@@ -97,12 +99,12 @@ export default {
             shippingTotal: 0,
             totalQuantity: 0,
             products: [],
+            isCartEditable: true,
         }
     },
     watch: {
         '$root.cart': function(cart) {
             this.updateTotal(cart)
-            this.$nextTick(this.validateCheckout)
         },
         '$root.shippings': function(shippings) {
             this.shippings = shippings
@@ -151,8 +153,11 @@ export default {
                 autoAlpha: 0,
             }, .1, 0)
 
-
             master.progress(1).progress(0)
+
+            master.eventCallback('onStart', () => {
+                this.isCartEditable = false
+            })
 
             master.eventCallback('onComplete', () => {
                 this.$nextTick(this.$refs.checkout.init)
@@ -162,24 +167,6 @@ export default {
 
         },
         validateCheckout: function(event = null, checkout = null) {
-            if (!checkout) {
-                checkout = {
-                    category: 3,
-                    email: 'info@simonepozzobon.com',
-                    company_name: 'Simone Pozzobon',
-                    code: 'PZZSMN89L28M172V',
-                    vat: '90585049860954',
-                    city: 'Salzano',
-                    cap: '30030',
-                    region: 'Venezia',
-                    address: 'Via puccini, 10',
-                    country: 94,
-                    phone: '3402967333',
-                    surname: 'Pozzobon',
-                    name: 'Simone',
-                    address_secondary: 'scala 2, interno a',
-                }
-            }
 
             let data = {
                 products: this.$root.cart,
@@ -202,8 +189,6 @@ export default {
             this.shippings = this.$root.shippings
             this.updateShipping()
         }
-
-        this.$nextTick(this.$refs.checkout.init)
     }
 }
 </script>
