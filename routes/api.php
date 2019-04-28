@@ -74,6 +74,13 @@ Route::prefix('admin')->group(function() {
         Route::post('/city-destroy', 'Admin\ShopController@city_destroy');
     });
 
+    Route::prefix('orders')->group(function() {
+        Route::get('/get-order/{id}', 'Admin\OrderController@get_order');
+        Route::get('/get-orders', 'Admin\OrderController@get_orders');
+        Route::get('/set-shipped/{id}', 'Admin\OrderController@set_shipped');
+        Route::get('/set-delivered/{id}', 'Admin\OrderController@set_delivered');
+    });
+
     Route::prefix('shippings')->group(function() {
         Route::get('/get-shippings', 'Admin\ShippingController@get_shippings');
         Route::post('/save-shipping', 'Admin\ShippingController@save_shipping');

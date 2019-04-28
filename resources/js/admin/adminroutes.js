@@ -1,68 +1,94 @@
+import Home from './views/Home.vue'
+import HomePage from './views/HomePage.vue'
+import ScuolaMocajo from './views/ScuolaMocajo.vue'
+import Storia from './views/Storia.vue'
+import ViniPagina from './views/ViniPagina.vue'
+import Contact from './views/Contact.vue'
+import Vini from './views/Vini.vue'
+import Negozi from './views/Negozi.vue'
+import Ordini from './views/Ordini.vue'
+import OrdineSingolo from './views/OrdineSingolo.vue'
+import Cities from './views/Cities.vue'
+import Corrieri from './views/Corrieri.vue'
+import Settings from './views/Settings.vue'
+import Privacy from './views/Privacy.vue'
+import Error from '../views/Error.vue'
+
 const routes = [
     {
         path: '/',
         name: 'home',
-        component: require('./views/Home.vue').default,
+        component: Home,
     },
     {
         path: '/homepage',
         name: 'homepage',
-        component: require('./views/HomePage.vue').default,
+        component: HomePage,
     },
     {
         path: '/scuola-mocajo',
-        name: 'scuolamocajo',
-        component: require('./views/ScuolaMocajo.vue').default,
+        name: 'scuola-mocajo',
+        component: ScuolaMocajo,
     },
     {
         path: '/storia',
         name: 'storia',
-        component: require('./views/Storia.vue').default,
+        component: Storia,
     },
     {
         path: '/vini',
         name: 'vini',
-        component: require('./views/ViniPagina.vue').default,
+        component: ViniPagina,
     },
     {
         path: '/contatti',
         name: 'contatti',
-        component: require('./views/Contact.vue').default,
+        component: Contact,
     },
     {
         path: '/prodotti',
         name: 'prodotti',
-        component: require('./views/Vini.vue').default,
+        component: Vini,
     },
     {
         path: '/negozi',
         name: 'negozi',
-        component: require('./views/Negozi.vue').default,
+        component: Negozi,
     },
     {
         path: '/cities',
         name: 'cities',
-        component: require('./views/Cities.vue').default,
+        component: Cities,
+    },
+    {
+        path: '/ordini',
+        name: 'ordini',
+        component: Ordini,
+    },
+    {
+        path: '/ordine/:id',
+        name: 'ordine',
+        component: OrdineSingolo,
     },
     {
         path: '/corrieri',
         name: 'corrieri',
-        component: require('./views/Corrieri.vue').default,
+        component: Corrieri,
     },
     {
         path: '/settings',
         name: 'settings',
-        component: require('./views/Settings.vue').default,
+        component: Settings,
     },
     {
         path: '/privacy',
         name: 'privacy',
-        component: require('./views/Privacy.vue').default,
+        component: Privacy,
     },
     {
         path: '/404',
         name: 'error',
-        component: require('./views/Error.vue').default,
+        component: Error,
     },
 ]
 

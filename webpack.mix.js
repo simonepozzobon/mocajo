@@ -25,10 +25,4 @@ mix
         proxy: 'http://mocajo.test',
         browser: 'google chrome',
         port: 3011,
-        files: [
-            'public/**/*',
-            'resources/**/*',
-            'app/**/*',
-            'config/**/*'
-        ]
     })

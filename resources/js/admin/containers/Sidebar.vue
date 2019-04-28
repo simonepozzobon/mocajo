@@ -62,7 +62,7 @@
             <h5 class="text-light pl-3">Negozio</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" @click="goTo($event, 'homepage')">
+                    <a class="nav-link" href="#" @click="goTo($event, 'ordini')">
                         Gestione Ordini <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -90,8 +90,9 @@ export default {
     name: 'Sidebar',
     methods: {
         goTo: function(event, route) {
+            console.log(route);
             event.preventDefault()
-            this.$router.push(route)
+            this.$router.push({name: route})
         }
     }
 }
