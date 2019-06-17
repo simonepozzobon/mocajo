@@ -1,4 +1,6 @@
 const mix = require('laravel-mix')
+require('laravel-mix-polyfill')
+
 mix
     .js('resources/js/admin/admin.js', 'public/js')
     .js('resources/js/app.js', 'public/js')
@@ -20,6 +22,12 @@ mix
                 }
             }
         }
+    })
+    .polyfill({
+        enabled: true,
+        useBuiltIns: 'usage',
+        targets: 'last 2 version, not dead',
+        debug: true
     })
     .browserSync({
         proxy: 'http://mocajo.test',
