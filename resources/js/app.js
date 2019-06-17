@@ -17,7 +17,7 @@ Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
 Vue.prototype.$http = axios
 Vue.prototype.$env = {
-    debug: true,
+    debug: false,
 }
 Vue.use(VueLayers)
 
