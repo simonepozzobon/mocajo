@@ -217,8 +217,8 @@ export default {
                 let submit = this.$refs.submit
                 submit.classList.add('disabled')
                 this.$http.post('/api/verify', this.form).then(response => {
-                    this.$refs.captcha.execute()
-                    this.captchaValidation = response.data
+                    // this.$refs.captcha.execute()
+                    // this.captchaValidation = response.data
                     resolve(response.data)
                 }).catch(err => {
                     this.$refs.captcha.execute()
@@ -311,14 +311,14 @@ export default {
                     this.$nextTick(() => {
                         this.$emit('completed', null, this.formValues)
                     })
-                    // this.verifyHuman().then(response => {
-                    //     this.disableInput = true
-                    //     this.$nextTick(() => {
-                    //         this.$emit('completed', null, this.formValues)
-                    //     })
-                    // }).catch(err => {
-                    //     console.error('errore', err);
-                    // })
+                    this.verifyHuman().then(response => {
+                        this.disableInput = true
+                        this.$nextTick(() => {
+                            this.$emit('completed', null, this.formValues)
+                        })
+                    }).catch(err => {
+                        console.error('errore', err);
+                    })
                 }
                 else {
                     console.log('has errors');
