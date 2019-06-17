@@ -62,7 +62,7 @@
             <label for="address_secondary" class="col-md-2 col-form-label">Aggiuntivo</label>
             <input type="address_secondary" name="address_secondary" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.address_secondary"/>
         </div>
-        <div class="recaptcha">
+        <!-- <div class="recaptcha">
             <google-re-captcha-v3
                 ref="captcha"
                 v-model="form.gRecaptchaResponse"
@@ -70,7 +70,7 @@
                 :id="'checkout_id'"
                 :inline="true"
                 :action="'checkout'"/>
-        </div>
+        </div> -->
         <div>
             <button ref="submit" class="btn btn-primary" @click="pay">Vai al pagamento</button>
         </div>
@@ -92,26 +92,25 @@ export default {
             default: false,
         }
     },
-    data: function() {
+    data: function () {
         return {
             countries: [
-                "Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas"
-            	,"Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands"
-            	,"Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica"
-            	,"Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea"
-            	,"Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana"
-            	,"Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India"
-            	,"Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia"
-            	,"Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania"
-            	,"Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia"
-            	,"New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal"
-            	,"Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles"
-            	,"Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan"
-            	,"Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia"
-            	,"Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","United States Minor Outlying Islands","Uruguay"
-            	,"Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"
+                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua &amp; Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus",
+                "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia &amp; Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
+                "Cape Verde", "Cayman Islands", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cruise Ship", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
+                "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon",
+                "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India",
+                "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Kyrgyz Republic", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya",
+                "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico", "Moldova", "Monaco", "Mongolia", "Montenegro",
+                "Montserrat", "Morocco", "Mozambique", "Namibia", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palestine", "Panama",
+                "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre &amp; Miquelon", "Samoa", "San Marino", "Satellite", "Saudi Arabia",
+                "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka", "St Kitts &amp; Nevis", "St Lucia", "St Vincent", "St. Lucia", "Sudan", "Suriname",
+                "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad &amp; Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks &amp; Caicos", "Uganda",
+                "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "United States Minor Outlying Islands", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe"
             ],
-            form: { gRecaptchaResponse: null },
+            form: {
+                gRecaptchaResponse: null
+            },
             siteKey: process.env.MIX_RECAPTCHA_KEY,
             formValues: {
                 category: 0,
@@ -143,15 +142,16 @@ export default {
         }
     },
     watch: {
-        '$root.isMobile': function(value) {
+        '$root.isMobile': function (value) {
             let main = document.getElementsByTagName('main')[0]
             if (value) {
                 this.offsetY = 90
-            } else {
+            }
+            else {
                 this.offsetY = 130
             }
         },
-        'formValues.category': function(value) {
+        'formValues.category': function (value) {
             let requiredFields = this.requiredFields[value]
 
             let container = this.$refs.form
@@ -168,7 +168,7 @@ export default {
         }
     },
     methods: {
-        setDebug: function() {
+        setDebug: function () {
             this.formValues = {
                 category: 3,
                 email: 'info@simonepozzobon.com',
@@ -186,7 +186,7 @@ export default {
                 address_secondary: 'scala 2, interno a',
             }
         },
-        init: function() {
+        init: function () {
             let master = new TimelineMax({
                 paused: true
             })
@@ -212,8 +212,8 @@ export default {
             })
             master.play()
         },
-        verifyHuman: function() {
-            return new Promise( (resolve, reject) => {
+        verifyHuman: function () {
+            return new Promise((resolve, reject) => {
                 let submit = this.$refs.submit
                 submit.classList.add('disabled')
                 this.$http.post('/api/verify', this.form).then(response => {
@@ -227,13 +227,15 @@ export default {
             })
 
         },
-        checkFields: function(isPaying = false) {
+        checkFields: function (isPaying = false) {
             if (this.isFirst) {
                 this.isFirst = false
-            } else {
+            }
+            else {
                 if (isPaying == true) {
                     this.hasErrors = false
-                } else {
+                }
+                else {
                     this.hasErrors = null
                 }
                 this.$nextTick(() => {
@@ -245,7 +247,7 @@ export default {
                 })
             }
         },
-        checkField: function(key, value, isPaying) {
+        checkField: function (key, value, isPaying) {
             let element = document.getElementsByName(key)[0]
             let parent = element.parentNode
             let isRequired = element.hasAttribute('required')
@@ -259,68 +261,80 @@ export default {
                 if (value == 0 || !value) {
                     this.hasErrors = true
                     this.setInvalidField(element, previous, isPaying)
-                } else if (type == 'email') {
+                }
+                else if (type == 'email') {
                     if (this.validateEmail(value)) {
                         this.setValidField(element, previous, isPaying)
-                    } else {
+                    }
+                    else {
                         this.hasErrors = true
                         this.setInvalidField(element, previous, isPaying)
                     }
-                } else {
+                }
+                else {
                     this.setValidField(element, previous, isPaying)
                 }
-            } else {
+            }
+            else {
                 this.setValidField(element, previous, isPaying)
             }
         },
-        validateEmail: function(email) {
+        validateEmail: function (email) {
             let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return re.test(String(email).toLowerCase())
         },
-        setInvalidField: function(element, previous, isPaying) {
+        setInvalidField: function (element, previous, isPaying) {
             if (previous != 0 && previous) {
                 this.$nextTick(() => {
                     element.classList.add('is-invalid')
                 })
-            } else if (isPaying) {
+            }
+            else if (isPaying) {
                 this.$nextTick(() => {
                     element.classList.add('is-invalid')
                 })
             }
         },
-        setValidField: function(element, previous, isPaying) {
+        setValidField: function (element, previous, isPaying) {
             if (previous != 0 && previous || isPaying) {
                 this.$nextTick(() => {
                     element.classList.add('is-valid')
                 })
             }
         },
-        pay: function() {
+        pay: function () {
             let submit = this.$refs.submit
             let isValid = this.checkFields(true)
             this.$nextTick(() => {
                 if (this.hasErrors == false) {
-                    this.verifyHuman().then(response => {
-                        this.disableInput = true
-                        this.$nextTick(() => {
-                            this.$emit('completed', null, this.formValues)
-                        })
-                    }).catch(err => {
-                        console.error('errore', err);
+                    this.disableInput = true
+                    this.$nextTick(() => {
+                        this.$emit('completed', null, this.formValues)
                     })
-                } else {
+                    // this.verifyHuman().then(response => {
+                    //     this.disableInput = true
+                    //     this.$nextTick(() => {
+                    //         this.$emit('completed', null, this.formValues)
+                    //     })
+                    // }).catch(err => {
+                    //     console.error('errore', err);
+                    // })
+                }
+                else {
                     console.log('has errors');
                 }
             })
         }
     },
-    created: function() {
-        this.$watch('formValues', this.checkFields,  {deep: true})
+    created: function () {
+        this.$watch('formValues', this.checkFields, {
+            deep: true
+        })
         if (this.$env.debug) {
             this.setDebug()
         }
     },
-    mounted: function() {
+    mounted: function () {
 
     },
 }

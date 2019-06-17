@@ -19,6 +19,7 @@
         "gsap": "^2.0.2",
         "jquery": "^3.2",
         "laravel-mix": "^4.0.14",
+        "laravel-mix-polyfill": "^1.0.2",
         "lodash": "^4.17.5",
         "node-sass": "^4.11.0",
         "popper.js": "^1.12",
