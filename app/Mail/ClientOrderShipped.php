@@ -22,6 +22,8 @@ class ClientOrderShipped extends Mailable
         $this->customer = $order->customer;
         $this->order = $order;
         $this->amount = $order->amount;
+        $this->shipping = $order->shipping;
+        $this->total = $order->total;
         $this->items = $this->set_items($order);
         $this->sender = env('SHOP_MAIL', 'info@scuolamocajo.it');
         $this->lang = 'ita';
@@ -44,6 +46,8 @@ class ClientOrderShipped extends Mailable
                 'order' => $this->order,
                 'items' => $this->items,
                 'amount' => $this->amount,
+                'shipping' => $this->shipping,
+                'total' => $this->total,
                 'lang' => $this->lang,
             ]);
     }

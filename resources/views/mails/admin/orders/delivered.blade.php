@@ -38,7 +38,7 @@ L'ordine n.{{ $order->id }} è stato consegnato.
   <tbody>
     <tr valign="middle">
       <td colspan="3"><h3>Spedizione</h3></td>
-      <td><h3>€ 00.00</h3></td>
+      <td><h3>€ {{ number_format((float)$shipping, 2, '.', '') }}</h3></td>
     </tr>
   </tbody>
   <tbody>
@@ -49,7 +49,7 @@ L'ordine n.{{ $order->id }} è stato consegnato.
   <tbody>
     <tr valign="middle">
       <td colspan="3"><h1>Totale</h1></td>
-      <td><h1>€ {{ number_format((float)$amount, 2, '.', '') }}</h1></td>
+      <td><h1>€ {{ number_format((float)$total, 2, '.', '') }}</h1></td>
     </tr>
   </tbody>
 </table>

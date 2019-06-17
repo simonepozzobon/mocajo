@@ -22,6 +22,8 @@ class AdminSuccessOrder extends Mailable
         $this->customer = $order->customer;
         $this->order = $order;
         $this->amount = $order->amount;
+        $this->shipping = $order->shipping;
+        $this->total = $order->total;
         $this->items = $this->set_items($order);
         $this->sender = env('NO_REPLY', 'no-reply@scuolamocajo.it');
         $this->lang = 'ita';
@@ -44,19 +46,20 @@ class AdminSuccessOrder extends Mailable
                 'order' => $this->order,
                 'items' => $this->items,
                 'amount' => $this->amount,
+                'shipping' => $this->shipping,
+                'total' => $this->total,
                 'lang' => $this->lang,
             ]);
     }
 
     public function set_items($order) {
         $products = $order->products;
-
         $items = $products->transform(function($product, $key) {
             $item = array();
-            $item['title'] = $product->title;
-            $item['quantity'] = $product->pivot->quantity;
-            $item['price'] = $product->price;
-            $item['pricetot'] = $product->price * $product->pivot->quantity;
+            $item['title'] = $product['title'];
+            $item['quantity'] = $product['quantity'];
+            $item['price'] = $product['price'];
+            $item['pricetot'] = $product['pricetot'];
             return $item;
         });
         return $items;

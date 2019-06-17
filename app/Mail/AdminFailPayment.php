@@ -24,23 +24,13 @@ class AdminFailPayment extends Mailable
         $this->customer = $order->customer;
         $this->order = $order;
         $this->amount = $order->amount;
-
+        $this->shipping = $order->shipping;
+        $this->total = $order->total;
+        $this->items = $this->set_items($order);
         $this->sender = env('SHOP_MAIL', 'info@scuolamocajo.it');
         $this->lang = 'ita';
         $this->subject = 'Nuovo ordine - pagamento fallito';
 
-        $this->items = $order->products->transform(function($product, $key) {
-            $item = array();
-            // $item['title'] = $product->title;
-            // $item['quantity'] = $product->pivot->quantity;
-            // $item['price'] = $product->price;
-            // $item['pricetot'] = $product->price * $product->pivot->quantity;
-            $item['title'] = 'title';
-            $item['quantity'] = 4;
-            $item['price'] = 10.00;
-            $item['pricetot'] = 12.00;
-            return $item;
-        });
     }
 
     /**
@@ -59,7 +49,22 @@ class AdminFailPayment extends Mailable
                 'order' => $this->order,
                 'items' => $this->items,
                 'amount' => $this->amount,
+                'shipping' => $this->shipping,
+                'total' => $this->total,
                 'lang' => $this->lang,
             ]);
+    }
+
+    public function set_items($order) {
+        $products = $order->products;
+        $items = $products->transform(function($product, $key) {
+            $item = array();
+            $item['title'] = $product['title'];
+            $item['quantity'] = $product['quantity'];
+            $item['price'] = $product['price'];
+            $item['pricetot'] = $product['pricetot'];
+            return $item;
+        });
+        return $items;
     }
 }

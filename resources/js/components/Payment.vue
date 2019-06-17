@@ -3,17 +3,29 @@
         <h1>Pagamento</h1>
         <div class="form-group row mt-4">
             <label for="number" class="col-md-2 col-form-label">Numero Carta</label>
-            <input type="text" name="number" class="form-control col-md-10" v-model="form.number">
+            <input
+                type="text"
+                name="number"
+                :disabled="disableInput"
+                class="form-control col-md-10"
+                v-model="form.number">
         </div>
         <div class="form-group row">
             <label for="expiry_month" class="col-md-2 col-form-label">Scadenza (Mese)</label>
-            <input type="text" name="expiry_month" class="col-md-4 form-control" v-model="form.expiry_month">
+            <input type="text" name="expiry_month" :disabled="disableInput" class="col-md-4 form-control" v-model="form.expiry_month">
             <label for="expiry_year" class="col-md-2 col-form-label">Scadenza (Anno)</label>
-            <input type="text" name="expiry_year" class="col-md-4 form-control" v-model="form.expiry_year">
+            <input type="text" name="expiry_year" :disabled="disableInput" class="col-md-4 form-control" v-model="form.expiry_year">
         </div>
         <div class="form-group row">
             <label for="cvv" class="col-md-2 col-form-label">CVV</label>
-            <input type="text" name="cvv" class="form-control col-md-10" v-model="form.cvv">
+            <input type="text" name="cvv" :disabled="disableInput" class="form-control col-md-10" v-model="form.cvv">
+        </div>
+        <div class="form-group row">
+            <div class="col-12">
+                <p class="text-danger">
+                    Errore {{ paymentErrors }}
+                </p>
+            </div>
         </div>
         <div>
             <button class="btn btn-primary" @click="pay" ref="pay">Paga</button>
@@ -43,7 +55,9 @@ export default {
                 expiry_month: null,
                 cvv: null,
             },
+            disableInput: false,
             offsetY: 0,
+            paymentErrors: null,
         }
     },
     watch: {
@@ -55,9 +69,6 @@ export default {
                 this.offsetY = 130
             }
         },
-        '$root.order': function(order) {
-            this.pay()
-        }
     },
     methods: {
         showPayment: function() {
@@ -87,11 +98,42 @@ export default {
         },
         pay: function() {
             let btn = this.$refs.pay
+            this.disableInput = true
             btn.classList.add('disabled')
 
             this.form.order_id = this.$root.order ? this.$root.order.id : null
             this.form.customer_id = this.$root.customer ? this.$root.customer.id : null
 
+            this.$nextTick(() => {
+                this.$http.post('/api/pay', this.form).then(response => {
+                    console.log(response.data);
+                    if (response.data.success == false) {
+                        this.displayError(response.data.errors)
+                    } else {
+                        this.$emit('completed')
+                    }
+                }).catch(errs => {
+                    console.error(errs);
+                })
+            })
+        },
+        displayError: function(errors) {
+            let btn = this.$refs.pay
+            this.disableInput = true
+            btn.classList.add('disabled')
+
+            let message = ''
+
+            for (var key in errors) {
+                if (errors.hasOwnProperty(key)) {
+                    message = message + errors[key] + ' '
+                }
+            }
+            this.paymentErrors = message
+        },
+    },
+    mounted: function() {
+        if (this.$env.debug) {
             this.form = {
                 ...this.form,
                 'number': '4242424242424242',
@@ -100,17 +142,6 @@ export default {
                 'cvv': 314,
                 'currency': 'EUR',
             }
-
-            this.$nextTick(() => {
-                // console.log(this.$root.order);
-                // console.log(this.$root.customer);
-                this.$http.post('/api/pay', this.form).then(response => {
-                    console.log(response.data);
-                })
-            })
-            // this.$http.post('/api/pay', this.form).then(response => {
-            //     console.log(response);
-            // })
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -16,9 +17,17 @@ class ClientRefusedPayment extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Order $order)
     {
-        //
+        $this->customer = $order->customer;
+        $this->order = $order;
+        $this->amount = $order->amount;
+        $this->shipping = $order->shipping;
+        $this->total = $order->total;
+        $this->items = $this->set_items($order);
+        $this->sender = env('SHOP_MAIL', 'info@scuolamocajo.it');
+        $this->lang = 'ita';
+        $this->subject = 'Scuola Mocajo - pagamento rifiutato';
     }
 
     /**
@@ -28,6 +37,32 @@ class ClientRefusedPayment extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this
+            ->from($this->sender)
+            ->subject($this->subject)
+            ->markdown('mails.client.orders.card-not-accepted')
+            ->with([
+                'customer' => $this->customer,
+                'order' => $this->order,
+                'items' => $this->items,
+                'amount' => $this->amount,
+                'shipping' => $this->shipping,
+                'total' => $this->total,
+                'lang' => $this->lang,
+            ]);
+    }
+
+    public function set_items($order) {
+        $products = $order->products;
+
+        $items = $products->transform(function($product, $key) {
+            $item = array();
+            $item['title'] = $product->title;
+            $item['quantity'] = $product->pivot->quantity;
+            $item['price'] = $product->price;
+            $item['pricetot'] = $product->price * $product->pivot->quantity;
+            return $item;
+        });
+        return $items;
     }
 }

@@ -16,6 +16,9 @@ Vue.use(VueRouter)
 Vue.use(checkView)
 Vue.prototype.$cookie = Cookie
 Vue.prototype.$http = axios
+Vue.prototype.$env = {
+    debug: true,
+}
 Vue.use(VueLayers)
 
 let env = document.head.querySelector("[property~=env][content]").content
@@ -72,7 +75,7 @@ const app = new Vue({
 
         },
         order: function(order) {
-            
+
         },
         options: function(opts) {
         }

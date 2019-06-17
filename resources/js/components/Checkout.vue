@@ -3,39 +3,39 @@
         <h1>Checkout</h1>
         <div class="form-group row mt-4">
             <label for="category" class="col-md-2 col-form-label">Tipologia</label>
-            <select class="form-control col-md-4" name="category" v-model="formValues.category" required>
+            <select :disabled="disableInput" class="form-control col-md-4" name="category" v-model="formValues.category" required>
                 <option value="1">Persona Fisica</option>
                 <option value="2">Azienda</option>
                 <option value="3">Professionista</option>
             </select>
             <label for="email" class="col-md-2 col-form-label">Email</label>
-            <input type="email" name="email" class="form-control col-md-4" v-model="formValues.email" required/>
+            <input type="email" name="email" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.email" required/>
         </div>
         <div class="form-group row">
             <label for="company_name" class="col-md-2 col-form-label">Ragione Sociale</label>
-            <input type="company_name" name="company_name" class="form-control col-md-10" v-model="formValues.company_name"/>
+            <input type="company_name" name="company_name" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.company_name"/>
         </div>
         <div class="form-group row">
             <label for="vat" class="col-md-2 col-form-label">IVA</label>
-            <input type="vat" name="vat" class="form-control col-md-4" v-model="formValues.vat"/>
+            <input type="vat" name="vat" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.vat"/>
             <label for="code" class="col-md-2 col-form-label">Codice Fiscale</label>
-            <input type="code" name="code" class="form-control col-md-4" v-model="formValues.code"/>
+            <input type="code" name="code" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.code"/>
         </div>
         <hr class="my-5"/>
         <div class="form-group row">
             <label for="name" class="col-md-2 col-form-label">Nome</label>
-            <input type="name" name="name" class="form-control col-md-4" v-model="formValues.name" required/>
+            <input type="name" name="name" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.name" required/>
             <label for="surname" class="col-md-2 col-form-label">Cognome</label>
-            <input type="surname" name="surname" class="form-control col-md-4" v-model="formValues.surname" required/>
+            <input type="surname" name="surname" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.surname" required/>
         </div>
         <div class="form-group row">
             <label for="phone" class="col-md-2 col-form-label">Telefono</label>
-            <input type="phone" name="phone" class="form-control col-md-10" v-model="formValues.phone" required/>
+            <input type="phone" name="phone" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.phone" required/>
         </div>
         <hr class="my-5"/>
         <div class="form-group row">
             <label for="country" class="col-md-2 col-form-label">Stato</label>
-            <select class="form-control col-md-10" name="country" v-model="formValues.country" required>
+            <select :disabled="disableInput" class="form-control col-md-10" name="country" v-model="formValues.country" required>
                 <option
                     v-for="(country, i, key) in this.countries"
                     :key="i"
@@ -46,21 +46,21 @@
         </div>
         <div class="form-group row">
             <label for="region" class="col-md-2 col-form-label">Provincia</label>
-            <input type="region" name="region" class="form-control col-md-4" v-model="formValues.region" required/>
+            <input type="region" name="region" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.region" required/>
             <label for="cap" class="col-md-2 col-form-label">C.A.P.</label>
-            <input type="cap" name="cap" class="form-control col-md-4" v-model="formValues.cap" required/>
+            <input type="cap" name="cap" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.cap" required/>
         </div>
         <div class="form-group row">
             <label for="city" class="col-md-2 col-form-label">Città</label>
-            <input type="city" name="city" class="form-control col-md-10" v-model="formValues.city" required/>
+            <input type="city" name="city" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.city" required/>
         </div>
         <div class="form-group row">
             <label for="address" class="col-md-2 col-form-label">Indirizzo</label>
-            <input type="address" name="address" class="form-control col-md-10" v-model="formValues.address" required/>
+            <input type="address" name="address" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.address" required/>
         </div>
         <div class="form-group row">
             <label for="address_secondary" class="col-md-2 col-form-label">Aggiuntivo</label>
-            <input type="address_secondary" name="address_secondary" class="form-control col-md-10" v-model="formValues.address_secondary"/>
+            <input type="address_secondary" name="address_secondary" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.address_secondary"/>
         </div>
         <div class="recaptcha">
             <google-re-captcha-v3
@@ -72,7 +72,7 @@
                 :action="'checkout'"/>
         </div>
         <div>
-            <button ref="submit" class="btn btn-primary" @click="pay">Vai Al Pagamento</button>
+            <button ref="submit" class="btn btn-primary" @click="pay">Vai al pagamento</button>
         </div>
     </div>
 </template>
@@ -132,6 +132,14 @@ export default {
             captchaValidation: null,
             offsetY: 0,
             hasErrors: null,
+            disableInput: null,
+            requiredFields: [
+                [],
+                ['category', 'email', 'code', 'name', 'surname', 'phone', 'country', 'region', 'cap', 'city', 'address'],
+                ['category', 'email', 'company_name', 'code', 'vat', 'city', 'cap', 'region', 'address', 'country', 'phone', 'surname', 'name'],
+                ['category', 'email', 'company_name', 'code', 'vat', 'city', 'cap', 'region', 'address', 'country', 'phone', 'surname', 'name'],
+            ],
+            isFirst: true,
         }
     },
     watch: {
@@ -143,6 +151,21 @@ export default {
                 this.offsetY = 130
             }
         },
+        'formValues.category': function(value) {
+            let requiredFields = this.requiredFields[value]
+
+            let container = this.$refs.form
+            let fields = container.getElementsByClassName('form-control')
+            for (let i = 0; i < fields.length; i++) {
+                fields[i].removeAttribute('required')
+            }
+
+            for (let i = 0; i < requiredFields.length; i++) {
+                let key = requiredFields[i]
+                let element = document.getElementsByName(key)[0]
+                let isRequired = element.setAttribute('required', true)
+            }
+        }
     },
     methods: {
         setDebug: function() {
@@ -205,18 +228,22 @@ export default {
 
         },
         checkFields: function(isPaying = false) {
-            if (isPaying == true) {
-                this.hasErrors = false
+            if (this.isFirst) {
+                this.isFirst = false
             } else {
-                this.hasErrors = null
-            }
-            this.$nextTick(() => {
-                for (let key in this.formValues) {
-                    if (this.formValues.hasOwnProperty(key)) {
-                        this.checkField(key, this.formValues[key], isPaying)
-                    }
+                if (isPaying == true) {
+                    this.hasErrors = false
+                } else {
+                    this.hasErrors = null
                 }
-            })
+                this.$nextTick(() => {
+                    for (let key in this.formValues) {
+                        if (this.formValues.hasOwnProperty(key)) {
+                            this.checkField(key, this.formValues[key], isPaying)
+                        }
+                    }
+                })
+            }
         },
         checkField: function(key, value, isPaying) {
             let element = document.getElementsByName(key)[0]
@@ -239,6 +266,8 @@ export default {
                         this.hasErrors = true
                         this.setInvalidField(element, previous, isPaying)
                     }
+                } else {
+                    this.setValidField(element, previous, isPaying)
                 }
             } else {
                 this.setValidField(element, previous, isPaying)
@@ -272,7 +301,10 @@ export default {
             this.$nextTick(() => {
                 if (this.hasErrors == false) {
                     this.verifyHuman().then(response => {
-                        this.$emit('completed')
+                        this.disableInput = true
+                        this.$nextTick(() => {
+                            this.$emit('completed', null, this.formValues)
+                        })
                     }).catch(err => {
                         console.error('errore', err);
                     })
@@ -284,11 +316,12 @@ export default {
     },
     created: function() {
         this.$watch('formValues', this.checkFields,  {deep: true})
-    },
-    mounted: function() {
         if (this.$env.debug) {
             this.setDebug()
         }
+    },
+    mounted: function() {
+
     },
 }
 </script>

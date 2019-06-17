@@ -39,10 +39,20 @@
                             v-for="item in this.shippings"
                             :key="item.id">
                             <td>
+                                <img :src="item.logo" alt="">
+                            </td>
+                            <td>
                                 {{ item.description }}
                             </td>
                             <td>
-                                O
+                                {{ item.timing }}
+                            </td>
+                            <td v-if="isCartEditable">
+                                <i-check :use-variables="true" color="green" v-if="item.selected"/>
+                                <i-uncheck @click.native="selectShipping(item)" v-else/>
+                            </td>
+                            <td v-else>
+                                <i-check :use-variables="true" color="green" v-if="item.selected"/>
                             </td>
                             <td>
                                 € {{ calculateShipping(item.price) }}
@@ -50,7 +60,7 @@
                         </tbody>
                         <tbody>
                             <tr>
-                                <td colspan="2">Totale</td>
+                                <td colspan="4">Totale Con Spedizione</td>
                                 <td>€ {{ parseFloat(this.shippingTotal).toFixed(2) }}</td>
                             </tr>
                         </tbody>
@@ -68,12 +78,13 @@
 
                 <checkout
                     ref="checkout"
-                    :is-debug="true"
+                    :is-debug="this.$env.debug"
                     @completed="validateCheckout"/>
 
                 <payment
                     ref="payment"
-                    :cart="$root.cart"/>
+                    :cart="$root.cart"
+                    @completed="orderCompleted"/>
 
             </div>
         </div>
@@ -84,12 +95,15 @@
 import CartRow from '../components/CartRow.vue'
 import Checkout from '../components/Checkout.vue'
 import Payment from '../components/Payment.vue'
+import { ICheck, IUncheck } from '../components/icons'
 
 export default {
     name: 'Cart',
     components: {
         CartRow,
         Checkout,
+        ICheck,
+        IUncheck,
         Payment,
     },
     data: function() {
@@ -107,7 +121,14 @@ export default {
             this.updateTotal(cart)
         },
         '$root.shippings': function(shippings) {
-            this.shippings = shippings
+            this.shippings = shippings.map(shipping => {
+                if (shipping.default == 1) {
+                    shipping.selected = true
+                } else {
+                    shipping.selected = false
+                }
+                return shipping
+            })
             this.updateShipping()
         },
         '$root.isMobile': function() {
@@ -133,11 +154,13 @@ export default {
             this.$root.cartRemove(idx)
         },
         calculateShipping: function(price) {
-            return parseFloat(price * this.totalQuantity * this.shippings[0].increment).toFixed(2)
+            let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]
+            return parseFloat(price * this.totalQuantity * shipping.increment).toFixed(2)
         },
         updateShipping: function() {
             if (this.shippings) {
-                this.shippingTotal = this.cartTotal + (this.shippings[0].price * this.totalQuantity * this.shippings[0].increment)
+                let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]
+                this.shippingTotal = this.cartTotal + (shipping.price * this.totalQuantity * shipping.increment)
             }
         },
         showCheckout: function() {
@@ -167,11 +190,16 @@ export default {
 
         },
         validateCheckout: function(event = null, checkout = null) {
+            let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]
 
             let data = {
                 products: this.$root.cart,
                 checkout: checkout,
+                shipping: shipping,
+                amount: this.shippingTotal.toFixed(2),
             }
+
+            // console.log(data);
 
             this.$http.post('/api/save-order', data).then(response => {
                 this.$root.customer = response.data.customer
@@ -179,6 +207,22 @@ export default {
                 this.$nextTick(this.$refs.payment.showPayment)
             })
         },
+        selectShipping: function(item) {
+            if (this.isCartEditable) {
+                this.shippings = this.shippings.map(shipping => {
+                    if (shipping.id == item.id) {
+                        shipping.selected = true
+                    } else {
+                        shipping.selected = false
+                    }
+                    return shipping
+                })
+                this.updateShipping()
+            }
+        },
+        orderCompleted: function() {
+            
+        }
     },
     mounted: function() {
         if (this.$root.cart) {
@@ -188,6 +232,12 @@ export default {
         if (this.$root.shippings) {
             this.shippings = this.$root.shippings
             this.updateShipping()
+        }
+
+        if (this.$env.debug) {
+            this.$nextTick(() => {
+                this.showCheckout()
+            })
         }
     }
 }
@@ -202,6 +252,10 @@ export default {
 
     @include media-breakpoint-down('sm') {
         padding-top: $section-sm-padding;
+    }
+
+    .ui-icon {
+        cursor: pointer;
     }
 }
 </style>

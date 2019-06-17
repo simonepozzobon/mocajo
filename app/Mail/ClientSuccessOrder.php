@@ -22,10 +22,12 @@ class ClientSuccessOrder extends Mailable
         $this->customer = $order->customer;
         $this->order = $order;
         $this->amount = $order->amount;
+        $this->shipping = $order->shipping;
+        $this->total = $order->total;
         $this->items = $this->set_items($order);
         $this->sender = env('SHOP_MAIL', 'info@scuolamocajo.it');
         $this->lang = 'ita';
-        $this->subject = 'Scuola Mocajo - Ordine Avvenuto Con Successo';
+        $this->subject = 'Scuola Mocajo - Ordine avvenuto con successo';
     }
 
     /**
@@ -44,6 +46,8 @@ class ClientSuccessOrder extends Mailable
                 'order' => $this->order,
                 'items' => $this->items,
                 'amount' => $this->amount,
+                'shipping' => $this->shipping,
+                'total' => $this->total,
                 'lang' => $this->lang,
             ]);
     }

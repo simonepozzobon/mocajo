@@ -2,11 +2,39 @@
 
 namespace App\Http\Controllers;
 
+// Model
 use App\Order;
-Use App\Customer;
-use Illuminate\Http\Request;
+use App\Product;
+use App\Customer;
+
+// Evento per la gestione dei pagamenti
 use App\Events\CreatePayment;
+
+// Debug
+use App\Mail\DebugPayment;
+
+// Mail per l'admin
+use App\Mail\AdminFailPayment;
+use App\Mail\AdminSuccessOrder;
+use App\Mail\AdminRefusedPayment;
+
+// Mail per i client
+use App\Mail\ClientFailPayment;
+use App\Mail\ClientSuccessOrder;
+use App\Mail\ClientRefusedPayment;
+
+// Librerie
+use Illuminate\Support\Arr;
 use Cartalyst\Stripe\Stripe;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
+// use App\Events\CreatePayment;
+use Cartalyst\Stripe\Exception;
+use Cartalyst\Stripe\Exception\NotFoundException;
+use Cartalyst\Stripe\Exception\CardErrorException;
+use Cartalyst\Stripe\Exception\BadRequestException;
+use Cartalyst\Stripe\Exception\InvalidRequestException;
+use Cartalyst\Stripe\Exception\MissingParameterException;
 
 class CheckoutController extends Controller
 {
@@ -52,32 +80,27 @@ class CheckoutController extends Controller
         $order = new Order();
         $order->customer_id = $customer->id;
         $order->status_code_id = 1;
-        $order->shipping_id = 1;
+        $order->shipping_id = $request->shipping['id'];
         $order->save();
+        //
+        // $order->amount = $request->amount;
+        // $order->save();
 
-        // $customer_id = $customer->stripe_id;
-        //
-        // $items = array();
-        //
+        $amount = 0;
+        $shipping_items = 0;
+
         foreach ($request->products as $key => $product) {
+            $single = $product['price'] * $product['quantity'];
+            $shipping_items = $shipping_items + $product['quantity'];
+            $amount = $amount + $single;
             $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
         }
 
-        // $ord = $stripe->orders()->create([
-        //     'currency' => 'EUR',
-        //     'customer' => $customer_id,
-        //     'email' => $customer->email,
-        //     'shipping' => [
-        //         'name' => $this->stringify_result(['surname', 'name'], $request->checkout),
-        //         'address' => [
-        //             'line1' => $this->stringify_result(['address_secondary', 'address'], $request->checkout),
-        //             'city' => $request->checkout['city'],
-        //             'country' => $request->checkout['country'],
-        //             'postal_code' => $request->checkout['cap'],
-        //         ],
-        //     ],
-        //     'items' => $items,
-        // ]);
+        $shipping = $request->shipping['increment'] * $request->shipping['increment'] * $shipping_items;
+        $order->amount = $amount;
+        $order->shipping = $shipping;
+        $order->total = $shipping + $amount;
+        $order->save();
 
         return [
             'customer' => $customer,
@@ -86,67 +109,199 @@ class CheckoutController extends Controller
     }
 
     public function pay(Request $request) {
+
+        $test_card = $this->get_test_card('success');
+
+        $request = (object) [
+            'currency' => 'EUR',
+            'customer_id' => 1,
+            'cvv' => $test_card['cvv'],
+            'expiry_month' => $test_card['expiry_month'],
+            'expiry_year' => $test_card['expiry_year'],
+            'number' => $test_card['number'],
+            'order_id' => 42,
+        ];
+
+        $errors = array();
         $order = Order::find($request->order_id);
-        $data = [
-            'number' => $request->number,
-            'exp_month' => $request->expiry_month,
-            'exp_year' => $request->expiry_year,
-            'cvc' => $request->cvv,
-        ];
-        event(new CreatePayment($data, $request->order_id));
-        return [
-            'event' => true
-        ];
-        $stripe = $this->stripe;
+        $customer = $order->customer;
+        $products = $order->products;
 
-        $local_order = Order::find($request->order_id);
-        $local_customer = $local_order->customer;
-
-        $products = $local_order->products;
-
-        $customer_id = $local_customer->stripe_id;
-        $card_id = $local_customer->card_id;
-
-        $card_data = [
-                'number' => $request->number,
-                'exp_month' => $request->expiry_month,
-                'exp_year' => $request->expiry_year,
-                'cvc' => $request->cvv,
-        ];
-
-        if (!$card_id) {
-            $token = $stripe->tokens()->create([
-                'card' => $card_data
+        try {
+            $token = $this->stripe->tokens()->create([
+                'card' => [
+                    'number' => $request->number,
+                    'exp_month' => $request->expiry_month,
+                    'exp_year' => $request->expiry_year,
+                    'cvc' => $request->cvv,
+                ],
             ]);
-            $card = $stripe->cards()->create($customer_id, $token['id']);
-        } else {
-            $card = $stripe->cards()->find($customer_id, $card_id);
-            $delete = $stripe->cards()->delete($customer_id, $card_id);
-            $token = $stripe->tokens()->create([
-                'card' => $card_data
-            ]);
-            $card = $stripe->cards()->create($customer_id, $token['id']);
+        } catch (NotFoundException $e) {
+            $message = $e->getMessage();
+            $errors['step_1'] = $message;
+        } catch (BadRequestException $e) {
+            $message = $e->getMessage();
+            $errors['step_1'] = $message;
+        } catch (InvalidRequestException $e) {
+            $message = $e->getMessage();
+            $errors['step_1'] = $message;
+        } catch (CardErrorException $e) {
+            $message = $e->getMessage();
+            $errors['step_1'] = $message;
         }
 
-        $local_customer->card_id = $card['id'];
-        $local_customer->save();
+        if (count($errors) > 0) {
+            $this->payment_fail($order);
+            return [
+                'success' => false,
+                'errors' => $errors,
+            ];
+        }
 
-        // $customer = $this->get_customer($customer_id);
-        $metadata = $this->set_charge_metadata($products, $local_order->id);
-        $total = $this->order_total($products);
-        // return [$metadata][0];
-        $charge = $stripe->charges()->create([
-            'customer' => $customer_id,
-            'currency' => 'EUR',
-            'amount' => $total,
-            'description' => 'order n. '.$local_order->id,
-            'statement_descriptor' => 'SUCOLAMOCAJO',
-            'metadata' => $metadata,
-        ]);
+        if (isset($token)) {
+            // verifico l'impronta
+            $fingerprint = $token['card']['fingerprint'];
+            $cards = $this->stripe->cards()->all($customer->stripe_id);
 
-        return [
-            'order' => $card,
-        ];
+
+            // verifico che non ci siano doppioni
+            $checks = Arr::where($cards['data'], function($card, $key) use($fingerprint) {
+                return $card['fingerprint'] != $fingerprint;
+            });
+
+            // se l'impronta è diversa aggiungo la nuova carta
+            if (count($checks) > 0) {
+                try {
+                    $card = $this->stripe->cards()->create($customer['stripe_id'], $token['id']);
+                    $customer->card_id = $card['id'];
+                    $customer->save();
+                } catch (NotFoundException $e) {
+                    $message = $e->getMessage();
+                    $errors['step_1_2'] = $message;
+                } catch (BadRequestException $e) {
+                    $message = $e->getMessage();
+                    $errors['step_1_2'] = $message;
+                } catch (InvalidRequestException $e) {
+                    $message = $e->getMessage();
+                    $errors['step_1_2'] = $message;
+                } catch (CardErrorException $e) {
+                    $message = $e->getMessage();
+                    $errors['step_1_2'] = $message;
+                }
+
+                if (count($errors) > 0) {
+                    // Messaggio errore Carta Rifiutata
+                    $this->payment_refused($order);
+                    return [
+                        'success' => false,
+                        'errors' => $errors,
+                    ];
+                }
+            }
+
+            // set metadata
+            $metadata = array();
+            $metadata['order_id'] = $order->id;
+
+            foreach ($products as $key => $product) {
+                $metadata['item_'.$key] = json_encode([
+                    'quantity' => $product->pivot->quantity,
+                    'product_id' => $product->id,
+                    'product_price' => $product->price
+                ]);
+            }
+
+
+            // effettuo l'addebito
+            try {
+                $charge = $this->stripe->charges()->create([
+                    'customer' => $customer->stripe_id,
+                    'currency' => 'EUR',
+                    'amount' => $order->total,
+                    'description' => 'order n. '.$order->id,
+                    'statement_descriptor' => 'SUCOLAMOCAJO',
+                    'metadata' => $metadata,
+                ]);
+
+            } catch (NotFoundException $e) {
+                $message = $e->getMessage();
+                $errors['step_2'] = $message;
+            } catch (BadRequestException $e) {
+                $message = $e->getMessage();
+                $errors['step_2'] = $message;
+            } catch (InvalidRequestException $e) {
+                $message = $e->getMessage();
+                $errors['step_2'] = $message;
+            } catch (CardErrorException $e) {
+                $message = $e->getMessage();
+                $errors['step_2'] = $message;
+            } catch (MissingParameterException $e) {
+                $message = $e->getMessage();
+                $errors['step_2'] = $message;
+            }
+
+            if (count($errors) > 0) {
+                // Messaggio errore Carta Rifiutata
+                $this->payment_refused($order);
+                return [
+                    'success' => false,
+                    'errors' => $errors,
+                ];
+            }
+
+            if (isset($charge)) {
+                $order->transaction_id = $charge['id'];
+                $order->status_code_id = 2;
+                $order->save();
+
+                $this->order_success($order);
+
+                return [
+                    'success' => true,
+                ];
+            }
+        }
+
+    }
+
+    public function order_success($order) {
+        $email = $order->customer->email;
+        $admin_email = env('ADMIN_EMAIL', 'info@scuolamocajo.it');
+
+        dump('success');
+        Mail::to($email)->send(new ClientSuccessOrder($order));
+        Mail::to($admin_email)->send(new AdminSuccessOrder($order));
+
+        $order->status_code_id = 2;
+        $order->save();
+        return true;
+    }
+
+    public function payment_fail($order) {
+        $email = $order->customer->email;
+        $admin_email = env('ADMIN_EMAIL', 'info@scuolamocajo.it');
+
+        dump('fail');
+        Mail::to($email)->send(new ClientFailPayment($order));
+        Mail::to($admin_email)->send(new AdminFailPayment($order));
+
+        $order->status_code_id = 5;
+        $order->save();
+
+        return true;
+    }
+
+    public function payment_refused($order) {
+        $email = $order->customer->email;
+        $admin_email = env('ADMIN_EMAIL', 'info@scuolamocajo.it');
+
+        dump('refused');
+        Mail::to($email)->send(new ClientRefusedPayment($order));
+        Mail::to($admin_email)->send(new AdminRefusedPayment($order));
+
+        $order->status_code_id = 5;
+        $order->save();
+        return true;
     }
 
     public function get_customer($id) {
@@ -166,7 +321,9 @@ class CheckoutController extends Controller
         return $metadata;
     }
 
-    public function order_total($products) {
+    public function order_total($order) {
+        $products = $order->products;
+
         $total = 0;
         foreach ($products as $key => $product) {
             $single = $product->pivot->quantity * $product['price'];
@@ -217,49 +374,84 @@ class CheckoutController extends Controller
     }
 
     public function test() {
-        $request = [
-            'card' => '4242424242424242',
-            'expiry_month' => 10,
-            'expiry_year' => 2020,
-            'cvv' => 314,
-            'amount' => 10.00,
-            'currency' => 'EUR',
-            'description' => 'Ordine 39292840934',
+    }
+
+    public function get_test_card($type) {
+        $cards = [
+            'success' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4242424242424242',
+            ],
+            'wrong_month' => [
+                'cvv' => 314,
+                'expiry_month' => 13,
+                'expiry_year' => 2020,
+                'number' => '4242424242424242',
+            ],
+            'wrong_year' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 1970,
+                'number' => '4242424242424242',
+            ],
+            'risk_level_elevated' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000009235',
+            ],
+            'declined' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000000002',
+            ],
+            'insufficient_funds' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000009995',
+            ],
+            'lost_card' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000009987',
+            ],
+            'stolen_card' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000009979',
+            ],
+            'expired' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000000069',
+            ],
+            'wrong_cvc' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000000127',
+            ],
+            'processing_error' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4000000000000119',
+            ],
+            'incorrect_number' => [
+                'cvv' => 314,
+                'expiry_month' => 10,
+                'expiry_year' => 2020,
+                'number' => '4242424242424241',
+            ],
         ];
 
-        $key = env('PUBLISHABLE_KEY', '');
-        $secret = env('SECRET_KEY', '');
-
-        try {
-            $stripe = Stripe::make($key);
-        } catch(\Exception $e) {
-            dd('errore');
-        }
-
-        try {
-            $token = $stripe->tokens()->create([
-                'card' => [
-                    'number' => $request['card'],
-                    'exp_month' => $request['expiry_month'],
-                    'exp_year' => $request['expiry_year'],
-                    'cvc' => $request['cvv'],
-                ]
-            ]);
-
-            $stripe->setApiKey($secret);
-
-            $settings = [
-                'card' => $token['id'],
-                'currency' => $request['currency'],
-                'amount' => $request['amount'],
-                'description' => $request['description'],
-            ];
-            $charge = $stripe->charges()->create($settings);
-
-        } catch (\Exception $e) {
-          // Something else happened, completely unrelated to Stripe
-          dd($e);
-        }
-
+        return $cards[$type];
     }
 }
