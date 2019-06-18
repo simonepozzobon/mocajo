@@ -57,10 +57,22 @@
 
 <script>
 import Wines from '../dummies/wines'
-import {TimelineMax} from 'gsap'
+import {
+    TimelineMax
+}
+from 'gsap'
 import ProductMenuIcon from '../components/ProductMenuIcon.vue'
 import ProductSingle from '../components/ProductSingle.vue'
-import { UiAction, UiBlock, UiCollapse, UiHeroBanner, UiImageBlock, UiSubtitle, UiTitle } from '../components/ui'
+import {
+    UiAction,
+    UiBlock,
+    UiCollapse,
+    UiHeroBanner,
+    UiImageBlock,
+    UiSubtitle,
+    UiTitle
+}
+from '../components/ui'
 require('gsap/ScrollToPlugin')
 
 export default {
@@ -75,7 +87,7 @@ export default {
         UiSubtitle,
         UiTitle,
     },
-    data: function() {
+    data: function () {
         return {
             cache: {
                 sette: true,
@@ -105,25 +117,25 @@ export default {
         }
     },
     watch: {
-        '$root.isMobile': function(value) {
+        '$root.isMobile': function (value) {
             if (value && this.$refs.sidebar) {
                 TweenMax.set(this.$refs.sidebar, {
                     display: 'none',
                 })
             }
         },
-        '$root.products': function(products) {
+        '$root.products': function (products) {
             this.products = products
         },
-        '$root.options': function(options) {
+        '$root.options': function (options) {
             this.setContent(options.vini, options.shop)
         },
-        '$root.locale': function(locale) {
+        '$root.locale': function (locale) {
             this.translate(locale)
         }
     },
     methods: {
-        getTranslations: function(obj, key) {
+        getTranslations: function (obj, key) {
             if (obj.hasOwnProperty(key) && obj.hasOwnProperty(key + '_en')) {
                 if (this.$root.locale == 'it') {
                     return obj[key]
@@ -132,7 +144,7 @@ export default {
             }
             return null
         },
-        translate: function(locale = false) {
+        translate: function (locale = false) {
             this.title = this.getTranslations(this.vini, 'title')
             this.text = this.getTranslations(this.vini, 'txt')
             this.alt = this.getTranslations(this.vini, 'alt')
@@ -143,41 +155,50 @@ export default {
                 })
             }
         },
-        setContent: function(section, shop) {
+        setContent: function (section, shop) {
             this.vini = section
             this.shop = shop
             this.isActive = shop.active
             this.translate()
 
         },
-        getScrollY: function() {
+        getScrollY: function () {
             const w = window
             // This works for all browsers except IE versions 8 and before
-            if (w.pageXOffset != null) return {x: w.pageXOffset, y:w.pageYOffset}
+            if (w.pageXOffset != null) return {
+                x: w.pageXOffset,
+                y: w.pageYOffset
+            }
             // For IE (or any browser) in Standards mode
             let d = w.document
             if (document.compatMode == "CSS1Compat")
-            return { x: d.documentElement.scrollLeft, y: d.documentElement.scrollTop }
+                return {
+                    x: d.documentElement.scrollLeft,
+                    y: d.documentElement.scrollTop
+                }
             // For browsers in Quirks mode
-            return { x: d.body.scrollLeft, y: d.body.scrollTop }
+            return {
+                x: d.body.scrollLeft,
+                y: d.body.scrollTop
+            }
         },
-        goTo: function(name) {
+        goTo: function (name) {
             let el,
-            scrollYPos = 0,
-            topPosition = 0,
-            scrollOffset = this.getScrollY()
+                scrollYPos = 0,
+                topPosition = 0,
+                scrollOffset = this.getScrollY()
 
 
             el = document.getElementById(name)
             topPosition = el.getBoundingClientRect().top
-            scrollYPos = topPosition + scrollOffset.y﻿
+            scrollYPos = topPosition + scrollOffset.y
 
             let master = new TimelineMax({
                 paused: true,
             })
 
-            master.to(window﻿, .6, {
-                scrollTo:{
+            master.to(window, .6, {
+                scrollTo: {
                     offsetY: 130,
                     y: scrollYPos,
                     x: 0,
@@ -189,7 +210,7 @@ export default {
             master.play()
 
         },
-        scrollToTop: function() {
+        scrollToTop: function () {
             TweenMax.to(window, .2, {
                 scrollTo: {
                     y: 0,
@@ -201,7 +222,7 @@ export default {
             })
         }
     },
-    mounted: function() {
+    mounted: function () {
         if (this.$root.products) {
             this.products = this.$root.products
         }
@@ -223,7 +244,6 @@ export default {
         padding-right: 0;
         max-width: 100vw;
         overflow-x: hidden;
-
 
         @include media-breakpoint-down('sm') {
             padding-top: $section-sm-padding;
@@ -286,8 +306,6 @@ export default {
         transition: $transition-base;
         cursor: pointer;
 
-
-
         &.active {
             background-color: $white !important;
 
@@ -304,7 +322,6 @@ export default {
             }
         }
 
-
         .product-img {
             width: 100%;
         }
@@ -319,7 +336,7 @@ export default {
                 visibility: visible;
                 width: auto;
                 opacity: 0.6;
-                transition: opacity .55s ease-in-out;
+                transition: opacity 0.55s ease-in-out;
             }
 
         }
