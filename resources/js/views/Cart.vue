@@ -159,16 +159,7 @@ export default {
             this.updateTotal(cart)
         },
         '$root.shippings': function (shippings) {
-            this.shippings = shippings.map(shipping => {
-                if (shipping.default == 1) {
-                    shipping.selected = true
-                }
-                else {
-                    shipping.selected = false
-                }
-                return shipping
-            })
-            this.updateShipping()
+            this.setDefaultShipping()
         },
         '$root.isMobile': function () {
 
@@ -192,13 +183,28 @@ export default {
         cartRemove: function (idx) {
             this.$root.cartRemove(idx)
         },
+        setDefaultShipping: function () {
+            this.shippings = this.$root.shippings.map(shipping => {
+                if (shipping.default == 1) {
+                    shipping.selected = true
+                }
+                else {
+                    shipping.selected = false
+                }
+                return shipping
+            })
+            this.updateShipping()
+        },
         calculateShipping: function (price) {
-            let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]
-            return parseFloat(price * this.totalQuantity * shipping.increment).toFixed(2)
+            let shipping = this.shippings.find(shipping => shipping.selected == true)
+            if (shipping) {
+                return parseFloat(price * this.totalQuantity * shipping.increment).toFixed(2)
+            }
+            return 'error'
         },
         updateShipping: function () {
             if (this.shippings) {
-                let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]
+                let shipping = this.shippings.find(shipping => shipping.selected === true)
                 this.shippingTotal = this.cartTotal + (shipping.price * this.totalQuantity * shipping.increment)
             }
         },
@@ -271,7 +277,7 @@ export default {
 
         if (this.$root.shippings) {
             this.shippings = this.$root.shippings
-            this.updateShipping()
+            this.setDefaultShipping()
         }
 
         if (this.$env.debug) {

@@ -10,6 +10,7 @@ import checkView from 'vue-check-view'
 import VueLayers from 'vuelayers'
 import 'vuelayers/lib/style.css'
 import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
 import axios from 'axios'
 
 Vue.use(VueRouter)

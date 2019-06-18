@@ -10,6 +10,8 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
+        "@sentry/browser": "^4.6.6",
+        "@sentry/integrations": "^5.4.1",
         "axios": "^0.18.1",
         "bootstrap": "^4.3.1",
         "bootstrap-vue": "^2.0.0-rc.13",
@@ -32,7 +34,6 @@
         "vue-template-compiler": "^2.6.9"
     },
     "dependencies": {
-        "@sentry/browser": "^4.6.5",
         "i18next": "^15.0.7",
         "lottie-web": "^5.4.3",
         "scrollmagic": "^2.0.6",
