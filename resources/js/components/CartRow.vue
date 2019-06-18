@@ -1,28 +1,39 @@
-<template lang="html">
-    <tr class="cart-row" @mouseenter="showTrash" @mouseleave="hideTrash">
-        <td>
-            {{ title }}
-            <span :class="hasTrash">
-                <button class="btn btn-link btn-sm" @click="remove">Rimuovi dal carrello</button>
-            </span>
-        </td>
-        <td>
+<template>
+<tr
+    class="cart-row"
+    @mouseenter="showTrash"
+    @mouseleave="hideTrash"
+>
+    <td>
+        {{ title }}
+        <span :class="hasTrash">
             <button
-                class="btn btn-link"
-                :class="hasQuantityEnabled"
-                @click="removeQuantity">
-                -
+                class="btn btn-link btn-sm"
+                @click="remove"
+            >
+                Rimuovi dal carrello
             </button>
-            {{ quantity }}
-            <button
-                class="btn btn-link"
-                :class="hasQuantityEnabled"
-                @click="addQuantity">
-                +
-            </button>
-        </td>
-        <td>€ {{ total }}</td>
-    </tr>
+        </span>
+    </td>
+    <td>
+        <button
+            class="btn btn-link"
+            :class="hasQuantityEnabled"
+            @click="removeQuantity"
+        >
+            -
+        </button>
+        {{ quantity }}
+        <button
+            class="btn btn-link"
+            :class="hasQuantityEnabled"
+            @click="addQuantity"
+        >
+            +
+        </button>
+    </td>
+    <td>€ {{ total }}</td>
+</tr>
 </template>
 
 <script>
@@ -51,25 +62,25 @@ export default {
         }
     },
     watch: {
-        '$root.options': function(options) {
+        '$root.options': function (options) {
             this.setContent(options.shop)
         },
-        isEditable: function(value) {
+        isEditable: function (value) {
             if (!value) {
                 this.hasQuantityEnabled = 'invisible'
             }
         }
     },
     computed: {
-        total: function() {
+        total: function () {
             let total = this.priceParsed * this.quantity
             return total.toFixed(2)
         },
-        priceParsed: function() {
+        priceParsed: function () {
             return parseFloat(this.price).toFixed(2)
         }
     },
-    data: function() {
+    data: function () {
         return {
             hasTrash: 'invisible',
             hasQuantityEnabled: 'visible',
@@ -80,25 +91,25 @@ export default {
         }
     },
     methods: {
-        showTrash: function() {
+        showTrash: function () {
             if (this.isEditable) {
                 this.hasTrash = 'visible'
             }
         },
-        hideTrash: function() {
+        hideTrash: function () {
             this.hasTrash = 'invisible'
         },
-        remove: function() {
+        remove: function () {
             this.$emit('cart-remove', this.idx)
         },
-        addQuantity: function() {
+        addQuantity: function () {
             let item = {
                 id: this.idx,
                 quantity: this.quantity + (1 * this.shop.multiplier)
             }
             this.$emit('cart-update', item)
         },
-        removeQuantity: function() {
+        removeQuantity: function () {
             if (this.quantity > 0) {
                 let item = {
                     id: this.idx,
@@ -107,11 +118,11 @@ export default {
                 this.$emit('cart-update', item)
             }
         },
-        setContent: function(section) {
+        setContent: function (section) {
             this.shop = section
         }
     },
-    mounted: function() {
+    mounted: function () {
         if (this.$root.options) {
             this.setContent(this.$root.options.shop)
         }
