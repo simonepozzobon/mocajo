@@ -2,7 +2,7 @@
     <div
         id="menu-anim"
         ref="container"
-        :style="'width: '+this.size+'; height: '+this.size+';'">
+        :style="style">
     </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
             default: 1,
         }
     },
-    data: function() {
+    data: function () {
         return {
             anim: null,
             height: 0,
@@ -38,13 +38,18 @@ export default {
         }
     },
     watch: {
-        opened: function(value) {
+        opened: function (value) {
             this.$root.menuStatus = value
             this.$emit('changeStatus', value)
         }
     },
+    computed: {
+        style: function () {
+            return 'width: ' + this.size + '; height: ' + this.size + ';'
+        }
+    },
     methods: {
-        hoverAnim: function() {
+        hoverAnim: function () {
             if (!this.hovering && !this.status) {
                 this.anim.playSegments([0, 76], true)
                 this.anim.addEventListener('enterFrame', e => {
@@ -59,13 +64,13 @@ export default {
                 })
             }
         },
-        open: function() {
+        open: function () {
             this.anim.playSegments([76, 124], true)
         },
-        close: function() {
+        close: function () {
             this.anim.playSegments([125, 175], true)
         },
-        toggle: function() {
+        toggle: function () {
             if (this.status) {
                 this.status = false
                 return this.close()
@@ -73,7 +78,7 @@ export default {
             this.status = true
             return this.open()
         },
-        init: function() {
+        init: function () {
             this.anim = lottie.loadAnimation({
                 container: this.$refs.container,
                 renderer: 'svg',
@@ -83,8 +88,8 @@ export default {
                 prerender: true,
                 name: 'MenuAnim',
                 rendererSettings: {
-                    progressiveLoad:false,
-                    preserveAspectRatio:'xMidYMid meet'
+                    progressiveLoad: false,
+                    preserveAspectRatio: 'xMidYMid meet'
                     // clearCanvas: true,
                 }
             })
@@ -96,7 +101,7 @@ export default {
             return this.loaded = true
         }
     },
-    mounted: function() {
+    mounted: function () {
         this.init()
     }
 }
