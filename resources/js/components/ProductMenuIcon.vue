@@ -1,7 +1,14 @@
-<template lang="html">
-    <div :id="this.nameToLower + '-menu'" class="product-menu" @click="goTo">
-        <img :src="svgSrc" class="product-img" />
-    </div>
+<template>
+<div
+    :id="this.nameToLower + '-menu'"
+    class="product-menu"
+    @click="goTo"
+>
+    <img
+        :src="svgSrc"
+        class="product-img"
+    />
+</div>
 </template>
 
 <script>
@@ -22,7 +29,7 @@ export default {
         }
     },
     computed: {
-        nameToLower: function() {
+        nameToLower: function () {
             if (this.title) {
                 return this.title.toLowerCase()
             }
@@ -30,7 +37,7 @@ export default {
         }
     },
     methods: {
-        goTo: function() {
+        goTo: function () {
             this.$emit('go-to', this.nameToLower)
         }
     }

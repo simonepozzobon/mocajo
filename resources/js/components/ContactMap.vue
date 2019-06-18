@@ -1,48 +1,60 @@
-<template lang="html">
-    <ui-block
-        ref="mapContainer"
-        class="contact-map-custom"
-        :full-height="true"
-        :disable-padding="true">
-        <div class="contact-map-multiselect">
-            <multiselect
-                v-model="value"
-                :options="options"
-                :searchable="true"
-                :close-on-select="true"
-                :show-labels="false"
-                :placeholder="this.placeholder"/>
-        </div>
-        <vl-map
-            :load-tiles-while-animating="true"
-            :load-tiles-while-interacting="true"
-            data-projection="EPSG:4326"
-            :style="'height: '+this.mapHeight+'px'">
-            <vl-view
-                :zoom.sync="zoom"
-                :center.sync="center"
-                :rotation.sync="rotation"/>
+<template>
+<ui-block
+    ref="mapContainer"
+    class="contact-map-custom"
+    :full-height="true"
+    :disable-padding="true"
+>
+    <div class="contact-map-multiselect">
+        <multiselect
+            v-model="value"
+            :options="options"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            :placeholder="this.placeholder"
+        />
+    </div>
+    <vl-map
+        :load-tiles-while-animating="true"
+        :load-tiles-while-interacting="true"
+        data-projection="EPSG:4326"
+        :style="'height: '+this.mapHeight+'px'"
+    >
+        <vl-view
+            :zoom.sync="zoom"
+            :center.sync="center"
+            :rotation.sync="rotation"
+        />
 
-            <vl-layer-tile id="osm">
-                <vl-source-osm/>
-            </vl-layer-tile>
+        <vl-layer-tile id="osm">
+            <vl-source-osm />
+        </vl-layer-tile>
 
-            <vl-feature
-                v-for="(shop, i) in shops"
-                :key="shop.id">
-                <vl-geom-point :coordinates="[parseFloat(shop.lng), parseFloat(shop.lat)]"></vl-geom-point>
-                <vl-style-box @click.native="showShopDetail">
-                    <vl-style-icon src="/svg/pin.svg" :scale="0.2" :anchor="[1, 1]"></vl-style-icon>
-                </vl-style-box>
-            </vl-feature>
+        <vl-feature
+            v-for="(shop, i) in shops"
+            :key="shop.id"
+        >
+            <vl-geom-point :coordinates="[parseFloat(shop.lng), parseFloat(shop.lat)]"></vl-geom-point>
+            <vl-style-box @click.native="showShopDetail">
+                <vl-style-icon
+                    src="/svg/pin.svg"
+                    :scale="0.2"
+                    :anchor="[1, 1]"
+                ></vl-style-icon>
+            </vl-style-box>
+        </vl-feature>
 
-        </vl-map>
-    </ui-block>
+    </vl-map>
+</ui-block>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect'
-import { UiBlock } from '../components/ui'
+import {
+    UiBlock
+}
+from '../components/ui'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 export default {
@@ -51,10 +63,10 @@ export default {
         Multiselect,
         UiBlock,
     },
-    data: function() {
+    data: function () {
         return {
             zoom: 13,
-            center: [ 9.19131164549529, 45.461118675626096 ],
+            center: [9.19131164549529, 45.461118675626096],
             rotation: 0,
             mapHeight: 0,
             value: '',
@@ -64,16 +76,16 @@ export default {
         }
     },
     watch: {
-        '$root.window': function(value) {
+        '$root.window': function (value) {
             this.setMapHeight()
         },
-        '$root.cities': function(cities) {
+        '$root.cities': function (cities) {
             this.formatCities(cities)
         },
-        '$root.locale': function(locale) {
+        '$root.locale': function (locale) {
             this.translate(locale)
         },
-        value: function(value) {
+        value: function (value) {
             let idx = this.$root.cities.findIndex(item => item.name == value)
             if (idx > -1) {
                 let city = this.$root.cities[idx]
@@ -82,18 +94,18 @@ export default {
         }
     },
     methods: {
-        translate: function(locale = false) {
+        translate: function (locale = false) {
             locale = locale ? locale : this.$root.locale
             switch (locale) {
-                case 'en':
-                    this.placeholder = 'Select a city...'
-                    break;
-                case 'it':
-                    this.placeholder = 'Seleziona una città...'
-                    break;
+            case 'en':
+                this.placeholder = 'Select a city...'
+                break;
+            case 'it':
+                this.placeholder = 'Seleziona una città...'
+                break;
             }
         },
-        formatCities: function(cities) {
+        formatCities: function (cities) {
             for (let i = 0; i < cities.length; i++) {
                 this.options.push(cities[i].name)
                 for (let j = 0; j < cities[i].shops.length; j++) {
@@ -107,15 +119,15 @@ export default {
             }
             this.setMapHeight()
         },
-        setMapHeight: function() {
+        setMapHeight: function () {
             let map = this.$refs.mapContainer.$el.getBoundingClientRect()
             this.mapHeight = map.height
         },
-        showShopDetail: function() {
+        showShopDetail: function () {
             alert('ciao')
         }
     },
-    mounted: function() {
+    mounted: function () {
         this.translate()
         this.setMapHeight()
         if (this.$root.cities) {
