@@ -19,6 +19,8 @@
                 :sub="subTotal"
                 :shipping="shippingTotal"
                 :total.sync="cartTotal"
+                :is-cart-editable.sync="isCartEditable"
+                @show-checkout="showCheckout"
             />
         </div>
     </div>
@@ -85,30 +87,7 @@ export default {
             this.subTotal = total
         },
         showCheckout: function () {
-            let container = this.$refs.checkoutBtn
-            let btns = container.getElementsByClassName('btns__btn')
-            let master = new TimelineMax({
-                paused: true,
-            })
-
-            master.staggerFromTo(btns, .6, {
-                autoAlpha: 1,
-            }, {
-                autoAlpha: 0,
-            }, .1, 0)
-
-            master.progress(1).progress(0)
-
-            master.eventCallback('onStart', () => {
-                this.isCartEditable = false
-            })
-
-            master.eventCallback('onComplete', () => {
-                this.$nextTick(this.$refs.checkout.init)
-            })
-
-            master.play()
-
+            this.$refs.checkout.init()
         },
         validateCheckout: function (event = null, checkout = null) {
             let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]

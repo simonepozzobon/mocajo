@@ -67,6 +67,10 @@ export default {
             type: Number,
             default: 0.00,
         },
+        isCartEditable: {
+            type: Boolean,
+            default: false,
+        }
     },
     data: function () {
         return {
@@ -100,9 +104,9 @@ export default {
         }
     },
     methods: {
-        showCheckout: function () {
-            this.$emit('show-checkout')
-        },
+        // showCheckout: function () {
+        //     this.$emit('show-checkout')
+        // },
         translate: function () {
             for (let key in this.item) {
                 if (this.item.hasOwnProperty(key)) {
@@ -119,7 +123,35 @@ export default {
         updateTotal: function () {
             let total = this.sub + this.shipping
             this.$emit('update:total', total)
-        }
+        },
+        showCheckout: function () {
+            let container = this.$refs.checkoutBtn
+            let btns = container.getElementsByClassName('btns__btn')
+            let master = new TimelineMax({
+                paused: true,
+            })
+
+            master.staggerFromTo(btns, .6, {
+                autoAlpha: 1,
+            }, {
+                autoAlpha: 0,
+            }, .1, 0)
+
+            master.progress(1).progress(0)
+
+            master.eventCallback('onStart', () => {
+                this.$emit('update:is-cart-editable', false)
+            })
+
+            master.eventCallback('onComplete', () => {
+                this.$nextTick(() => {
+                    this.$emit('show-checkout')
+                })
+            })
+
+            master.play()
+
+        },
     },
     created: function () {
         this.translate()
