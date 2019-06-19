@@ -6,31 +6,20 @@
                 ref="resume"
                 :is-cart-editable="isCartEditable"
                 @update-shipping="updateShipping"
+                @update-total="updateSubTotal"
+            />
+            <cart-shipping
+                ref="shipping"
+                :shipping-total.sync="shippingTotal"
+                :is-cart-editable="isCartEditable"
             />
         </div>
         <div class="col-md-4">
-            <cart-shipping
-                ref="shipping"
-                :is-cart-editable="isCartEditable"
+            <cart-recap
+                :sub="subTotal"
+                :shipping="shippingTotal"
+                :total.sync="cartTotal"
             />
-            <div
-                class="btns"
-                ref="checkoutBtn"
-            >
-                <button
-                    class="btn btn-primary btns__btn"
-                    @click="showCheckout"
-                >
-                    Effettua il checkout
-                </button>
-                <a
-                    tag="a"
-                    class="btn btn-link btns__btn"
-                    @click="$root.goTo($event, 'vini')"
-                >
-                    Continua con lo shopping
-                </a>
-            </div>
         </div>
     </div>
     <div class="row">
@@ -52,6 +41,7 @@
 </template>
 
 <script>
+import CartRecap from '../components/CartRecap.vue'
 import CartResume from '../components/CartResume.vue'
 import CartRow from '../components/CartRow.vue'
 import CartShipping from '../components/CartShipping.vue'
@@ -61,6 +51,7 @@ import Payment from '../components/Payment.vue'
 export default {
     name: 'Cart',
     components: {
+        CartRecap,
         CartResume,
         CartRow,
         CartShipping,
@@ -70,6 +61,7 @@ export default {
     data: function () {
         return {
             cartTotal: 0,
+            subTotal: 0,
             shippings: null,
             shippingTotal: 0,
             totalQuantity: 0,
@@ -78,15 +70,19 @@ export default {
         }
     },
     watch: {
-
-
         '$root.isMobile': function () {
 
         }
     },
     methods: {
         updateShipping: function () {
-            this.$refs.shipping.updateShipping()
+            // deprecata !!!
+            // if (this.$refs.shipping) {
+            //     this.$refs.shipping.updateShipping()
+            // }
+        },
+        updateSubTotal: function (total) {
+            this.subTotal = total
         },
         showCheckout: function () {
             let container = this.$refs.checkoutBtn

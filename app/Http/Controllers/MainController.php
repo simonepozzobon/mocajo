@@ -73,6 +73,7 @@ class MainController extends Controller
         $shippings = Shipping::all();
         $shippings = $shippings->transform(function($s, $key) {
             $s->logo = Utility::check_img($s->logo);
+            $s->variations = $s->variations;
             return $s;
         });
         $shippings = json_encode($shippings);

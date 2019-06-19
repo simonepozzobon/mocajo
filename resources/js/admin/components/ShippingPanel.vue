@@ -11,17 +11,6 @@
             class="form-control"
         >
     </form-group>
-    <!-- <form-group
-        name="description_en"
-        title="Descrizione [ENG]"
-    >
-        <input
-            type="text"
-            name="description_en"
-            v-model="shipping.description_en"
-            class="form-control"
-        >
-    </form-group> -->
     <form-group
         name="default"
         title="Default"
@@ -48,9 +37,9 @@
         title="Anteprima Logo"
     >
         <img
+            v-if="preview"
             :src="preview"
             class="img-fluid"
-            v-if="shipping.logo"
         >
         <span
             class="text-danger"
@@ -70,17 +59,7 @@
             class="form-control"
         >
     </form-group>
-    <form-group
-        name="increment"
-        title="Moltiplicatore"
-    >
-        <input
-            type="text"
-            name="increment"
-            v-model="shipping.increment"
-            class="form-control"
-        >
-    </form-group>
+    <shipping-variation :variations.sync="shipping.variations" />
     <form-group
         name="timing"
         title="Tempistiche"
@@ -135,6 +114,7 @@ import {
 }
 from './ui'
 import Multiselect from 'vue-multiselect'
+import ShippingVariation from './ShippingVariation.vue'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 export default {
@@ -143,6 +123,7 @@ export default {
         FileInput,
         FormGroup,
         Multiselect,
+        ShippingVariation,
     },
     props: {
         isEdit: {
@@ -167,13 +148,15 @@ export default {
                 increment: null,
                 logo: null,
                 timing: null,
+                variations: [],
             },
             preview: null,
         }
     },
     watch: {
-        shippingDefault: function (city) {
-            this.shipping = city
+        shippingDefault: function (shipping) {
+            this.shipping = shipping
+            this.preview = shipping.logo ? shipping.logo : null
         },
     },
     methods: {
@@ -205,17 +188,17 @@ export default {
             }
 
             data = this.setData(data, 'description', this.shipping.description)
-            // data = this.setData(data, 'description_en', this.shipping.description_en)
+            data = this.setData(data, 'variations', JSON.stringify(this.shipping.variations))
             data = this.setData(data, 'default', this.shipping.default)
             data = this.setData(data, 'price', this.shipping.price)
             data = this.setData(data, 'increment', this.shipping.increment)
             data = this.setData(data, 'timing', this.shipping.timing)
 
             this.$http.post('/api/admin/shippings/save-shipping', data).then(response => {
-                this.updateCities(response.data)
+                this.updateShipping(response.data)
             })
         },
-        updateCities: function (cities) {
+        updateShipping: function (cities) {
             this.$emit('update-cities', cities)
             this.exit()
         },
@@ -248,6 +231,9 @@ export default {
             }
             return data
         },
+        updateVariations: function (variations) {
+            this.shipping.variations = variations
+        }
     },
     mounted: function () {}
 }

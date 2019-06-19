@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Utility;
 use App\Shipping;
+use App\ShipVariation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -33,7 +34,6 @@ class ShippingController extends Controller
     public function save_shipping(Request $request) {
         if ($request->is_edit) {
             $shipping = Shipping::find($request->idx);
-
         } else {
             $shipping = new Shipping();
         }
@@ -49,6 +49,21 @@ class ShippingController extends Controller
         $shipping->timing = $request->timing;
         $shipping->save();
 
+        $variations = json_decode($request->variations);
+        $old_vars = $shipping->variations()->delete();
+
+        foreach ($variations as $key => $variation) {
+            $var = new ShipVariation();
+            $var->shipping_id = $shipping->id;
+            if ($variation->left === 0 || ($variation->left != null && $variation->left != '')) {
+                $var->left = $variation->left;
+            }
+            $var->operator = $variation->operator;
+            $var->right = $variation->right;
+            $var->price = $variation->price;
+            $var->save();
+        }
+
         $shippings = $this->get();
         $shippings_formatted = $this->format_shippings($shippings);
         return $shippings_formatted;
@@ -57,6 +72,7 @@ class ShippingController extends Controller
     public function format_shippings($shippings) {
         $shippings = $shippings->transform(function($s, $key) {
             $s->logo = Utility::check_img($s->logo);
+            $s->variations = $s->variations;
             return $s;
         });
 

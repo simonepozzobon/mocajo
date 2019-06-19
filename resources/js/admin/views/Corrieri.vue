@@ -1,21 +1,23 @@
-<template lang="html">
-    <page-template title="Corrieri">
-        <shipping-panel
-            ref="panel"
-            :isEdit="this.isEdit"
-            :idx="this.idx"
-            :shippingDefault="this.shippingDefault"
-            @destroy="destroy"
-            @exit="exit"
-            @update-cities="updateShipping"/>
+<template>
+<page-template title="Corrieri">
+    <shipping-panel
+        ref="panel"
+        :isEdit="this.isEdit"
+        :idx="this.idx"
+        :shippingDefault="this.shippingDefault"
+        @destroy="destroy"
+        @exit="exit"
+        @update-cities="updateShipping"
+    />
 
-        <shippings-table
-            ref="table"
-            :shippings="this.shippings"
-            @new-shipping="newShipping"
-            @edit="edit"
-            @destroy="destroy"/>
-    </page-template>
+    <shippings-table
+        ref="table"
+        :shippings="this.shippings"
+        @new-shipping="newShipping"
+        @edit="edit"
+        @destroy="destroy"
+    />
+</page-template>
 </template>
 
 <script>
@@ -30,7 +32,7 @@ export default {
         ShippingsTable,
         PageTemplate,
     },
-    data: function() {
+    data: function () {
         return {
             shippings: null,
             isEdit: false,
@@ -40,32 +42,36 @@ export default {
         }
     },
     methods: {
-        getCities: function() {
+        getCities: function () {
             this.$http.get('/api/admin/shippings/get-shippings').then(response => {
                 this.shippings = response.data
+                this.debug()
             })
         },
-        updateShipping: function(shippings) {
+        debug: function () {
+            this.edit(this.shippings[0])
+        },
+        updateShipping: function (shippings) {
             this.shippings = shippings
         },
-        newShipping: function() {
+        newShipping: function () {
             this.isEdit = false
             this.idx = null
             this.$refs.panel.reset()
             this.showPanel()
         },
-        edit: function(shipping) {
+        edit: function (shipping) {
             this.isEdit = true
             this.idx = shipping.id
             this.shippingDefault = shipping
             this.showPanel()
         },
-        exit: function() {
+        exit: function () {
             this.isEdit = false
             this.idx = null
             this.hidePanel()
         },
-        destroy: function(shipping) {
+        destroy: function (shipping) {
             let data = new FormData()
             data.append('idx', shipping.id)
 
@@ -73,7 +79,7 @@ export default {
                 this.shippings = response.data
             })
         },
-        hidePanel: function() {
+        hidePanel: function () {
             if (!this.master) {
                 this.master = new TimelineMax({
                     paused: true,
@@ -81,12 +87,12 @@ export default {
                 })
 
                 this.master.fromTo(this.$refs.table.$el, .3, {
-                    display: 'none',
-                    height: 0
-                }, {
-                    display: 'block',
-                    height: 'auto'
-                }, 0)
+                        display: 'none',
+                        height: 0
+                    }, {
+                        display: 'block',
+                        height: 'auto'
+                    }, 0)
                     .fromTo(this.$refs.table.$el, .3, {
                         autoAlpha: 0,
                     }, {
@@ -95,12 +101,12 @@ export default {
 
 
                 this.master.fromTo(this.$refs.panel.$el, .3, {
-                    display: 'block',
-                    height: 'auto'
-                }, {
-                    display: 'none',
-                    height: 0
-                }, 0)
+                        display: 'block',
+                        height: 'auto'
+                    }, {
+                        display: 'none',
+                        height: 0
+                    }, 0)
                     .fromTo(this.$refs.panel.$el, .3, {
                         autoAlpha: 1,
                     }, {
@@ -110,11 +116,11 @@ export default {
             }
             this.master.progress(0).play()
         },
-        showPanel: function() {
+        showPanel: function () {
             this.master.progress(1).reverse()
         }
     },
-    mounted: function() {
+    mounted: function () {
         this.getCities()
         this.hidePanel()
     }

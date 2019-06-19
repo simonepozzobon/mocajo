@@ -3,13 +3,13 @@
     class="cart cart-resume"
     ref="cart"
 >
-    <h1 class="pt-5">Carrello</h1>
+    <h1 class="pt-5">{{ item.title }}</h1>
     <table class="table my-4">
         <thead>
             <tr>
-                <td>Prodotto</td>
-                <td>Quantità</td>
-                <td>Prezzo</td>
+                <td>{{ item.product }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price }}</td>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
         </tbody>
         <tbody>
             <tr>
-                <td colspan="2">Totale</td>
+                <td colspan="2">{{ item.total }}</td>
                 <td>€ {{ this.cartTotal.toFixed(2) }}</td>
             </tr>
         </tbody>
@@ -51,6 +51,20 @@ export default {
     data: function () {
         return {
             cartTotal: 0,
+            item: {
+                title: null,
+                product: null,
+                quantity: null,
+                price: null,
+                total: null,
+            },
+            translations: {
+                title: ['Carrello', 'Cart'],
+                product: ['Prodotto', 'Product'],
+                quantity: ['Quantità', 'Quantity'],
+                price: ['Prezzo', 'Price'],
+                total: ['Totale', 'Total'],
+            },
             products: []
         }
     },
@@ -58,6 +72,12 @@ export default {
         '$root.cart': function (cart) {
             this.updateTotal(cart)
         },
+        '$root.locale': function () {
+            this.translate()
+        },
+        cartTotal: function (total) {
+            this.$emit('update-total', total)
+        }
     },
     methods: {
         cartUpdate: function (product) {
@@ -77,12 +97,27 @@ export default {
             this.cartTotal = parseFloat(total)
             this.$emit('update-shipping')
         },
+        translate: function () {
+            for (let key in this.item) {
+                if (this.item.hasOwnProperty(key)) {
+                    this.item[key] = this.getTranslation(key)
+                }
+            }
+        },
+        getTranslation: function (key) {
+            if (this.$root.locale == 'it') {
+                return this.translations[key][0]
+            }
+            return this.translations[key][1]
+        }
 
     },
-    mounted: function () {
+    created: function () {
+        this.translate()
         if (this.$root.cart) {
             this.updateTotal(this.$root.cart)
         }
+
     },
 }
 </script>

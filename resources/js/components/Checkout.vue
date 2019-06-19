@@ -1,80 +1,242 @@
-<template lang="html">
-    <div class="checkout-panel" ref="form">
-        <h1>Checkout</h1>
-        <div class="form-group row mt-4">
-            <label for="category" class="col-md-2 col-form-label">Tipologia</label>
-            <select :disabled="disableInput" class="form-control col-md-4" name="category" v-model="formValues.category" required>
-                <option value="1">Persona Fisica</option>
-                <option value="2">Azienda</option>
-                <option value="3">Professionista</option>
-            </select>
-            <label for="email" class="col-md-2 col-form-label">Email</label>
-            <input type="email" name="email" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.email" required/>
-        </div>
-        <div class="form-group row">
-            <label for="company_name" class="col-md-2 col-form-label">Ragione Sociale</label>
-            <input type="company_name" name="company_name" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.company_name"/>
-        </div>
-        <div class="form-group row">
-            <label for="vat" class="col-md-2 col-form-label">IVA</label>
-            <input type="vat" name="vat" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.vat"/>
-            <label for="code" class="col-md-2 col-form-label">Codice Fiscale</label>
-            <input type="code" name="code" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.code"/>
-        </div>
-        <hr class="my-5"/>
-        <div class="form-group row">
-            <label for="name" class="col-md-2 col-form-label">Nome</label>
-            <input type="name" name="name" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.name" required/>
-            <label for="surname" class="col-md-2 col-form-label">Cognome</label>
-            <input type="surname" name="surname" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.surname" required/>
-        </div>
-        <div class="form-group row">
-            <label for="phone" class="col-md-2 col-form-label">Telefono</label>
-            <input type="phone" name="phone" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.phone" required/>
-        </div>
-        <hr class="my-5"/>
-        <div class="form-group row">
-            <label for="country" class="col-md-2 col-form-label">Stato</label>
-            <select :disabled="disableInput" class="form-control col-md-10" name="country" v-model="formValues.country" required>
-                <option
-                    v-for="(country, i, key) in this.countries"
-                    :key="i"
-                    :value="i">
-                    {{ country }}
-                </option>
-            </select>
-        </div>
-        <div class="form-group row">
-            <label for="region" class="col-md-2 col-form-label">Provincia</label>
-            <input type="region" name="region" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.region" required/>
-            <label for="cap" class="col-md-2 col-form-label">C.A.P.</label>
-            <input type="cap" name="cap" :disabled="disableInput" class="form-control col-md-4" v-model="formValues.cap" required/>
-        </div>
-        <div class="form-group row">
-            <label for="city" class="col-md-2 col-form-label">Città</label>
-            <input type="city" name="city" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.city" required/>
-        </div>
-        <div class="form-group row">
-            <label for="address" class="col-md-2 col-form-label">Indirizzo</label>
-            <input type="address" name="address" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.address" required/>
-        </div>
-        <div class="form-group row">
-            <label for="address_secondary" class="col-md-2 col-form-label">Aggiuntivo</label>
-            <input type="address_secondary" name="address_secondary" :disabled="disableInput" class="form-control col-md-10" v-model="formValues.address_secondary"/>
-        </div>
-        <!-- <div class="recaptcha">
-            <google-re-captcha-v3
-                ref="captcha"
-                v-model="form.gRecaptchaResponse"
-                :site-key="siteKey"
-                :id="'checkout_id'"
-                :inline="true"
-                :action="'checkout'"/>
-        </div> -->
-        <div>
-            <button ref="submit" class="btn btn-primary" @click="pay">Vai al pagamento</button>
-        </div>
+<template>
+<div
+    class="checkout-panel"
+    ref="form"
+>
+    <h1>Checkout</h1>
+    <div class="form-group row mt-4">
+        <label
+            for="category"
+            class="col-md-2 col-form-label"
+        >
+            Tipologia
+        </label>
+        <select
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            name="category"
+            v-model="formValues.category"
+            required
+        >
+            <option value="1">Persona Fisica</option>
+            <option value="2">Azienda</option>
+        </select>
+        <label
+            for="email"
+            class="col-md-2 col-form-label"
+        >
+            Email
+        </label>
+        <input
+            type="email"
+            name="email"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.email"
+            required
+        />
     </div>
+    <div class="form-group row">
+        <label
+            for="company_name"
+            class="col-md-2 col-form-label"
+        >
+            Ragione Sociale
+        </label>
+        <input
+            type="company_name"
+            name="company_name"
+            :disabled="disableInput"
+            class="form-control col-md-10"
+            v-model="formValues.company_name"
+        />
+    </div>
+    <div class="form-group row">
+        <label
+            for="vat"
+            class="col-md-2 col-form-label"
+        >
+            IVA
+        </label>
+        <input
+            type="vat"
+            name="vat"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.vat"
+        />
+        <label
+            for="code"
+            class="col-md-2 col-form-label"
+        >
+            Codice Fiscale
+        </label>
+        <input
+            type="code"
+            name="code"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.code"
+        />
+    </div>
+    <hr class="my-5" />
+    <div class="form-group row">
+        <label
+            for="name"
+            class="col-md-2 col-form-label"
+        >
+            Nome
+        </label>
+        <input
+            type="name"
+            name="name"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.name"
+            required
+        />
+        <label
+            for="surname"
+            class="col-md-2 col-form-label"
+        >
+            Cognome
+        </label>
+        <input
+            type="surname"
+            name="surname"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.surname"
+            required
+        />
+    </div>
+    <div class="form-group row">
+        <label
+            for="phone"
+            class="col-md-2 col-form-label"
+        >
+            Telefono
+        </label>
+        <input
+            type="phone"
+            name="phone"
+            :disabled="disableInput"
+            class="form-control col-md-10"
+            v-model="formValues.phone"
+            required
+        />
+    </div>
+    <hr class="my-5" />
+    <div class="form-group row">
+        <label
+            for="country"
+            class="col-md-2 col-form-label"
+        >
+            Stato
+        </label>
+        <select
+            :disabled="disableInput"
+            class="form-control col-md-10"
+            name="country"
+            v-model="formValues.country"
+            required
+        >
+            <option
+                v-for="(country, i, key) in this.countries"
+                :key="i"
+                :value="i"
+            >
+                {{ country }}
+            </option>
+        </select>
+    </div>
+    <div class="form-group row">
+        <label
+            for="region"
+            class="col-md-2 col-form-label"
+        >
+            Provincia
+        </label>
+        <input
+            type="region"
+            name="region"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.region"
+            required
+        />
+        <label
+            for="cap"
+            class="col-md-2 col-form-label"
+        >
+            C.A.P.
+        </label>
+        <input
+            type="cap"
+            name="cap"
+            :disabled="disableInput"
+            class="form-control col-md-4"
+            v-model="formValues.cap"
+            required
+        />
+    </div>
+    <div class="form-group row">
+        <label
+            for="city"
+            class="col-md-2 col-form-label"
+        >
+            Città
+        </label>
+        <input
+            type="city"
+            name="city"
+            :disabled="disableInput"
+            class="form-control col-md-10"
+            v-model="formValues.city"
+            required
+        />
+    </div>
+    <div class="form-group row">
+        <label
+            for="address"
+            class="col-md-2 col-form-label"
+        >
+            Indirizzo
+        </label>
+        <input
+            type="address"
+            name="address"
+            :disabled="disableInput"
+            class="form-control col-md-10"
+            v-model="formValues.address"
+            required
+        />
+    </div>
+    <div class="form-group row">
+        <label
+            for="address_secondary"
+            class="col-md-2 col-form-label"
+        >
+            Aggiuntivo
+        </label>
+        <input
+            type="address_secondary"
+            name="address_secondary"
+            :disabled="disableInput"
+            class="form-control col-md-10"
+            v-model="formValues.address_secondary"
+        />
+    </div>
+    <div>
+        <button
+            ref="submit"
+            class="btn btn-primary"
+            @click="pay"
+        >
+            Vai al pagamento
+        </button>
+    </div>
+</div>
 </template>
 
 <script>

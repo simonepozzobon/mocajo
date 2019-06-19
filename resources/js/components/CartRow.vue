@@ -32,7 +32,7 @@
             +
         </button>
     </td>
-    <td>€ {{ total }}</td>
+    <td>€ {{ price }}</td>
 </tr>
 </template>
 
@@ -103,17 +103,29 @@ export default {
             this.$emit('cart-remove', this.idx)
         },
         addQuantity: function () {
+            let product = this.$root.products.find(product => product.id === this.idx)
+            let multiplier = this.shop.multiplier
+            if (product && product.hasOwnProperty('multiplier')) {
+                multiplier = product.multiplier
+            }
+
             let item = {
                 id: this.idx,
-                quantity: this.quantity + (1 * this.shop.multiplier)
+                quantity: this.quantity + (1 * multiplier)
             }
             this.$emit('cart-update', item)
         },
         removeQuantity: function () {
+            let product = this.$root.products.find(product => product.id === this.idx)
+            let multiplier = this.shop.multiplier
+            if (product && product.hasOwnProperty('multiplier')) {
+                multiplier = product.multiplier
+            }
+
             if (this.quantity > 0) {
                 let item = {
                     id: this.idx,
-                    quantity: this.quantity - (1 * this.shop.multiplier)
+                    quantity: this.quantity - (1 * multiplier)
                 }
                 this.$emit('cart-update', item)
             }
