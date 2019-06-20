@@ -90,7 +90,7 @@ export default {
             this.$refs.checkout.init()
         },
         validateCheckout: function (event = null, checkout = null) {
-            let shipping = this.shippings.filter(shipping => shipping.selected == true)[0]
+            let shipping = this.shippings.find(shipping => shipping.selected == true)[0]
 
             let data = {
                 products: this.$root.cart,
@@ -107,7 +107,6 @@ export default {
                 this.$nextTick(this.$refs.payment.showPayment)
             })
         },
-
         orderCompleted: function () {
 
         }
