@@ -21,6 +21,11 @@
                     </a>
                 </li>
                 <li class="mobile-nav__item">
+                    <a :href="shopLink" class="mobile-nav__link">
+                        Shop
+                    </a>
+                </li>
+                <li class="mobile-nav__item">
                     <a href="#" class="mobile-nav__link" @click="goTo($event, 'contatti')">
                         {{ this.locale.contatti }}
                     </a>
@@ -56,13 +61,15 @@
 </template>
 
 <script>
-import { TweenMax } from 'gsap'
+import {
+    TweenMax
+}
+from 'gsap'
 
 export default {
     name: 'MobileNav',
-    components: {
-    },
-    data: function() {
+    components: {},
+    data: function () {
         return {
             isOpen: false,
             master: null,
@@ -86,26 +93,33 @@ export default {
             customEase: null,
             status: false,
             started: true,
+            shopLink: 'https://scuolamocajo.it/shop/'
         }
     },
     watch: {
-        '$root.options': function(options) {
+        '$root.options': function (options) {
             this.setOptions(options.home.links)
         },
-        '$root.locale': function(locale) {
+        '$root.locale': function (locale) {
             this.translate(locale)
+            if (locale == 'it') {
+                this.shopLink = 'https://scuolamocajo.it/shop/'
+            }
+            else {
+                this.shopLink = 'https://scuolamocajo.it/shop/en'
+            }
         }
     },
     computed: {
-        uuid: function() {
+        uuid: function () {
             // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
                 (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
             )
         },
     },
     methods: {
-        getTranslations: function(obj, parent, key) {
+        getTranslations: function (obj, parent, key) {
             if (obj.hasOwnProperty(parent) && obj[parent].hasOwnProperty(key) && obj[parent].hasOwnProperty(key + '_en')) {
                 if (this.$root.locale == 'it') {
                     return obj[parent][key]
@@ -114,21 +128,21 @@ export default {
             }
             return null
         },
-        translate: function(locale = false) {
+        translate: function (locale = false) {
             this.locale.scuola = this.getTranslations(this.menu, 'scuola', 'linktxt')
             this.locale.storia = this.getTranslations(this.menu, 'storia', 'linktxt')
             this.locale.vini = this.getTranslations(this.menu, 'vini', 'linktxt')
             this.locale.contatti = this.getTranslations(this.menu, 'contatti', 'linktxt')
         },
-        setOptions: function(section) {
+        setOptions: function (section) {
             this.menu = section
             this.translate()
         },
-        goTo: function(event, name) {
+        goTo: function (event, name) {
             event.preventDefault()
             this.$emit('main-click', event, name, true)
         },
-        init: function() {
+        init: function () {
             if (!this.master) {
                 let duration = this.duration
                 let scale = 2
@@ -197,7 +211,8 @@ export default {
                 // vai sempre in alto quando apre il il menu
                 this.$emit('ready')
 
-            } else {
+            }
+            else {
                 this.master.kill()
                 this.master = null
                 this.$nextTick(() => {
@@ -205,7 +220,7 @@ export default {
                 })
             }
         },
-        toggle: function() {
+        toggle: function () {
             if (this.status) {
                 this.status = false
                 return this.close()
@@ -213,13 +228,13 @@ export default {
             this.status = true
             return this.open()
         },
-        open: function() {
+        open: function () {
             this.master.play()
         },
-        close: function() {
+        close: function () {
             this.master.reverse()
         },
-        destroy: function() {
+        destroy: function () {
             return new Promise(resolve => {
                 if (this.master) {
                     console.log('attendo');
@@ -228,13 +243,14 @@ export default {
                         resolve()
                     })
                     this.master.reverse()
-                } else {
+                }
+                else {
                     resolve()
                 }
             })
         }
     },
-    mounted: function() {
+    mounted: function () {
         if (this.$root.options) {
             this.setOptions(this.$root.options.home.links)
         }
@@ -305,9 +321,7 @@ export default {
         padding: 0;
     }
 
-    &__item {
-
-    }
+    &__item {}
 
     &__link {
         font-weight: 200;
@@ -322,7 +336,8 @@ export default {
             line-height: 3;
         }
 
-        &:hover, &:focus {
+        &:focus,
+        &:hover {
             color: $primary;
             text-decoration: none;
             transition: $transition-base;

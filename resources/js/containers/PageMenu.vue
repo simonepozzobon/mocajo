@@ -47,6 +47,14 @@
         </li>
         <li class="nav-item">
             <a
+                :href="shopLink"
+                class="nav-link"
+            >
+                Shop
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
                 href="#"
                 class="nav-link"
                 @click="$root.goTo($event, 'contatti')"
@@ -121,6 +129,7 @@ export default {
             master: null,
             delay: 0,
             changeBgTimeline: null,
+            shopLink: 'https://scuolamocajo.it/shop/'
         }
     },
     watch: {
@@ -151,6 +160,14 @@ export default {
         },
         '$root.options': function (options) {
             this.setOptions(options.home.links)
+        },
+        '$root.locale': function (locale) {
+            if (locale == 'it') {
+                this.shopLink = 'https://scuolamocajo.it/shop/'
+            }
+            else {
+                this.shopLink = 'https://scuolamocajo.it/shop/en'
+            }
         }
     },
     methods: {
