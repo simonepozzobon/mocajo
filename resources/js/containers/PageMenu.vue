@@ -22,6 +22,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a :href="this.shopLink" class="nav-link">
+                    Shop
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#" class="nav-link" @click="goTo($event, 'contatti')">
                     {{ this.menu.contatti }}
                 </a>
@@ -39,7 +44,11 @@
 import CartIcon from '../components/CartIcon.vue'
 import MenuAnim from '../components/MenuAnim.vue'
 import NavLogo from '../components/NavLogo.vue'
-import {TimelineMax, TweenLite} from 'gsap'
+import {
+    TimelineMax,
+    TweenLite
+}
+from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
 import SplitText from 'gsap/SplitText'
 
@@ -56,7 +65,7 @@ export default {
             default: null
         }
     },
-    data: function() {
+    data: function () {
         return {
             hasCart: false,
             hasLogo: true,
@@ -78,22 +87,24 @@ export default {
             master: null,
             delay: 0,
             changeBgTimeline: null,
+            shopLink: 'https://scuolamocajo.it/shop/',
         }
     },
     watch: {
-        '$root.cart': function(cart) {
+        '$root.cart': function (cart) {
             if (cart && cart.length > 0) {
                 this.hasCart = true
                 this.$nextTick(() => {
                     this.$refs.icon.play()
 
                 })
-            } else {
+            }
+            else {
                 this.hasCart = false
                 this.$refs.icon.hide()
             }
         },
-        '$root.navLogo': function(logo) {
+        '$root.navLogo': function (logo) {
             if (!logo) {
                 this.hasLogo = false
                 this.menuClass = 'mr-auto'
@@ -102,19 +113,32 @@ export default {
             this.hasLogo = true
             this.menuClass = 'ml-auto'
         },
-        '$root.options': function(options) {
+        '$root.options': function (options) {
             this.setOptions(options.menu)
+        },
+        '$root.locale': function (locale) {
+            if (locale == 'it') {
+                this.shopLink = 'https://scuolamocajo.it/shop/'
+            }
+            else {
+                this.shopLink = 'https://scuolamocajo.it/shop/en'
+            }
         }
     },
     methods: {
-        goTo: function(event, name) {
+        goTo: function (event, name) {
             event.preventDefault()
-            this.$router.push({name: name, params: {lang: this.$root.locale}})
+            this.$router.push({
+                name: name,
+                params: {
+                    lang: this.$root.locale
+                }
+            })
         },
-        setOptions: function(section) {
+        setOptions: function (section) {
             this.menu = section
         },
-        init: function() {
+        init: function () {
             if (!this.master) {
                 let el = this.$refs.menu
                 let links = el.getElementsByClassName('nav-item')
@@ -174,7 +198,7 @@ export default {
                 })
             }
         },
-        addScrollListener: function() {
+        addScrollListener: function () {
             TweenLite.to(window, .2, {
                 scrollTo: 0
             }).play()
@@ -190,31 +214,32 @@ export default {
                 }
             }, 250)
         },
-        hoverAnim: function() {
+        hoverAnim: function () {
             this.$refs.menu.hoverAnim()
         },
-        hasScrolled: function() {
+        hasScrolled: function () {
             let st = $(window).scrollTop();
 
             // Make sure they scroll more than delta
-            if(Math.abs(this.lastScrollTop - st) <= this.delta)
+            if (Math.abs(this.lastScrollTop - st) <= this.delta)
                 return;
 
             // If they scrolled down and are past the navbar, add class .nav-up.
             // This is necessary so you never see what is "behind" the navbar.
-            if (st > this.lastScrollTop && st > this.navbarHeight){
+            if (st > this.lastScrollTop && st > this.navbarHeight) {
                 // Scroll Down
                 $('#page-menu').removeClass('nav-down').addClass('nav-up');
-            } else {
+            }
+            else {
                 // Scroll Up
-                if(st + $(window).height() < $(document).height()) {
+                if (st + $(window).height() < $(document).height()) {
                     $('#page-menu').removeClass('nav-up').addClass('nav-down');
                 }
             }
 
             this.lastScrollTop = st;
         },
-        scrollTop: function() {
+        scrollTop: function () {
             return new Promise(resolve => {
                 TweenLite.to(window, .2, {
                     scrollTo: {
@@ -228,7 +253,7 @@ export default {
             })
         }
     },
-    mounted: function() {
+    mounted: function () {
         this.navbarHeight = $('#page-menu').outerHeight();
         let el = this.$refs.menu
         // TweenMax.set(el, {

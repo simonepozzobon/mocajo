@@ -1,58 +1,106 @@
-<template lang="html">
-    <div class="home-menu-container" ref="container">
-        <ul class="list-unstyled">
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="Scuola Mocajo" @click="goTo($event, 'scuola')">
-                    {{ this.menu.scuola }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="Storia" @click="goTo($event, 'storia')">
-                    {{ this.menu.storia }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="I Nostri Vini" @click="goTo($event, 'vini')">
-                    {{ this.menu.vini }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-hover="Contatti" @click="goTo($event, 'contatti')">
-                    {{ this.menu.contatti }}
-                </a>
-            </li>
-        </ul>
-    </div>
+<template >
+<div
+    class="home-menu-container"
+    ref="container"
+>
+    <ul class="list-unstyled">
+        <li class="nav-item">
+            <a
+                href="#"
+                class="nav-link"
+                data-hover="Scuola Mocajo"
+                @click="goTo($event, 'scuola')"
+            >
+                {{ this.menu.scuola }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="#"
+                class="nav-link"
+                data-hover="Storia"
+                @click="goTo($event, 'storia')"
+            >
+                {{ this.menu.storia }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="#"
+                class="nav-link"
+                data-hover="I Nostri Vini"
+                @click="goTo($event, 'vini')"
+            >
+                {{ this.menu.vini }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                :href="this.shopLink"
+                class="nav-link"
+                data-hover="I Nostri Vini"
+            >
+                Shop
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="#"
+                class="nav-link"
+                data-hover="Contatti"
+                @click="goTo($event, 'contatti')"
+            >
+                {{ this.menu.contatti }}
+            </a>
+        </li>
+    </ul>
+</div>
 </template>
 
 <script>
 export default {
     name: 'HomeMenu',
     watch: {
-        '$root.options': function(options) {
+        '$root.options': function (options) {
             this.setOptions(options.menu)
         }
     },
-    data: function() {
+    data: function () {
         return {
             menu: {
                 scuola: null,
                 storia: null,
                 vini: null,
                 contatti: null,
+                shopLink: 'https://scuolamocajo.it/shop/',
+            }
+        }
+    },
+    watch: {
+        '$root.locale': function (locale) {
+            if (locale == 'it') {
+                this.shopLink = 'https://scuolamocajo.it/shop/'
+            }
+            else {
+                this.shopLink = 'https://scuolamocajo.it/shop/en'
             }
         }
     },
     methods: {
-        setOptions: function(section) {
+        setOptions: function (section) {
             this.menu = section
         },
-        goTo: function(event, name) {
+        goTo: function (event, name) {
             event.preventDefault()
-            this.$router.push({name: name, params: {lang: this.$root.locale}})
+            this.$router.push({
+                name: name,
+                params: {
+                    lang: this.$root.locale
+                }
+            })
         },
     },
-    mounted: function() {
+    mounted: function () {
         if (this.$root.options) {
             this.setOptions(this.$root.options.menu)
         }
@@ -70,45 +118,46 @@ export default {
     }
 
     .nav-link {
-    	position: relative;
-    	display: inline-block;
-    	margin: 15px 25px;
-    	outline: none;
-    	text-decoration: none;
-    	letter-spacing: 1px;
-    	text-shadow: 0 0 1px rgba(255,255,255,0.3);
+        position: relative;
+        display: inline-block;
+        margin: 15px 25px;
+        outline: none;
+        text-decoration: none;
+        letter-spacing: 1px;
+        text-shadow: 0 0 1px rgba(255,255,255,0.3);
         font-weight: 300;
         text-transform: uppercase;
         letter-spacing: 1px;
         color: $white;
     }
 
-    .nav-link:hover,
-    .nav-link:focus {
-    	outline: none;
+    .nav-link:focus,
+    .nav-link:hover {
+        outline: none;
     }
 
     ul {
-    	position: relative;
-    	z-index: 1;
+        position: relative;
+        z-index: 1;
 
         .nav-link {
-        	padding: 0 5px;
-        	transition: color 0.3s;
+            padding: 0 5px;
+            transition: color 0.3s;
 
-            &::before,
-            &::after {
+            &::after,
+            &::before {
                 position: absolute;
-            	width: 100px;  // cambiare qui per dimensioni fissa
-            	left: 50%;
-            	top: 50%;
-            	height: 1px;
-            	margin-top: -1px;
-            	background: rgba($white, 0);
-            	content: '';
-            	z-index: -1;
-            	transition: $transition-base;
-            	pointer-events: none;
+                width: 100px;
+                // cambiare qui per dimensioni fissa
+                left: 50%;
+                top: 50%;
+                height: 1px;
+                margin-top: -1px;
+                background: rgba($white, 0);
+                content: '';
+                z-index: -1;
+                transition: $transition-base;
+                pointer-events: none;
             }
 
             &::before {
@@ -119,12 +168,13 @@ export default {
                 transform: translate(-50%, 20px);
             }
 
-            &:hover, &:focus {
+            &:focus,
+            &:hover {
                 color: $white;
                 transition: $transition-base;
 
-                &::before,
-                &::after {
+                &::after,
+                &::before {
                     background-color: rgba($white, 0.5);
                 }
 
