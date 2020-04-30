@@ -18,7 +18,7 @@
         "cross-env": "^5.1",
         "css-loader": "^2.1.0",
         "gsap": "^2.0.2",
-        "jquery": "^3.2",
+        "jquery": "^3.5",
         "laravel-mix": "^3.0.0",
         "lodash": "^4.17.5",
         "popper.js": "^1.12",
